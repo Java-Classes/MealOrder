@@ -31,4 +31,164 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "javaclasses/mealorder/identifiers.proto";
+import "javaclasses/mealorder/model.proto";
+import "javaclasses/mealorder/values.proto";
+import "google/protobuf/timestamp.proto";
 
+
+// An event signalizing about the empty order creation.
+//
+message OrderCreated {
+
+    // An identifier of the created order.
+    OrderId order_id = 1;
+
+    // An identifier of the menu which contains dishes can be added to order.
+    MenuId menu_id = 2;
+
+    // Time of the order creation.
+    google.protobuf.Timestamp when_created = 3;
+
+    // Reserved for future extension.
+    reserved 4 to 10;
+}
+
+// An event signalizing about addition the dish to the order.
+//
+message DishAddedToOrder {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+
+    // An identifier of the dish.
+    DishId dish_id = 2;
+
+    // Reserved for future extension.
+    reserved 3 to 10;
+}
+
+// An event signalizing about successful removing the dish from the order.
+//
+message DishRemovedFromOrder {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+
+    // An identifier of the dish.
+    DishId dish_id = 2;
+
+    // Reserved for future extension.
+    reserved 3 to 10;
+}
+
+// An event signalizing about the order cancellation.
+//
+message OrderCanceled {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+
+    // Time of the order cancellation.
+    google.protobuf.Timestamp when_canceled = 2;
+
+    // Reserved for future extension.
+    reserved 3 to 10;
+}
+
+// An event signalizing about the order is added to purchase order.
+//
+message OrderProcessed {
+
+    // The order that was added to purchase order.
+    Order order = 1;
+
+    // Time of the order addition to purchase order.
+    google.protobuf.Timestamp when_processed = 2;
+
+    // Reserved for future extension.
+    reserved 3 to 10;
+}
+
+// An event reflecting the vendor addition.
+//
+message VendorAdded {
+
+    // An identifier of the added Vendor.
+    VendorId vendor_id = 1;
+
+    // An identifier of the User, who added Vendor.
+    UserId user_id = 2;
+
+    // Time of addition.
+    google.protobuf.Timestamp when_added = 3;
+
+    // Vendor description.
+    VendorDescription vendor_description = 4;
+
+    // Reserved for future extension.
+    reserved 5 to 10;
+}
+
+// An event fired upon the vendor description update.
+//
+message VendorUpdated {
+
+    // An identifier of the updated Vendor.
+    VendorId vendor_id = 1;
+
+    // An identifier of the User, who updated Vendor.
+    UserId user_id = 2;
+
+    // Time of update.
+    google.protobuf.Timestamp when_updated = 3;
+
+    // Updated vendor description.
+    VendorDescription updated_vendor_description = 4;
+
+    // Previous vendor description.
+    VendorDescription previous_vendor_description = 5;
+
+    // Reserved for future extension.
+    reserved 6 to 10;
+}
+
+// An event reflecting the menu imported from external source
+// and parsed as list of dishes.
+//
+message MenuImported {
+
+    // An identifier of imported Menu, contains VendorID.
+    MenuId menu_id = 1;
+
+    // An identifier of the User, who imported Menu.
+    UserId user_id = 2;
+
+    // Menu import time.
+    google.protobuf.Timestamp when_imported = 3;
+
+    // Collection of menu dishes.
+    repeated Dish dishes = 4;
+
+    // Reserved for future extension.
+    reserved 5 to 10;
+}
+
+// An event reflecting the menu active date range set.
+//
+message DateRangeForMenuSet {
+
+    // An identifier of Menu.
+    MenuId menu_id = 1;
+
+    //An identifier of the User, who set MenuDateRange.
+    UserId user_id = 2;
+
+    //MenuDateRange setting time.
+    google.protobuf.Timestamp when_set = 3;
+
+    //Menu date range that has been set.
+    MenuDateRange menu_date_range = 4;
+
+    // Reserved for future extension.
+    reserved 5 to 10;
+}
