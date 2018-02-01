@@ -44,7 +44,7 @@ message UserId {
 //
 message VendorId {
 
-    string vendorName = 1;
+    string vendor_name = 1;
 
 }
 
@@ -52,18 +52,18 @@ message VendorId {
 //
 message OrderId {
 
-    VendorId vendorId = 1;
+    VendorId vendor_id = 1;
 
-    UserId userId = 2;
+    UserId user_id = 2;
 
-    google.protobuf.Timestamp orderDate = 3;
+    google.protobuf.Timestamp order_date = 3;
 }
 
 // An ID of a menu.
 //
 message MenuId {
 
-    VendorId vendorId = 1;
+    VendorId vendor_id = 1;
 
     //Menu uploads date
     google.protobuf.Timestamp uploaded = 2;
@@ -75,9 +75,9 @@ message MenuId {
 message DishId {
 
     //Sequence number of the dish in the menu
-    int32 sequentialNumber = 1;
+    int32 sequential_number = 1;
 
-    MenuId menuId = 2;
+    MenuId menu_id = 2;
 
 }
 
@@ -85,9 +85,9 @@ message DishId {
 //
 message PurchaseOrderId {
 
-    VendorId vendorId = 1;
+    VendorId vendor_id = 1;
 
-    google.protobuf.Timestamp purchaseOrderDate = 2;
+    google.protobuf.Timestamp purchase_order_date = 2;
 
 }
 

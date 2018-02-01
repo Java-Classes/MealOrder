@@ -40,9 +40,9 @@ message EmailAdress {
 
 message MenuDateRange {
 
-    google.protobuf.Timestamp startRange = 1;
+    google.protobuf.Timestamp start_range = 1;
 
-    google.protobuf.Timestamp endRange = 2;
+    google.protobuf.Timestamp end_range = 2;
 }
 
 message PhoneNumber {
@@ -55,7 +55,7 @@ message VendorDescription {
 
     EmailAdress email = 1;
 
-    PhoneNumber phoneNumber = 2;
+    PhoneNumber phone_number = 2;
 
-    google.protobuf.Timestamp poDailyDeadline = 3;
+    google.protobuf.Timestamp po_daily_deadline = 3;
 }
