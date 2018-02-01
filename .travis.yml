@@ -1,0 +1,10 @@
+language: java
+
+# To increase the memory size available during Travis build.
+sudo: required
+
+before_install:
+  - chmod +x gradlew
+
+script:
+  - ./gradlew check --stacktrace
