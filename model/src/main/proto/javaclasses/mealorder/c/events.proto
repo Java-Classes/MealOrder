@@ -32,6 +32,8 @@ option java_generate_equals_and_hash = true;
 
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/model.proto";
+import "javaclasses/mealorder/values.proto";
+import "google/protobuf/timestamp.proto";
 
 
 // An event signalizing about the empty order creation.
@@ -107,3 +109,45 @@ message OrderProcessed {
     reserved 3 to 10;
 }
 
+//An event reflecting the vendor addition.
+//
+message VendorAdded {
+
+    //An identifier of the added Vendor.
+    VendorId vendor_id = 1;
+
+    //An identifier of the User, who added Vendor.
+    UserId user_id = 2;
+
+    //Time of addition.
+    google.protobuf.Timestamp when_added = 3;
+
+    //Vendor description.
+    VendorDescription vendor_description = 4;
+
+    // Reserved for future extension.
+    reserved 5 to 10;
+}
+
+//An event reflecting the vendor description update.
+//
+message VendorUpdated {
+
+    //An identifier of the updated Vendor.
+    VendorId vendor_id = 1;
+
+    //An identifier of the User, who updated Vendor.
+    UserId user_id = 2;
+
+    //Time of update.
+    google.protobuf.Timestamp when_updated = 3;
+
+    //Updated vendor description.
+    VendorDescription updated_vendor_description = 4;
+
+    //Previous vendor description.
+    VendorDescription previous_vendor_description = 5;
+
+    // Reserved for future extension.
+    reserved 6 to 10;
+}
