@@ -32,3 +32,77 @@ option java_generate_equals_and_hash = true;
 
 import "javaclasses/mealorder/identifiers.proto";
 
+
+// An event signalizing about the empty order creation.
+//
+message OrderCreated {
+
+    // An identifier of the created order.
+    OrderId order_id = 1;
+
+    // An identifier of the menu which contains dishes can be added to order.
+    MenuId menu_id = 2;
+
+    // Time of the order creation.
+    google.protobuf.Timestamp when_created = 3;
+
+    // Reserved for future extension.
+    reserved 4 to 10;
+}
+
+// An event signalizing about addition the dish to the order.
+//
+message DishAddedToOrder {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+
+    // An identifier of the dish.
+    DishId dish_id = 2;
+
+    // Reserved for future extension.
+    reserved 3 to 10;
+}
+
+// An event signalizing about successful removing the dish from the order.
+//
+message DishRemovedFromOrder {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+
+    // An identifier of the dish.
+    DishId dish_id = 2;
+
+    // Reserved for future extension.
+    reserved 3 to 10;
+}
+
+// An event signalizing about the order cancellation.
+//
+message OrderCanceled {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+
+    // Time of the order cancellation.
+    google.protobuf.Timestamp when_canceled = 2;
+
+    // Reserved for future extension.
+    reserved 3 to 10;
+}
+
+// An event signalizing about the order is added to purchase order.
+//
+message OrderProcessed {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+
+    // Time of the order addition to purchase order.
+    google.protobuf.Timestamp when_processed = 2;
+
+    // Reserved for future extension.
+    reserved 3 to 10;
+}
+
