@@ -31,6 +31,7 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "javaclasses/mealorder/identifiers.proto";
+import "javaclasses/mealorder/model.proto";
 
 
 // An event signalizing about the empty order creation.
@@ -96,8 +97,8 @@ message OrderCanceled {
 //
 message OrderProcessed {
 
-    // An identifier of the order.
-    OrderId order_id = 1;
+    // The order that was added to purchase order.
+    Order order = 1;
 
     // Time of the order addition to purchase order.
     google.protobuf.Timestamp when_processed = 2;
