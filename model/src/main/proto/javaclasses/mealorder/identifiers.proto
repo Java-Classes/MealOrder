@@ -20,28 +20,78 @@
 
 syntax = "proto3";
 
-package spine.quickstart.c;
+package javaclasses.mealorder;
 
 import "spine/options.proto";
 
-option (type_url_prefix) = "type.spine.quickstart";
-option java_package = "io.spine.quickstart.c";
-option java_outer_classname = "EventsProto";
+option (type_url_prefix) = "type.javaclasses.mealorder";
+option java_package = "io.javaclasses.mealorder";
+option java_outer_classname = "IdentifiersProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "spine/quickstart/identifiers.proto";
+import "javaclasses/mealorder/values.proto";
+import "google/protobuf/timestamp.proto";
 
-// An event telling about a successful creation of a task.
+// An ID of a user.
 //
-message TaskCreated {
+message UserId {
 
-    // An ID of the created task.
-    //
-    TaskId id = 1;
-
-
-    // A title of the created task.
-    //
-    string title = 2 [(required) = true];
+    EmailAdress email = 1;
 }
+
+// An ID of a vendor.
+//
+message VendorId {
+
+    string vendorName = 1;
+
+}
+
+// An ID of an order.
+//
+message OrderId {
+
+    VendorId vendorId = 1;
+
+    UserId userId = 2;
+
+    google.protobuf.Timestamp orderDate = 3;
+}
+
+// An ID of a menu.
+//
+message MenuId {
+
+    VendorId vendorId = 1;
+
+    //Menu uploads date
+    google.protobuf.Timestamp uploaded = 2;
+
+}
+
+// An ID of a dish.
+//
+message DishId {
+
+    //Sequence number of the dish in the menu
+    int32 sequentialNumber = 1;
+
+    MenuId menuId = 2;
+
+}
+
+// An ID of a purchase order.
+//
+message PurchaseOrderId {
+
+    VendorId vendorId = 1;
+
+    google.protobuf.Timestamp purchaseOrderDate = 2;
+
+}
+
+
+
+
+

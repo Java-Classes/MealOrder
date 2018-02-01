@@ -20,28 +20,15 @@
 
 syntax = "proto3";
 
-package spine.quickstart;
+package javaclasses.mealorder.c;
 
 import "spine/options.proto";
 
-option (type_url_prefix) = "type.spine.quickstart";
-option java_package = "io.spine.quickstart";
-option java_outer_classname = "TaskProto";
+option (type_url_prefix) = "type.javaclasses.mealorder";
+option java_package = "io.javaclasses.mealorder.c";
+option java_outer_classname = "EventsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "spine/quickstart/identifiers.proto";
+import "javaclasses/mealorder/identifiers.proto";
 
-// Defines a state for `Task` aggregate.
-//
-message Task {
-
-    // An ID of the task.
-    //
-    TaskId id = 1;
-
-
-    // A title of the task.
-    //
-    string title = 2 [(required) = true];
-}

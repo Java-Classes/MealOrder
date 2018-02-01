@@ -20,21 +20,15 @@
 
 syntax = "proto3";
 
-package spine.quickstart;
+package javaclasses.mealorder.c;
 
 import "spine/options.proto";
 
-option (type_url_prefix) = "type.spine.quickstart";
-option java_package = "io.spine.serverapp";
-option java_outer_classname = "IdentifiersProto";
+option (type_url_prefix) = "type.javaclasses.mealorder";
+option java_package = "io.javaclasses.mealorder.c";
+option java_outer_classname = "CommandsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-// An ID of a task.
-//
-message TaskId {
+import "javaclasses/mealorder/identifiers.proto";
 
-    // String representation of UUID.
-    //
-    string value = 1;
-}
