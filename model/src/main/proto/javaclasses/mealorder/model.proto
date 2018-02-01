@@ -52,7 +52,7 @@ message Menu {
 
     MenuId id = 1;
 
-    MenuDateRange menuDateRange = 2;
+    MenuDateRange menu_date_range = 2;
 
     repeated Dish dishes = 3;
 
