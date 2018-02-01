@@ -68,7 +68,6 @@ message Order {
 
     // Reserved fields for future extension.
     reserved 3 to 20;
-
 }
 
 message PurchaseOrder {
@@ -79,10 +78,10 @@ message PurchaseOrder {
 
     // Reserved fields for future extension.
     reserved 3 to 20;
-
 }
 
 message Vendor {
+
     VendorId id = 1;
 
     VendorDescription description = 2;

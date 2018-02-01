@@ -48,7 +48,6 @@ message MenuDateRange {
 message PhoneNumber {
 
     repeated string values = 1;
-
 }
 
 message VendorDescription {

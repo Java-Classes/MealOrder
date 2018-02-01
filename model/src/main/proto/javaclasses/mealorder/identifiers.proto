@@ -33,22 +33,21 @@ option java_generate_equals_and_hash = true;
 import "javaclasses/mealorder/values.proto";
 import "google/protobuf/timestamp.proto";
 
-// An ID of a user.
+// An ID of a user represented by User email address.
 //
 message UserId {
 
     EmailAdress email = 1;
 }
 
-// An ID of a vendor.
+// An ID of a vendor represented by Vendor name.
 //
 message VendorId {
 
     string vendor_name = 1;
-
 }
 
-// An ID of an order.
+// An ID of an order represented by VendorId, UserId and order date.
 //
 message OrderId {
 
@@ -59,36 +58,33 @@ message OrderId {
     google.protobuf.Timestamp order_date = 3;
 }
 
-// An ID of a menu.
+// An ID of a menu represented by VendorId and imported time.
 //
 message MenuId {
 
     VendorId vendor_id = 1;
 
-    //Menu uploads date
-    google.protobuf.Timestamp uploaded = 2;
-
+    //Menu imported time.
+    google.protobuf.Timestamp imported = 2;
 }
 
-// An ID of a dish.
+// An ID of a dish represented by dish sequential number in menu and MenuId.
 //
 message DishId {
 
-    //Sequence number of the dish in the menu
+    //Sequence number of the dish in the menu.
     int32 sequential_number = 1;
 
     MenuId menu_id = 2;
-
 }
 
-// An ID of a purchase order.
+// An ID of a purchase order represented by VendorId and purchase order date.
 //
 message PurchaseOrderId {
 
     VendorId vendor_id = 1;
 
     google.protobuf.Timestamp purchase_order_date = 2;
-
 }
 
 
