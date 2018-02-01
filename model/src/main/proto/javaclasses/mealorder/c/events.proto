@@ -29,7 +29,6 @@ option java_package = "io.javaclasses.mealorder.c";
 option java_outer_classname = "EventsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
-
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/model.proto";
 import "javaclasses/mealorder/values.proto";
@@ -192,3 +191,136 @@ message DateRangeForMenuSet {
     // Reserved for future extension.
     reserved 5 to 10;
 }
+
+//An event signalizing about the successful purchase order creation.
+//
+message PurchaseOrderCreated {
+
+    //PurchaseOrder identifiers
+    PurchaseOrderId id = 1;
+
+    //Time of creation.
+    google.protobuf.Timestamp when_created = 2;
+
+    //Collection of all orders for this day
+    repeated Order orders = 3;
+
+    // Reserved fields for future extension.
+    reserved 4 to 10;
+
+}
+
+//An event signalizing about the successful order delivering.
+//
+message PurchaseOrderDelivered {
+
+    //PurchaseOrder identifiers
+    PurchaseOrderId id = 1;
+
+    //Delivery time
+    google.protobuf.Timestamp when_delievered = 2;
+
+    // Reserved fields for future extension.
+    reserved 3 to 10;
+
+}
+
+// An event signalizing about the successful purchase order sending.
+//
+message PurchaseOrderSent {
+
+    //PurchaseOrder identifiers
+    PurchaseOrder purchase_order = 1;
+
+    //Sending time
+    google.protobuf.Timestamp when_sent = 2;
+
+
+    EmailAdress sender_email = 3;
+
+    //E-mail address of the recipient
+    EmailAdress vendor_email = 4;
+
+    // Reserved fields for future extension.
+    reserved 5 to 10;
+
+}
+
+// An event signalizing about the failed purchase order validation.
+//
+message PurchaseOrderValidationFailed {
+
+    //PurchaseOrder identifiers
+    PurchaseOrderId id = 1;
+
+    //Collection of orders that caused the failure of validation
+    repeated Order feilure_orders = 2;
+
+    //Feil time
+    google.protobuf.Timestamp when_failed = 3;
+
+    // Reserved fields for future extension.
+    reserved 4 to 10;
+
+}
+
+// An event signalizing about the successful purchase order validation overruled.
+//
+message PurchaseOrderValidationOverruled {
+
+    //PurchaseOrder identifiers
+    PurchaseOrderId id = 1;
+
+    //User identifiers that overruled the validation
+    UserId user_id = 2;
+
+    //The reason why validation is overruled
+    string reason = 3;
+
+    // Reserved fields for future extension.
+    reserved 4 to 10;
+
+}
+
+// An event signalizing about the successful purchase order validation.
+//
+message PurchaseOrderValidationPassed {
+
+    //PurchaseOrder identifiers
+    PurchaseOrderId id = 1;
+
+    //Time of successful validation
+    google.protobuf.Timestamp when_passed = 2;
+
+    // Reserved fields for future extension.
+    reserved 3 to 10;
+
+}
+
+// An event signalizing about the successful order cancellation.
+//
+message PurchaseOrderCanceled {
+
+    //PurchaseOrder identifiers
+    PurchaseOrderId id = 1;
+
+    //Cancellation time
+    google.protobuf.Timestamp when_canceled = 2;
+
+    enum Reason {
+        INVALID = 0;
+        OTHER = 1;
+    }
+
+    //Reason for cancellation
+    /*
+     INVALID - order failed validation
+     OTHER - otherwise
+    */
+    Reason reason = 3;
+
+    // Reserved fields for future extension.
+    reserved 4 to 10;
+
+}
+
