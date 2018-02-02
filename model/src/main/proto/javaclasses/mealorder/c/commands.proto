@@ -61,7 +61,7 @@ message UpdateVendor {
     // An identifier of the User, who updates `Vendor`.
     UserId user_id = 2;
 
-    // Updated vendor description.
+    // The vendor description that's changing.
     VendorDescription updated_vendor_description = 3;
 
     // Previous vendor description.
@@ -109,7 +109,7 @@ message CreateOrder {
     // An identifier of the order.
     OrderId order_id = 1;
 
-    // An identifier of the menu which contains dishes can be added to order.
+    // An identifier of the menu which contains dishes that can be added to order.
     MenuId menu_id = 2;
 }
 
@@ -203,7 +203,7 @@ message CancelPurchaseOrder {
         // Validation was failed and admin didn't overruled it.
         bool invalid = 2;
 
-        // Manual purchse order cancellation.
+        // Manual purchase order cancellation.
         string custom_reason = 3;
     }
 }
