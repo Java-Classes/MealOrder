@@ -257,9 +257,9 @@ enum OrderValidationStatus {
     //Used as an undefined value marker.
     ORDER_UNDEFINED = 0;
 
-    VALID = 1;
+    ORDER_VALID = 1;
 
-    INVALID = 2;
+    ORDER_INVALID = 2;
 }
 
 // A projection state of monthly spendings report view.
