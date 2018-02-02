@@ -1,0 +1,209 @@
+//
+// Copyright 2018, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+syntax = "proto3";
+
+package javaclasses.mealorder.c;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.javaclasses.mealorder";
+option java_package = "io.javaclasses.mealorder.c";
+option java_outer_classname = "CommandsProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "javaclasses/mealorder/identifiers.proto";
+import "javaclasses/mealorder/values.proto";
+import "javaclasses/mealorder/model.proto";
+
+
+// Add a new vendor.
+//
+// May be rejected if `Vendor` with same `VendorId` already exists.
+//
+message AddVendor {
+
+    // An identifier of the added Vendor.
+    VendorId vendor_id = 1;
+
+    // An identifier of the User, who added Vendor.
+    UserId user_id = 2;
+
+    // Vendor description.
+    VendorDescription vendor_description = 3;
+}
+
+// Update vendor description.
+//
+message UpdateVendor {
+
+    // An identifier of the `Vendor`.
+    VendorId vendor_id = 1;
+
+    // An identifier of the User, who updates `Vendor`.
+    UserId user_id = 2;
+
+    // The vendor description that's changing.
+    VendorDescription updated_vendor_description = 3;
+
+    // Previous vendor description.
+    VendorDescription previous_vendor_description = 4;
+}
+
+
+// Import a menu.
+//
+message ImportMenu {
+
+    // An identifier of vendor.
+    VendorId vendor_id = 1;
+
+    // An identifier of menu.
+    MenuId menu_id = 2;
+
+    // An identifier of the User, who imports a menu.
+    UserId user_id = 3;
+
+    // Collection of menu dishes.
+    repeated Dish dishes = 4;
+}
+
+// Set the menu active date range.
+//
+message SetDateRangeForMenu {
+
+    // An identifier of Menu.
+    MenuId menu_id = 1;
+
+    // An identifier of the User, who sets `MenuDateRange`.
+    UserId user_id = 2;
+
+    // Menu date range that may be set.
+    MenuDateRange menu_date_range = 3;
+}
+
+// Create a new order.
+//
+// New order coitains no dish. Dishes may be added after creation.
+//
+message CreateOrder {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+
+    // An identifier of the menu which contains dishes that can be added to order.
+    MenuId menu_id = 2;
+}
+
+// Add the dish to the order.
+//
+// Cannot be applied to canceled orders.
+// Cannot be applied to processed orders.
+//
+message AddDishToOrder {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+
+    // An identifier of the dish that may be added to order.
+    DishId dish_id = 2;
+}
+
+// Remove the dish from the order.
+//
+// Cannot be applied to canceled orders.
+// Cannot be applied to processed orders.
+//
+message RemoveDishFromOrder {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+
+    // An identifier of the dish that may be removed from order.
+    DishId dish_id = 2;
+}
+
+// Cancel the order.
+//
+// Cannot be applied to processed orders.
+//
+message CancelOrder {
+
+    // An identifier of the order.
+    OrderId order_id = 1;
+}
+
+// Create the purchase order.
+//
+message CreatePurchaseOrder {
+
+    // PurchaseOrder identifier.
+    PurchaseOrderId id = 1;
+
+    // Collection of all orders for this day.
+    repeated Order orders = 2;
+}
+
+// Mark purchase order as delivered.
+//
+// Applicable only for sent purchase orders.
+//
+message MarkPurchaseOrderAsDelivered {
+
+    // PurchaseOrder identifier.
+    PurchaseOrderId id = 1;
+}
+
+// Mark purchase order as valid.
+//
+// Applicable only for invalid purchase orders.
+//
+message MarkPurchaseOrderAsValid {
+
+    // PurchaseOrder identifier.
+    PurchaseOrderId id = 1;
+
+    // User identifiers that marks purchase order as valid.
+    UserId user_id = 2;
+
+    // The reason why order may be marked as valid.
+    string reason = 3;
+}
+
+// Cancel purchase order.
+//
+// Cannot be applied to delivered orders.
+//
+message CancelPurchaseOrder {
+
+    // PurchaseOrder identifier.
+    PurchaseOrderId id = 1;
+
+    // Reason of cancelation.
+    oneof reason {
+
+        // Validation was failed and admin didn't overruled it.
+        bool invalid = 2;
+
+        // Manual purchase order cancellation.
+        string custom_reason = 3;
+    }
+}

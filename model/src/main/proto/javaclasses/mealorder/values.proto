@@ -1,0 +1,75 @@
+//
+// Copyright 2018, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+syntax = "proto3";
+
+package javaclasses.mealorder;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.javaclasses.mealorder";
+option java_package = "io.javaclasses.mealorder";
+option java_outer_classname = "ValuesProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/timestamp.proto";
+
+//TODO: Use Spine EmailAddress!
+// The model that represents the email.
+//
+message EmailAddress {
+
+    string value = 1;
+}
+// The model that represents date range.
+//
+message MenuDateRange {
+
+    // Range start date.
+    google.protobuf.Timestamp when_range_started = 1;
+
+    // Range end date.
+    google.protobuf.Timestamp when_range_ended = 2;
+}
+
+// The model that represents phone number.
+//
+message PhoneNumber {
+
+    string values = 1;
+}
+
+// The model that represents vendor description.
+//
+// Vendor description it is email, pnone numbers and daily deadline.
+// After reaching deadline, the order will not be accepted.
+//
+message VendorDescription {
+
+    // Email adress  to send an purchase order.
+    EmailAddress email = 1;
+
+    // Phone numbers of the vendor.
+    repeated PhoneNumber phone_numbers = 2;
+
+    // A daily deadline.
+    google.protobuf.Timestamp po_daily_deadline = 3;
+}

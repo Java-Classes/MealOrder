@@ -1,0 +1,101 @@
+//
+// Copyright 2018, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+syntax = "proto3";
+
+package javaclasses.mealorder;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.javaclasses.mealorder";
+option java_package = "io.javaclasses.mealorder";
+option java_outer_classname = "ModelProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "javaclasses/mealorder/identifiers.proto";
+import "javaclasses/mealorder/values.proto";
+
+// The model representing a dish.
+//
+// This is one item from the menu, represented by the name of the dish, its price and categoty.
+//
+message Dish {
+
+    // An identifier of the dish.
+    DishId id = 1;
+
+    // Name of the dish.
+    string name = 2;
+
+    // A category to which the dish belongs.
+    string category = 3;
+
+    // A dish price.
+    int64 price = 4;
+}
+
+// The model representing a menu.
+//
+// The menu is represented by a collection of dishes and the date range when this menu is available.
+//
+message Menu {
+
+    // An identifier of the menu.
+    MenuId id = 1;
+
+    // A date range when this menu is available.
+    MenuDateRange menu_date_range = 2;
+
+    // A collection of all dishes.
+    repeated Dish dishes = 3;
+}
+
+// The model representing the agregate Order.
+//
+message Order {
+
+    // An identifier of the oder.
+    OrderId id = 1;
+
+    // A collection of all dishes of one user per date.
+    repeated Dish dishes = 2;
+}
+// The model representing the agregate Order.
+//
+message PurchaseOrder {
+
+    // An identifier of the purchase order.
+    PurchaseOrderId id = 1;
+
+    // A collection of all orders for one vendor per date.
+    repeated Order orders = 2;
+}
+
+// The model representing the agregate Vendor.
+//
+message Vendor {
+
+    // An identifier of the vendor.
+    VendorId id = 1;
+
+    // Additional information about the vendor.
+    VendorDescription description = 2;
+}
