@@ -1,0 +1,140 @@
+//
+// Copyright 2018, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+syntax = "proto3";
+
+package javaclasses.mealorder.q;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.javaclasses.mealorder";
+option java_package = "io.javaclasses.mealorder.q.projection";
+option java_outer_classname = "ProjectionsProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "javaclasses/mealorder/identifiers.proto";
+import "javaclasses/mealorder/values.proto";
+import "google/protobuf/timestamp.proto";
+
+// A projection state of menu list for the selected date.
+//
+// This view includes list of actual attached menus for the date value.
+//
+// 'Actual' means that `Vendor.poDailyDeadline` has not became for
+// the date value.
+//
+message UserMenuListView {
+
+    google.protobuf.Timestamp date = 1;
+
+    repeated UserViewMenuItem menus = 2;
+}
+
+// Item of User menu list view.
+//
+// This item contains list of dishes for the
+// specific vendor and date.
+//
+message UserViewMenuItem {
+
+    string vendor_name = 1;
+
+    google.protobuf.Timestamp date = 2;
+
+    repeated DishItem dishes = 3;
+}
+
+// Item of active menu.
+//
+// For this time represens the full copy of `Dish`.
+//
+message DishItem {
+
+    DishId id = 1;
+
+    string name = 2;
+
+    string category = 3;
+
+    int64 price = 4;
+}
+
+// A projection state of date selector bar.
+//
+// This view includes list of `DateSelectorItem` in range from
+// current date to the next week same day. (8 elements)
+//
+message DateSelectorView {
+
+    repeated DateSelectorItem selector_dates = 1;
+}
+
+// Item of date selector bar.
+//
+// Item state `enabled = true` indicates some active
+// attached menus for this date.
+// Item state `selected = true` indicates that this
+// date is selected on the user interface to show
+// orders and menus.
+//
+message DateSelectorItem {
+
+    google.protobuf.Timestamp date = 1;
+
+    bool enabled = 2;
+
+    bool selected = 3;
+}
+
+// A projection state of order bar in user interface.
+//
+// This view includes list of user orders for the
+// specific date.
+//
+message UserOrderListView {
+
+    google.protobuf.Timestamp date = 1;
+
+    repeated OrderItem active_orders = 2;
+
+}
+
+// Item of user interface order view.
+//
+// This item contains list of dishes.
+//
+// Item state `isProcessed = true` indicates that this
+// order is already processed and included in purchase order
+// for this date and vendor. Editing or Canceling of this order
+// is not provided.
+//
+// Item state `isProcessed = false` indicates that this
+// order is not processed and not included in purchase order yet.
+// Editing of dish list or Canceling order is provided.
+//
+message OrderItem {
+
+    OrderId id = 1;
+
+    repeated DishItem dishes = 2;
+
+    bool is_processed = 3;
+}
