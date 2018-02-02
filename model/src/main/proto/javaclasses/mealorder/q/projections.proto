@@ -34,6 +34,8 @@ import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 import "google/protobuf/timestamp.proto";
 
+// **** User interface projections ****
+
 // A projection state of menu list for the selected date.
 //
 // This view includes list of actual attached menus for the date value.
@@ -62,7 +64,7 @@ message UserViewMenuItem {
     repeated DishItem dishes = 3;
 }
 
-// Item of active menu.
+// Item of menu.
 //
 // For this time represens the full copy of `Dish`.
 //
@@ -111,7 +113,7 @@ message DateSelectorItem {
 //
 message UserOrderListView {
 
-    google.protobuf.Timestamp date = 1;
+    google.protobuf.Timestamp order_date = 1;
 
     repeated OrderItem active_orders = 2;
 
@@ -137,4 +139,77 @@ message OrderItem {
     repeated DishItem dishes = 2;
 
     bool is_processed = 3;
+}
+
+// **** Administrator interface projections ****
+
+// A projection state of vendor list view in administrator interface.
+//
+message VendorListView {
+
+    repeated VendorItem vendors = 1;
+}
+
+// Item of vendor list view.
+//
+// For this time represens the full copy of `Vendor` agregate state.
+//
+message VendorItem {
+
+    VendorId id = 1;
+
+    VendorDescription description = 2;
+}
+
+// A projection state of menu list for administrator interface.
+//
+// This view includes list of last 50 menus for management.
+//
+message AdminMenuListView {
+
+    repeated AdminViewMenuItem menus = 1;
+}
+
+// Item of administrator menu list view.
+//
+message AdminViewMenuItem {
+
+    MenuId menu_id = 1;
+
+    MenuDateRange menu_date_range = 2;
+
+    repeated DishItem dishes = 3;
+}
+
+// A projection state of purchase order list for administrator interface.
+//
+// This view includes list of last 50 purchase orders for management.
+//
+message PurchaseOrderListView {
+
+    repeated PurchaseOrderItem purchase_orders = 1;
+}
+
+// Item of administrator purchase order list view.
+//
+message PurchaseOrderItem {
+
+    PurchaseOrderId id = 1;
+
+    PurchaseOrderStatus purchase_order_status = 2;
+}
+
+// Purchase order status values
+//
+enum PurchaseOrderStatus {
+
+    SENT = 0;
+
+    VALID = 1;
+
+    INVALID = 2;
+
+    DELIVERED = 3;
+
+    CANCELED = 4;
 }
