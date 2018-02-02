@@ -1,22 +1,22 @@
-/*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
- *
- * Redistribution and use in source and/or binary forms, with or without
- * modification, must retain the above copyright notice and the following
- * disclaimer.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+//
+// Copyright 2018, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
 
 syntax = "proto3";
 
@@ -42,16 +42,13 @@ message VendorAdded {
     VendorId vendor_id = 1;
 
     // An identifier of the User, who added Vendor.
-    UserId user_id = 2;
+    UserId who_added = 2;
 
     // Time of addition.
     google.protobuf.Timestamp when_added = 3;
 
     // Vendor description.
     VendorDescription vendor_description = 4;
-
-    // Reserved for future extension.
-    reserved 5 to 10;
 }
 
 // An event fired upon the vendor description update.
@@ -62,7 +59,7 @@ message VendorUpdated {
     VendorId vendor_id = 1;
 
     // An identifier of the User, who updated Vendor.
-    UserId user_id = 2;
+    UserId who_uploaded = 2;
 
     // Time of update.
     google.protobuf.Timestamp when_updated = 3;
@@ -72,30 +69,29 @@ message VendorUpdated {
 
     // Previous vendor description.
     VendorDescription previous_vendor_description = 5;
-
-    // Reserved for future extension.
-    reserved 6 to 10;
 }
 
-// An event reflecting the menu imported from external source
-// and parsed as list of dishes.
+// An event signalizing about the successful import of the menu.
+//
+// Menu is imported from an external source
+// and is parsed as a list of dishes.
 //
 message MenuImported {
 
-    // An identifier of imported Menu, contains VendorID.
-    MenuId menu_id = 1;
+    // An identifier of a vendor that provided a menu.
+    VendorId vendor_id = 1;
+
+    // An identifier of imported Menu, contains VendorId.
+    MenuId menu_id = 2;
 
     // An identifier of the User, who imported Menu.
-    UserId user_id = 2;
+    UserId who_imported = 3;
 
     // Menu import time.
-    google.protobuf.Timestamp when_imported = 3;
+    google.protobuf.Timestamp when_imported = 4;
 
     // Collection of menu dishes.
-    repeated Dish dishes = 4;
-
-    // Reserved for future extension.
-    reserved 5 to 10;
+    repeated Dish dishes = 5;
 }
 
 // An event reflecting the menu active date range set.
@@ -106,19 +102,18 @@ message DateRangeForMenuSet {
     MenuId menu_id = 1;
 
     // An identifier of the User, who set MenuDateRange.
-    UserId user_id = 2;
+    UserId who_set = 2;
 
     // MenuDateRange setting time.
     google.protobuf.Timestamp when_set = 3;
 
     // Menu date range that has been set.
     MenuDateRange menu_date_range = 4;
-
-    // Reserved for future extension.
-    reserved 5 to 10;
 }
 
-// An event signalizing about the empty order creation.
+// An event signalizing about the successful creation of an order.
+//
+// A newly created order is always empty.
 //
 message OrderCreated {
 
@@ -130,9 +125,6 @@ message OrderCreated {
 
     // Time of the order creation.
     google.protobuf.Timestamp when_created = 3;
-
-    // Reserved for future extension.
-    reserved 4 to 10;
 }
 
 // An event signalizing about addition the dish to the order.
@@ -144,9 +136,6 @@ message DishAddedToOrder {
 
     // An identifier of the dish.
     DishId dish_id = 2;
-
-    // Reserved for future extension.
-    reserved 3 to 10;
 }
 
 // An event signalizing about successful removing the dish from the order.
@@ -158,9 +147,6 @@ message DishRemovedFromOrder {
 
     // An identifier of the dish.
     DishId dish_id = 2;
-
-    // Reserved for future extension.
-    reserved 3 to 10;
 }
 
 // An event signalizing about the order cancellation.
@@ -172,9 +158,6 @@ message OrderCanceled {
 
     // Time of the order cancellation.
     google.protobuf.Timestamp when_canceled = 2;
-
-    // Reserved for future extension.
-    reserved 3 to 10;
 }
 
 // An event signalizing about the order is added to purchase order.
@@ -186,12 +169,9 @@ message OrderProcessed {
 
     // Time of the order addition to purchase order.
     google.protobuf.Timestamp when_processed = 2;
-
-    // Reserved for future extension.
-    reserved 3 to 10;
 }
 
-// An event signalizing about the successful purchase order creation.
+// An event signalizing about the successful creation of a purchase order.
 //
 message PurchaseOrderCreated {
 
@@ -203,9 +183,6 @@ message PurchaseOrderCreated {
 
     // Collection of all orders for this day.
     repeated Order orders = 3;
-
-    // Reserved fields for future extension.
-    reserved 4 to 10;
 }
 
 // An event signalizing about the successful order delivering.
@@ -217,9 +194,6 @@ message PurchaseOrderDelivered {
 
     // Delivery time.
     google.protobuf.Timestamp when_delievered = 2;
-
-    // Reserved fields for future extension.
-    reserved 3 to 10;
 }
 
 // An event signalizing about the successful purchase order sending.
@@ -233,13 +207,10 @@ message PurchaseOrderSent {
     google.protobuf.Timestamp when_sent = 2;
 
     // E-mail address of the sender.
-    EmailAdress sender_email = 3;
+    EmailAddress sender_email = 3;
 
     // E-mail address of the recipient.
-    EmailAdress vendor_email = 4;
-
-    // Reserved fields for future extension.
-    reserved 5 to 10;
+    EmailAddress vendor_email = 4;
 }
 
 // An event signalizing about the failed purchase order validation.
@@ -250,13 +221,10 @@ message PurchaseOrderValidationFailed {
     PurchaseOrderId id = 1;
 
     // Collection of orders that caused the failure of validation.
-    repeated Order feilure_orders = 2;
+    repeated Order failure_orders = 2;
 
     // Validation failed time.
     google.protobuf.Timestamp when_failed = 3;
-
-    // Reserved fields for future extension.
-    reserved 4 to 10;
 }
 
 // An event signalizing about the successful purchase order validation overruled.
@@ -267,13 +235,10 @@ message PurchaseOrderValidationOverruled {
     PurchaseOrderId id = 1;
 
     // User identifiers that overruled the validation.
-    UserId user_id = 2;
+    UserId who_overruled = 2;
 
     // The reason why validation is overruled.
     string reason = 3;
-
-    // Reserved fields for future extension.
-    reserved 4 to 10;
 }
 
 // An event signalizing about the successful purchase order validation.
@@ -285,9 +250,6 @@ message PurchaseOrderValidationPassed {
 
     // Time of successful validation.
     google.protobuf.Timestamp when_passed = 2;
-
-    // Reserved fields for future extension.
-    reserved 3 to 10;
 }
 
 // An event signalizing about the successful order cancellation.
@@ -300,19 +262,13 @@ message PurchaseOrderCanceled {
     // Cancellation time.
     google.protobuf.Timestamp when_canceled = 2;
 
-    enum Reason {
-        INVALID = 0;
-        OTHER = 1;
-    }
-
     // Reason for cancellation.
-    /*
-     INVALID - order failed validation
-     OTHER - otherwise
-    */
-    Reason reason = 3;
-
-    // Reserved fields for future extension.
-    reserved 4 to 10;
+    //
+    // invalid - order validation failed
+    // custom_reason - otherwise
+    //
+    oneof Reason {
+        bool invalid = 3;
+        string custom_reason = 4;
+    }
 }
-
