@@ -36,9 +36,9 @@ import "google/protobuf/timestamp.proto";
 
 // **** User interface projections ****
 
-// A projection state of menu list for the selected date.
+// A projection state of menu list for the specified date.
 //
-// This view includes list of actual attached menus for the date value.
+// This view includes list of actual attached menus for the specified date.
 //
 // 'Actual' means that `Vendor.poDailyDeadline` has not became for
 // the date value.
@@ -50,14 +50,14 @@ message UserMenuListView {
     repeated UserViewMenuItem menus = 2;
 }
 
-// Item of User menu list view.
+// Item of menu list view for user interface.
 //
 // This item contains list of dishes for the
 // specific vendor and date.
 //
 message UserViewMenuItem {
 
-    string vendor_name = 1;
+    VendorId vendor_id = 1;
 
     google.protobuf.Timestamp date = 2;
 
@@ -82,7 +82,7 @@ message DishItem {
 // A projection state of date selector bar.
 //
 // This view includes list of `DateSelectorItem` in range from
-// current date to the next week same day. (8 elements)
+// current date to the next weeks same day. (8 elements)
 //
 message DateSelectorView {
 
@@ -92,7 +92,7 @@ message DateSelectorView {
 // Item of date selector bar.
 //
 // Item state `enabled = true` indicates some active
-// attached menus for this date.
+// attached menus exist for this date.
 // Item state `selected = true` indicates that this
 // date is selected on the user interface to show
 // orders and menus.
@@ -109,13 +109,13 @@ message DateSelectorItem {
 // A projection state of order bar in user interface.
 //
 // This view includes list of user orders for the
-// specific date.
+// specified date.
 //
 message UserOrderListView {
 
     google.protobuf.Timestamp order_date = 1;
 
-    repeated OrderItem active_orders = 2;
+    repeated OrderItem orders = 2;
 
 }
 
@@ -163,7 +163,8 @@ message VendorItem {
 
 // A projection state of menu list for administrator interface.
 //
-// This view includes list of last 50 menus for management.
+// This view includes list of last 50 menus for management,
+// sorted by menu date range.
 //
 message AdminMenuListView {
 
@@ -183,7 +184,8 @@ message AdminViewMenuItem {
 
 // A projection state of purchase order list for administrator interface.
 //
-// This view includes list of last 50 purchase orders for management.
+// This view includes list of last 50 purchase orders for management,
+// sortd by date.
 //
 message PurchaseOrderListView {
 
@@ -238,7 +240,7 @@ message PurchaseOrderDetailsByOrderView {
 //
 message OrderItemForPODetails {
 
-    string user_name = 1;
+    UserId id = 1;
 
     repeated DishItem dishes = 2;
 
@@ -254,4 +256,24 @@ enum OrderValidationStatus {
     VALID = 1;
 
     INVALID = 2;
+}
+
+// A projection state of monthly spendings report view.
+//
+message MonthlySpendingsReportView {
+
+    google.protobuf.Timestamp report_date = 1;
+
+    repeated UserSpendings user_spendinds = 2;
+}
+
+// Item of monthly spendings report view.
+//
+// This item represents user with its monthly spendings amount.
+//
+message UserSpendings {
+
+    UserId id = 1;
+
+    int64 amount = 2;
 }
