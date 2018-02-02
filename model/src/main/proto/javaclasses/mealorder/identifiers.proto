@@ -1,22 +1,22 @@
-/*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
- *
- * Redistribution and use in source and/or binary forms, with or without
- * modification, must retain the above copyright notice and the following
- * disclaimer.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+//
+// Copyright 2018, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary gorms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
 
 syntax = "proto3";
 
@@ -33,61 +33,78 @@ option java_generate_equals_and_hash = true;
 import "javaclasses/mealorder/values.proto";
 import "google/protobuf/timestamp.proto";
 
-// An ID of a user represented by User email address.
+// An ID of a user.
+//
+// An identifier is represented by User email address of the next type:
+// <Name>.<Surname>@teamdev.com
 //
 message UserId {
 
-    EmailAdress email = 1;
+    // User's e-mail.
+    EmailAddress email = 1;
 }
 
-// An ID of a vendor represented by Vendor name.
+// An ID of a vendor.
+//
+// An identifier is represented by vendor's name which is unique for each vendor.
 //
 message VendorId {
 
+    // A name of a vendor.
     string vendor_name = 1;
 }
 
-// An ID of an order represented by VendorId, UserId and order date.
+// An ID of an order.
+//
+// An identifier is represented by VendorId, UserId and order date.
 //
 message OrderId {
 
+    // An identifier of a vendor.
     VendorId vendor_id = 1;
 
+    // An identifier of a user who makes an order.
     UserId user_id = 2;
 
+    // A Date of the order.
     google.protobuf.Timestamp order_date = 3;
 }
 
-// An ID of a menu represented by VendorId and imported time.
+// An ID of a menu.
+//
+// An identifier is represented by VendorId and imported time.
 //
 message MenuId {
 
+    // An identifier of a vendor.
     VendorId vendor_id = 1;
 
-    //Menu imported time.
-    google.protobuf.Timestamp imported = 2;
+    // Menu imported time.
+    google.protobuf.Timestamp when_imported = 2;
 }
 
-// An ID of a dish represented by dish sequential number in menu and MenuId.
+// An ID of a dish.
+//
+// An identifier is represented by dish sequential number in menu and MenuId.
 //
 message DishId {
 
     //Sequence number of the dish in the menu.
     int32 sequential_number = 1;
 
+    // An identifier of a menu.
     MenuId menu_id = 2;
 }
 
-// An ID of a purchase order represented by VendorId and purchase order date.
+// An ID of a purchase order. represented by VendorId and purchase order date.
+//
+// An identifier is represented by VendorId and purchase order date.
 //
 message PurchaseOrderId {
 
+    // An identifier of a vendor.
     VendorId vendor_id = 1;
 
-    google.protobuf.Timestamp purchase_order_date = 2;
+    // Date on which this purchase order is formed.
+    google.protobuf.Timestamp po_date = 2;
 }
-
-
-
-
-
