@@ -39,15 +39,17 @@ import "google/protobuf/timestamp.proto";
 // A projection state of menu list for the specified date.
 //
 // This view includes list of actual attached menus for the specified date.
+// Collection of menus can be empty if there are no attached menus for this
+// date or all of them are not actual.
 //
-// 'Actual' means that `Vendor.poDailyDeadline` has not became for
+// 'Actual menu' means that `Vendor.poDailyDeadline` hasn't come for
 // the date value.
 //
-message UserMenuListView {
+message MenuListView {
 
     google.protobuf.Timestamp date = 1;
 
-    repeated UserViewMenuItem menus = 2;
+    repeated MenuItem menus = 2;
 }
 
 // Item of menu list view for user interface.
@@ -55,7 +57,7 @@ message UserMenuListView {
 // This item contains list of dishes for the
 // specific vendor and date.
 //
-message UserViewMenuItem {
+message MenuItem {
 
     VendorId vendor_id = 1;
 
@@ -91,7 +93,7 @@ message DateSelectorView {
 
 // Item of date selector bar.
 //
-// Item state `enabled = true` indicates some active
+// Item state `enabled = true` indicates that some active
 // attached menus exist for this date.
 // Item state `selected = true` indicates that this
 // date is selected on the user interface to show
@@ -111,7 +113,7 @@ message DateSelectorItem {
 // This view includes list of user orders for the
 // specified date.
 //
-message UserOrderListView {
+message OrderListView {
 
     google.protobuf.Timestamp order_date = 1;
 
@@ -166,14 +168,14 @@ message VendorItem {
 // This view includes list of last 50 menus for management,
 // sorted by menu date range.
 //
-message AdminMenuListView {
+message MenuListManagementView {
 
-    repeated AdminViewMenuItem menus = 1;
+    repeated MenuListManagementItem menus = 1;
 }
 
 // Item of administrator menu list view.
 //
-message AdminViewMenuItem {
+message MenuListManagementItem {
 
     MenuId menu_id = 1;
 
@@ -205,11 +207,12 @@ message PurchaseOrderItem {
 //
 enum PurchaseOrderStatus {
 
-    SENT = 0;
+    //Used as an undefined value marker.
+    PO_UNDEFINED = 0;
 
-    VALID = 1;
+    INVALID = 1;
 
-    INVALID = 2;
+    SENT = 2;
 
     DELIVERED = 3;
 
@@ -236,7 +239,7 @@ message PurchaseOrderDetailsByOrderView {
     repeated OrderItemForPODetails orders = 2;
 }
 
-// Item of administrator purchase order detail by order list view.
+// Item of administrator purchase order detail 'by order' list view.
 //
 message OrderItemForPODetails {
 
@@ -251,7 +254,8 @@ message OrderItemForPODetails {
 //
 enum OrderValidationStatus {
 
-    UNPROCESSED = 0;
+    //Used as an undefined value marker.
+    ORDER_UNDEFINED = 0;
 
     VALID = 1;
 
