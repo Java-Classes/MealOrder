@@ -199,7 +199,7 @@ message PurchaseOrderItem {
     PurchaseOrderStatus purchase_order_status = 2;
 }
 
-// Purchase order status values
+// Purchase order status values.
 //
 enum PurchaseOrderStatus {
 
@@ -212,4 +212,46 @@ enum PurchaseOrderStatus {
     DELIVERED = 3;
 
     CANCELED = 4;
+}
+
+// A projection state of purchase order details view
+// sorted by dishe for administrator interface.
+//
+message PurchaseOrderDetailsByDishView {
+
+    PurchaseOrderItem purchase_order = 1;
+
+    repeated DishItem dishes = 2;
+}
+
+// A projection state of purchase order details view
+// sorted by order for administrator interface.
+//
+message PurchaseOrderDetailsByOrderView {
+
+    PurchaseOrderItem purchase_order = 1;
+
+    repeated OrderItemForPODetails orders = 2;
+}
+
+// Item of administrator purchase order detail by order list view.
+//
+message OrderItemForPODetails {
+
+    string user_name = 1;
+
+    repeated DishItem dishes = 2;
+
+    OrderValidationStatus status = 3;
+}
+
+// Order validation status values.
+//
+enum OrderValidationStatus {
+
+    UNPROCESSED = 0;
+
+    VALID = 1;
+
+    INVALID = 2;
 }
