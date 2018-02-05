@@ -50,7 +50,7 @@ message Dish {
     string category = 3;
 
     // A dish price.
-    spine.money.Money money = 4;
+    spine.money.Money price = 4;
 }
 
 // The model representing a menu.
