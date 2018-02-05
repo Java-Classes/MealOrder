@@ -33,6 +33,7 @@ option java_generate_equals_and_hash = true;
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 import "javaclasses/mealorder/model.proto";
+import "google/protobuf/timestamp.proto";
 
 
 // Add a new vendor.
