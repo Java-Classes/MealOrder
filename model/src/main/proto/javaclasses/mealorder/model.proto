@@ -32,6 +32,7 @@ option java_generate_equals_and_hash = true;
 
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
+import "spine/money/money.proto";
 
 // The model representing a dish.
 //
@@ -49,7 +50,7 @@ message Dish {
     string category = 3;
 
     // A dish price.
-    int64 price = 4;
+    spine.money.Money money = 4;
 }
 
 // The model representing a menu.
