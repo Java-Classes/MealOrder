@@ -38,16 +38,16 @@ import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 import "javaclasses/mealorder/model.proto";
 
-// Add a new vendor.
+// Adds a new vendor.
 //
 // May be rejected if `Vendor` with same `VendorId` already exists.
 //
 message AddVendor {
 
-    // An identifier of the added Vendor.
+    // An identifier of the vendor which may be added.
     VendorId vendor_id = 1;
 
-    // An identifier of the User, who added Vendor.
+    // An identifier of the user, who adds Vendor.
     UserId user_id = 2;
 
     // Email adress  to send an purchase order.
@@ -56,68 +56,56 @@ message AddVendor {
     // Phone numbers of the vendor.
     repeated PhoneNumber phone_numbers = 4;
 
-    // A daily deadline.
+    // Time of closing orders for editing.
+    // Orders have to be added to purchase order.
     spine.time.LocalTime po_daily_deadline = 5;
-
-    // Time of addition.
-    google.protobuf.Timestamp when_added = 6;
 }
 
-// Update vendor description.
+// Updates vendor description.
 //
 message UpdateVendor {
 
-    // An identifier of the `Vendor`.
+    // An identifier of the vendor.
     VendorId vendor_id = 1;
 
-    // An identifier of the User, who updates `Vendor`.
+    // An identifier of the user, who updates the vendor.
     UserId user_id = 2;
 
     // Changes in vendor fields.
     VendorChange vendor_change = 3;
-
-    // Time of update.
-    google.protobuf.Timestamp when_updated = 4;
 }
 
-// Import a menu.
+// Imports a menu.
+//
+// Menu is assigned to vendor.
 //
 message ImportMenu {
 
-    // An identifier of vendor.
+    // An identifier of vendor on which menu is assigned.
     VendorId vendor_id = 1;
 
-    // An identifier of menu.
-    MenuId menu_id = 2;
-
-    // An identifier of the User, who imports a menu.
-    UserId user_id = 3;
+    // An identifier of the user, who imports a menu.
+    UserId user_id = 2;
 
     // Collection of menu dishes.
-    repeated Dish dishes = 4;
-
-    // Menu import time.
-    google.protobuf.Timestamp when_imported = 5;
+    repeated Dish dishes = 3;
 }
 
-// Set the menu active date range.
+// Sets the menu active date range.
 //
 message SetDateRangeForMenu {
 
     // An identifier of Menu.
     MenuId menu_id = 1;
 
-    // An identifier of the User, who sets `MenuDateRange`.
+    // An identifier of the user, who sets menu date range.
     UserId user_id = 2;
 
     // Menu date range that may be set.
     MenuDateRange menu_date_range = 3;
-
-    // MenuDateRange setting time.
-    google.protobuf.Timestamp when_set = 4;
 }
 
-// Create a new order.
+// Creates a new order.
 //
 // New order coitains no dish. Dishes may be added after creation.
 //
@@ -128,12 +116,9 @@ message CreateOrder {
 
     // An identifier of the menu which contains dishes that can be added to order.
     MenuId menu_id = 2;
-
-    // Time of the order creation.
-    google.protobuf.Timestamp when_created = 3;
 }
 
-// Add the dish to the order.
+// Adds the dish to the order.
 //
 // Cannot be applied to canceled orders.
 // Cannot be applied to processed orders.
@@ -161,7 +146,7 @@ message RemoveDishFromOrder {
     DishId dish_id = 2;
 }
 
-// Cancel the order.
+// Cancels the order.
 //
 // Cannot be applied to processed orders.
 //
@@ -170,11 +155,13 @@ message CancelOrder {
     // An identifier of the order.
     OrderId order_id = 1;
 
-    // Time of the order cancellation.
-    google.protobuf.Timestamp when_canceled = 2;
+    // Actor who cancel the order.
+    // Can be cancelled by owner manually.
+    // Can be cancelled by system when purchase order is creating if order is empty.
+    UserId who_cancels = 2;
 }
 
-// Create the purchase order.
+// Creates the purchase order.
 //
 message CreatePurchaseOrder {
 
@@ -184,11 +171,11 @@ message CreatePurchaseOrder {
     // Collection of all orders for this day.
     repeated Order orders = 2;
 
-    // Time of creation.
-    google.protobuf.Timestamp when_created = 3;
+    // Identifier of a user who creates purchase order.
+    UserId who_creates = 3;
 }
 
-// Mark purchase order as delivered.
+// Marks purchase order as delivered.
 //
 // Applicable only for sent purchase orders.
 //
@@ -197,11 +184,11 @@ message MarkPurchaseOrderAsDelivered {
     // PurchaseOrder identifier.
     PurchaseOrderId id = 1;
 
-    // Delivery time.
-    google.protobuf.Timestamp when_delievered = 2;
+    // Identifier of a user who marks purchase order as delivered.
+    UserId who_marks_as_delivered = 3;
 }
 
-// Mark purchase order as valid.
+// Overrules purchase order validation.
 //
 // Applicable only for invalid purchase orders.
 //
@@ -236,6 +223,6 @@ message CancelPurchaseOrder {
         string custom_reason = 3;
     }
 
-    // Cancellation time.
-    google.protobuf.Timestamp when_canceled = 4;
+    // User identifiers that cancels purchase order.
+    UserId user_id = 4;
 }
