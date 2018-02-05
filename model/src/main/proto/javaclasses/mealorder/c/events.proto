@@ -30,13 +30,12 @@ option java_outer_classname = "EventsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
+import "google/protobuf/timestamp.proto";
 import "spine/net/email_address.proto";
+import "spine/time/time.proto";
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/model.proto";
 import "javaclasses/mealorder/values.proto";
-import "google/protobuf/timestamp.proto";
-
-
 
 // An event reflecting the vendor addition.
 //
@@ -51,8 +50,14 @@ message VendorAdded {
     // Time of addition.
     google.protobuf.Timestamp when_added = 3;
 
-    // Vendor description.
-    VendorDescription vendor_description = 4;
+    // Email adress  to send an purchase order.
+    spine.net.EmailAddress email = 4;
+
+    // Phone numbers of the vendor.
+    repeated PhoneNumber phone_numbers = 5;
+
+    // A daily deadline.
+    spine.time.LocalTime po_daily_deadline = 6;
 }
 
 // An event fired upon the vendor description update.
@@ -68,11 +73,8 @@ message VendorUpdated {
     // Time of update.
     google.protobuf.Timestamp when_updated = 3;
 
-    // Updated vendor description.
-    VendorDescription updated_vendor_description = 4;
-
-    // Previous vendor description.
-    VendorDescription previous_vendor_description = 5;
+    // Changes in vendor fields.
+    VendorChange vendor_change = 4;
 }
 
 // An event signalizing about the successful import of the menu.

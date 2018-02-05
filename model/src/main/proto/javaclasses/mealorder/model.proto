@@ -33,6 +33,8 @@ option java_generate_equals_and_hash = true;
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 import "spine/money/money.proto";
+import "spine/time/time.proto";
+import "spine/net/email_address.proto";
 
 // The model representing a dish.
 //
@@ -97,6 +99,14 @@ message Vendor {
     // An identifier of the vendor.
     VendorId id = 1;
 
-    // Additional information about the vendor.
-    VendorDescription description = 2;
+    VendorName vendor_name = 2;
+
+    // Email adress  to send an purchase order.
+    spine.net.EmailAddress email = 3;
+
+    // Phone numbers of the vendor.
+    repeated PhoneNumber phone_numbers = 4;
+
+    // A daily deadline.
+    spine.time.LocalTime po_daily_deadline = 5;
 }
