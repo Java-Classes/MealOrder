@@ -30,15 +30,12 @@ option java_outer_classname = "ValuesProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
+import "javaclasses/mealorder/identifiers.proto";
+import "spine/change/value_mismatch.proto";
+import "spine/change/change.proto";
 import "google/protobuf/timestamp.proto";
+import "spine/net/email_address.proto";
 
-//TODO: Use Spine EmailAddress!
-// The model that represents the email.
-//
-message EmailAddress {
-
-    string value = 1;
-}
 // The model that represents date range.
 //
 message MenuDateRange {
@@ -65,11 +62,125 @@ message PhoneNumber {
 message VendorDescription {
 
     // Email adress  to send an purchase order.
-    EmailAddress email = 1;
+    spine.net.EmailAddress email = 1;
 
     // Phone numbers of the vendor.
     repeated PhoneNumber phone_numbers = 2;
 
     // A daily deadline.
     google.protobuf.Timestamp po_daily_deadline = 3;
+}
+
+// DTO for the rejected add vendor command details.
+//
+message AddVendorRejected {
+
+    // An unsuccessful vendor command details.
+    RejectedVendorCommandDetails command_details = 1;
+}
+
+// DTO for the rejected set date range for menu command details.
+//
+message SetDateRangeForMenuRejected {
+
+    // An unsuccessful vendor command details.
+    RejectedVendorCommandDetails command_details = 1;
+
+    // An identifiers of menu for which date range set was rejected.
+    MenuId menu_id = 2;
+
+    // Rejected date range.
+    MenuDateRange date_range = 3;
+}
+
+// DTO for the rejected create order command details.
+//
+message CreateOrderRejected {
+
+    // An unsuccessful order command details.
+    RejectedOrderCommandDetails command_details = 1;
+}
+
+// DTO for the rejected add dish to order command details.
+//
+message AddDishToOrderRejected {
+
+    // An unsuccessful order command details.
+    RejectedOrderCommandDetails command_details = 1;
+
+    // A mismatching vendor value.
+    spine.change.ValueMismatch vendor_mismatch = 2;
+}
+
+// DTO for the rejected remove dish from order command details.
+//
+message RemoveDishFromOrderRejected {
+
+    // An unsuccessful order command details.
+    RejectedOrderCommandDetails command_details = 1;
+
+    // And identifiers of a dish.
+    DishId dish_id = 2;
+}
+
+// DTO for the rejected cancel order command details.
+//
+message CancelOrderRejected {
+
+    // An unsuccessful order command details.
+    RejectedOrderCommandDetails command_details = 1;
+}
+
+// DTO for the rejected create purchase order command details.
+//
+message CreatePurchaseOrderRejected {
+
+    // An unsuccessful purchase order command details.
+    RejectedPurchaseOrderCommandDetails command_details = 1;
+}
+
+// DTO for the rejected mark purchase order as delivered command details.
+//
+message MarkPurchaseOrderAsDeliveredRejected {
+
+    // An unsuccessful purchase order command details.
+    RejectedPurchaseOrderCommandDetails command_details = 1;
+}
+
+// DTO for the rejected cancel purchase order command details.
+//
+message CancelPurchaseOrderRejected {
+
+    // An unsuccessful purchase order command details.
+    RejectedPurchaseOrderCommandDetails command_details = 1;
+}
+
+// DTO for the unsuccessful vendor command details.
+message RejectedVendorCommandDetails {
+
+    // A vendor identifier.
+    VendorId vendor_id = 1;
+
+    // Date of comman creation.
+    google.protobuf.Timestamp when_created = 2;
+}
+
+// DTO for the unsuccessful order command details.
+message RejectedOrderCommandDetails {
+
+    // An order identifier.
+    OrderId order_id = 1;
+
+    // Date of comman creation.
+    google.protobuf.Timestamp when_created = 2;
+}
+
+// DTO for the unsuccessful purchase order command details.
+message RejectedPurchaseOrderCommandDetails {
+
+    // A purchase order identifier.
+    PurchaseOrderId purchase_order_id = 1;
+
+    // Date of comman creation.
+    google.protobuf.Timestamp when_created = 2;
 }

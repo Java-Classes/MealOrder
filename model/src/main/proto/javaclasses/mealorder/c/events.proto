@@ -29,10 +29,14 @@ option java_package = "io.javaclasses.mealorder.c";
 option java_outer_classname = "EventsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
+
+import "spine/net/email_address.proto";
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/model.proto";
 import "javaclasses/mealorder/values.proto";
 import "google/protobuf/timestamp.proto";
+
+
 
 // An event reflecting the vendor addition.
 //
@@ -207,10 +211,10 @@ message PurchaseOrderSent {
     google.protobuf.Timestamp when_sent = 2;
 
     // E-mail address of the sender.
-    EmailAddress sender_email = 3;
+    spine.net.EmailAddress sender_email = 3;
 
     // E-mail address of the recipient.
-    EmailAddress vendor_email = 4;
+    spine.net.EmailAddress vendor_email = 4;
 }
 
 // An event signalizing about the failed purchase order validation.

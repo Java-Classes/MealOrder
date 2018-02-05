@@ -1,0 +1,127 @@
+//
+// Copyright 2018, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+syntax = "proto3";
+
+package javaclasses.mealorder.c;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.javaclasses.mealorder";
+option java_package = "io.javaclasses.mealorder.c.rejection";
+option java_multiple_files = false;
+option java_generate_equals_and_hash = true;
+
+
+import "javaclasses/mealorder/identifiers.proto";
+import "javaclasses/mealorder/model.proto";
+import "javaclasses/mealorder/values.proto";
+
+
+// The rejection to add vendor.
+//
+// It is thrown if the vendor with the same name already exists.
+message VendorAlreadyExists {
+
+    // Details of the rejection.
+    AddVendorRejected rejection_details = 1;
+}
+
+// The rejection to set date range for menu.
+//
+// It is thrown if the menu for this period already exists or the range includes dates from the past.
+message CannotSetDateRange {
+
+    // Details of the rejection.
+    SetDateRangeForMenuRejected rejection_details = 1;
+}
+
+// The rejection to create order.
+//
+// It is thrown if the order already exists.
+message OrderAlreadyExists {
+
+    // Details of the rejection.
+    CreateOrderRejected rejection_details = 1;
+}
+
+// The rejection to create order.
+//
+// It is thrown if the date range is already in the past.
+message MenuNotAvailable {
+
+    // Details of the rejection.
+    CreateOrderRejected rejection_details = 1;
+}
+
+// The rejection to add dish to order.
+//
+// It is thrown if the dish and order vendors does not match.
+message VendorMismatch {
+
+    // Details of the rejection.
+    AddDishToOrderRejected rejection_details = 1;
+}
+
+// The rejection to remove dish from order.
+//
+// It is thrown if the order does not contain such a dish.
+message DishNotFound {
+
+    // Details of the rejection.
+    RemoveDishFromOrderRejected rejection_details = 1;
+}
+
+// The rejection to cancel order.
+//
+// It is thrown if the order is already processed.
+message CannotCancelProcessedOrder {
+
+    // Details of the rejection.
+    CancelOrderRejected rejection_details = 1;
+}
+
+// The rejection to create purchase order.
+//
+// It is thrown if there are no orders for this vendor.
+message CannotCreatePurchaseOrder {
+
+    // Details of the rejection.
+    CreatePurchaseOrderRejected rejection_details = 1;
+}
+
+// The rejection to mark purchase order as delivered.
+//
+// It is thrown if the purchase order was canceled.
+message CannotMarkCanceledPurchaseOrderAsDelivered {
+
+    // Details of the rejection.
+    MarkPurchaseOrderAsDeliveredRejected rejection_details = 1;
+}
+
+// The rejection to cancel purchase order.
+//
+// It is thrown if the purchase order was canceled.
+message CannotCancelDeliveredPurchaseOrder {
+
+    // Details of the rejection.
+    CancelPurchaseOrderRejected rejection_details = 1;
+}
+
