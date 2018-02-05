@@ -31,27 +31,28 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "javaclasses/mealorder/identifiers.proto";
+import "google/protobuf/timestamp.proto";
 import "spine/change/value_mismatch.proto";
 import "spine/change/change.proto";
-import "google/protobuf/timestamp.proto";
 import "spine/net/email_address.proto";
+import "spine/time/time.proto";
 
 // The model that represents date range.
 //
 message MenuDateRange {
 
     // Range start date.
-    google.protobuf.Timestamp when_range_started = 1;
+    spine.time.LocalDate range_start = 1;
 
     // Range end date.
-    google.protobuf.Timestamp when_range_ended = 2;
+    spine.time.LocalDate range_end = 2;
 }
 
 // The model that represents phone number.
 //
 message PhoneNumber {
 
-    string values = 1;
+    string value = 1;
 }
 
 // The model that represents vendor description.
@@ -68,7 +69,7 @@ message VendorDescription {
     repeated PhoneNumber phone_numbers = 2;
 
     // A daily deadline.
-    google.protobuf.Timestamp po_daily_deadline = 3;
+    spine.time.LocalTime po_daily_deadline = 3;
 }
 
 // DTO for the rejected add vendor command details.
