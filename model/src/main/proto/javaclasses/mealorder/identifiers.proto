@@ -33,6 +33,7 @@ option java_generate_equals_and_hash = true;
 
 import "google/protobuf/timestamp.proto";
 import "spine/net/email_address.proto";
+import "spine/time/time.proto";
 
 // An ID of a user.
 //
@@ -68,7 +69,7 @@ message OrderId {
     UserId user_id = 2;
 
     // A Date of the order.
-    google.protobuf.Timestamp order_date = 3;
+    spine.time.LocalDate order_date = 3;
 }
 
 // An ID of a menu.
