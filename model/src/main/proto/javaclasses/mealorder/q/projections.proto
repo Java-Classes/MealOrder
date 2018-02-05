@@ -33,6 +33,8 @@ option java_generate_equals_and_hash = true;
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 import "google/protobuf/timestamp.proto";
+import "spine/time/time.proto";
+import "spine/money/money.proto";
 
 // **** User interface projections ****
 
@@ -47,7 +49,7 @@ import "google/protobuf/timestamp.proto";
 //
 message MenuListView {
 
-    google.protobuf.Timestamp date = 1;
+    spine.time.LocalDate date = 1;
 
     repeated MenuItem menus = 2;
 }
@@ -61,7 +63,7 @@ message MenuItem {
 
     VendorId vendor_id = 1;
 
-    google.protobuf.Timestamp date = 2;
+    spine.time.LocalDate date = 2;
 
     repeated DishItem dishes = 3;
 }
@@ -78,7 +80,7 @@ message DishItem {
 
     string category = 3;
 
-    int64 price = 4;
+    spine.money.Money price = 4;
 }
 
 // A projection state of date selector bar.
@@ -101,7 +103,7 @@ message DateSelectorView {
 //
 message DateSelectorItem {
 
-    google.protobuf.Timestamp date = 1;
+    spine.time.LocalDate date = 1;
 
     bool enabled = 2;
 
@@ -115,7 +117,7 @@ message DateSelectorItem {
 //
 message OrderListView {
 
-    google.protobuf.Timestamp order_date = 1;
+    spine.time.LocalDate order_date = 1;
 
     repeated OrderItem orders = 2;
 
@@ -207,16 +209,13 @@ message PurchaseOrderItem {
 //
 enum PurchaseOrderStatus {
 
-    //Used as an undefined value marker.
-    PO_UNDEFINED = 0;
+    INVALID = 0;
 
-    INVALID = 1;
+    SENT = 1;
 
-    SENT = 2;
+    DELIVERED = 2;
 
-    DELIVERED = 3;
-
-    CANCELED = 4;
+    CANCELED = 3;
 }
 
 // A projection state of purchase order details view
@@ -254,19 +253,16 @@ message OrderItemForPODetails {
 //
 enum OrderValidationStatus {
 
-    //Used as an undefined value marker.
-    ORDER_UNDEFINED = 0;
+    ORDER_VALID = 0;
 
-    ORDER_VALID = 1;
-
-    ORDER_INVALID = 2;
+    ORDER_INVALID = 1;
 }
 
 // A projection state of monthly spendings report view.
 //
 message MonthlySpendingsReportView {
 
-    google.protobuf.Timestamp report_date = 1;
+    spine.time.LocalDate report_date = 1;
 
     repeated UserSpendings user_spendinds = 2;
 }
@@ -279,5 +275,5 @@ message UserSpendings {
 
     UserId id = 1;
 
-    int64 amount = 2;
+    spine.money.Money amount = 2;
 }
