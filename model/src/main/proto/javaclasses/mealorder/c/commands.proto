@@ -33,6 +33,7 @@ option java_generate_equals_and_hash = true;
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 import "javaclasses/mealorder/model.proto";
+import "google/protobuf/timestamp.proto";
 
 
 // Add a new vendor.
@@ -49,6 +50,9 @@ message AddVendor {
 
     // Vendor description.
     VendorDescription vendor_description = 3;
+
+    // Time of addition.
+    google.protobuf.Timestamp when_added = 4;
 }
 
 // Update vendor description.
@@ -66,6 +70,9 @@ message UpdateVendor {
 
     // Previous vendor description.
     VendorDescription previous_vendor_description = 4;
+
+    // Time of update.
+    google.protobuf.Timestamp when_updated = 5;
 }
 
 
@@ -84,6 +91,9 @@ message ImportMenu {
 
     // Collection of menu dishes.
     repeated Dish dishes = 4;
+
+    // Menu import time.
+    google.protobuf.Timestamp when_imported = 5;
 }
 
 // Set the menu active date range.
@@ -98,6 +108,9 @@ message SetDateRangeForMenu {
 
     // Menu date range that may be set.
     MenuDateRange menu_date_range = 3;
+
+    // MenuDateRange setting time.
+    google.protobuf.Timestamp when_set = 4;
 }
 
 // Create a new order.
@@ -111,6 +124,9 @@ message CreateOrder {
 
     // An identifier of the menu which contains dishes that can be added to order.
     MenuId menu_id = 2;
+
+    // Time of the order creation.
+    google.protobuf.Timestamp when_created = 3;
 }
 
 // Add the dish to the order.
@@ -149,6 +165,9 @@ message CancelOrder {
 
     // An identifier of the order.
     OrderId order_id = 1;
+
+    // Time of the order cancellation.
+    google.protobuf.Timestamp when_canceled = 2;
 }
 
 // Create the purchase order.
@@ -160,6 +179,9 @@ message CreatePurchaseOrder {
 
     // Collection of all orders for this day.
     repeated Order orders = 2;
+
+    // Time of creation.
+    google.protobuf.Timestamp when_created = 3;
 }
 
 // Mark purchase order as delivered.
@@ -170,6 +192,9 @@ message MarkPurchaseOrderAsDelivered {
 
     // PurchaseOrder identifier.
     PurchaseOrderId id = 1;
+
+    // Delivery time.
+    google.protobuf.Timestamp when_delievered = 2;
 }
 
 // Mark purchase order as valid.
@@ -206,4 +231,7 @@ message CancelPurchaseOrder {
         // Manual purchase order cancellation.
         string custom_reason = 3;
     }
+
+    // Cancellation time.
+    google.protobuf.Timestamp when_canceled = 4;
 }
