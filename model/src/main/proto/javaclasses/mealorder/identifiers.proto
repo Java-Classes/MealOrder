@@ -30,8 +30,9 @@ option java_outer_classname = "IdentifiersProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "javaclasses/mealorder/values.proto";
+
 import "google/protobuf/timestamp.proto";
+import "spine/net/email_address.proto";
 
 // An ID of a user.
 //
@@ -41,7 +42,7 @@ import "google/protobuf/timestamp.proto";
 message UserId {
 
     // User's e-mail.
-    EmailAddress email = 1;
+    spine.net.EmailAddress email = 1;
 }
 
 // An ID of a vendor.
