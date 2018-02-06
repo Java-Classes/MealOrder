@@ -80,7 +80,7 @@ message VendorUpdated {
 // An event signalizing about the successful import of the menu.
 //
 // A menu is imported from an external source and is parsed as a list of dishes.
-// After that the menu is assignet to a vendor.
+// After that the menu is assigned to a vendor.
 //
 message MenuImported {
 
@@ -211,10 +211,10 @@ message PurchaseOrderDelivered {
     PurchaseOrderId id = 1;
 
     // Identifier of a user who marked purchase order as delivered.
-    UserId who_marked_as_delivered = 3;
+    UserId who_marked_as_delivered = 2;
 
     // Delivery time.
-    google.protobuf.Timestamp when_delievered = 2;
+    google.protobuf.Timestamp when_delievered = 3;
 }
 
 // An event signalizing about the successful purchase order sending.
@@ -283,7 +283,7 @@ message PurchaseOrderCanceled {
     // A purchase order identifier.
     PurchaseOrderId id = 1;
 
-    // A user identifiers that canceled the purchase order.
+    // An identifier of the user who cancelled the purchase order.
     UserId user_id = 2;
 
     // Cancellation time.

@@ -60,7 +60,7 @@ message CannotSetDateRange {
     // An identifier of the vendor of this menu.
     VendorId vendor_id = 1;
 
-    // A menu identifier for which no date is set.
+    // An identifier of the menu for which no date is set.
     MenuId menu_id = 2;
 
     // A date range that was been attempted to set.
@@ -106,13 +106,13 @@ message MenuNotAvailable {
 //
 message VendorMismatch {
 
-    // An order identifier in which the user tried to add a dish.
+    // An identifier of the order in which the user tried to add a dish.
     OrderId order_id = 1;
 
-    // A dish identifier that was tried to add to the order.
+    // An identifier of the dish that was tried to add to the order.
     DishId dish_id = 2;
 
-    // An user identifier who was trying to add a dish.
+    //An identifier of the user who was trying to add a dish.
     UserId user_id = 3;
 
     // A mismatching vendor value.
@@ -128,17 +128,17 @@ message VendorMismatch {
 //
 message DishNotFound {
 
-    // An order identifier from which the user tried to remove a dish.
+    // An identifier of the order from which the user tried to remove a dish.
     OrderId order_id = 1;
 
-    // An user identifier who was trying to remove a dish.
-    UserId user_id = 3;
+    // An identifier of the user who was trying to remove a dish.
+    UserId user_id = 2;
 
-    // A dish identifier that was tried to remove from the order.
-    DishId dish_id = 2;
+    // An identifier of the dish that was tried to remove from the order.
+    DishId dish_id = 3;
 
     // A Date when a command was rejected.
-    google.protobuf.Timestamp when_rejected = 5;
+    google.protobuf.Timestamp when_rejected = 4;
 }
 
 // The rejection to cancel order.
@@ -147,10 +147,10 @@ message DishNotFound {
 //
 message CannotCancelProcessedOrder {
 
-    // An order identifier which was tried to cancel by user.
+    // An identifier of the order which was tried to cancel by user.
     OrderId order_id = 1;
 
-    // An user identifier who was trying to cancel the ordser.
+    // An identifier of the user who was trying to cancel the order.
     UserId user_id = 2;
 
     // A Date when a command was rejected.
@@ -176,10 +176,10 @@ message CannotCreatePurchaseOrder {
 //
 message CannotMarkCanceledPurchaseOrderAsDelivered {
 
-    // A purchase order identifier which was tried to mark as delivered by user.
+    // An identifier of the purchase order which was tried to mark as delivered by user.
     PurchaseOrderId po_id = 1;
 
-    // An user identifier who was trying to mark the purchase ordser as delivered.
+    // An identifier of the user who was trying to mark the purchase ordser as delivered.
     UserId user_id = 2;
 
     // A Date when a command was rejected.
@@ -192,10 +192,10 @@ message CannotMarkCanceledPurchaseOrderAsDelivered {
 //
 message CannotCancelDeliveredPurchaseOrder {
 
-    // A purchase order identifier which was tried to cancel by user.
+    // An identifier of the purchase order which was tried to cancel by user.
     PurchaseOrderId po_id = 1;
 
-    // An user identifier who was trying to cancel the purchase ordser.
+    // An identifier of the user who was trying to cancel the purchase order.
     UserId user_id = 2;
 
     // A Date when a command was rejected.
