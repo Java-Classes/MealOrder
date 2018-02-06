@@ -30,49 +30,51 @@ option java_outer_classname = "EventsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
+import "google/protobuf/timestamp.proto";
 import "spine/net/email_address.proto";
+import "spine/time/time.proto";
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/model.proto";
 import "javaclasses/mealorder/values.proto";
-import "google/protobuf/timestamp.proto";
-
-
 
 // An event reflecting the vendor addition.
 //
 message VendorAdded {
 
-    // An identifier of the added Vendor.
+    // An identifier of the added vendor.
     VendorId vendor_id = 1;
 
-    // An identifier of the User, who added Vendor.
+    // An identifier of the user, who added vendor.
     UserId who_added = 2;
 
     // Time of addition.
     google.protobuf.Timestamp when_added = 3;
 
-    // Vendor description.
-    VendorDescription vendor_description = 4;
+    // An email adress  to send an purchase order.
+    spine.net.EmailAddress email = 4;
+
+    // A phone numbers of the vendor.
+    repeated PhoneNumber phone_numbers = 5;
+
+    // A daily deadline.
+    spine.time.LocalTime po_daily_deadline = 6;
 }
 
 // An event fired upon the vendor description update.
 //
 message VendorUpdated {
 
-    // An identifier of the updated Vendor.
+    // An identifier of the updated vendor.
     VendorId vendor_id = 1;
 
-    // An identifier of the User, who updated Vendor.
+    // An identifier of the user, who updated vendor.
     UserId who_uploaded = 2;
 
     // Time of update.
     google.protobuf.Timestamp when_updated = 3;
 
-    // Updated vendor description.
-    VendorDescription updated_vendor_description = 4;
-
-    // Previous vendor description.
-    VendorDescription previous_vendor_description = 5;
+    // Changes in vendor fields.
+    VendorChange vendor_change = 4;
 }
 
 // An event signalizing about the successful import of the menu.
@@ -85,10 +87,10 @@ message MenuImported {
     // An identifier of a vendor that provided a menu.
     VendorId vendor_id = 1;
 
-    // An identifier of imported Menu, contains VendorId.
+    // An identifier of imported menu, contains vendor ID.
     MenuId menu_id = 2;
 
-    // An identifier of the User, who imported Menu.
+    // An identifier of the user, who imported menu.
     UserId who_imported = 3;
 
     // Menu import time.
@@ -102,13 +104,13 @@ message MenuImported {
 //
 message DateRangeForMenuSet {
 
-    // An identifier of Menu.
+    // An identifier of the menu.
     MenuId menu_id = 1;
 
-    // An identifier of the User, who set MenuDateRange.
+    // An identifier of the user, who set menu date range.
     UserId who_set = 2;
 
-    // MenuDateRange setting time.
+    // Menu date range setting time.
     google.protobuf.Timestamp when_set = 3;
 
     // Menu date range that has been set.
@@ -179,7 +181,7 @@ message OrderProcessed {
 //
 message PurchaseOrderCreated {
 
-    // PurchaseOrder identifier.
+    // A Purchase order identifier.
     PurchaseOrderId id = 1;
 
     // Time of creation.
@@ -193,7 +195,7 @@ message PurchaseOrderCreated {
 //
 message PurchaseOrderDelivered {
 
-    // PurchaseOrder identifier.
+    // A Purchase order identifier.
     PurchaseOrderId id = 1;
 
     // Delivery time.
@@ -204,16 +206,16 @@ message PurchaseOrderDelivered {
 //
 message PurchaseOrderSent {
 
-    // PurchaseOrder identifier.
+    // A Purchase order identifier.
     PurchaseOrder purchase_order = 1;
 
     // Sending time.
     google.protobuf.Timestamp when_sent = 2;
 
-    // E-mail address of the sender.
+    // An E-mail address of the sender.
     spine.net.EmailAddress sender_email = 3;
 
-    // E-mail address of the recipient.
+    // An E-mail address of the recipient.
     spine.net.EmailAddress vendor_email = 4;
 }
 
@@ -221,7 +223,7 @@ message PurchaseOrderSent {
 //
 message PurchaseOrderValidationFailed {
 
-    // PurchaseOrder identifier.
+    // A purchase order identifier.
     PurchaseOrderId id = 1;
 
     // Collection of orders that caused the failure of validation.
@@ -235,10 +237,10 @@ message PurchaseOrderValidationFailed {
 //
 message PurchaseOrderValidationOverruled {
 
-    // PurchaseOrder identifier.
+    // A purchase order identifier.
     PurchaseOrderId id = 1;
 
-    // User identifiers that overruled the validation.
+    // A user identifiers that overruled the validation.
     UserId who_overruled = 2;
 
     // The reason why validation is overruled.
@@ -249,7 +251,7 @@ message PurchaseOrderValidationOverruled {
 //
 message PurchaseOrderValidationPassed {
 
-    // PurchaseOrder identifier.
+    // A purchase order identifier.
     PurchaseOrderId id = 1;
 
     // Time of successful validation.
@@ -260,7 +262,7 @@ message PurchaseOrderValidationPassed {
 //
 message PurchaseOrderCanceled {
 
-    // PurchaseOrder identifier.
+    // A purchase order identifier.
     PurchaseOrderId id = 1;
 
     // Cancellation time.

@@ -30,11 +30,13 @@ option java_outer_classname = "CommandsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
+
+import "google/protobuf/timestamp.proto";
+import "spine/net/email_address.proto";
+import "spine/time/time.proto";
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 import "javaclasses/mealorder/model.proto";
-import "google/protobuf/timestamp.proto";
-
 
 // Add a new vendor.
 //
@@ -48,11 +50,17 @@ message AddVendor {
     // An identifier of the User, who added Vendor.
     UserId user_id = 2;
 
-    // Vendor description.
-    VendorDescription vendor_description = 3;
+    // Email adress  to send an purchase order.
+    spine.net.EmailAddress email = 3;
+
+    // Phone numbers of the vendor.
+    repeated PhoneNumber phone_numbers = 4;
+
+    // A daily deadline.
+    spine.time.LocalTime po_daily_deadline = 5;
 
     // Time of addition.
-    google.protobuf.Timestamp when_added = 4;
+    google.protobuf.Timestamp when_added = 6;
 }
 
 // Update vendor description.
@@ -65,16 +73,12 @@ message UpdateVendor {
     // An identifier of the User, who updates `Vendor`.
     UserId user_id = 2;
 
-    // The vendor description that's changing.
-    VendorDescription updated_vendor_description = 3;
-
-    // Previous vendor description.
-    VendorDescription previous_vendor_description = 4;
+    // Changes in vendor fields.
+    VendorChange vendor_change = 3;
 
     // Time of update.
-    google.protobuf.Timestamp when_updated = 5;
+    google.protobuf.Timestamp when_updated = 4;
 }
-
 
 // Import a menu.
 //

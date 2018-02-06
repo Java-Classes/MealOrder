@@ -30,11 +30,12 @@ option java_outer_classname = "ProjectionsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "javaclasses/mealorder/identifiers.proto";
-import "javaclasses/mealorder/values.proto";
 import "google/protobuf/timestamp.proto";
 import "spine/time/time.proto";
 import "spine/money/money.proto";
+import "spine/net/email_address.proto";
+import "javaclasses/mealorder/identifiers.proto";
+import "javaclasses/mealorder/values.proto";
 
 // **** User interface projections ****
 
@@ -162,7 +163,14 @@ message VendorItem {
 
     VendorId id = 1;
 
-    VendorDescription description = 2;
+    // Email adress  to send an purchase order.
+    spine.net.EmailAddress email = 3;
+
+    // Phone numbers of the vendor.
+    repeated PhoneNumber phone_numbers = 4;
+
+    // A daily deadline.
+    spine.time.LocalTime po_daily_deadline = 5;
 }
 
 // A projection state of menu list for administrator interface.

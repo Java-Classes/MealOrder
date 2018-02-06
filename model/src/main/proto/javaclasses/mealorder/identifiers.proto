@@ -37,7 +37,7 @@ import "spine/time/time.proto";
 
 // An ID of a user.
 //
-// An identifier is represented by User email address of the next type:
+// An identifier is represented by user email address of the next type:
 // <Name>.<Surname>@teamdev.com
 //
 message UserId {
@@ -52,13 +52,15 @@ message UserId {
 //
 message VendorId {
 
-    // A name of a vendor.
-    string vendor_name = 1;
+    // String representation of UUID.
+    //
+    // Automatically generated upon vendor creation.
+    string value = 1;
 }
 
 // An ID of an order.
 //
-// An identifier is represented by VendorId, UserId and order date.
+// An identifier is represented by vendor ID, user ID and order date.
 //
 message OrderId {
 
@@ -68,13 +70,13 @@ message OrderId {
     // An identifier of a user who makes an order.
     UserId user_id = 2;
 
-    // A Date of the order.
+    // A date of the order.
     spine.time.LocalDate order_date = 3;
 }
 
 // An ID of a menu.
 //
-// An identifier is represented by VendorId and imported time.
+// An identifier is represented by vendor ID and imported time.
 //
 message MenuId {
 
@@ -98,15 +100,15 @@ message DishId {
     MenuId menu_id = 2;
 }
 
-// An ID of a purchase order. represented by VendorId and purchase order date.
+// An ID of a purchase order. represented by vendor ID and purchase order date.
 //
-// An identifier is represented by VendorId and purchase order date.
+// An identifier is represented by vendor ID and purchase order date.
 //
 message PurchaseOrderId {
 
     // An identifier of a vendor.
     VendorId vendor_id = 1;
 
-    // Date on which this purchase order is formed.
+    // A date on which this purchase order is formed.
     google.protobuf.Timestamp po_date = 2;
 }
