@@ -30,98 +30,175 @@ option java_multiple_files = false;
 option java_generate_equals_and_hash = true;
 
 
+import "google/protobuf/timestamp.proto";
+import "spine/change/value_mismatch.proto";
 import "javaclasses/mealorder/identifiers.proto";
-import "javaclasses/mealorder/model.proto";
 import "javaclasses/mealorder/values.proto";
-
 
 // The rejection to add vendor.
 //
 // It is thrown if the vendor with the same name already exists.
+//
 message VendorAlreadyExists {
 
-    // Details of the rejection.
-    AddVendorRejected rejection_details = 1;
+    // An identifier of existing vendor.
+    VendorId vendor_id = 1;
+
+    // A name of existing vendor.
+    VendorName vendor_name = 2;
+
+    // A Date when a command was rejected.
+    google.protobuf.Timestamp when_rejected = 3;
 }
 
 // The rejection to set date range for menu.
 //
 // It is thrown if the menu for this period already exists or the range includes dates from the past.
+//
 message CannotSetDateRange {
 
-    // Details of the rejection.
-    SetDateRangeForMenuRejected rejection_details = 1;
+    // An identifier of the vendor of this menu.
+    VendorId vendor_id = 1;
+
+    // An identifier of the menu for which no date is set.
+    MenuId menu_id = 2;
+
+    // A date range that was been attempted to set.
+    MenuDateRange menu_date_range = 3;
+
+    // A Date when a command was rejected.
+    google.protobuf.Timestamp when_rejected = 4;
 }
 
 // The rejection to create order.
 //
 // It is thrown if the order already exists.
+//
 message OrderAlreadyExists {
 
-    // Details of the rejection.
-    CreateOrderRejected rejection_details = 1;
+    // An identifier of the existing order.
+    OrderId order_id = 1;
+
+    // A Date when a command was rejected.
+    google.protobuf.Timestamp when_rejected = 3;
 }
 
 // The rejection to create order.
 //
-// It is thrown if the date range is already in the past.
+// It is thrown if there is no menu on this date.
+//
 message MenuNotAvailable {
 
-    // Details of the rejection.
-    CreateOrderRejected rejection_details = 1;
+    // An identifier of the user who couldn't create an order.
+    UserId user_id = 1;
+
+    // An identifier of the vendor from who the user tried to order.
+    VendorId vendor_id = 2;
+
+    // A Date when a command was rejected.
+    google.protobuf.Timestamp when_rejected = 3;
+
 }
 
 // The rejection to add dish to order.
 //
 // It is thrown if the dish and order vendors does not match.
+//
 message VendorMismatch {
 
-    // Details of the rejection.
-    AddDishToOrderRejected rejection_details = 1;
+    // An identifier of the order in which the user tried to add a dish.
+    OrderId order_id = 1;
+
+    // An identifier of the dish that was tried to add to the order.
+    DishId dish_id = 2;
+
+    //An identifier of the user who was trying to add a dish.
+    UserId user_id = 3;
+
+    // A mismatching vendor value.
+    spine.change.ValueMismatch vendor_mismatch = 4;
+
+    // A Date when a command was rejected.
+    google.protobuf.Timestamp when_rejected = 5;
 }
 
 // The rejection to remove dish from order.
 //
 // It is thrown if the order does not contain such a dish.
+//
 message DishNotFound {
 
-    // Details of the rejection.
-    RemoveDishFromOrderRejected rejection_details = 1;
+    // An identifier of the order from which the user tried to remove a dish.
+    OrderId order_id = 1;
+
+    // An identifier of the user who was trying to remove a dish.
+    UserId user_id = 2;
+
+    // An identifier of the dish that was tried to remove from the order.
+    DishId dish_id = 3;
+
+    // A Date when a command was rejected.
+    google.protobuf.Timestamp when_rejected = 4;
 }
 
 // The rejection to cancel order.
 //
 // It is thrown if the order is already processed.
+//
 message CannotCancelProcessedOrder {
 
-    // Details of the rejection.
-    CancelOrderRejected rejection_details = 1;
+    // An identifier of the order which was tried to cancel by user.
+    OrderId order_id = 1;
+
+    // An identifier of the user who was trying to cancel the order.
+    UserId user_id = 2;
+
+    // A Date when a command was rejected.
+    google.protobuf.Timestamp when_rejected = 3;
 }
 
 // The rejection to create purchase order.
 //
 // It is thrown if there are no orders for this vendor.
+//
 message CannotCreatePurchaseOrder {
 
-    // Details of the rejection.
-    CreatePurchaseOrderRejected rejection_details = 1;
+    // An identifier of a vendor for which a purchase order wasn't created.
+    VendorId vendor_id = 1;
+
+    // A Date when a command was rejected.
+    google.protobuf.Timestamp when_rejected = 2;
 }
 
 // The rejection to mark purchase order as delivered.
 //
 // It is thrown if the purchase order was canceled.
+//
 message CannotMarkCanceledPurchaseOrderAsDelivered {
 
-    // Details of the rejection.
-    MarkPurchaseOrderAsDeliveredRejected rejection_details = 1;
+    // An identifier of the purchase order which was tried to mark as delivered by user.
+    PurchaseOrderId po_id = 1;
+
+    // An identifier of the user who was trying to mark the purchase ordser as delivered.
+    UserId user_id = 2;
+
+    // A Date when a command was rejected.
+    google.protobuf.Timestamp when_rejected = 3;
 }
 
 // The rejection to cancel purchase order.
 //
-// It is thrown if the purchase order was canceled.
+// It is thrown if the purchase order was delivered.
+//
 message CannotCancelDeliveredPurchaseOrder {
 
-    // Details of the rejection.
-    CancelPurchaseOrderRejected rejection_details = 1;
+    // An identifier of the purchase order which was tried to cancel by user.
+    PurchaseOrderId po_id = 1;
+
+    // An identifier of the user who was trying to cancel the purchase order.
+    UserId user_id = 2;
+
+    // A Date when a command was rejected.
+    google.protobuf.Timestamp when_rejected = 3;
 }
 
