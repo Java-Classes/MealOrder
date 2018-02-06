@@ -37,179 +37,230 @@ import "spine/net/email_address.proto";
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 
-// **** User interface projections ****
+// **** Projections for UI role User ****
 
 // A projection state of menu list for the specified date.
 //
 // This view includes list of actual attached menus for the specified date.
+// Menu is attached if its date range includes specified date.
 // Collection of menus can be empty if there are no attached menus for this
 // date or all of them are not actual.
 //
-// 'Actual menu' means that `Vendor.poDailyDeadline` hasn't come for
-// the date value.
+// 'Actual menu' means that time of purchase order creation hasn't come for
+// this date. This time is defined in menus vendor aggregate in property
+// `Vendor.poDailyDeadline`.
 //
 message MenuListView {
 
+    // Date on which the menu list is formed.
     spine.time.LocalDate date = 1;
 
+    // Collection of menus.
     repeated MenuItem menus = 2;
 }
 
-// Item of menu list view for user interface.
+// Single item of menu list.
 //
 // This item contains list of dishes for the
 // specific vendor and date.
 //
 message MenuItem {
 
-    VendorId vendor_id = 1;
+    // Vendor name.
+    VendorName vendor_name = 1;
 
+    //TODO: Maybe it should be replaced with `MenuDateRange` to prevent `MenuItem` duplication for each date with same dish list.
+    // Date on which the menu is attached.
     spine.time.LocalDate date = 2;
 
+    // Collection of dishes.
     repeated DishItem dishes = 3;
 }
 
-// Item of menu.
+// Single dish item of menu.
 //
-// For this time represens the full copy of `Dish`.
+// This item contains dish identifier, name, price and category.
+// Dish category is used in UI to group dishes.
 //
 message DishItem {
 
+    // An identifier of the dish.
     DishId id = 1;
 
+    // Name of the dish.
     string name = 2;
 
+    // The dish category.
     string category = 3;
 
+    // The dish price.
     spine.money.Money price = 4;
 }
 
-// A projection state of date selector bar.
+// A projection state of menu calendar.
 //
-// This view includes list of `DateSelectorItem` in range from
-// current date to the next weeks same day. (8 elements)
+// This view includes list of dates in range from
+// today to the same day next week. (8 elements)
+// Each date contains information about the menus availability for it.
 //
-message DateSelectorView {
+message MenuCalendarView {
 
-    repeated DateSelectorItem selector_dates = 1;
+    // Collection of calendar items (dates).
+    repeated MenuCalendarItem calendar_items = 1;
 }
 
-// Item of date selector bar.
+// Item of menu calendar.
 //
-// Item state `enabled = true` indicates that some active
-// attached menus exist for this date.
-// Item state `selected = true` indicates that this
-// date is selected on the user interface to show
-// orders and menus.
+// Item state indicates that some active
+// attached menus exist for this date or not.
 //
-message DateSelectorItem {
+message MenuCalendarItem {
 
+    // Date in menu calendar.
     spine.time.LocalDate date = 1;
 
-    bool enabled = 2;
-
-    bool selected = 3;
+    // Indicates presence of attached menus on specified date.
+    bool has_menu = 2;
 }
 
-// A projection state of order bar in user interface.
+// A projection state of order list.
 //
 // This view includes list of user orders for the
 // specified date.
 //
 message OrderListView {
 
+    // Date on which the order list is formed.
     spine.time.LocalDate order_date = 1;
 
+    // Collection of user orders.
     repeated OrderItem orders = 2;
 
 }
 
-// Item of user interface order view.
+// Item of order list.
 //
 // This item contains list of dishes.
 //
-// Item state `isProcessed = true` indicates that this
-// order is already processed and included in purchase order
-// for this date and vendor. Editing or Canceling of this order
-// is not provided.
-//
-// Item state `isProcessed = false` indicates that this
-// order is not processed and not included in purchase order yet.
-// Editing of dish list or Canceling order is provided.
+// Item state indicates that this order is already processed
+// (included in purchase order for this date and vendor) or not.
+// Editing or canceling of the processed order is not provided.
+// Unprocessed orders can be canceled or its dish list can be
+// modified.
 //
 message OrderItem {
 
+    // An identifier of the order.
     OrderId id = 1;
 
+    // Collection of the ordered dishes.
     repeated DishItem dishes = 2;
 
+    // Indicates order is processed or not.
     bool is_processed = 3;
 }
 
-// **** Administrator interface projections ****
+// **** Projections for UI role Admin ****
 
-// A projection state of vendor list view in administrator interface.
+// A projection state of vendor list.
 //
 message VendorListView {
 
+    // Collection of all vendors.
     repeated VendorItem vendors = 1;
 }
 
-// Item of vendor list view.
+// Item of vendor list.
 //
-// For this time represens the full copy of `Vendor` agregate state.
+// This item contains vendor identifier, name, email and phone numbers.
 //
 message VendorItem {
 
+    // An identifier of the vendor.
     VendorId id = 1;
 
-    // Email adress  to send an purchase order.
+    // Vendor name.
+    VendorName vendor_name = 2;
+
+    // Vendor email address.
     spine.net.EmailAddress email = 3;
 
     // Phone numbers of the vendor.
     repeated PhoneNumber phone_numbers = 4;
 
-    // A daily deadline.
+    // A daily purchase order creation deadline.
     spine.time.LocalTime po_daily_deadline = 5;
 }
 
-// A projection state of menu list for administrator interface.
+// A projection state of full menu list.
 //
-// This view includes list of last 50 menus for management,
+// This view includes list of all menus for management,
 // sorted by menu date range.
 //
-message MenuListManagementView {
+message FullMenuListView {
 
-    repeated MenuListManagementItem menus = 1;
+    // Collection of menus.
+    repeated FullMenuItem menus = 1;
 }
 
-// Item of administrator menu list view.
+// Item of full menu list.
 //
-message MenuListManagementItem {
+message FullMenuItem {
 
+    // An identifier of the menu.
     MenuId menu_id = 1;
 
+    // A date range when this menu is available.
     MenuDateRange menu_date_range = 2;
 
+    // Collection of dishes.
     repeated DishItem dishes = 3;
 }
 
-// A projection state of purchase order list for administrator interface.
+// A projection state of purchase orders list.
 //
-// This view includes list of last 50 purchase orders for management,
-// sortd by date.
+// This view includes list of all purchase orders,
+// sorted by date.
 //
 message PurchaseOrderListView {
 
+    // Collection of purchase orders.
     repeated PurchaseOrderItem purchase_orders = 1;
 }
 
-// Item of administrator purchase order list view.
+// Item of purchase order list.
+//
+// When the purchase order is automatically created at the
+// vendors `poDailyDeadline` time the validation process is performed.
+//
+// If validation process has failed purchase order status gets `INVALID` value.
+// If administrator decides to overrule failed validation and mark
+// purchase order as valid it automatically
+// sends to vendor.
+//
+// If validation process completed with success it automatically
+// sends to vendor.
+//
+// If sending process hasn't caused errors, purchase order status
+// gets `SENT` value.
+//
+// If errors occurred while sending purchase order to vendor
+// its status gets `ERROR` value.
+//
+// When administrator decides to cancel purchase order
+// in some reason its status gets `CANCELED` value.
+//
+// When administrator has received ordered dishes and checked
+// the accordance to the purchase order dish list, he should
+// mark purchase order as delivered. After this purchase order
+// status gets `DELIVERED` value.
 //
 message PurchaseOrderItem {
 
+    // An identifier of the purchase order.
     PurchaseOrderId id = 1;
 
+    // Purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
 }
 
@@ -217,71 +268,114 @@ message PurchaseOrderItem {
 //
 enum PurchaseOrderStatus {
 
-    INVALID = 0;
+    // Used as an undefined value marker.
+    POS_UNDEFINED = 0;
 
     SENT = 1;
 
-    DELIVERED = 2;
+    ERROR = 2;
 
-    CANCELED = 3;
+    INVALID = 3;
+
+    DELIVERED = 4;
+
+    CANCELED = 5;
 }
 
 // A projection state of purchase order details view
-// sorted by dishe for administrator interface.
+// sorted by dish.
 //
 message PurchaseOrderDetailsByDishView {
 
+    // Purchase order on which the details view is formed.
     PurchaseOrderItem purchase_order = 1;
 
+    // Collection of dishes.
     repeated DishItem dishes = 2;
 }
 
 // A projection state of purchase order details view
-// sorted by order for administrator interface.
+// sorted by User.
 //
-message PurchaseOrderDetailsByOrderView {
+// When purchase order is created its validation may complete with failure.
+// Those orders which caused that failure are marked as invalid.
+//
+message PurchaseOrderDetailsByUserView {
 
+    // Purchase order on which the details view is formed.
     PurchaseOrderItem purchase_order = 1;
 
-    repeated OrderItemForPODetails orders = 2;
+    // Collection of orders.
+    repeated UserOrderDetails orders = 2;
 }
 
-// Item of administrator purchase order detail 'by order' list view.
+// Item of order list.
 //
-message OrderItemForPODetails {
+// Used in purchase order details veiw sorted by User.
+//
+// This item contains user identifier, list of ordered dishes and
+// order validation status.
+//
+message UserOrderDetails {
 
+    // An identifier of user.
     UserId id = 1;
 
+    // Collection of dishes.
     repeated DishItem dishes = 2;
 
-    OrderValidationStatus status = 3;
-}
-
-// Order validation status values.
-//
-enum OrderValidationStatus {
-
-    ORDER_VALID = 0;
-
-    ORDER_INVALID = 1;
+    // Order validation status.
+    bool is_valid = 3;
 }
 
 // A projection state of monthly spendings report view.
 //
+// This view contains user spendings for full month period
+// if the report is formed for the passed month.
+// It contains user spendings for period from  month first
+// date till today if the report is formed for the current month.
+//
 message MonthlySpendingsReportView {
 
-    spine.time.LocalDate report_date = 1;
+    // Date range on which the spendings are calculated.
+    LocalMonth report_month = 1;
 
+    // Collection of user spendings for specified period.
     repeated UserSpendings user_spendinds = 2;
 }
 
 // Item of monthly spendings report view.
 //
-// This item represents user with its monthly spendings amount.
+// This item represents user with its spendings amount
+// for the date range defined in `spendingsPeriod`.
 //
 message UserSpendings {
 
+    // An identifier of user.
     UserId id = 1;
 
-    spine.money.Money amount = 2;
+    // Date range on which the spendings are calculated.
+    LocalMonth spendings_period = 2;
+
+    // Amount of spendings.
+    spine.money.Money amount = 3;
+}
+
+// Representation of date range for monthly spendings report.
+//
+// This item includes date range for calculating user spengings report.
+// Its range limits correspond to the first and the last date of
+// month, if both of them are in past.
+//
+// For the current month, start range limit corresponds to the first
+// date or month. End range limit corresponds to the current date.
+//
+message LocalMonth {
+
+    // Month date range start date.
+    spine.time.LocalDate start_range_date = 1;
+
+    // Month date range end date.
+    spine.time.LocalDate end_range_date = 2;
+
 }
