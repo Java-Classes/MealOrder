@@ -37,35 +37,43 @@ import "spine/net/email_address.proto";
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 
-// **** User interface projections ****
+// **** Projections for UI role User ****
 
 // A projection state of menu list for the specified date.
 //
 // This view includes list of actual attached menus for the specified date.
+// Menu is attached if its date range includes specified date.
 // Collection of menus can be empty if there are no attached menus for this
 // date or all of them are not actual.
 //
-// 'Actual menu' means that `Vendor.poDailyDeadline` hasn't come for
-// the date value.
+// 'Actual menu' means that time of purchase order creation hasn't come for
+// this date. This time is defined in menus vendor aggregate in property
+// `Vendor.poDailyDeadline`.
 //
 message MenuListView {
 
+    // Date on which the menu list is formed.
     spine.time.LocalDate date = 1;
 
+    // Collection of menus.
     repeated MenuItem menus = 2;
 }
 
-// Item of menu list view for user interface.
+// Single item of menu list.
 //
 // This item contains list of dishes for the
 // specific vendor and date.
 //
 message MenuItem {
 
+    // An identifier of the vendor.
     VendorId vendor_id = 1;
 
+    //TODO: Maybe it should be replaced with `MenuDateRange` to prevent `MenuItem` duplication for each date with same dish list.
+    // Date on which the menu is attached.
     spine.time.LocalDate date = 2;
 
+    // Collection of dishes.
     repeated DishItem dishes = 3;
 }
 
