@@ -52,8 +52,10 @@ message UserId {
 //
 message VendorId {
 
-    // A name of a vendor.
-    string vendor_name = 1;
+    // String representation of UUID.
+    //
+    // Automatically generated upon vendor creation.
+    string value = 1;
 }
 
 // An ID of an order.
