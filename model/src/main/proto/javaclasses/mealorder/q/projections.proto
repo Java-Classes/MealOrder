@@ -123,47 +123,50 @@ message MenuCalendarItem {
     bool has_manu = 2;
 }
 
-// A projection state of order bar in user interface.
+// A projection state of order list.
 //
 // This view includes list of user orders for the
 // specified date.
 //
 message OrderListView {
 
+    // Date on which the order list is formed.
     spine.time.LocalDate order_date = 1;
 
+    // Collection of user orders.
     repeated OrderItem orders = 2;
 
 }
 
-// Item of user interface order view.
+// Item of order list.
 //
 // This item contains list of dishes.
 //
-// Item state `isProcessed = true` indicates that this
-// order is already processed and included in purchase order
-// for this date and vendor. Editing or Canceling of this order
-// is not provided.
-//
-// Item state `isProcessed = false` indicates that this
-// order is not processed and not included in purchase order yet.
-// Editing of dish list or Canceling order is provided.
+// Item state indicates that this order is already processed
+// (included in purchase order for this date and vendor) or not.
+// Editing or canceling of the processed order is not provided.
+// Unprocessed orders can be canceled or its dish list can be
+// modified.
 //
 message OrderItem {
 
+    // An identifier of the order.
     OrderId id = 1;
 
+    // Collection of ordered dishes.
     repeated DishItem dishes = 2;
 
+    // Indicates order status.
     bool is_processed = 3;
 }
 
-// **** Administrator interface projections ****
+// **** Projections for UI role Admin ****
 
-// A projection state of vendor list view in administrator interface.
+// A projection state of vendor list.
 //
 message VendorListView {
 
+    // Collection of all vendors.
     repeated VendorItem vendors = 1;
 }
 
