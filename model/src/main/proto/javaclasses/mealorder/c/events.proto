@@ -79,8 +79,8 @@ message VendorUpdated {
 
 // An event signalizing about the successful import of the menu.
 //
-// Menu is imported from an external source
-// and is parsed as a list of dishes.
+// A menu is imported from an external source and is parsed as a list of dishes.
+// After that the menu is assignet to a vendor.
 //
 message MenuImported {
 
@@ -162,8 +162,11 @@ message OrderCanceled {
     // An identifier of the order.
     OrderId order_id = 1;
 
+    // A user identifier who canceled the order.
+    UserId who_canceled = 2;
+
     // Time of the order cancellation.
-    google.protobuf.Timestamp when_canceled = 2;
+    google.protobuf.Timestamp when_canceled = 3;
 }
 
 // An event signalizing about the order is added to purchase order.
@@ -197,6 +200,9 @@ message PurchaseOrderDelivered {
 
     // A Purchase order identifier.
     PurchaseOrderId id = 1;
+
+    // Identifier of a user who marked purchase order as delivered.
+    UserId who_marked_as_delivered = 3;
 
     // Delivery time.
     google.protobuf.Timestamp when_delievered = 2;
@@ -265,8 +271,11 @@ message PurchaseOrderCanceled {
     // A purchase order identifier.
     PurchaseOrderId id = 1;
 
+    // A user identifiers that canceled the purchase order.
+    UserId user_id = 2;
+
     // Cancellation time.
-    google.protobuf.Timestamp when_canceled = 2;
+    google.protobuf.Timestamp when_canceled = 3;
 
     // Reason for cancellation.
     //
@@ -274,7 +283,7 @@ message PurchaseOrderCanceled {
     // custom_reason - otherwise
     //
     oneof Reason {
-        bool invalid = 3;
-        string custom_reason = 4;
+        bool invalid = 4;
+        string custom_reason = 5;
     }
 }
