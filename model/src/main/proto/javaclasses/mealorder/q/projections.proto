@@ -330,20 +330,52 @@ message UserOrderDetails {
 
 // A projection state of monthly spendings report view.
 //
+// This view contains user spendings for full month period
+// if the report is formed for the passed month.
+// It contains user spendings for period from  month first
+// date till today if the report is formed for the current month.
+//
 message MonthlySpendingsReportView {
 
-    spine.time.LocalDate report_date = 1;
+    // Date range on which the spendings are calculated.
+    LocalMonth report_month = 1;
 
+    // Collection of user spendings for specified period.
     repeated UserSpendings user_spendinds = 2;
 }
 
 // Item of monthly spendings report view.
 //
-// This item represents user with its monthly spendings amount.
+// This item represents user with its spendings amount
+// for the date range defined in `spendingsPeriod`.
 //
 message UserSpendings {
 
+    // An identifier of user.
     UserId id = 1;
 
-    spine.money.Money amount = 2;
+    // Date range on which the spendings are calculated.
+    LocalMonth spendings_period = 2;
+
+    // Amount of spendings.
+    spine.money.Money amount = 3;
+}
+
+// Representation of date range for monthly spendings report.
+//
+// This item includes date range for calculating user spengings report.
+// Its range limits correspond to the first and the last date of
+// month, if both of them are in past.
+//
+// For the current month, start range limit corresponds to the first
+// date or month. End range limit corresponds to the current date.
+//
+message LocalMonth {
+
+    // Month date range start date.
+    spine.time.LocalDate start_range_date = 1;
+
+    // Month date range end date.
+    spine.time.LocalDate end_range_date = 2;
+
 }
