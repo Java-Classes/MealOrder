@@ -158,7 +158,7 @@ message CancelOrder {
     // An identifier of the order.
     OrderId order_id = 1;
 
-    // Actor who cancel the order.
+    // User who cancels the order.
     // Can be cancelled by owner manually.
     // Can be cancelled by system when purchase order is creating if order is empty.
     UserId who_cancels = 2;
