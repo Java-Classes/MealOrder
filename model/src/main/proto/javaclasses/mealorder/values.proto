@@ -32,7 +32,6 @@ option java_generate_equals_and_hash = true;
 
 import "javaclasses/mealorder/identifiers.proto";
 import "google/protobuf/timestamp.proto";
-import "spine/change/value_mismatch.proto";
 import "spine/change/change.proto";
 import "spine/net/email_address.proto";
 import "spine/time/time.proto";

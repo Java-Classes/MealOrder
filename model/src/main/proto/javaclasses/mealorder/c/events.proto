@@ -56,7 +56,7 @@ message VendorAdded {
     // A phone numbers of the vendor.
     repeated PhoneNumber phone_numbers = 5;
 
-    // A daily deadline.
+    // The time to which all orders to this vendor must be made.
     spine.time.LocalTime po_daily_deadline = 6;
 }
 
@@ -142,6 +142,9 @@ message DishAddedToOrder {
 
     // An identifier of the dish.
     DishId dish_id = 2;
+
+    // Time of adding a dish.
+    google.protobuf.Timestamp when_added = 3;
 }
 
 // An event signalizing about successful removing the dish from the order.
@@ -153,6 +156,9 @@ message DishRemovedFromOrder {
 
     // An identifier of the dish.
     DishId dish_id = 2;
+
+    // Time of removing a dish.
+    google.protobuf.Timestamp when_removed = 3;
 }
 
 // An event signalizing about the order cancellation.
@@ -190,8 +196,11 @@ message PurchaseOrderCreated {
     // Time of creation.
     google.protobuf.Timestamp when_created = 2;
 
+    // An identifier of a user who created purchase order.
+    UserId who_created = 3;
+
     // Collection of all orders for this day.
-    repeated Order orders = 3;
+    repeated Order orders = 4;
 }
 
 // An event signalizing about the successful order delivering.
@@ -251,6 +260,9 @@ message PurchaseOrderValidationOverruled {
 
     // The reason why validation is overruled.
     string reason = 3;
+
+    // Time when validation was overruled.
+    google.protobuf.Timestamp when_overruled = 4;
 }
 
 // An event signalizing about the successful purchase order validation.
