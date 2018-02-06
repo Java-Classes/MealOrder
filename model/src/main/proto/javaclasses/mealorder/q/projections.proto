@@ -283,43 +283,49 @@ enum PurchaseOrderStatus {
 }
 
 // A projection state of purchase order details view
-// sorted by dishe for administrator interface.
+// sorted by dish.
 //
 message PurchaseOrderDetailsByDishView {
 
+    // Purchase order on which the details view is formed.
     PurchaseOrderItem purchase_order = 1;
 
+    // Collection of dishes.
     repeated DishItem dishes = 2;
 }
 
 // A projection state of purchase order details view
-// sorted by order for administrator interface.
+// sorted by User.
 //
-message PurchaseOrderDetailsByOrderView {
+// When purchase order is created its validation may complete with failure.
+// Those orders which caused that failure are marked as invalid.
+//
+message PurchaseOrderDetailsByUserView {
 
+    // Purchase order on which the details view is formed.
     PurchaseOrderItem purchase_order = 1;
 
-    repeated OrderItemForPODetails orders = 2;
+    // Collection of orders.
+    repeated UserOrderDetails orders = 2;
 }
 
-// Item of administrator purchase order detail 'by order' list view.
+// Item of order list.
 //
-message OrderItemForPODetails {
+// Used in purchase order details veiw sorted by User.
+//
+// This item contains user identifier, list of ordered dishes and
+// order validation status.
+//
+message UserOrderDetails {
 
+    // An identifier of user.
     UserId id = 1;
 
+    // Collection of dishes.
     repeated DishItem dishes = 2;
 
-    OrderValidationStatus status = 3;
-}
-
-// Order validation status values.
-//
-enum OrderValidationStatus {
-
-    ORDER_VALID = 0;
-
-    ORDER_INVALID = 1;
+    // Order validation status.
+    bool is_valid = 3;
 }
 
 // A projection state of monthly spendings report view.
