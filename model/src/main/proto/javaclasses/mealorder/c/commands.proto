@@ -40,7 +40,7 @@ import "javaclasses/mealorder/model.proto";
 
 // Adds a new vendor.
 //
-// May be rejected if vendor with same ID already exists.
+// May be rejected if vendor with the same ID already exists.
 //
 message AddVendor {
 
@@ -188,7 +188,7 @@ message MarkPurchaseOrderAsDelivered {
     PurchaseOrderId id = 1;
 
     // Identifier of a user who marks purchase order as delivered.
-    UserId who_marks_as_delivered = 3;
+    UserId who_marks_as_delivered = 2;
 }
 
 // Overrules purchase order validation.
