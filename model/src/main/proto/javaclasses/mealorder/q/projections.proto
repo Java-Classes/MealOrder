@@ -120,7 +120,7 @@ message MenuCalendarItem {
     spine.time.LocalDate date = 1;
 
     // Indicates presence of attached menus on specified date.
-    bool has_manu = 2;
+    bool has_menu = 2;
 }
 
 // A projection state of order list.
