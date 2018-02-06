@@ -66,22 +66,22 @@ message VendorName {
 //
 message VendorChange {
 
-    // Email adress that's changing.
+    // An email adress that's changing.
     spine.net.EmailAddress previous_email = 1;
 
-    // Phone numbers that's changing.
+    // A phone numbers that's changing.
     repeated PhoneNumber previous_phone_numbers = 2;
 
     // A daily deadline that's changing.
     spine.time.LocalTime previous_po_daily_deadline = 3;
 
-    // The new e-mail adress.
+    // A new e-mail adress.
     spine.net.EmailAddress new_email = 4;
 
-    // The new phone numbers of the vendor.
+    // A new phone numbers of the vendor.
     repeated PhoneNumber new_phone_numbers = 5;
 
-    // The new daily deadline.
+    // A new daily deadline.
     spine.time.LocalTime new_po_daily_deadline = 6;
 
 }

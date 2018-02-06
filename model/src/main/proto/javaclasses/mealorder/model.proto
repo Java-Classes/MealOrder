@@ -101,7 +101,7 @@ message Vendor {
 
     VendorName vendor_name = 2;
 
-    // Email adress  to send an purchase order.
+    // An email adress  to send an purchase order.
     spine.net.EmailAddress email = 3;
 
     // Phone numbers of the vendor.
