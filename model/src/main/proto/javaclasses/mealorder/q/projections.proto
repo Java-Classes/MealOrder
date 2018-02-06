@@ -77,46 +77,50 @@ message MenuItem {
     repeated DishItem dishes = 3;
 }
 
-// Item of menu.
+// Single dish item of menu.
 //
-// For this time represens the full copy of `Dish`.
+// This item contains dish identifier, name, price and category.
+// Dish category is used in UI to group dishes.
 //
 message DishItem {
 
+    // An identifier of the dish.
     DishId id = 1;
 
+    // Name of the dish.
     string name = 2;
 
+    // The dish category.
     string category = 3;
 
+    // The dish price.
     spine.money.Money price = 4;
 }
 
-// A projection state of date selector bar.
+// A projection state of menu calendar.
 //
-// This view includes list of `DateSelectorItem` in range from
-// current date to the next weeks same day. (8 elements)
+// This view includes list of dates in range from
+// today to the same day next week. (8 elements)
+// Each date contains information about the menus availability for it.
 //
-message DateSelectorView {
+message MenuCalendarView {
 
-    repeated DateSelectorItem selector_dates = 1;
+    // Collection of calendar items (dates).
+    repeated MenuCalendarItem calendar_items = 1;
 }
 
-// Item of date selector bar.
+// Item of menu calendar.
 //
-// Item state `enabled = true` indicates that some active
-// attached menus exist for this date.
-// Item state `selected = true` indicates that this
-// date is selected on the user interface to show
-// orders and menus.
+// Item state indicates that some active
+// attached menus exist for this date or not.
 //
-message DateSelectorItem {
+message MenuCalendarItem {
 
+    // Date in menu calendar.
     spine.time.LocalDate date = 1;
 
-    bool enabled = 2;
-
-    bool selected = 3;
+    // Indicates presence of attached menus on specified date.
+    bool has_manu = 2;
 }
 
 // A projection state of order bar in user interface.
