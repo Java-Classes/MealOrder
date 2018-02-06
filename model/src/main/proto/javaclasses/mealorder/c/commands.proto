@@ -40,28 +40,31 @@ import "javaclasses/mealorder/model.proto";
 
 // Adds a new vendor.
 //
-// May be rejected if `Vendor` with same `VendorId` already exists.
+// May be rejected if vendor with same ID already exists.
 //
 message AddVendor {
 
     // An identifier of the vendor which may be added.
     VendorId vendor_id = 1;
 
-    // An identifier of the user, who adds Vendor.
+    // An identifier of the user, who wants to add a vendor.
     UserId user_id = 2;
 
+    // The name of the vendor, unique for each vendor.
+    VendorName vendor_name = 3;
+
     // Email adress  to send an purchase order.
-    spine.net.EmailAddress email = 3;
+    spine.net.EmailAddress email = 4;
 
     // Phone numbers of the vendor.
-    repeated PhoneNumber phone_numbers = 4;
+    repeated PhoneNumber phone_numbers = 5;
 
-    // Time of closing orders for editing.
-    // Orders have to be added to purchase order.
-    spine.time.LocalTime po_daily_deadline = 5;
+    // Time of closing orders for this vendor for editing.
+    // Purchase order for this vendor will be created exactly at this time.
+    spine.time.LocalTime po_daily_deadline = 6;
 }
 
-// Updates vendor description.
+// Updates vendor details.
 //
 message UpdateVendor {
 
