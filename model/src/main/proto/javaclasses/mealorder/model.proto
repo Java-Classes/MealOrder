@@ -71,7 +71,7 @@ message Menu {
     repeated Dish dishes = 3;
 }
 
-// The model representing the agregate Order.
+// The model representing the aggregate Order.
 //
 message Order {
 
@@ -81,7 +81,7 @@ message Order {
     // A collection of all dishes of one user per date.
     repeated Dish dishes = 2;
 }
-// The model representing the agregate Order.
+// The model representing the aggregate Order.
 //
 message PurchaseOrder {
 
@@ -92,7 +92,7 @@ message PurchaseOrder {
     repeated Order orders = 2;
 }
 
-// The model representing the agregate Vendor.
+// The model representing the aggregate Vendor.
 //
 message Vendor {
 
@@ -101,7 +101,7 @@ message Vendor {
 
     VendorName vendor_name = 2;
 
-    // An email adress  to send an purchase order.
+    // An email address  to send an purchase order.
     spine.net.EmailAddress email = 3;
 
     // Phone numbers of the vendor.

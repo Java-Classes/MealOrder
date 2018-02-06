@@ -58,6 +58,7 @@ message PhoneNumber {
 // The model that represents vendor name.
 //
 message VendorName {
+
     // The name of the vendor, unique for each vendor.
     string value = 1;
 }
@@ -66,7 +67,7 @@ message VendorName {
 //
 message VendorChange {
 
-    // An email adress that's changing.
+    // An e-mail adress that's changing.
     spine.net.EmailAddress previous_email = 1;
 
     // A phone numbers that's changing.
