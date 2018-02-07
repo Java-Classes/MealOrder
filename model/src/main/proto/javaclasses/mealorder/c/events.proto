@@ -50,7 +50,7 @@ message VendorAdded {
     // Time of addition.
     google.protobuf.Timestamp when_added = 3;
 
-    // An email adress to send an purchase order.
+    // An email adress to send a purchase order.
     spine.net.EmailAddress email = 4;
 
     // Phone numbers of a vendor.
@@ -236,6 +236,12 @@ message PurchaseOrderSent {
 
 // An event signalizing about the failed purchase order validation.
 //
+// Purchase order validation may complete with failure if some orders contain
+// a large mumber of the same dishes.
+//
+// That may indicate user mistake.
+// Such orders are attached to this event.
+//
 message PurchaseOrderValidationFailed {
 
     // A purchase order identifier.
@@ -255,13 +261,13 @@ message PurchaseOrderValidationOverruled {
     // A purchase order identifier.
     PurchaseOrderId id = 1;
 
-    // An identifier of a user that overruled a validation.
+    // An identifier of a user who overruled a validation.
     UserId who_overruled = 2;
 
     // A reason why validation is overruled.
     string reason = 3;
 
-    // A point of time when validation was overruled.
+    // A moment of time when validation was overruled.
     google.protobuf.Timestamp when_overruled = 4;
 }
 
