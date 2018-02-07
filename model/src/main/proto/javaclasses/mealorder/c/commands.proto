@@ -39,7 +39,7 @@ import "javaclasses/mealorder/model.proto";
 
 // Adds a new vendor.
 //
-// May be rejected if vendor with the same name already exists.
+// May be rejected if a vendor with the same name already exists.
 //
 message AddVendor {
 
@@ -52,7 +52,7 @@ message AddVendor {
     // The name of the vendor, unique for each vendor.
     VendorName vendor_name = 3;
 
-    // Email adress to send an purchase order.
+    // Email adress to send a purchase order.
     spine.net.EmailAddress email = 4;
 
     // Phone numbers of the vendor.
@@ -83,7 +83,7 @@ message UpdateVendor {
 //
 message ImportMenu {
 
-    // An identifier of vendor on which menu is assigned.
+    // An identifier of the vendor on which menu is assigned.
     VendorId vendor_id = 1;
 
     // An identifier of the user, who imports a menu.
@@ -116,11 +116,11 @@ message CreateOrder {
     // An identifier of the order.
     OrderId order_id = 1;
 
-    // An identifier of the menu which contains dishes that can be added to order.
+    // An identifier of the menu which contains dishes that can be added to an order.
     MenuId menu_id = 2;
 }
 
-// Adds the dish to the order.
+// Adds a dish to an order.
 //
 // Cannot be applied to canceled orders.
 // Cannot be applied to processed orders.
@@ -168,13 +168,13 @@ message CancelOrder {
 //
 message CreatePurchaseOrder {
 
-    // Purchase order identifier.
+    // A purchase order identifier.
     PurchaseOrderId id = 1;
 
     // Collection of all orders for this day.
     repeated Order orders = 2;
 
-    // Identifier of a user who creates purchase order.
+    // An identifier of a user who creates a purchase order.
     UserId who_creates = 3;
 }
 
@@ -184,10 +184,10 @@ message CreatePurchaseOrder {
 //
 message MarkPurchaseOrderAsDelivered {
 
-    // Purchase order identifier.
+    // A purchase order identifier.
     PurchaseOrderId id = 1;
 
-    // Identifier of a user who marks purchase order as delivered.
+    // An identifier of a user who marks a purchase order as delivered.
     UserId who_marks_as_delivered = 2;
 }
 
@@ -197,10 +197,10 @@ message MarkPurchaseOrderAsDelivered {
 //
 message MarkPurchaseOrderAsValid {
 
-    // Purchase order identifier.
+    // A purchase order identifier.
     PurchaseOrderId id = 1;
 
-    // Identifier of a user that marks purchase order as valid.
+    // An identifier of a user that marks a purchase order as valid.
     UserId user_id = 2;
 
     // The reason why order may be marked as valid.
@@ -213,7 +213,7 @@ message MarkPurchaseOrderAsValid {
 //
 message CancelPurchaseOrder {
 
-    // Purchase order identifier.
+    // A purchase order identifier.
     PurchaseOrderId id = 1;
 
     // Reason of cancelation.
@@ -222,7 +222,7 @@ message CancelPurchaseOrder {
         // Validation was failed and admin didn't overrule it.
         bool invalid = 2;
 
-        // Manual purchase order cancellation.
+        // Manually cancel the purchase order.
         string custom_reason = 3;
     }
 
