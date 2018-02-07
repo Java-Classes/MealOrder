@@ -40,7 +40,7 @@ import "javaclasses/mealorder/model.proto";
 
 // Adds a new vendor.
 //
-// May be rejected if vendor with the same ID already exists.
+// May be rejected if vendor with the same name already exists.
 //
 message AddVendor {
 
@@ -53,7 +53,7 @@ message AddVendor {
     // The name of the vendor, unique for each vendor.
     VendorName vendor_name = 3;
 
-    // Email adress  to send an purchase order.
+    // Email adress to send an purchase order.
     spine.net.EmailAddress email = 4;
 
     // Phone numbers of the vendor.
@@ -98,7 +98,7 @@ message ImportMenu {
 //
 message SetDateRangeForMenu {
 
-    // An identifier of Menu.
+    // An identifier of menu.
     MenuId menu_id = 1;
 
     // An identifier of the user, who sets menu date range.
@@ -159,6 +159,7 @@ message CancelOrder {
     OrderId order_id = 1;
 
     // User who cancels the order.
+    //
     // Can be cancelled by owner manually.
     // Can be cancelled by system when purchase order is creating if order is empty.
     UserId who_cancels = 2;
@@ -168,7 +169,7 @@ message CancelOrder {
 //
 message CreatePurchaseOrder {
 
-    // PurchaseOrder identifier.
+    // Purchase order identifier.
     PurchaseOrderId id = 1;
 
     // Collection of all orders for this day.
@@ -180,11 +181,11 @@ message CreatePurchaseOrder {
 
 // Marks purchase order as delivered.
 //
-// Applicable only for sent purchase orders.
+// Applicable only to sent purchase orders.
 //
 message MarkPurchaseOrderAsDelivered {
 
-    // PurchaseOrder identifier.
+    // Purchase order identifier.
     PurchaseOrderId id = 1;
 
     // Identifier of a user who marks purchase order as delivered.
@@ -193,14 +194,14 @@ message MarkPurchaseOrderAsDelivered {
 
 // Overrules purchase order validation.
 //
-// Applicable only for invalid purchase orders.
+// Applicable only to invalid purchase orders.
 //
 message MarkPurchaseOrderAsValid {
 
-    // PurchaseOrder identifier.
+    // Purchase order identifier.
     PurchaseOrderId id = 1;
 
-    // User identifiers that marks purchase order as valid.
+    // Identifier of a user that marks purchase order as valid.
     UserId user_id = 2;
 
     // The reason why order may be marked as valid.
@@ -213,13 +214,13 @@ message MarkPurchaseOrderAsValid {
 //
 message CancelPurchaseOrder {
 
-    // PurchaseOrder identifier.
+    // Purchase order identifier.
     PurchaseOrderId id = 1;
 
     // Reason of cancelation.
     oneof reason {
 
-        // Validation was failed and admin didn't overruled it.
+        // Validation was failed and admin didn't overrule it.
         bool invalid = 2;
 
         // Manual purchase order cancellation.
