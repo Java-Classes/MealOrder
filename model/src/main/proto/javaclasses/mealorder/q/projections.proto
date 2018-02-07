@@ -96,7 +96,7 @@ message DishItem {
 
 // A projection state of menu calendar.
 //
-// This view includes list of dates in range from
+// This view includes the list of dates in range from
 // today to the same day next week. (8 elements)
 // Each date contains information about the menus availability for it.
 //
@@ -108,8 +108,8 @@ message MenuCalendarView {
 
 // Item of menu calendar.
 //
-// Item state indicates that some active
-// attached menus exist for this date or not.
+// Item state indicates wether some active
+// attached menus exist for this date.
 //
 message MenuCalendarItem {
 
@@ -122,17 +122,18 @@ message MenuCalendarItem {
 
 // A projection state of order list.
 //
-// This view includes list of user orders for the
+// This view includes list of user's orders for the
 // specified date.
+//
+// Order date and user ID are specified by `OrderListId` value.
 //
 message OrderListView {
 
-    // Date on which the order list is formed.
-    spine.time.LocalDate order_date = 1;
+    // An identifier of a order list.
+    OrderListId list_id = 1;
 
     // Collection of user orders.
     repeated OrderItem orders = 2;
-
 }
 
 // Item of order list.
@@ -140,10 +141,12 @@ message OrderListView {
 // This item contains list of dishes.
 //
 // Item state indicates that this order is already processed
-// (included in purchase order for this date and vendor) or not.
-// Editing or canceling of the processed order is not provided.
-// Unprocessed orders can be canceled or its dish list can be
-// modified.
+// (included in the purchase order for this date and vendor) or not.
+//
+//      // If 'true' - order can be canceled or its dish list can be
+//      // modified.
+//
+//      // If 'false' - editing or canceling of such order is not possible.
 //
 message OrderItem {
 
@@ -157,7 +160,7 @@ message OrderItem {
     bool is_processed = 3;
 }
 
-// **** Projections for UI role Admin ****
+// **** Projections for UI role Admin. ****
 
 // A projection state of vendor list.
 //

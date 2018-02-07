@@ -119,3 +119,14 @@ message MenuListId {
     // Date on which the menu list is formed.
     spine.time.LocalDate date = 1;
 }
+
+// An ID of a order list projection for UI role User.
+//
+message OrderListId {
+
+    // Date on which the order list is formed.
+    spine.time.LocalDate order_date = 1;
+
+    // An identifier of a user who made orders.
+    UserId user_id = 2;
+}
