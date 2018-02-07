@@ -44,23 +44,23 @@ message VendorAdded {
     // An identifier of the added vendor.
     VendorId vendor_id = 1;
 
-    // An identifier of the user, who added vendor.
+    // An identifier of the user, who added a vendor.
     UserId who_added = 2;
 
     // Time of addition.
     google.protobuf.Timestamp when_added = 3;
 
-    // An email adress  to send an purchase order.
+    // An email adress to send an purchase order.
     spine.net.EmailAddress email = 4;
 
-    // A phone numbers of the vendor.
+    // Phone numbers of the vendor.
     repeated PhoneNumber phone_numbers = 5;
 
     // The time to which all orders to this vendor must be made.
     spine.time.LocalTime po_daily_deadline = 6;
 }
 
-// An event fired upon the vendor description update.
+// An event fired upon a vendor description update.
 //
 message VendorUpdated {
 
@@ -87,10 +87,10 @@ message MenuImported {
     // An identifier of a vendor that provided a menu.
     VendorId vendor_id = 1;
 
-    // An identifier of imported menu, contains vendor ID.
+    // An identifier of the imported menu, contains a vendor ID.
     MenuId menu_id = 2;
 
-    // An identifier of the user, who imported menu.
+    // An identifier of the user, who imported a menu.
     UserId who_imported = 3;
 
     // Menu import time.
@@ -126,14 +126,14 @@ message OrderCreated {
     // An identifier of the created order.
     OrderId order_id = 1;
 
-    // An identifier of the menu which contains dishes can be added to order.
+    // An identifier of the menu which contains dishes that can be added to an order.
     MenuId menu_id = 2;
 
     // Time of the order creation.
     google.protobuf.Timestamp when_created = 3;
 }
 
-// An event signalizing about addition the dish to the order.
+// An event signalizing about addition a dish to an order.
 //
 message DishAddedToOrder {
 
@@ -147,7 +147,7 @@ message DishAddedToOrder {
     google.protobuf.Timestamp when_added = 3;
 }
 
-// An event signalizing about successful removing the dish from the order.
+// An event signalizing about the successful removing a dish from an order.
 //
 message DishRemovedFromOrder {
 
@@ -175,14 +175,14 @@ message OrderCanceled {
     google.protobuf.Timestamp when_canceled = 3;
 }
 
-// An event signalizing about the order is added to purchase order.
+// An event signalizing about an order which is added to a purchase order.
 //
 message OrderProcessed {
 
-    // The order that was added to purchase order.
+    // An order that was added to a purchase order.
     Order order = 1;
 
-    // Time of the order addition to purchase order.
+    // Time of an order addition to a purchase order.
     google.protobuf.Timestamp when_processed = 2;
 }
 
@@ -196,7 +196,7 @@ message PurchaseOrderCreated {
     // Time of creation.
     google.protobuf.Timestamp when_created = 2;
 
-    // An identifier of a user who created purchase order.
+    // An identifier of a user who created a purchase order.
     UserId who_created = 3;
 
     // Collection of all orders for this day.
@@ -255,13 +255,13 @@ message PurchaseOrderValidationOverruled {
     // A purchase order identifier.
     PurchaseOrderId id = 1;
 
-    // A user identifiers that overruled the validation.
+    // An identifier of the user that overruled a validation.
     UserId who_overruled = 2;
 
-    // The reason why validation is overruled.
+    // A reason why validation is overruled.
     string reason = 3;
 
-    // Time when validation was overruled.
+    // A point of time when validation was overruled.
     google.protobuf.Timestamp when_overruled = 4;
 }
 
