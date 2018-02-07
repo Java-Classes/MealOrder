@@ -38,7 +38,7 @@ import "spine/net/email_address.proto";
 
 // The model representing a dish.
 //
-// This is one item from the menu, represented by the name of a dish, its price and categoty.
+// This is one item from a menu, represented by the name of a dish, its price and categoty.
 //
 message Dish {
 
@@ -102,12 +102,15 @@ message Vendor {
     // A name of a vendor
     VendorName vendor_name = 2;
 
-    // An email address  to send an purchase order.
+    // An email address to send an purchase order.
     spine.net.EmailAddress email = 3;
 
     // Phone numbers of a vendor.
     repeated PhoneNumber phone_numbers = 4;
 
     // A daily deadline.
+    //
+    // Time of closing orders for this vendor for editing.
+    // A purchase order for this vendor will be created exactly at this time.
     spine.time.LocalTime po_daily_deadline = 5;
 }
