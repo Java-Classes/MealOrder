@@ -30,7 +30,6 @@ option java_outer_classname = "IdentifiersProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-
 import "google/protobuf/timestamp.proto";
 import "spine/net/email_address.proto";
 import "spine/time/time.proto";
@@ -110,4 +109,42 @@ message PurchaseOrderId {
 
     // A date on which this purchase order is formed.
     google.protobuf.Timestamp po_date = 2;
+}
+
+// An ID of a menu list projection for UI role User.
+//
+message MenuListId {
+
+    // A date on which the menu list is formed.
+    spine.time.LocalDate date = 1;
+}
+
+// An ID of an order list projection for UI role User.
+//
+message OrderListId {
+
+    // A date on which the order list is formed.
+    spine.time.LocalDate order_date = 1;
+
+    // An identifier of the user who made orders.
+    UserId user_id = 2;
+}
+
+// An ID of a monthly spendings report projection for UI role Admin.
+//
+message MonthlySpendingsReportId {
+
+    // A month on which the spendings are calculated.
+    LocalMonth month = 1;
+
+    // A representation of a month of year.
+    //
+    message LocalMonth {
+
+        // A month value.
+        spine.time.MonthOfYear month = 1;
+
+        // A year value.
+        int32 year = 2;
+    }
 }
