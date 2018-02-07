@@ -69,7 +69,7 @@ message VendorChange {
     // An email adress that's changing.
     spine.net.EmailAddress previous_email = 1;
 
-    // A phone numbers that's changing.
+    // A phone numbers that are changing.
     repeated PhoneNumber previous_phone_numbers = 2;
 
     // A daily deadline that's changing.
@@ -83,7 +83,6 @@ message VendorChange {
 
     // A new daily deadline.
     spine.time.LocalTime new_po_daily_deadline = 6;
-
 }
 
 // DTO for the rejected add vendor command details.

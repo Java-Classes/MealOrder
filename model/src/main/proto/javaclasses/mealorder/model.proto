@@ -108,5 +108,8 @@ message Vendor {
     repeated PhoneNumber phone_numbers = 4;
 
     // A daily deadline.
+    //
+    // Time of closing orders for this vendor for editing.
+    // Purchase order for this vendor will be created exactly at this time.
     spine.time.LocalTime po_daily_deadline = 5;
 }
