@@ -38,7 +38,7 @@ import "spine/net/email_address.proto";
 
 // The model representing a dish.
 //
-// This is one item from the menu, represented by the name of a dish, its price and categoty.
+// This is one item from a menu, represented by the name of a dish, its price and categoty.
 //
 message Dish {
 

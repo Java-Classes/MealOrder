@@ -37,8 +37,7 @@ import "spine/time/time.proto";
 
 // An ID of a user.
 //
-// An identifier is represented by user email address of the next type:
-// <Name>.<Surname>@teamdev.com
+// An identifier is represented by user email address.
 //
 message UserId {
 
@@ -70,7 +69,7 @@ message OrderId {
     // An identifier of a user who makes an order.
     UserId user_id = 2;
 
-    // A date of the order.
+    // A date of an order.
     spine.time.LocalDate order_date = 3;
 }
 
@@ -89,18 +88,18 @@ message MenuId {
 
 // An ID of a dish.
 //
-// An identifier is represented by dish sequential number in menu and MenuId.
+// An identifier is represented by a dish sequential number in a menu and menu ID.
 //
 message DishId {
 
-    //Sequence number of the dish in the menu.
+    // A sequence number of a dish in a menu.
     int32 sequential_number = 1;
 
     // An identifier of a menu.
     MenuId menu_id = 2;
 }
 
-// An ID of a purchase order. represented by vendor ID and purchase order date.
+// An ID of a purchase order, represented by vendor ID and purchase order date.
 //
 // An identifier is represented by vendor ID and purchase order date.
 //
