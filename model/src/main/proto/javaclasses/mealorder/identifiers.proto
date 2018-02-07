@@ -30,7 +30,6 @@ option java_outer_classname = "IdentifiersProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-
 import "google/protobuf/timestamp.proto";
 import "spine/net/email_address.proto";
 import "spine/time/time.proto";
@@ -129,4 +128,23 @@ message OrderListId {
 
     // An identifier of a user who made orders.
     UserId user_id = 2;
+}
+
+// An ID of a monthly spendings report projection for UI role Admin.
+//
+message MonthlySpendingsReportId {
+
+    // Month on which the spendings are calculated.
+    LocalMonth month = 1;
+}
+
+// Representation of a month of year.
+//
+message LocalMonth {
+
+    // Month value.
+    spine.time.MonthOfYear month = 1;
+
+    // Year value.
+    int32 year = 2;
 }
