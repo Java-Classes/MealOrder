@@ -102,7 +102,7 @@ message Vendor {
     // A name of a vendor
     VendorName vendor_name = 2;
 
-    // An email address  to send an purchase order.
+    // An email address to send an purchase order.
     spine.net.EmailAddress email = 3;
 
     // Phone numbers of a vendor.
@@ -111,6 +111,6 @@ message Vendor {
     // A daily deadline.
     //
     // Time of closing orders for this vendor for editing.
-    // Purchase order for this vendor will be created exactly at this time.
+    // A purchase order for this vendor will be created exactly at this time.
     spine.time.LocalTime po_daily_deadline = 5;
 }
