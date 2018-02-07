@@ -111,3 +111,11 @@ message PurchaseOrderId {
     // A date on which this purchase order is formed.
     google.protobuf.Timestamp po_date = 2;
 }
+
+// An ID of a menu list projection for UI role User.
+//
+message MenuListId {
+
+    // Date on which the menu list is formed.
+    spine.time.LocalDate date = 1;
+}
