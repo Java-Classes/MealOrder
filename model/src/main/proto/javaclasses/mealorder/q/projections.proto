@@ -172,8 +172,6 @@ message VendorListView {
 
 // Item of vendor list.
 //
-// This item contains vendor identifier, name, email and phone numbers.
-//
 message VendorItem {
 
     // An identifier of the vendor.
@@ -217,7 +215,7 @@ message FullMenuItem {
     repeated DishItem dishes = 3;
 }
 
-// A projection state of purchase orders list.
+// A projection state of purchase order list.
 //
 // This view includes list of all purchase orders,
 // sorted by date.
@@ -235,11 +233,11 @@ message PurchaseOrderListView {
 //
 // If validation process has failed purchase order status gets `INVALID` value.
 // If administrator decides to overrule failed validation and mark
-// purchase order as valid it automatically
-// sends to vendor.
+// purchase order as valid it is automatically
+// sent to vendor.
 //
-// If validation process completed with success it automatically
-// sends to vendor.
+// If validation process is completed successfully purchase order is automatically
+// sent to vendor.
 //
 // If sending process hasn't caused errors, purchase order status
 // gets `SENT` value.
@@ -250,7 +248,7 @@ message PurchaseOrderListView {
 // When administrator decides to cancel purchase order
 // in some reason its status gets `CANCELED` value.
 //
-// When administrator has received ordered dishes and checked
+// When administrator receives ordered dishes and checks
 // the accordance to the purchase order dish list, he should
 // mark purchase order as delivered. After this purchase order
 // status gets `DELIVERED` value.
@@ -287,26 +285,32 @@ enum PurchaseOrderStatus {
 //
 message PurchaseOrderDetailsByDishView {
 
-    // Purchase order on which the details view is formed.
-    PurchaseOrderItem purchase_order = 1;
+    // An identifier of the purchase order.
+    PurchaseOrderId id = 1;
+
+    // Purchase order status.
+    PurchaseOrderStatus purchase_order_status = 2;
 
     // Collection of dishes.
-    repeated DishItem dishes = 2;
+    repeated DishItem dishes = 3;
 }
 
 // A projection state of purchase order details view
-// sorted by User.
+// sorted by user.
 //
 // When purchase order is created its validation may complete with failure.
 // Those orders which caused that failure are marked as invalid.
 //
 message PurchaseOrderDetailsByUserView {
 
-    // Purchase order on which the details view is formed.
-    PurchaseOrderItem purchase_order = 1;
+    // An identifier of the purchase order.
+    PurchaseOrderId id = 1;
+
+    // Purchase order status.
+    PurchaseOrderStatus purchase_order_status = 2;
 
     // Collection of orders.
-    repeated UserOrderDetails orders = 2;
+    repeated UserOrderDetails orders = 3;
 }
 
 // Item of order list.
