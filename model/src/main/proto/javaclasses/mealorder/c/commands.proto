@@ -31,7 +31,6 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 
-import "google/protobuf/timestamp.proto";
 import "spine/net/email_address.proto";
 import "spine/time/time.proto";
 import "javaclasses/mealorder/identifiers.proto";

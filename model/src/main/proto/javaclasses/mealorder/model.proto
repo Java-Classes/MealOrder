@@ -38,14 +38,14 @@ import "spine/net/email_address.proto";
 
 // The model representing a dish.
 //
-// This is one item from the menu, represented by the name of the dish, its price and categoty.
+// This is one item from the menu, represented by the name of a dish, its price and categoty.
 //
 message Dish {
 
-    // An identifier of the dish.
+    // An identifier of a dish.
     DishId id = 1;
 
-    // Name of the dish.
+    // Name of a dish.
     string name = 2;
 
     // A category to which the dish belongs.
@@ -61,7 +61,7 @@ message Dish {
 //
 message Menu {
 
-    // An identifier of the menu.
+    // An identifier of a menu.
     MenuId id = 1;
 
     // A date range when this menu is available.
@@ -71,40 +71,41 @@ message Menu {
     repeated Dish dishes = 3;
 }
 
-// The model representing the agregate Order.
+// The model representing the aggregate Order.
 //
 message Order {
 
-    // An identifier of the oder.
+    // An identifier of a oder.
     OrderId id = 1;
 
     // A collection of all dishes of one user per date.
     repeated Dish dishes = 2;
 }
-// The model representing the agregate Order.
+// The model representing the aggregate Order.
 //
 message PurchaseOrder {
 
-    // An identifier of the purchase order.
+    // An identifier of a purchase order.
     PurchaseOrderId id = 1;
 
     // A collection of all orders for one vendor per date.
     repeated Order orders = 2;
 }
 
-// The model representing the agregate Vendor.
+// The model representing the aggregate Vendor.
 //
 message Vendor {
 
-    // An identifier of the vendor.
+    // An identifier of a vendor.
     VendorId id = 1;
 
+    // A name of a vendor
     VendorName vendor_name = 2;
 
-    // An email adress  to send an purchase order.
+    // An email address  to send an purchase order.
     spine.net.EmailAddress email = 3;
 
-    // Phone numbers of the vendor.
+    // Phone numbers of a vendor.
     repeated PhoneNumber phone_numbers = 4;
 
     // A daily deadline.
