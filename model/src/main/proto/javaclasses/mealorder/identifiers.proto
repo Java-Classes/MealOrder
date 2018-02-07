@@ -115,18 +115,18 @@ message PurchaseOrderId {
 //
 message MenuListId {
 
-    // Date on which the menu list is formed.
+    // A date on which the menu list is formed.
     spine.time.LocalDate date = 1;
 }
 
-// An ID of a order list projection for UI role User.
+// An ID of an order list projection for UI role User.
 //
 message OrderListId {
 
-    // Date on which the order list is formed.
+    // A date on which the order list is formed.
     spine.time.LocalDate order_date = 1;
 
-    // An identifier of a user who made orders.
+    // An identifier of the user who made orders.
     UserId user_id = 2;
 }
 
@@ -134,17 +134,17 @@ message OrderListId {
 //
 message MonthlySpendingsReportId {
 
-    // Month on which the spendings are calculated.
+    // A month on which the spendings are calculated.
     LocalMonth month = 1;
 
-    // Representation of a month of year.
+    // A representation of a month of year.
     //
     message LocalMonth {
 
-        // Month value.
+        // A month value.
         spine.time.MonthOfYear month = 1;
 
-        // Year value.
+        // A year value.
         int32 year = 2;
     }
 }
