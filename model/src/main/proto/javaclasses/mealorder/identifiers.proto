@@ -136,15 +136,15 @@ message MonthlySpendingsReportId {
 
     // Month on which the spendings are calculated.
     LocalMonth month = 1;
-}
 
-// Representation of a month of year.
-//
-message LocalMonth {
+    // Representation of a month of year.
+    //
+    message LocalMonth {
 
-    // Month value.
-    spine.time.MonthOfYear month = 1;
+        // Month value.
+        spine.time.MonthOfYear month = 1;
 
-    // Year value.
-    int32 year = 2;
+        // Year value.
+        int32 year = 2;
+    }
 }
