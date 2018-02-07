@@ -38,7 +38,7 @@ import "javaclasses/mealorder/values.proto";
 
 // The rejection to add vendor.
 //
-// It is thrown if the vendor with the same name already exists.
+// It is thrown if a vendor with the same name already exists.
 //
 message VendorAlreadyExists {
 
@@ -54,14 +54,14 @@ message VendorAlreadyExists {
 
 // The rejection to set date range for menu.
 //
-// It is thrown if the menu for this period already exists or the range includes dates from the past.
+// It is thrown if a menu for this period already exists or a range includes dates from the past.
 //
 message CannotSetDateRange {
 
-    // An identifier of the vendor of this menu.
+    // An identifier of a vendor of this menu.
     VendorId vendor_id = 1;
 
-    // An identifier of the menu for which no date is set.
+    // An identifier of a menu for which no date is set.
     MenuId menu_id = 2;
 
     // A date range that was been attempted to set.
@@ -73,11 +73,11 @@ message CannotSetDateRange {
 
 // The rejection to create order.
 //
-// It is thrown if the order already exists.
+// It is thrown if an order already exists.
 //
 message OrderAlreadyExists {
 
-    // An identifier of the existing order.
+    // An identifier of an existing order.
     OrderId order_id = 1;
 
     // A time point when it was rejected.
@@ -90,10 +90,10 @@ message OrderAlreadyExists {
 //
 message MenuNotAvailable {
 
-    // An identifier of the user who couldn't create an order.
+    // An identifier of a user who couldn't create an order.
     UserId user_id = 1;
 
-    // An identifier of the vendor from who the user tried to order.
+    // An identifier of a vendor from who a user tried to order.
     VendorId vendor_id = 2;
 
     // A date on which attempted to create a menu.
@@ -106,17 +106,17 @@ message MenuNotAvailable {
 
 // The rejection to add dish to order.
 //
-// It is thrown if the dish and order vendors does not match.
+// It is thrown if a dish and order vendors does not match.
 //
 message DishVendorMismatch {
 
-    // An identifier of the order in which the user tried to add a dish.
+    // An identifier of an order in which a user tried to add a dish.
     OrderId order_id = 1;
 
-    // An identifier of the dish that was tried to add to the order.
+    // An identifier of a dish that was tried to add to an order.
     DishId dish_id = 2;
 
-    // An identifier of the user who was trying to add a dish.
+    // An identifier of a user who was trying to add a dish.
     UserId user_id = 3;
 
     // A mismatching vendor value.
@@ -128,17 +128,17 @@ message DishVendorMismatch {
 
 // The rejection to remove dish from order.
 //
-// It is thrown if the order does not contain such a dish.
+// It is thrown if an order does not contain such a dish.
 //
 message CannotRemoveMissingDish {
 
-    // An identifier of the order from which the user tried to remove a dish.
+    // An identifier of an order from which a user tried to remove a dish.
     OrderId order_id = 1;
 
-    // An identifier of the user who was trying to remove a dish.
+    // An identifier of a user who was trying to remove a dish.
     UserId user_id = 2;
 
-    // An identifier of the dish which user tried remove from order.
+    // An identifier of a dish which user tried remove from order.
     DishId dish_id = 3;
 
     // A time point when it was rejected.
@@ -147,14 +147,14 @@ message CannotRemoveMissingDish {
 
 // The rejection to cancel order.
 //
-// It is thrown if the order is already processed.
+// It is thrown if an order is already processed.
 //
 message CannotCancelProcessedOrder {
 
-    // An identifier of the order which was tried to cancel by user.
+    // An identifier of an order which was tried to cancel by user.
     OrderId order_id = 1;
 
-    // An identifier of the user who was trying to cancel the order.
+    // An identifier of a user who was trying to cancel an order.
     UserId user_id = 2;
 
     // A time point when it was rejected.
@@ -176,14 +176,14 @@ message CannotCreatePurchaseOrder {
 
 // The rejection to mark purchase order as delivered.
 //
-// It is thrown if the purchase order was canceled.
+// It is thrown if a purchase order was canceled.
 //
 message CannotMarkCanceledPurchaseOrderAsDelivered {
 
-    // An identifier of the purchase order which was tried to mark as delivered by user.
+    // An identifier of a purchase order which was tried to mark as delivered by user.
     PurchaseOrderId po_id = 1;
 
-    // An identifier of the user who was trying to mark the purchase ordser as delivered.
+    // An identifier of a user who was trying to mark a purchase ordser as delivered.
     UserId user_id = 2;
 
     // A time point when it was rejected.
@@ -192,14 +192,14 @@ message CannotMarkCanceledPurchaseOrderAsDelivered {
 
 // The rejection to cancel purchase order.
 //
-// It is thrown if the purchase order was delivered.
+// It is thrown if a purchase order was delivered.
 //
 message CannotCancelDeliveredPurchaseOrder {
 
-    // An identifier of the purchase order which was tried to cancel by user.
+    // An identifier of a purchase order which was tried to cancel by user.
     PurchaseOrderId po_id = 1;
 
-    // An identifier of the user who was trying to cancel the purchase order.
+    // An identifier of a user who was trying to cancel a purchase order.
     UserId user_id = 2;
 
     // A time point when it was rejected.
