@@ -64,7 +64,7 @@ message VendorAdded {
 //
 message VendorUpdated {
 
-    // An identifier of a updated vendor.
+    // An identifier of an updated vendor.
     VendorId vendor_id = 1;
 
     // An identifier of a user, who updated vendor.

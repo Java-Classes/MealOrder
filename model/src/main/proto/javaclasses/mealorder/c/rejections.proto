@@ -73,7 +73,7 @@ message CannotSetDateRange {
 
 // The rejection to create order.
 //
-// It is thrown if an order already exists.
+// It is thrown if an order for this user on the same date and for the same vendor already exists.
 //
 message OrderAlreadyExists {
 
