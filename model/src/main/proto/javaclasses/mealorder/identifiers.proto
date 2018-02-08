@@ -33,6 +33,7 @@ option java_generate_equals_and_hash = true;
 import "google/protobuf/timestamp.proto";
 import "spine/net/email_address.proto";
 import "spine/time/time.proto";
+import "javaclasses/mealorder/attributes.proto";
 
 // An ID of the user.
 //
@@ -136,15 +137,4 @@ message MonthlySpendingsReportId {
 
     // A month on which the spendings are calculated.
     LocalMonth month = 1;
-
-    // A representation of the month of the year.
-    //
-    message LocalMonth {
-
-        // A month value.
-        spine.time.MonthOfYear month = 1;
-
-        // A year value.
-        int32 year = 2;
-    }
 }
