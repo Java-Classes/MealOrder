@@ -51,6 +51,11 @@ import "javaclasses/mealorder/q/values.proto";
 // this date. This time is defined in menus vendor aggregate. See `Vendor`
 // for more details.
 //
+// Subscribes following events:
+// 1. `DateRangeForMenuSet`
+// 2. `PurchaseOrderCreated`
+// 3. `MenuImported`
+//
 message MenuListView {
 
     // An identifier of the menu list.
@@ -66,6 +71,9 @@ message MenuListView {
 // today to the same day next week. (8 elements)
 // The each date contains information about the menus availability for it.
 //
+// Subscribes following events:
+// 1. `DateRangeForMenuSet`
+//
 message MenuCalendarView {
 
     // Collection of calendar items (dates).
@@ -78,6 +86,12 @@ message MenuCalendarView {
 // specified date.
 //
 // The order date and user ID are specified by `OrderListId` value.
+//
+// Subscribes following events:
+// 1. `DishAddedToOrder`
+// 2. `DishRemovedFromOrder`
+// 3. `OrderCanceled`
+// 4. `OrderProcessed`
 //
 message OrderListView {
 
@@ -92,6 +106,10 @@ message OrderListView {
 
 // A projection state of the vendor list.
 //
+// Subscribes following events:
+// 1. `VendorAdded`
+// 2. `VendorUpdated`
+//
 message VendorListView {
 
     // Collection of all vendors.
@@ -102,6 +120,10 @@ message VendorListView {
 //
 // This view includes the list of all menus,
 // sorted by menu date range.
+//
+// Subscribes following events:
+// 1. `DateRangeForMenuSet`
+// 2. `MenuImported`
 //
 message FullMenuListView {
 
@@ -114,6 +136,15 @@ message FullMenuListView {
 // This view includes the list of all purchase orders,
 // sorted by date.
 //
+// Subscribes following events:
+// 1. `PurchaseOrderCreated`
+// 2. `PurchaseOrderDelivered`
+// 3. `PurchaseOrderSent`
+// 4. `PurchaseOrderValidationFailed`
+// 5. `PurchaseOrderValidationOverruled`
+// 6. `PurchaseOrderValidationPassed`
+// 7. `PurchaseOrderCanceled`
+//
 message PurchaseOrderListView {
 
     // Collection of purchase orders.
@@ -122,6 +153,15 @@ message PurchaseOrderListView {
 
 // A projection state of the purchase order details view
 // grouped by dish.
+//
+// Subscribes following events:
+// 1. `PurchaseOrderCreated`
+// 2. `PurchaseOrderDelivered`
+// 3. `PurchaseOrderSent`
+// 4. `PurchaseOrderValidationFailed`
+// 5. `PurchaseOrderValidationOverruled`
+// 6. `PurchaseOrderValidationPassed`
+// 7. `PurchaseOrderCanceled`
 //
 message PurchaseOrderDetailsByDishView {
 
@@ -140,6 +180,15 @@ message PurchaseOrderDetailsByDishView {
 //
 // When the purchase order is created its validation may complete with failure.
 // Those orders which caused that failure are marked as invalid.
+//
+// Subscribes following events:
+// 1. `PurchaseOrderCreated`
+// 2. `PurchaseOrderDelivered`
+// 3. `PurchaseOrderSent`
+// 4. `PurchaseOrderValidationFailed`
+// 5. `PurchaseOrderValidationOverruled`
+// 6. `PurchaseOrderValidationPassed`
+// 7. `PurchaseOrderCanceled`
 //
 message PurchaseOrderDetailsByUserView {
 
@@ -161,6 +210,10 @@ message PurchaseOrderDetailsByUserView {
 // if the report is formed for the passed month.
 // It contains user's spendings for period from  month first
 // date till today if the report is formed for the current month.
+//
+// Subscribes following events:
+// 1. `PurchaseOrderDelivered`
+// 2. `PurchaseOrderSent`
 //
 message MonthlySpendingsReportView {
 
