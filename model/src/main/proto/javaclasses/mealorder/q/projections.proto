@@ -39,7 +39,7 @@ import "javaclasses/mealorder/q/values.proto";
 
 // **** Projections for the UI role User. ****
 
-// A projection state of a menu list for the specified date.
+// A projection state of the menu list for the specified date.
 //
 // This view includes the list of actual attached menus for the specified date.
 // The date is specified by `MenuListId` value.
@@ -53,7 +53,7 @@ import "javaclasses/mealorder/q/values.proto";
 //
 message MenuListView {
 
-    // An identifier of a menu list.
+    // An identifier of the menu list.
     MenuListId list_id = 1;
 
     // Collection of menus.
@@ -72,7 +72,7 @@ message MenuCalendarView {
     repeated MenuCalendarItem calendar_items = 1;
 }
 
-// A projection state of an order list.
+// A projection state of the order list.
 //
 // This view includes the list of user's orders for the
 // specified date.
@@ -84,13 +84,13 @@ message OrderListView {
     // An identifier of the order list.
     OrderListId list_id = 1;
 
-    // Collection of user orders.
+    // Collection of user's orders.
     repeated OrderItem orders = 2;
 }
 
 // **** Projections for UI role Admin. ****
 
-// A projection state of a vendor list.
+// A projection state of the vendor list.
 //
 message VendorListView {
 
@@ -128,7 +128,7 @@ message PurchaseOrderDetailsByDishView {
     // An identifier of the purchase order.
     PurchaseOrderId id = 1;
 
-    // A purchase order status.
+    // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
 
     // Collection of dishes.
@@ -146,7 +146,7 @@ message PurchaseOrderDetailsByUserView {
     // An identifier of the purchase order.
     PurchaseOrderId id = 1;
 
-    // A purchase order status.
+    // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
 
     // Collection of orders.
@@ -157,9 +157,9 @@ message PurchaseOrderDetailsByUserView {
 //
 // The report month is specified by `MonthlySpendingsReportId`.
 //
-// This view contains user spendings for full month period
+// This view contains user's spendings for full month period
 // if the report is formed for the passed month.
-// It contains user spendings for period from  month first
+// It contains user's spendings for period from  month first
 // date till today if the report is formed for the current month.
 //
 message MonthlySpendingsReportView {
@@ -167,6 +167,6 @@ message MonthlySpendingsReportView {
     // An identifier of the monthly spendings report.
     MonthlySpendingsReportId report_id = 1;
 
-    // Collection of user spendings for the specified month.
+    // Collection of user's spendings for the specified month.
     repeated UserSpendings user_spendinds = 2;
 }

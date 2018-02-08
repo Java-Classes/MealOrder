@@ -37,7 +37,7 @@ import "spine/net/email_address.proto";
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 
-// A single item of the menu list.
+// A single item of a menu list.
 //
 // This item contains the list of dishes for the
 // specific vendor and date.
@@ -51,7 +51,7 @@ message MenuItem {
     repeated DishItem dishes = 2;
 }
 
-// A single dish item of the menu.
+// A single dish item of a menu.
 //
 // This item contains dish identifier, name, price and category.
 // The dish category is used in UI to group dishes.
@@ -71,7 +71,7 @@ message DishItem {
     spine.money.Money price = 4;
 }
 
-// An item of the menu calendar.
+// An item of a menu calendar.
 //
 // An item state indicates whether some active
 // attached menus exist for this date.
@@ -81,16 +81,16 @@ message MenuCalendarItem {
     // A date in menu calendar.
     spine.time.LocalDate date = 1;
 
-    // Indicates presence of attached menus on specified date.
+    // Indicates presence of attached menus on the specified date.
     bool has_menu = 2;
 }
 
-// An item of the order list.
+// An item of an order list.
 //
 // This item contains list of dishes.
 //
 // The item state indicates that this order is already processed
-// (included in the purchase order for this date and vendor) or not.
+// (included in the purchase order) or not.
 //
 //      // If 'true' - order can be canceled or its dish list can be
 //      // modified.
@@ -109,7 +109,7 @@ message OrderItem {
     bool is_processed = 3;
 }
 
-// An item of the vendor list.
+// An item of a vendor list.
 //
 message VendorItem {
 
@@ -125,25 +125,25 @@ message VendorItem {
     // Phone numbers of the vendor.
     repeated PhoneNumber phone_numbers = 4;
 
-    // A daily purchase order creation deadline.
+    // A daily purchase order creation deadline time.
     spine.time.LocalTime po_daily_deadline = 5;
 }
 
-// An item of the full menu list.
+// An item of a full menu list.
 //
 message FullMenuItem {
 
     // An identifier of the menu.
     MenuId menu_id = 1;
 
-    // A date range when this menu is available.
+    // Date range when this menu is available.
     MenuDateRange menu_date_range = 2;
 
     // Collection of dishes.
     repeated DishItem dishes = 3;
 }
 
-// An item of the purchase order list.
+// An item of a purchase order list.
 //
 // When the purchase order is automatically created at the
 // vendors `poDailyDeadline` time the validation process is performed.
@@ -166,8 +166,8 @@ message FullMenuItem {
 // in some reason its status gets `CANCELED` value.
 //
 // When administrator receives ordered dishes and checks
-// the accordance to the purchase order dish list, he should
-// mark the purchase order as delivered. After this purchase order
+// the accordance to the purchase order dish list, he marks
+// the purchase order as delivered. After this purchase order
 // status gets `DELIVERED` value.
 //
 message PurchaseOrderItem {
@@ -175,7 +175,7 @@ message PurchaseOrderItem {
     // An identifier of the purchase order.
     PurchaseOrderId id = 1;
 
-    // A purchase order status.
+    // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
 }
 
@@ -197,7 +197,7 @@ enum PurchaseOrderStatus {
     CANCELED = 5;
 }
 
-// An item of the order list.
+// An item of an order list.
 //
 // Used in the purchase order details veiw grouped by User.
 //
@@ -206,17 +206,17 @@ enum PurchaseOrderStatus {
 //
 message UserOrderDetails {
 
-    // An identifier of user.
+    // An identifier of the user.
     UserId id = 1;
 
     // Collection of dishes.
     repeated DishItem dishes = 2;
 
-    // An order validation status.
+    // Order validation status.
     bool is_valid = 3;
 }
 
-// An item of the monthly spendings report view.
+// An item of monthly spendings report view.
 //
 // This item represents the user with its spendings amount.
 //
