@@ -38,14 +38,14 @@ import "spine/net/email_address.proto";
 
 // The model representing a dish.
 //
-// This is one item from a menu, represented by the name of a dish, its price and categoty.
+// This is one item from a menu, represented by the name of the dish, its price and categoty.
 //
 message Dish {
 
-    // An identifier of a dish.
+    // An identifier of the dish.
     DishId id = 1;
 
-    // Name of a dish.
+    // Name of the dish.
     string name = 2;
 
     // A category to which the dish belongs.
@@ -57,60 +57,61 @@ message Dish {
 
 // The model representing a menu.
 //
-// The menu is represented by a collection of dishes and the date range when this menu is available.
+// The menu is represented by a collection of dishes and date range when this menu is available.
 //
 message Menu {
 
-    // An identifier of a menu.
+    // An identifier of the menu.
     MenuId id = 1;
 
-    // A date range when this menu is available.
+    // Date range when this menu is available.
     MenuDateRange menu_date_range = 2;
 
-    // A collection of all dishes.
+    // Collection of dishes.
     repeated Dish dishes = 3;
 }
 
-// The model representing the aggregate Order.
+// The model representing the `Order` aggregate.
 //
 message Order {
 
-    // An identifier of a oder.
+    // An identifier of the oder.
     OrderId id = 1;
 
-    // A collection of all dishes of one user per date.
+    // Collection of dishes.
     repeated Dish dishes = 2;
 }
-// The model representing the aggregate Order.
+
+// The model representing the `PurchaseOrder` aggregate.
 //
 message PurchaseOrder {
 
-    // An identifier of a purchase order.
+    // An identifier of the purchase order.
     PurchaseOrderId id = 1;
 
-    // A collection of all orders for one vendor per date.
+    // Collection of orders.
     repeated Order orders = 2;
 }
 
-// The model representing the aggregate Vendor.
+// The model representing the `Vendor` aggregate.
 //
 message Vendor {
 
-    // An identifier of a vendor.
+    // An identifier of the vendor.
     VendorId id = 1;
 
-    // A name of a vendor
+    // A name of the vendor
     VendorName vendor_name = 2;
 
-    // An email address to send an purchase order.
+    // An email address to send the purchase order.
     spine.net.EmailAddress email = 3;
 
-    // Phone numbers of a vendor.
+    // Phone numbers of the vendor.
     repeated PhoneNumber phone_numbers = 4;
 
-    // A daily deadline.
+    // A daily deadline time.
     //
-    // Time of closing orders for this vendor for editing.
+    // Time when orders for this vendor are closed for editing.
     // A purchase order for this vendor will be created exactly at this time.
     spine.time.LocalTime po_daily_deadline = 5;
 }

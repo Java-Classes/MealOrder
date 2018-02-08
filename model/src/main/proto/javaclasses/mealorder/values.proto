@@ -47,14 +47,15 @@ message MenuDateRange {
     spine.time.LocalDate range_end = 2;
 }
 
-// The model that represents phone number.
+// The model that represents a phone number.
 //
 message PhoneNumber {
 
+    // String representation of the phone number.
     string value = 1;
 }
 
-// The model that represents vendor name.
+// The model that represents a vendor name.
 //
 message VendorName {
 
@@ -62,25 +63,25 @@ message VendorName {
     string value = 1;
 }
 
-// Definition of a change in a vendor fields.
+// Definition of a change in vendor fields.
 //
 message VendorChange {
 
-    // An e-mail address that's changing.
+    // An email address that's changing.
     spine.net.EmailAddress previous_email = 1;
 
-    // A phone numbers that are changing.
+    // Phone numbers that are changing.
     repeated PhoneNumber previous_phone_numbers = 2;
 
-    // A daily deadline that's changing.
+    // A daily deadline time that's changing.
     spine.time.LocalTime previous_po_daily_deadline = 3;
 
-    // A new e-mail adress.
+    // A new email adress.
     spine.net.EmailAddress new_email = 4;
 
-    // A new phone numbers of the vendor.
+    // New phone numbers.
     repeated PhoneNumber new_phone_numbers = 5;
 
-    // A new daily deadline.
+    // A new daily deadline time.
     spine.time.LocalTime new_po_daily_deadline = 6;
 }

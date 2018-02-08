@@ -33,18 +33,19 @@ option java_generate_equals_and_hash = true;
 import "google/protobuf/timestamp.proto";
 import "spine/net/email_address.proto";
 import "spine/time/time.proto";
+import "javaclasses/mealorder/attributes.proto";
 
-// An ID of a user.
+// An ID of the user.
 //
 // An identifier is represented by user email address.
 //
 message UserId {
 
-    // User's e-mail.
+    // User's email.
     spine.net.EmailAddress email = 1;
 }
 
-// An ID of a vendor.
+// An ID of the vendor.
 //
 // An identifier is represented by vendor's name which is unique for each vendor.
 //
@@ -56,55 +57,55 @@ message VendorId {
     string value = 1;
 }
 
-// An ID of an order.
+// An ID of the order.
 //
-// An identifier is represented by vendor ID, user ID and order date.
+// An identifier is represented by a vendor ID, a user ID and an order date.
 //
 message OrderId {
 
-    // An identifier of a vendor.
+    // An identifier of the vendor.
     VendorId vendor_id = 1;
 
-    // An identifier of a user who makes an order.
+    // An identifier of the user who makes the order.
     UserId user_id = 2;
 
-    // A date of an order.
+    // A date of the order.
     spine.time.LocalDate order_date = 3;
 }
 
-// An ID of a menu.
+// An ID of the menu.
 //
 // An identifier is represented by vendor ID and imported time.
 //
 message MenuId {
 
-    // An identifier of a vendor.
+    // An identifier of the vendor.
     VendorId vendor_id = 1;
 
     // Menu imported time.
     google.protobuf.Timestamp when_imported = 2;
 }
 
-// An ID of a dish.
+// An ID of the dish.
 //
-// An identifier is represented by a dish sequential number in a menu and menu ID.
+// An identifier is represented by a dish sequential number in a menu and a menu ID.
 //
 message DishId {
 
-    // A sequence number of a dish in a menu.
+    // A sequence number of the dish in the menu.
     int32 sequential_number = 1;
 
-    // An identifier of a menu.
+    // An identifier of the menu.
     MenuId menu_id = 2;
 }
 
-// An ID of a purchase order, represented by vendor ID and purchase order date.
+// An ID of a purchase order.
 //
-// An identifier is represented by vendor ID and purchase order date.
+// An identifier is represented by a vendor ID and a purchase order date.
 //
 message PurchaseOrderId {
 
-    // An identifier of a vendor.
+    // An identifier of the vendor.
     VendorId vendor_id = 1;
 
     // A date on which this purchase order is formed.
@@ -136,15 +137,4 @@ message MonthlySpendingsReportId {
 
     // A month on which the spendings are calculated.
     LocalMonth month = 1;
-
-    // A representation of a month of year.
-    //
-    message LocalMonth {
-
-        // A month value.
-        spine.time.MonthOfYear month = 1;
-
-        // A year value.
-        int32 year = 2;
-    }
 }
