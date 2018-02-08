@@ -25,7 +25,7 @@ package javaclasses.mealorder.q;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.javaclasses.mealorder";
-option java_package = "io.javaclasses.mealorder.q.projection";
+option java_package = "io.javaclasses.mealorder.q";
 option java_outer_classname = "ProjectionsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
@@ -35,7 +35,7 @@ import "spine/time/time.proto";
 import "spine/money/money.proto";
 import "spine/net/email_address.proto";
 import "javaclasses/mealorder/identifiers.proto";
-import "javaclasses/mealorder/values.proto";
+import "javaclasses/mealorder/q/values.proto";
 
 // **** Projections for the UI role User. ****
 
@@ -60,40 +60,6 @@ message MenuListView {
     repeated MenuItem menus = 2;
 }
 
-// A single item of the menu list.
-//
-// This item contains the list of dishes for the
-// specific vendor and date.
-//
-message MenuItem {
-
-    // A vendor name.
-    VendorName vendor_name = 1;
-
-    // Collection of dishes.
-    repeated DishItem dishes = 2;
-}
-
-// A single dish item of the menu.
-//
-// This item contains dish identifier, name, price and category.
-// The dish category is used in UI to group dishes.
-//
-message DishItem {
-
-    // An identifier of the dish.
-    DishId id = 1;
-
-    // A name of the dish.
-    string name = 2;
-
-    // A dish category.
-    string category = 3;
-
-    // A dish price.
-    spine.money.Money price = 4;
-}
-
 // A projection state of the menu calendar.
 //
 // This view includes the list of dates in range from
@@ -104,20 +70,6 @@ message MenuCalendarView {
 
     // Collection of calendar items (dates).
     repeated MenuCalendarItem calendar_items = 1;
-}
-
-// An item of the menu calendar.
-//
-// An item state indicates whether some active
-// attached menus exist for this date.
-//
-message MenuCalendarItem {
-
-    // A date in menu calendar.
-    spine.time.LocalDate date = 1;
-
-    // Indicates presence of attached menus on specified date.
-    bool has_menu = 2;
 }
 
 // A projection state of an order list.
@@ -136,30 +88,6 @@ message OrderListView {
     repeated OrderItem orders = 2;
 }
 
-// An item of the order list.
-//
-// This item contains list of dishes.
-//
-// The item state indicates that this order is already processed
-// (included in the purchase order for this date and vendor) or not.
-//
-//      // If 'true' - order can be canceled or its dish list can be
-//      // modified.
-//
-//      // If 'false' - editing or canceling of such order is not possible.
-//
-message OrderItem {
-
-    // An identifier of the order.
-    OrderId id = 1;
-
-    // Collection of the ordered dishes.
-    repeated DishItem dishes = 2;
-
-    // Indicates order is processed or not.
-    bool is_processed = 3;
-}
-
 // **** Projections for UI role Admin. ****
 
 // A projection state of a vendor list.
@@ -168,26 +96,6 @@ message VendorListView {
 
     // Collection of all vendors.
     repeated VendorItem vendors = 1;
-}
-
-// An item of the vendor list.
-//
-message VendorItem {
-
-    // An identifier of the vendor.
-    VendorId id = 1;
-
-    // A vendor name.
-    VendorName vendor_name = 2;
-
-    // A vendor email address.
-    spine.net.EmailAddress email = 3;
-
-    // Phone numbers of the vendor.
-    repeated PhoneNumber phone_numbers = 4;
-
-    // A daily purchase order creation deadline.
-    spine.time.LocalTime po_daily_deadline = 5;
 }
 
 // A projection state of the full menu list.
@@ -201,20 +109,6 @@ message FullMenuListView {
     repeated FullMenuItem menus = 1;
 }
 
-// An item of the full menu list.
-//
-message FullMenuItem {
-
-    // An identifier of the menu.
-    MenuId menu_id = 1;
-
-    // A date range when this menu is available.
-    MenuDateRange menu_date_range = 2;
-
-    // Collection of dishes.
-    repeated DishItem dishes = 3;
-}
-
 // A projection state of the purchase order list.
 //
 // This view includes the list of all purchase orders,
@@ -224,60 +118,6 @@ message PurchaseOrderListView {
 
     // Collection of purchase orders.
     repeated PurchaseOrderItem purchase_orders = 1;
-}
-
-// An item of the purchase order list.
-//
-// When the purchase order is automatically created at the
-// vendors `poDailyDeadline` time the validation process is performed.
-//
-// If validation process has failed the purchase order status gets `INVALID` value.
-// If administrator decides to overrule failed validation and mark the
-// purchase order as valid it is automatically
-// sent to vendor.
-//
-// If validation process is completed successfully the purchase order is automatically
-// sent to vendor.
-//
-// If sending process hasn't caused errors, the purchase order status
-// gets `SENT` value.
-//
-// If errors occurred while sending the purchase order to vendor
-// its status gets `ERROR` value.
-//
-// When administrator decides to cancel the purchase order
-// in some reason its status gets `CANCELED` value.
-//
-// When administrator receives ordered dishes and checks
-// the accordance to the purchase order dish list, he should
-// mark the purchase order as delivered. After this purchase order
-// status gets `DELIVERED` value.
-//
-message PurchaseOrderItem {
-
-    // An identifier of the purchase order.
-    PurchaseOrderId id = 1;
-
-    // A purchase order status.
-    PurchaseOrderStatus purchase_order_status = 2;
-}
-
-// A purchase order status values.
-//
-enum PurchaseOrderStatus {
-
-    // Used as an undefined value marker.
-    POS_UNDEFINED = 0;
-
-    SENT = 1;
-
-    ERROR = 2;
-
-    INVALID = 3;
-
-    DELIVERED = 4;
-
-    CANCELED = 5;
 }
 
 // A projection state of the purchase order details view
@@ -313,25 +153,6 @@ message PurchaseOrderDetailsByUserView {
     repeated UserOrderDetails orders = 3;
 }
 
-// An item of the order list.
-//
-// Used in the purchase order details veiw grouped by User.
-//
-// This item contains user identifier, list of ordered dishes and
-// order validation status.
-//
-message UserOrderDetails {
-
-    // An identifier of user.
-    UserId id = 1;
-
-    // Collection of dishes.
-    repeated DishItem dishes = 2;
-
-    // An order validation status.
-    bool is_valid = 3;
-}
-
 // A projection state of the monthly spendings report view.
 //
 // The report month is specified by `MonthlySpendingsReportId`.
@@ -348,17 +169,4 @@ message MonthlySpendingsReportView {
 
     // Collection of user spendings for the specified month.
     repeated UserSpendings user_spendinds = 2;
-}
-
-// An item of the monthly spendings report view.
-//
-// This item represents the user with its spendings amount.
-//
-message UserSpendings {
-
-    // An identifier of the user.
-    UserId id = 1;
-
-    // Amount of spendings.
-    spine.money.Money amount = 2;
 }
