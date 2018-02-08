@@ -25,7 +25,7 @@ package javaclasses.mealorder;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.javaclasses.mealorder";
-option java_package = "io.javaclasses.mealorder";
+option java_package = "javaclasses.mealorder";
 option java_outer_classname = "ModelProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
@@ -36,38 +36,38 @@ import "spine/money/money.proto";
 import "spine/time/time.proto";
 import "spine/net/email_address.proto";
 
-// The model representing a dish.
+// The model of a dish.
 //
-// This is one item from a menu, represented by the name of the dish, its price and categoty.
+// Dish is an item of the menu, represented by the name of a dish, its price and categoty.
 //
 message Dish {
 
-    // An identifier of the dish.
+    // The identifier of a dish.
     DishId id = 1;
 
-    // Name of the dish.
+    // The name of a dish.
     string name = 2;
 
-    // A category to which the dish belongs.
+    // A dish category.
     string category = 3;
 
     // A dish price.
     spine.money.Money price = 4;
 }
 
-// The model representing a menu.
+// The model of a menu.
 //
-// The menu is represented by a collection of dishes and date range when this menu is available.
+// Menu is represented by the collection of dishes and the date range when available.
 //
 message Menu {
 
-    // An identifier of the menu.
+    // The identifier of a menu.
     MenuId id = 1;
 
-    // Date range when this menu is available.
+    // The date range when available.
     MenuDateRange menu_date_range = 2;
 
-    // Collection of dishes.
+    // The collection of dishes.
     repeated Dish dishes = 3;
 }
 
@@ -75,10 +75,10 @@ message Menu {
 //
 message Order {
 
-    // An identifier of the oder.
+    // The identifier of an order.
     OrderId id = 1;
 
-    // Collection of dishes.
+    // The collection of dishes.
     repeated Dish dishes = 2;
 }
 
@@ -86,10 +86,10 @@ message Order {
 //
 message PurchaseOrder {
 
-    // An identifier of the purchase order.
+    // The identifier of a purchase order.
     PurchaseOrderId id = 1;
 
-    // Collection of orders.
+    // The collection of orders.
     repeated Order orders = 2;
 }
 
@@ -97,21 +97,21 @@ message PurchaseOrder {
 //
 message Vendor {
 
-    // An identifier of the vendor.
+    // The identifier of a vendor.
     VendorId id = 1;
 
-    // A name of the vendor
+    // The name of a vendor
     VendorName vendor_name = 2;
 
-    // An email address to send the purchase order.
+    // The email address to send a purchase order.
     spine.net.EmailAddress email = 3;
 
-    // Phone numbers of the vendor.
+    // The phone numbers of a vendor.
     repeated PhoneNumber phone_numbers = 4;
 
-    // A daily deadline time.
+    // The daily deadline time.
     //
-    // Time when orders for this vendor are closed for editing.
-    // A purchase order for this vendor will be created exactly at this time.
+    // The time when orders for this vendor are closed for editing.
+    // The purchase order for the specified vendor will be created exactly at this time.
     spine.time.LocalTime po_daily_deadline = 5;
 }
