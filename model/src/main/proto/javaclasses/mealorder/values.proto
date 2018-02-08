@@ -63,7 +63,7 @@ message VendorName {
     string value = 1;
 }
 
-// The representation of changes in vendor fields.
+// The representation of changes in a vendor profile.
 //
 message VendorChange {
 
