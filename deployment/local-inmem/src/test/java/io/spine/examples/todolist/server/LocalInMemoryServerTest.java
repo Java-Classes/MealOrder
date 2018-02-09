@@ -30,7 +30,7 @@ class LocalInMemoryServerTest {
 
     @Test
     @DisplayName("have the private parameterless constructor")
-    void havePrivateCtor() {
+    public void havePrivateCtor() {
         assertHasPrivateParameterlessCtor(LocalInMemoryServer.class);
     }
 }
