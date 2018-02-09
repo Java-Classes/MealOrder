@@ -20,5 +20,7 @@
 
 dependencies {
     compile project(path: ':model')
-    compile project(path: ':api-java')
+    compile group: 'io.spine', name: 'spine-server', version: spineVersion
+
+    testCompile project(':testutil-api')
 }

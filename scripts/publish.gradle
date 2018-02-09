@@ -18,17 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Apply this script if it is needed to generate Protobuf descriptor set (special files with `.desc` extension).
-// These files may be needed by Gradle plugins to obtain descriptors of `.proto` files of this project.
-protobuf {
-    generateProtoTasks {
-        all().each { final task ->
-            task.plugins {
-                task.generateDescriptorSet = true
-                task.descriptorSetOptions.path = "$projectDir/build/descriptors/${task.sourceSet.name}.desc"
-                task.descriptorSetOptions.includeImports = true
-                task.descriptorSetOptions.includeSourceInfo = true
-            }
+// Apply this script to add ability to publish the needed artifacts.
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier "sources"
+}
+
+task javadocJar(type: Jar, dependsOn: 'javadoc') {
+    from ("$projectDir/build/docs/javadoc")
+    classifier "javadoc"
+}
+
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar
+            artifact javadocJar
         }
     }
 }

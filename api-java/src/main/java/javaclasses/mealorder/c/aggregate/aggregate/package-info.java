@@ -18,7 +18,10 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-dependencies {
-    compile project(path: ':model')
-    compile project(path: ':api-java')
-}
+/**
+ * This package provides implementation for aggregate classes.
+ */
+@ParametersAreNonnullByDefault
+package javaclasses.mealorder.c.aggregate.aggregate;
+
+import javax.annotation.ParametersAreNonnullByDefault;

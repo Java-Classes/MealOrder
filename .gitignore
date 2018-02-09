@@ -1,10 +1,24 @@
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
 # IntelliJ IDEA modules and interim config files.
 *.iml
+.idea/artifacts
 .idea/libraries
 .idea/shelf
 .idea/*.xml
 
+# Do not ingore Gradle Wrapper runtime
+!/gradle/wrapper/gradle-wrapper.jar
+!/client-android/gradle/wrapper/gradle-wrapper.jar
+
 # Do not ignore code style settings.
+!/.idea/codeStyles
 !/.idea/codeStyleSettings.xml
 
 # Gradle interim configs
@@ -19,13 +33,16 @@ build/
 # IDEA build files
 out/
 
-# Spine temporary artifact storage
+# Spine temp arfifact storage
 .spine/
-
 
 # Login details to Maven repository.
 # Each workstation should have developer's login defined in this file.
 credentials.properties
+
+# Credential files for Travis CI (to prevent accidental check-in).
+credentials.tar.gz
+client-secret.json
 
 #
 # The gradle.properties file should contain settings specific to a developer's workstation.
@@ -40,3 +57,11 @@ credentials.properties
 # org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/
 # -------
 gradle.properties
+
+# Firebase debug log
+firebase-debug.log
+
+# Google/Firebase settings
+# Must be kept secure (out of public Git repository at least)
+serviceAccount.json
+google-services.json

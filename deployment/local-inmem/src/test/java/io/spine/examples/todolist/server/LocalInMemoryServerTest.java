@@ -18,7 +18,19 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-dependencies {
-    compile project(path: ':model')
-    compile project(path: ':api-java')
+package io.spine.examples.todolist.server;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+
+@DisplayName("LocalInMemoryServer should")
+class LocalInMemoryServerTest {
+
+    @Test
+    @DisplayName("have the private parameterless constructor")
+    public void havePrivateCtor() {
+        assertHasPrivateParameterlessCtor(LocalInMemoryServer.class);
+    }
 }

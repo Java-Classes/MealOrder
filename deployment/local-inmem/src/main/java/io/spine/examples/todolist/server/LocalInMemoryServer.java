@@ -18,7 +18,33 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-dependencies {
-    compile project(path: ':model')
-    compile project(path: ':api-java')
+package io.spine.examples.todolist.server;
+
+import javaclasses.mealorder.server.Server;
+
+import java.io.IOException;
+
+import static io.spine.client.ConnectionConstants.DEFAULT_CLIENT_SERVICE_PORT;
+import static javaclasses.mealorder.c.aggregate.context.BoundedContexts.create;
+import static javaclasses.mealorder.server.Server.newServer;
+
+/**
+ * A local {@link Server} using
+ * {@link io.spine.server.storage.memory.InMemoryStorageFactory InMemoryStorageFactory}.
+ *
+ * <p>The server exposes its {@code gRPC API} at
+ * {@linkplain io.spine.client.ConnectionConstants#DEFAULT_CLIENT_SERVICE_PORT default port}.
+ *
+ * @author Yurii Haidamaka
+ */
+public class LocalInMemoryServer {
+
+    private LocalInMemoryServer() {
+        // Prevent instantiation of this class.
+    }
+
+    public static void main(String[] args) throws IOException {
+        final Server server = newServer(DEFAULT_CLIENT_SERVICE_PORT, create());
+        server.start();
+    }
 }

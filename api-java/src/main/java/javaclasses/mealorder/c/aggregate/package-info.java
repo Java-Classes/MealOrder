@@ -18,7 +18,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-dependencies {
-    compile project(path: ':model')
-    compile project(path: ':api-java')
-}
+/**
+ * This package contains implementation for classes which provides
+ * methods to process aggregates and projection.
+ */
+@ParametersAreNonnullByDefault
+package javaclasses.mealorder.c.aggregate;
+
+import javax.annotation.ParametersAreNonnullByDefault;
