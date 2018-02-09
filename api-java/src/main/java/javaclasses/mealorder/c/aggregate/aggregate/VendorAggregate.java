@@ -24,14 +24,20 @@ import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorVBuilder;
 import javaclasses.mealorder.c.command.AddVendor;
+import javaclasses.mealorder.c.command.ImportMenu;
+import javaclasses.mealorder.c.command.UpdateVendor;
+import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.VendorAdded;
+import javaclasses.mealorder.c.event.VendorUpdated;
 
 import java.util.List;
 
+import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
 
 /**
@@ -74,6 +80,36 @@ public class VendorAggregate extends Aggregate<VendorId,
         return singletonList(vendorAdded);
     }
 
+    @Assign
+    List<? extends Message> handle(UpdateVendor cmd) {
+
+        final VendorUpdated vendorAdded = VendorUpdated.newBuilder()
+                                                       .setVendorId(cmd.getVendorId())
+                                                       .setWhoUploaded(cmd.getUserId())
+                                                       .setWhenUpdated(getCurrentTime())
+                                                       .setVendorChange(cmd.getVendorChange())
+                                                       .build();
+        return singletonList(vendorAdded);
+    }
+
+    @Assign
+    List<? extends Message> handle(ImportMenu cmd) {
+
+        final MenuId menuId = MenuId.newBuilder()
+                                    .setVendorId(cmd.getVendorId())
+                                    .setWhenImported(getCurrentTime())
+                                    .build();
+
+        final MenuImported menuImported = MenuImported.newBuilder()
+                                                      .setVendorId(cmd.getVendorId())
+                                                      .setMenuId(menuId)
+                                                      .setWhoImported(cmd.getUserId())
+                                                      .setWhenImported(getCurrentTime())
+                                                      .addAllDishes(cmd.getDishesList())
+                                                      .build();
+        return singletonList(menuImported);
+    }
+
     @Apply
     private void vendorAdded(VendorAdded event) {
 
@@ -83,6 +119,27 @@ public class VendorAggregate extends Aggregate<VendorId,
                     .setPoDailyDeadline(event.getPoDailyDeadline())
                     .addAllPhoneNumbers(event.getPhoneNumbersList());
     }
+
+    @Apply
+    private void vendorUpdated(VendorUpdated event) {
+
+        getBuilder().setId(event.getVendorId())
+                    .setVendorName(event.getVendorChange()
+                                        .getNewVendorName())
+                    .setEmail(event.getVendorChange()
+                                   .getNewEmail())
+                    .setPoDailyDeadline(event.getVendorChange()
+                                             .getNewPoDailyDeadline())
+                    .addAllPhoneNumbers(event.getVendorChange()
+                                             .getNewPhoneNumbersList());
+    }
+
+    @Apply
+    private void menuImported(MenuImported event) {
+
+        getBuilder().setId(event.getVendorId());
+    }
+
 }
 
 
