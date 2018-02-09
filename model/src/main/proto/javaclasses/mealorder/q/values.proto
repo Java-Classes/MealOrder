@@ -124,7 +124,7 @@ message VendorItem {
     // Phone numbers of the vendor.
     repeated PhoneNumber phone_numbers = 4;
 
-    // The daily purchase order creation deadline time.
+    // Daily purchase order creation deadline time.
     spine.time.LocalTime po_daily_deadline = 5;
 }
 
@@ -145,7 +145,7 @@ message FullMenuItem {
 // The item of the purchase order list.
 //
 // When a purchase order is automatically created at the
-// vendors `poDailyDeadline` time the validation process is performed.
+// vendor `poDailyDeadline` time the validation process is performed.
 //
 // If validation process has failed a purchase order status gets `INVALID` value.
 // If the administrator decides to overrule failed validation and mark a

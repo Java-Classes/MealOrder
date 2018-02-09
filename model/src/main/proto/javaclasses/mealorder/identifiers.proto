@@ -73,14 +73,14 @@ message OrderId {
 
 // The ID of a menu.
 //
-// Represented by the vendor ID and the time when imported.
+// Represented by the vendor ID and time when imported.
 //
 message MenuId {
 
     // The identifier of the vendor.
     VendorId vendor_id = 1;
 
-    // The time when imported.
+    // Was imported at this time.
     google.protobuf.Timestamp when_imported = 2;
 }
 

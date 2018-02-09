@@ -48,7 +48,7 @@ message VendorAlreadyExists {
     // The name of the existing vendor.
     VendorName vendor_name = 2;
 
-    // The time when addition was rejected.
+    // Addition was rejected at this time.
     google.protobuf.Timestamp when_rejected = 3;
 }
 
@@ -67,7 +67,7 @@ message CannotSetDateRange {
     // Date range that was been attempted to set.
     MenuDateRange menu_date_range = 3;
 
-    // The time when setting was rejected.
+    // Setting was rejected at this time.
     google.protobuf.Timestamp when_rejected = 4;
 }
 
@@ -80,7 +80,7 @@ message OrderAlreadyExists {
     // The identifier of the existing order.
     OrderId order_id = 1;
 
-    // The time when order creation was rejected.
+    // Creation was rejected at this time.
     google.protobuf.Timestamp when_rejected = 2;
 }
 
@@ -99,7 +99,7 @@ message MenuNotAvailable {
     // The date on which the user attempted to create an order.
     spine.time.LocalDate order_date = 3;
 
-    // The time when order creation was rejected.
+    // Creation was rejected at this time.
     google.protobuf.Timestamp when_rejected = 4;
 
 }
@@ -122,7 +122,7 @@ message DishVendorMismatch {
     // The mismatching vendor value.
     spine.change.ValueMismatch vendor_mismatch = 4;
 
-    // The time when dish addition was rejected.
+    // Addition was rejected at this time.
     google.protobuf.Timestamp when_rejected = 5;
 }
 
@@ -141,7 +141,7 @@ message CannotRemoveMissingDish {
     // The identifier of a dish which the user tried to remove from the order.
     DishId dish_id = 3;
 
-    // The time when a dish removing was rejected.
+    // Removing was rejected at this time.
     google.protobuf.Timestamp when_rejected = 4;
 }
 
@@ -157,7 +157,7 @@ message CannotCancelProcessedOrder {
     // The identifier of the user who tried to cancel an order.
     UserId user_id = 2;
 
-    // The time when an order cancellation was rejected.
+    // Cancellation was rejected at this time.
     google.protobuf.Timestamp when_rejected = 3;
 }
 
@@ -173,7 +173,7 @@ message CannotCreatePurchaseOrder {
     // The date on which a purchase order creation was rejected.
     spine.time.LocalDate purchase_order_date = 2;
 
-    // The time when a purchase order creation was rejected.
+    // Creation was rejected at this time.
     google.protobuf.Timestamp when_rejected = 3;
 }
 
@@ -189,7 +189,7 @@ message CannotMarkCanceledPurchaseOrderAsDelivered {
     // The identifier of the user who tried to mark a purchase ordser as delivered.
     UserId user_id = 2;
 
-    // The time when it was rejected.
+    // Rejected at this time.
     google.protobuf.Timestamp when_rejected = 3;
 }
 
@@ -205,6 +205,6 @@ message CannotCancelDeliveredPurchaseOrder {
     // The identifier of the user who tried to cancel a purchase order.
     UserId user_id = 2;
 
-    // The time when a purchase order cancellation was rejected.
+    // Cancellation was rejected at this time.
     google.protobuf.Timestamp when_rejected = 3;
 }

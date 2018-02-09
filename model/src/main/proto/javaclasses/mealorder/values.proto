@@ -73,7 +73,7 @@ message VendorChange {
     // Phone numbers that are changing.
     repeated PhoneNumber previous_phone_numbers = 2;
 
-    // The daily deadline time that's changing.
+    // Daily deadline time that's changing.
     spine.time.LocalTime previous_po_daily_deadline = 3;
 
     // The new email adress.

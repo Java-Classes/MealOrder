@@ -47,7 +47,7 @@ message VendorAdded {
     // The identifier of the user who added a vendor.
     UserId who_added = 2;
 
-    // The time of addition.
+    // Was added at this time.
     google.protobuf.Timestamp when_added = 3;
 
     // The email adress to send a purchase order.
@@ -70,7 +70,7 @@ message VendorUpdated {
     // The identifier of the user who updated a vendor profile.
     UserId who_uploaded = 2;
 
-    // The time of update.
+    // Was updated at this time.
     google.protobuf.Timestamp when_updated = 3;
 
     // Changes in a vendor profile.
@@ -93,7 +93,7 @@ message MenuImported {
     // The identifier of the user who imported a menu.
     UserId who_imported = 3;
 
-    // The time of import.
+    // Was imported at this time.
     google.protobuf.Timestamp when_imported = 4;
 
     // The collection of menu dishes.
@@ -110,7 +110,7 @@ message DateRangeForMenuSet {
     // The identifier of the user who set date range.
     UserId who_set = 2;
 
-    // Date range setting time.
+    // Was set at this time.
     google.protobuf.Timestamp when_set = 3;
 
     // Date range that has been set.
@@ -129,7 +129,7 @@ message OrderCreated {
     // The identifier of the menu which contains dishes that can be added to an order.
     MenuId menu_id = 2;
 
-    // The time of an order creation.
+    // Was created at this time.
     google.protobuf.Timestamp when_created = 3;
 }
 
@@ -143,7 +143,7 @@ message DishAddedToOrder {
     // The identifier of a dish.
     DishId dish_id = 2;
 
-    // The time of adding a dish.
+    // Was added at this time.
     google.protobuf.Timestamp when_added = 3;
 }
 
@@ -157,7 +157,7 @@ message DishRemovedFromOrder {
     // The identifier of a dish.
     DishId dish_id = 2;
 
-    // The time of removing a dish.
+    // Was removed at this time.
     google.protobuf.Timestamp when_removed = 3;
 }
 
@@ -171,7 +171,7 @@ message OrderCanceled {
     // The identifier of the user who canceled an order.
     UserId who_canceled = 2;
 
-    // The time of order cancellation.
+    // Was canceled at this time.
     google.protobuf.Timestamp when_canceled = 3;
 }
 
@@ -182,7 +182,7 @@ message OrderProcessed {
     // An order that was added to the purchase order.
     Order order = 1;
 
-    // The time of an order addition to the purchase order.
+    // Was added to the purchase order at this time.
     google.protobuf.Timestamp when_processed = 2;
 }
 
@@ -193,7 +193,7 @@ message PurchaseOrderCreated {
     // The identifier of a purchase order.
     PurchaseOrderId id = 1;
 
-    // The time of creation.
+    // Was created at this time.
     google.protobuf.Timestamp when_created = 2;
 
     // The identifier of the user who created a purchase order.
@@ -213,7 +213,7 @@ message PurchaseOrderDelivered {
     // The identifier of the user who marked a purchase order as delivered.
     UserId who_marked_as_delivered = 2;
 
-    // The time when delivered.
+    // Was delivered at this time.
     google.protobuf.Timestamp when_delievered = 3;
 }
 
@@ -224,7 +224,7 @@ message PurchaseOrderSent {
     // The identifier of a purchase order.
     PurchaseOrder purchase_order = 1;
 
-    // The time when sent.
+    // Was sent at this time.
     google.protobuf.Timestamp when_sent = 2;
 
     // The email address of the sender.
@@ -250,7 +250,7 @@ message PurchaseOrderValidationFailed {
     // The collection of orders that caused a failure of validation.
     repeated Order failure_orders = 2;
 
-    // The time when validation failed.
+    // Validation failed at this time.
     google.protobuf.Timestamp when_failed = 3;
 }
 
@@ -267,7 +267,7 @@ message PurchaseOrderValidationOverruled {
     // The reason why validation is overruled.
     string reason = 3;
 
-    // The time when validation was overruled.
+    // Validation was overruled at this time.
     google.protobuf.Timestamp when_overruled = 4;
 }
 
@@ -278,7 +278,7 @@ message PurchaseOrderValidationPassed {
     // The identifier of a purchase order.
     PurchaseOrderId id = 1;
 
-    // The time when validation completed successfully.
+    // Validation completed successfully at this time.
     google.protobuf.Timestamp when_passed = 2;
 }
 
@@ -292,7 +292,7 @@ message PurchaseOrderCanceled {
     // The identifier of the user who cancelled a purchase order.
     UserId user_id = 2;
 
-    // The time when canceled.
+    // Was canceled at this time.
     google.protobuf.Timestamp when_canceled = 3;
 
     // The reason of cancellation.

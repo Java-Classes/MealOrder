@@ -109,9 +109,9 @@ message Vendor {
     // The phone numbers of a vendor.
     repeated PhoneNumber phone_numbers = 4;
 
-    // The daily deadline time.
+    // Daily deadline time.
     //
-    // The time when orders for this vendor are closed for editing.
+    // Time when orders for this vendor are closed for editing.
     // The purchase order for the specified vendor will be created exactly at this time.
     spine.time.LocalTime po_daily_deadline = 5;
 }
