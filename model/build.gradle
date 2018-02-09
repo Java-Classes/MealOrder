@@ -49,3 +49,27 @@ protobuf {
 
     generatedFilesBaseDir = generatedRootDir
 }
+
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier "sources"
+}
+
+task javadocJar(type: Jar, dependsOn: 'javadoc') {
+    from ("$projectDir/build/docs/javadoc")
+    classifier "javadoc"
+}
+
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar
+            artifact javadocJar
+        }
+    }
+}

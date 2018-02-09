@@ -1,7 +1,7 @@
 //
 // Copyright 2018, TeamDev Ltd. All rights reserved.
 //
-// Redistribution and use in source and/or binary gorms, with or without
+// Redistribution and use in source and/or binary forms, with or without
 // modification, must retain the above copyright notice and the following
 // disclaimer.
 //
@@ -17,7 +17,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-include 'model'
-include 'server'
-include 'client'
-include 'api-java'
+
+/**
+ * This package provides implementation for aggregate classes.
+ */
+@ParametersAreNonnullByDefault
+package javaclasses.mealorder.c.aggregate;
+
+import javax.annotation.ParametersAreNonnullByDefault;
