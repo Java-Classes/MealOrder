@@ -25,7 +25,7 @@ package javaclasses.mealorder.q;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.javaclasses.mealorder";
-option java_package = "io.javaclasses.mealorder.q";
+option java_package = "javaclasses.mealorder.q";
 option java_outer_classname = "ProjectionsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
@@ -39,16 +39,16 @@ import "javaclasses/mealorder/q/values.proto";
 
 // **** Projections for the UI role User. ****
 
-// A projection state of the menu list for the specified date.
+// The projection state of a menu list for the specified date.
 //
 // This view includes the list of actual attached menus for the specified date.
 // The date is specified by `MenuListId` value.
 // The menu is attached if its date range includes the specified date.
-// Collection of menus can be empty if there are no attached menus for this
+// The collection of menus can be empty if there are no attached menus for this
 // date or all of them are not actual.
 //
 // 'Actual menu' means that time of purchase order creation hasn't come for
-// this date. This time is defined in menus vendor aggregate. See `Vendor`
+// this date. This time is defined in a menu vendor aggregate. See `Vendor`
 // for more details.
 //
 // Subscribes following events:
@@ -58,14 +58,14 @@ import "javaclasses/mealorder/q/values.proto";
 //
 message MenuListView {
 
-    // An identifier of the menu list.
+    // The identifier of a menu list.
     MenuListId list_id = 1;
 
-    // Collection of menus.
+    // The collection of menus.
     repeated MenuItem menus = 2;
 }
 
-// A projection state of the menu calendar.
+// The projection state of the menu calendar.
 //
 // This view includes the list of dates in range from
 // today to the same day next week. (8 elements)
@@ -76,16 +76,16 @@ message MenuListView {
 //
 message MenuCalendarView {
 
-    // Collection of calendar items (dates).
+    // The collection of calendar items (dates).
     repeated MenuCalendarItem calendar_items = 1;
 }
 
-// A projection state of the order list.
+// The projection state of an order list.
 //
 // This view includes the list of user's orders for the
 // specified date.
 //
-// The order date and user ID are specified by `OrderListId` value.
+// The order date and the user ID are specified by `OrderListId` value.
 //
 // Subscribes following events:
 // 1. `DishAddedToOrder`
@@ -95,16 +95,16 @@ message MenuCalendarView {
 //
 message OrderListView {
 
-    // An identifier of the order list.
+    // The identifier of an order list.
     OrderListId list_id = 1;
 
-    // Collection of user's orders.
+    // The collection of user's orders.
     repeated OrderItem orders = 2;
 }
 
 // **** Projections for UI role Admin. ****
 
-// A projection state of the vendor list.
+// The projection state of the vendor list.
 //
 // Subscribes following events:
 // 1. `VendorAdded`
@@ -112,11 +112,11 @@ message OrderListView {
 //
 message VendorListView {
 
-    // Collection of all vendors.
+    // The collection of all vendors.
     repeated VendorItem vendors = 1;
 }
 
-// A projection state of the full menu list.
+// The projection state of the full menu list.
 //
 // This view includes the list of all menus,
 // sorted by menu date range.
@@ -127,11 +127,11 @@ message VendorListView {
 //
 message FullMenuListView {
 
-    // Collection of menus.
+    // The collection of all menus.
     repeated FullMenuItem menus = 1;
 }
 
-// A projection state of the purchase order list.
+// The projection state of the purchase order list.
 //
 // This view includes the list of all purchase orders,
 // sorted by date.
@@ -147,11 +147,11 @@ message FullMenuListView {
 //
 message PurchaseOrderListView {
 
-    // Collection of purchase orders.
+    // The collection of all purchase orders.
     repeated PurchaseOrderItem purchase_orders = 1;
 }
 
-// A projection state of the purchase order details view
+// The projection state of a purchase order details view
 // grouped by dish.
 //
 // Subscribes following events:
@@ -165,20 +165,20 @@ message PurchaseOrderListView {
 //
 message PurchaseOrderDetailsByDishView {
 
-    // An identifier of the purchase order.
+    // The identifier of a purchase order.
     PurchaseOrderId id = 1;
 
     // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
 
-    // Collection of dishes.
+    // The collection of dishes.
     repeated DishItem dishes = 3;
 }
 
-// A projection state of the purchase order details view
+// The projection state of a purchase order details view
 // grouped by user.
 //
-// When the purchase order is created its validation may complete with failure.
+// When a purchase order is created its validation may complete with failure.
 // Those orders which caused that failure are marked as invalid.
 //
 // Subscribes following events:
@@ -192,24 +192,24 @@ message PurchaseOrderDetailsByDishView {
 //
 message PurchaseOrderDetailsByUserView {
 
-    // An identifier of the purchase order.
+    // The identifier of a purchase order.
     PurchaseOrderId id = 1;
 
     // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
 
-    // Collection of orders.
+    // The collection of orders.
     repeated UserOrderDetails orders = 3;
 }
 
-// A projection state of the monthly spendings report view.
+// The projection state of a monthly spendings report view.
 //
 // The report month is specified by `MonthlySpendingsReportId`.
 //
-// This view contains user's spendings for full month period
-// if the report is formed for the passed month.
-// It contains user's spendings for period from  month first
-// date till today if the report is formed for the current month.
+// This view contains users spendings for full month period
+// if a report is formed for the passed month.
+// It contains users spendings for period from  month first
+// date till today if a report is formed for the current month.
 //
 // Subscribes following events:
 // 1. `PurchaseOrderDelivered`
@@ -217,9 +217,9 @@ message PurchaseOrderDetailsByUserView {
 //
 message MonthlySpendingsReportView {
 
-    // An identifier of the monthly spendings report.
+    // The identifier of a monthly spendings report.
     MonthlySpendingsReportId report_id = 1;
 
-    // Collection of user's spendings for the specified month.
+    // The collection of users spendings for the specified month.
     repeated UserSpendings user_spendinds = 2;
 }
