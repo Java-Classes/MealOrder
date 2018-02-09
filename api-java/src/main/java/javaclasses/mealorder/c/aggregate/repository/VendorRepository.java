@@ -22,7 +22,7 @@ package javaclasses.mealorder.c.aggregate.repository;
 
 import io.spine.server.aggregate.AggregateRepository;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.c.aggregate.aggregate.rejection.VendorAggregate;
+import javaclasses.mealorder.c.aggregate.aggregate.VendorAggregate;
 
 /**
  * Repository for the {@link VendorAggregate}.

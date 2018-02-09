@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.aggregate.rejection;
+package javaclasses.mealorder.c.aggregate.aggregate;
 
 import io.spine.server.aggregate.Aggregate;
 import javaclasses.mealorder.Vendor;
@@ -30,7 +30,7 @@ import javaclasses.mealorder.VendorVBuilder;
  *
  * @author Illia Shepilov
  */
-@SuppressWarnings({"ClassWithTooManyMethods", /* Task definition cannot be separated and should
+@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor definition cannot be separated and should
                                                  process all commands and events related to it
                                                  according to the domain model.
                                                  The {@code Aggregate} does it with methods

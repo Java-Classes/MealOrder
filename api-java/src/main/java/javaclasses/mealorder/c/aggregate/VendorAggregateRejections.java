@@ -20,7 +20,7 @@
 
 package javaclasses.mealorder.c.aggregate;
 
-import javaclasses.mealorder.c.aggregate.aggregate.rejection.VendorAggregate;
+import javaclasses.mealorder.c.aggregate.aggregate.VendorAggregate;
 
 /**
  * Utility class for working with {@link VendorAggregate} rejection.
