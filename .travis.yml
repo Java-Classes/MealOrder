@@ -1,10 +1,13 @@
 language: java
 
-# To increase the memory size available during Travis build.
-sudo: required
+jdk:
+  - oraclejdk8
 
 before_install:
   - chmod +x gradlew
 
 script:
-  - ./gradlew check --stacktrace
+  - ./gradlew build codeCoverageReport --stacktrace
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

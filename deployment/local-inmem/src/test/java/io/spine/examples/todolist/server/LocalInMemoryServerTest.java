@@ -18,11 +18,19 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-/**
- * This package contains implementation for classes which provides
- * methods to process aggregates and projection.
- */
-@ParametersAreNonnullByDefault
-package javaclasses.mealorder.c.aggregate;
+package io.spine.examples.todolist.server;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+
+@DisplayName("LocalInMemoryServer should")
+class LocalInMemoryServerTest {
+
+    @Test
+    @DisplayName("have the private parameterless constructor")
+    void havePrivateCtor() {
+        assertHasPrivateParameterlessCtor(LocalInMemoryServer.class);
+    }
+}

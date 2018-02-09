@@ -18,17 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Apply this script if it is needed to generate Protobuf descriptor set (special files with `.desc` extension).
-// These files may be needed by Gradle plugins to obtain descriptors of `.proto` files of this project.
-protobuf {
-    generateProtoTasks {
-        all().each { final task ->
-            task.plugins {
-                task.generateDescriptorSet = true
-                task.descriptorSetOptions.path = "$projectDir/build/descriptors/${task.sourceSet.name}.desc"
-                task.descriptorSetOptions.includeImports = true
-                task.descriptorSetOptions.includeSourceInfo = true
-            }
-        }
-    }
+package javaclasses.mealorder.c.aggregate.repository;
+
+import io.spine.server.aggregate.AggregateRepository;
+import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.c.aggregate.aggregate.rejection.VendorAggregate;
+
+/**
+ * Repository for the {@link VendorAggregate}.
+ *
+ * @author Illia Shepilov
+ */
+public class VendorRepository extends AggregateRepository<VendorId, VendorAggregate> {
 }

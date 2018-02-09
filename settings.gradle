@@ -17,7 +17,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
+include 'api-java'
 include 'model'
 include 'server'
-include 'client'
-include 'api-java'
+include 'testutil-api'
+
+include ':local-inmem'
+project(':local-inmem').projectDir = new File('./deployment/local-inmem')

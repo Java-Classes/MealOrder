@@ -19,10 +19,9 @@
 //
 
 /**
- * This package contains implementation for classes which provides
- * methods to process aggregates and projection.
+ * This package provides implementation for the application context.
  */
 @ParametersAreNonnullByDefault
-package javaclasses.mealorder.c.aggregate;
+package javaclasses.mealorder.c.aggregate.context;
 
 import javax.annotation.ParametersAreNonnullByDefault;

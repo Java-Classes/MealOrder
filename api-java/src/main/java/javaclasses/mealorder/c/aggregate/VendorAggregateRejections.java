@@ -18,11 +18,15 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-/**
- * This package contains implementation for classes which provides
- * methods to process aggregates and projection.
- */
-@ParametersAreNonnullByDefault
 package javaclasses.mealorder.c.aggregate;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import javaclasses.mealorder.c.aggregate.aggregate.rejection.VendorAggregate;
+
+/**
+ * Utility class for working with {@link VendorAggregate} rejection.
+ *
+ * @author Yurii Haidamaka
+ */
+public class VendorAggregateRejections {
+
+}
