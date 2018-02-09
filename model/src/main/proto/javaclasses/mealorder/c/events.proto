@@ -50,14 +50,17 @@ message VendorAdded {
     // Was added at this time.
     google.protobuf.Timestamp when_added = 3;
 
+    // The name of a vendor.
+    VendorName vendor_name = 4;
+
     // The email adress to send a purchase order.
-    spine.net.EmailAddress email = 4;
+    spine.net.EmailAddress email = 5;
 
     // Phone numbers of a vendor.
-    repeated PhoneNumber phone_numbers = 5;
+    repeated PhoneNumber phone_numbers = 6;
 
     // Time to which all orders to this vendor must be made.
-    spine.time.LocalTime po_daily_deadline = 6;
+    spine.time.LocalTime po_daily_deadline = 7;
 }
 
 // The event fired upon a vendor profile update.
