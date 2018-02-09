@@ -107,17 +107,21 @@ message MenuImported {
 //
 message DateRangeForMenuSet {
 
+    // The identifier of a vendor.
+    VendorId vendor_id = 1;
+
     // The identifier of a menu.
-    MenuId menu_id = 1;
+    MenuId menu_id = 2;
 
     // The identifier of the user who set date range.
-    UserId who_set = 2;
+    UserId who_set = 3;
 
     // Was set at this time.
-    google.protobuf.Timestamp when_set = 3;
+    google.protobuf.Timestamp when_set = 4;
+    google.protobuf.Timestamp when_set = 4;
 
     // Date range that has been set.
-    MenuDateRange menu_date_range = 4;
+    MenuDateRange menu_date_range = 5;
 }
 
 // The event signalizing about the successful creation of an order.
