@@ -25,7 +25,7 @@ package javaclasses.mealorder.q;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.javaclasses.mealorder";
-option java_package = "io.javaclasses.mealorder.q";
+option java_package = "javaclasses.mealorder.q";
 option java_outer_classname = "ValuesProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
@@ -37,142 +37,141 @@ import "spine/net/email_address.proto";
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/values.proto";
 
-// A single item of a menu list.
+// The single item of a menu list.
 //
 // This item contains the list of dishes for the
 // specific vendor and date.
 //
 message MenuItem {
 
-    // A vendor name.
+    // The vendor name.
     VendorName vendor_name = 1;
 
-    // Collection of dishes.
+    // The collection of dishes.
     repeated DishItem dishes = 2;
 }
 
-// A single dish item of a menu.
+// The single dish item of a menu.
 //
-// This item contains dish identifier, name, price and category.
 // The dish category is used in UI to group dishes.
 //
 message DishItem {
 
-    // An identifier of the dish.
+    // The identifier of a dish.
     DishId id = 1;
 
-    // A name of the dish.
+    // The name of a dish.
     string name = 2;
 
-    // A dish category.
+    // The dish category.
     string category = 3;
 
-    // A dish price.
+    // The dish price.
     spine.money.Money price = 4;
 }
 
-// An item of a menu calendar.
+// The item of the menu calendar.
 //
-// An item state indicates whether some active
+// The item state indicates whether some active
 // attached menus exist for this date.
 //
 message MenuCalendarItem {
 
-    // A date in menu calendar.
+    // A date in the menu calendar.
     spine.time.LocalDate date = 1;
 
-    // Indicates presence of attached menus on the specified date.
+    // Indicates presence of attached menus on a specified date.
     bool has_menu = 2;
 }
 
-// An item of an order list.
+// The item of an order list.
 //
-// This item contains list of dishes.
+// This item contains the list of dishes.
 //
 // The item state indicates that this order is already processed
 // (included in the purchase order) or not.
 //
-//      // If 'true' - order can be canceled or its dish list can be
+//      // If 'true' - an order can be canceled or its dish list can be
 //      // modified.
 //
 //      // If 'false' - editing or canceling of such order is not possible.
 //
 message OrderItem {
 
-    // An identifier of the order.
+    // The identifier of an order.
     OrderId id = 1;
 
-    // Collection of the ordered dishes.
+    // The collection of ordered dishes.
     repeated DishItem dishes = 2;
 
-    // Indicates order is processed or not.
+    // Indicates an order is processed or not.
     bool is_processed = 3;
 }
 
-// An item of a vendor list.
+// The item of the vendor list.
 //
 message VendorItem {
 
-    // An identifier of the vendor.
+    // The identifier of a vendor.
     VendorId id = 1;
 
-    // A vendor name.
+    // The vendor name.
     VendorName vendor_name = 2;
 
-    // A vendor email address.
+    // The vendor email address.
     spine.net.EmailAddress email = 3;
 
     // Phone numbers of the vendor.
     repeated PhoneNumber phone_numbers = 4;
 
-    // A daily purchase order creation deadline time.
+    // Daily purchase order creation deadline time.
     spine.time.LocalTime po_daily_deadline = 5;
 }
 
-// An item of a full menu list.
+// The item of the full menu list.
 //
 message FullMenuItem {
 
-    // An identifier of the menu.
+    // The identifier of a menu.
     MenuId menu_id = 1;
 
-    // Date range when this menu is available.
+    // Date range when a menu is available.
     MenuDateRange menu_date_range = 2;
 
-    // Collection of dishes.
+    // The collection of dishes.
     repeated DishItem dishes = 3;
 }
 
-// An item of a purchase order list.
+// The item of the purchase order list.
 //
-// When the purchase order is automatically created at the
-// vendors `poDailyDeadline` time the validation process is performed.
+// When a purchase order is automatically created at the
+// vendor `poDailyDeadline` time the validation process is performed.
 //
-// If validation process has failed the purchase order status gets `INVALID` value.
-// If administrator decides to overrule failed validation and mark the
+// If validation process has failed a purchase order status gets `INVALID` value.
+// If the administrator decides to overrule failed validation and mark a
 // purchase order as valid it is automatically
 // sent to vendor.
 //
-// If validation process is completed successfully the purchase order is automatically
+// If validation process is completed successfully a purchase order is automatically
 // sent to vendor.
 //
-// If sending process hasn't caused errors, the purchase order status
+// If sending process hasn't caused errors, a purchase order status
 // gets `SENT` value.
 //
-// If errors occurred while sending the purchase order to vendor
+// If errors occurred while sending a purchase order to the vendor
 // its status gets `ERROR` value.
 //
-// When administrator decides to cancel the purchase order
+// When the administrator decides to cancel a purchase order
 // in some reason its status gets `CANCELED` value.
 //
-// When administrator receives ordered dishes and checks
-// the accordance to the purchase order dish list, he marks
-// the purchase order as delivered. After this purchase order
+// When the administrator receives ordered dishes and checks
+// the accordance to a the purchase order dish list, he marks
+// a purchase order as delivered. After this a purchase order
 // status gets `DELIVERED` value.
 //
 message PurchaseOrderItem {
 
-    // An identifier of the purchase order.
+    // The identifier of a purchase order.
     PurchaseOrderId id = 1;
 
     // The purchase order status.
@@ -197,32 +196,32 @@ enum PurchaseOrderStatus {
     CANCELED = 5;
 }
 
-// An item of an order list.
+// The item of an order list.
 //
-// Used in the purchase order details veiw grouped by User.
+// Used in a purchase order details veiw grouped by User.
 //
-// This item contains user identifier, list of ordered dishes and
-// order validation status.
+// This item contains the user identifier, the list of ordered dishes and
+// the order validation status.
 //
 message UserOrderDetails {
 
-    // An identifier of the user.
+    // The identifier of the user.
     UserId id = 1;
 
-    // Collection of dishes.
+    // The collection of dishes.
     repeated DishItem dishes = 2;
 
-    // Order validation status.
+    // An order validation status.
     bool is_valid = 3;
 }
 
-// An item of monthly spendings report view.
+// The item of a monthly spendings report view.
 //
-// This item represents the user with its spendings amount.
+// This item represents a user with its spendings amount.
 //
 message UserSpendings {
 
-    // An identifier of the user.
+    // The identifier of a user.
     UserId id = 1;
 
     // Amount of spendings.

@@ -25,7 +25,7 @@ package javaclasses.mealorder.c;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.javaclasses.mealorder";
-option java_package = "io.javaclasses.mealorder.c";
+option java_package = "javaclasses.mealorder.c.command";
 option java_outer_classname = "CommandsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
@@ -39,84 +39,85 @@ import "javaclasses/mealorder/model.proto";
 
 // Adds a new vendor.
 //
-// May be rejected if a vendor with the same name already exists.
+// May be rejected if the vendor with the same name already exists.
 //
 message AddVendor {
 
-    // An identifier of the vendor which may be added.
+    // The identifier of a vendor which should be added.
     VendorId vendor_id = 1;
 
-    // An identifier of the user who wants to add a vendor.
+    // The identifier of the user who adds a vendor.
     UserId user_id = 2;
 
-    // A name of the vendor unique for each vendor.
+    // The name of a vendor.
     VendorName vendor_name = 3;
 
-    // An e-mail adress to send a purchase order.
+    // The email adress of a vendor to send a purchase order.
     spine.net.EmailAddress email = 4;
 
-    // Phone numbers of the vendor.
+    // Phone numbers of a vendor.
     repeated PhoneNumber phone_numbers = 5;
 
-    // Time of closing orders for this vendor for editing.
-    // Purchase order for this vendor will be created exactly at this time.
+    // Time when orders for this vendor are closed for editing.
+    // Purchase orders for a vendor will be created exactly at this time.
     spine.time.LocalTime po_daily_deadline = 6;
 }
 
-// Updates vendor details.
+// Updates a vendor profile.
 //
 message UpdateVendor {
 
-    // An identifier of the vendor.
+    // The identifier of a vendor.
     VendorId vendor_id = 1;
 
-    // An identifier of the user who updates the vendor.
+    // The identifier of the user who updates vendor profile.
     UserId user_id = 2;
 
-    // Changes in vendor fields.
+    // Changes in a vendor profile.
     VendorChange vendor_change = 3;
 }
 
 // Imports a menu.
 //
-// Menu is assigned to vendor.
-//
 message ImportMenu {
 
-    // An identifier of the vendor on which a menu is assigned.
+    // The identifier of a vendor.
     VendorId vendor_id = 1;
 
-    // An identifier of the user who imports a menu.
+    // The identifier of the user who imports a menu.
     UserId user_id = 2;
 
-    // Collection of menu dishes.
+    // The collection of dishes.
     repeated Dish dishes = 3;
 }
 
-// Sets a menu active date range.
+// Sets a menu date range.
 //
 message SetDateRangeForMenu {
 
-    // An identifier of the menu.
-    MenuId menu_id = 1;
+    // The identifier of a vendor.
+    VendorId vendor_id = 1;
 
-    // An identifier of the user who sets the menu date range.
-    UserId user_id = 2;
+    // The identifier of a menu.
+    MenuId menu_id = 2;
 
-    // Menu date range that may be set.
-    MenuDateRange menu_date_range = 3;
+    // The identifier of the user who sets a menu date range.
+    UserId user_id = 3;
+
+    // A menu date range that should be set.
+    MenuDateRange menu_date_range = 4;
 }
 
 // Creates a new order.
 //
-// New order coitains no dishes. Dishes may be added after creation.
+// A newly created order doesn's coitain dishes. Dishes may be added after creation.
 //
 message CreateOrder {
 
-    // An identifier of the order.
+    // The identifier of an order.
     OrderId order_id = 1;
 
-    // An identifier of the menu which contains dishes that can be added to the order.
+    // The identifier of the menu. Dishes from only this menu can be added to an order.
     MenuId menu_id = 2;
 }
 
@@ -127,10 +128,10 @@ message CreateOrder {
 //
 message AddDishToOrder {
 
-    // An identifier of the order.
+    // The identifier of an order.
     OrderId order_id = 1;
 
-    // An identifier of the dish that may be added to the order.
+    // The identifier of a dish that should be added to an order.
     DishId dish_id = 2;
 }
 
@@ -141,26 +142,26 @@ message AddDishToOrder {
 //
 message RemoveDishFromOrder {
 
-    // An identifier of the order.
+    // The identifier of an order.
     OrderId order_id = 1;
 
-    // An identifier of the dish that may be removed from the order.
+    // The identifier of a dish that should be removed from an order.
     DishId dish_id = 2;
 }
 
 // Cancels an order.
 //
+// Can be applied by owner manually.
+// Can be applied by system when purchase order is creating if the order is empty.
+//
 // Cannot be applied to processed orders.
 //
 message CancelOrder {
 
-    // An identifier of the order.
+    // The identifier of an order.
     OrderId order_id = 1;
 
-    // User who cancels the order.
-    //
-    // Can be cancelled by owner manually.
-    // Can be cancelled by system when purchase order is creating if the order is empty.
+    // The identifier of the user who cancels an order.
     UserId who_cancels = 2;
 }
 
@@ -168,42 +169,42 @@ message CancelOrder {
 //
 message CreatePurchaseOrder {
 
-    // An identifier of the purchase order.
+    // The identifier of a purchase order.
     PurchaseOrderId id = 1;
 
-    // Collection of all orders for this day.
+    // The collection of all orders for this day for the specified vendor.
     repeated Order orders = 2;
 
-    // An identifier of the user who creates the purchase order.
+    // The identifier of the user who creates a purchase order.
     UserId who_creates = 3;
 }
 
-// Marks purchase order as delivered.
+// Marks a purchase order as delivered.
 //
 // Applicable only to sent purchase orders.
 //
 message MarkPurchaseOrderAsDelivered {
 
-    // An identifier of the purchase order.
+    // The identifier of a purchase order.
     PurchaseOrderId id = 1;
 
-    // An identifier of the user who marks the purchase order as delivered.
+    // The identifier of the user who marks a purchase order as delivered.
     UserId who_marks_as_delivered = 2;
 }
 
-// Overrules purchase order validation.
+// Overrules a purchase order validation.
 //
 // Applicable only to invalid purchase orders.
 //
 message MarkPurchaseOrderAsValid {
 
-    // An identifier of the purchase order.
+    // The identifier of a purchase order.
     PurchaseOrderId id = 1;
 
-    // An identifier of the user that marks the purchase order as valid.
+    // The identifier of the user who marks a purchase order as valid.
     UserId user_id = 2;
 
-    // A reason why the purchase order may be marked as valid.
+    // The reason why a purchase order should be marked as valid.
     string reason = 3;
 }
 
@@ -213,19 +214,19 @@ message MarkPurchaseOrderAsValid {
 //
 message CancelPurchaseOrder {
 
-    // An identifier of the purchase order.
+    // The identifier of a purchase order.
     PurchaseOrderId id = 1;
 
-    // Reason of cancelation.
+    // The reason of cancelation.
     oneof reason {
 
-        // Validation was failed and admin didn't overrule it.
+        // The validation has failed and the admin didn't overrule it.
         bool invalid = 2;
 
-        // Manual cancellation of the purchase order.
+        // Manual cancellation of a purchase order.
         string custom_reason = 3;
     }
 
-    // An identifier of the user who cancels the purchase order.
+    // The identifier of the user who cancels a purchase order.
     UserId user_id = 4;
 }
