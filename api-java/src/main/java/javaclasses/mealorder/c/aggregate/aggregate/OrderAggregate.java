@@ -23,12 +23,25 @@ package javaclasses.mealorder.c.aggregate.aggregate;
 import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.command.Assign;
+import javaclasses.mealorder.DishId;
+import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.OrderVBuilder;
 import javaclasses.mealorder.Order;
+import javaclasses.mealorder.UserId;
+import javaclasses.mealorder.c.command.AddDishToOrder;
+import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
+import javaclasses.mealorder.c.command.RemoveDishFromOrder;
+import javaclasses.mealorder.c.event.DishAddedToOrder;
+import javaclasses.mealorder.c.event.DishRemovedFromOrder;
+import javaclasses.mealorder.c.event.OrderCanceled;
+import javaclasses.mealorder.c.event.OrderCreated;
 
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 /**
  * The aggregate managing the state of a {@link Order}.
@@ -53,4 +66,53 @@ public class OrderAggregate extends Aggregate<OrderId,
     public OrderAggregate(OrderId id) {
         super(id);
     }
+
+    @Assign
+    List<? extends Message> handle(CreateOrder cmd) {
+        final OrderId orderId = cmd.getOrderId();
+        final MenuId menuId = cmd.getMenuId();
+
+        final OrderCreated result = OrderCreated.newBuilder()
+                                                .setOrderId(orderId)
+                                                .setMenuId(menuId)
+                                                .build();
+        return singletonList(result);
+    }
+
+    @Assign
+    List<? extends Message> handle(AddDishToOrder cmd) {
+        final OrderId orderId = cmd.getOrderId();
+        final DishId dishId = cmd.getDishId();
+
+        final DishAddedToOrder result = DishAddedToOrder.newBuilder()
+                                                        .setOrderId(orderId)
+                                                        .setDishId(dishId)
+                                                        .build();
+        return singletonList(result);
+    }
+
+    @Assign
+    List<? extends Message> handle(RemoveDishFromOrder cmd) {
+        final OrderId orderId = cmd.getOrderId();
+        final DishId dishId = cmd.getDishId();
+
+        final DishRemovedFromOrder result = DishRemovedFromOrder.newBuilder()
+                                                                .setOrderId(orderId)
+                                                                .setDishId(dishId)
+                                                                .build();
+        return singletonList(result);
+    }
+
+    @Assign
+    List<? extends Message> handle(CancelOrder cmd) {
+        final OrderId orderId = cmd.getOrderId();
+        final UserId userId = cmd.getWhoCancels();
+
+        final OrderCanceled result = OrderCanceled.newBuilder()
+                                                         .setOrderId(orderId)
+                                                         .setWhoCanceled(userId)
+                                                         .build();
+        return singletonList(result);
+    }
+
 }
