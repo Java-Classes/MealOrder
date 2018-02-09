@@ -22,6 +22,7 @@ package javaclasses.mealorder.c.aggregate.aggregate;
 
 import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
@@ -55,7 +56,8 @@ import static java.util.Collections.singletonList;
                                                  In that case class has too many methods.*/
         "OverlyCoupledClass"}) /* As each method needs dependencies  necessary to perform execution
                                                  that class also overly coupled.*/
-public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId, PurchaseOrder, PurchaseOrderVBuilder> {
+public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
+        PurchaseOrder, PurchaseOrderVBuilder> {
 
     /**
      * {@inheritDoc}
@@ -70,12 +72,13 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId, PurchaseO
         final UserId userId = cmd.getWhoCreates();
         final List<Order> ordersList = cmd.getOrdersList();
 
-        final PurchaseOrderCreated result = PurchaseOrderCreated.newBuilder()
-                                                                .setId(purchaseOrderId)
-                                                                .setWhoCreated(userId)
-                                                                .setWhenCreated(getCurrentTime())
-                                                                .addAllOrders(ordersList)
-                                                                .build();
+        final PurchaseOrderCreated result = PurchaseOrderCreated
+                .newBuilder()
+                .setId(purchaseOrderId)
+                .setWhoCreated(userId)
+                .setWhenCreated(getCurrentTime())
+                .addAllOrders(ordersList)
+                .build();
 
         return singletonList(result);
     }
@@ -86,12 +89,13 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId, PurchaseO
         final UserId userId = cmd.getUserId();
         final String reason = cmd.getReason();
 
-        final PurchaseOrderValidationOverruled result = PurchaseOrderValidationOverruled.newBuilder()
-                                                                                        .setId(purchaseOrderId)
-                                                                                        .setWhoOverruled(userId)
-                                                                                        .setWhenOverruled(getCurrentTime())
-                                                                                        .setReason(reason)
-                                                                                        .build();
+        final PurchaseOrderValidationOverruled result = PurchaseOrderValidationOverruled
+                .newBuilder()
+                .setId(purchaseOrderId)
+                .setWhoOverruled(userId)
+                .setWhenOverruled(getCurrentTime())
+                .setReason(reason)
+                .build();
 
         return singletonList(result);
     }
@@ -101,11 +105,12 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId, PurchaseO
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoMarksAsDelivered();
 
-        final PurchaseOrderDelivered result = PurchaseOrderDelivered.newBuilder()
-                                                                    .setId(purchaseOrderId)
-                                                                    .setWhoMarkedAsDelivered(userId)
-                                                                    .setWhenDelievered(getCurrentTime())
-                                                                    .build();
+        final PurchaseOrderDelivered result = PurchaseOrderDelivered
+                .newBuilder()
+                .setId(purchaseOrderId)
+                .setWhoMarkedAsDelivered(userId)
+                .setWhenDelievered(getCurrentTime())
+                .build();
 
         return singletonList(result);
     }
@@ -115,15 +120,30 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId, PurchaseO
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
 
-        final PurchaseOrderCanceled.Builder builder = PurchaseOrderCanceled.newBuilder()
-                                                                  .setId(purchaseOrderId)
-                                                                  .setUserId(userId)
-                                                                  .setWhenCanceled(getCurrentTime());
+        final PurchaseOrderCanceled.Builder builder = PurchaseOrderCanceled
+                .newBuilder()
+                .setId(purchaseOrderId)
+                .setUserId(userId)
+                .setWhenCanceled(getCurrentTime());
+
         switch (cmd.getReasonCase()) {
-            case INVALID: builder.setInvalid(cmd.getInvalid());
-            case CUSTOM_REASON: builder.setCustomReason(cmd.getCustomReason());
+            case INVALID:
+                builder.setInvalid(cmd.getInvalid());
+            case CUSTOM_REASON:
+                builder.setCustomReason(cmd.getCustomReason());
         }
 
         return singletonList(builder.build());
     }
+
+    /*
+     * Event appliers
+     *****************/
+
+    @Apply
+    private void purchaseOrderCreated(PurchaseOrderCreated event) {
+        getBuilder().setId(event.getId())
+                    .addAllOrders(event.getOrdersList());
+    }
+
 }
