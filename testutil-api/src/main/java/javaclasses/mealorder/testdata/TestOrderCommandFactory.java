@@ -29,6 +29,7 @@ import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
+import javaclasses.mealorder.c.command.RemoveDishFromOrder;
 
 import static io.spine.time.MonthOfYear.FEBRUARY;
 
@@ -62,6 +63,13 @@ public class TestOrderCommandFactory {
 
     public static AddDishToOrder addDishToOrderInstance(OrderId orderId, DishId dishId) {
         return AddDishToOrder.newBuilder()
+                             .setOrderId(orderId)
+                             .setDishId(dishId)
+                             .build();
+    }
+
+    public static RemoveDishFromOrder removeDishFromOrderInstance(OrderId orderId, DishId dishId) {
+        return RemoveDishFromOrder.newBuilder()
                              .setOrderId(orderId)
                              .setDishId(dishId)
                              .build();
