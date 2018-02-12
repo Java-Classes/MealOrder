@@ -21,10 +21,12 @@
 package javaclasses.mealorder.testdata;
 
 import io.spine.time.LocalDate;
+import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 
 import static io.spine.time.MonthOfYear.FEBRUARY;
@@ -49,5 +51,12 @@ public class TestOrderCommandFactory {
                           .setOrderId(orderId)
                           .setMenuId(menuId)
                           .build();
+    }
+
+    public static AddDishToOrder addDishToOrderInstance(OrderId orderId, DishId dishId) {
+        return AddDishToOrder.newBuilder()
+                             .setOrderId(orderId)
+                             .setDishId(dishId)
+                             .build();
     }
 }

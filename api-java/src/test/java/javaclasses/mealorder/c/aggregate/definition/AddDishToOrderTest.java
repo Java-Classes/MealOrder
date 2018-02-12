@@ -21,9 +21,12 @@
 package javaclasses.mealorder.c.aggregate.definition;
 
 import com.google.protobuf.Message;
+import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
+import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
+import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.OrderCreated;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +36,7 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author Vlad Kozachenko
  */
-public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
+public class AddDishToOrderTest extends OrderCommandTest<CreateOrder> {
 
     @Override
     @BeforeEach
@@ -49,31 +53,34 @@ public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
     }
 
     @Test
-    @DisplayName("produce OrderCreated event")
+    @DisplayName("produce AddDishToOrder event")
     public void produceEvent() {
-        final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
-                                                               MenuId.getDefaultInstance());
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID,
+                                                                     DishId.getDefaultInstance());
         final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(createOrderCmd));
+                                                                    envelopeOf(addDishToOrder));
 
         assertNotNull(aggregate.getState());
         assertNotNull(aggregate.getId());
+        assertNotNull(aggregate.getState().getDishesCount());
         assertEquals(1, messageList.size());
-        assertEquals(OrderCreated.class, messageList.get(0)
-                                                    .getClass());
-
+        assertEquals(DishAddedToOrder.class, messageList.get(0)
+                                                        .getClass());
     }
 
+    // TODO:2018-02-12:vladislav.kozachenko: Implement addition of the dish to the order.
+/*
     @Test
-    @DisplayName("create the order")
-    public void createOrder() {
+    @DisplayName("add dish to order")
+    public void addDishToOrder() {
 
-        MenuId menuId = MenuId.getDefaultInstance();
+        DishId dishId = DishId.getDefaultInstance();
 
-        final CreateOrder createOrder = createOrderInstance(ORDER_ID, menuId);
-        dispatchCommand(aggregate, envelopeOf(createOrder));
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, dishId);
+        dispatchCommand(aggregate, envelopeOf(addDishToOrder));
 
         final Order state = aggregate.getState();
-        assertEquals(state.getId(), createOrder.getOrderId());
+        assertEquals(state.getDishes(0).getId(), dishId);
     }
+*/
 }

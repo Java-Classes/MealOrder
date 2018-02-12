@@ -24,6 +24,7 @@ import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
@@ -119,7 +120,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     private void orderCreated(OrderCreated event) {
-        getBuilder().setId(event.getOrderId());
+        getBuilder().setId(event.getOrderId()).build();
     }
 
     @Apply
