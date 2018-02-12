@@ -18,7 +18,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package javaclasses.mealorder.aggregate.definition;
+package javaclasses.mealorder.c.aggregate.definition;
 
 import com.google.protobuf.Message;
 import io.spine.client.TestActorRequestFactory;

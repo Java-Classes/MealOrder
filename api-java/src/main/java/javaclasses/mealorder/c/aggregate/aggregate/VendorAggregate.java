@@ -27,18 +27,23 @@ import io.spine.server.command.Assign;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.VendorVBuilder;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.ImportMenu;
+import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.command.UpdateVendor;
+import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.VendorAdded;
 import javaclasses.mealorder.c.event.VendorUpdated;
+import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
 
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static javaclasses.mealorder.c.aggregate.aggregate.rejection.VendorAggregateRejections.UpdateRejections.throwVendorAlreadyExists;
 
 /**
  * The aggregate managing the state of a {@link Vendor}.
@@ -65,13 +70,15 @@ public class VendorAggregate extends Aggregate<VendorId,
     }
 
     @Assign
-    List<? extends Message> handle(AddVendor cmd) {
-
+    List<? extends Message> handle(AddVendor cmd) throws VendorAlreadyExists {
+        VendorName vendorName = cmd.getVendorName();
+        if (vendorName.equals(getState().getVendorName())) {
+            throwVendorAlreadyExists(cmd);
+        }
         final VendorAdded vendorAdded = VendorAdded.newBuilder()
                                                    .setVendorId(cmd.getVendorId())
                                                    .setWhoAdded(cmd.getUserId())
-                                                   .setVendorName(
-                                                           cmd.getVendorName())
+                                                   .setVendorName(vendorName)
                                                    .setEmail(cmd.getEmail())
                                                    .addAllPhoneNumbers(cmd.getPhoneNumbersList())
                                                    .setPoDailyDeadline(
@@ -110,6 +117,24 @@ public class VendorAggregate extends Aggregate<VendorId,
         return singletonList(menuImported);
     }
 
+    @Assign
+    List<? extends Message> handle(SetDateRangeForMenu cmd) {
+
+        final DateRangeForMenuSet dateRangeForMenuSet = DateRangeForMenuSet.newBuilder()
+                                                                           .setVendorId(
+                                                                                   cmd.getVendorId())
+                                                                           .setMenuId(
+                                                                                   cmd.getMenuId())
+                                                                           .setWhoSet(
+                                                                                   cmd.getUserId())
+                                                                           .setWhenSet(
+                                                                                   getCurrentTime())
+                                                                           .setMenuDateRange(
+                                                                                   cmd.getMenuDateRange())
+                                                                           .build();
+        return singletonList(dateRangeForMenuSet);
+    }
+
     @Apply
     private void vendorAdded(VendorAdded event) {
 
@@ -136,6 +161,12 @@ public class VendorAggregate extends Aggregate<VendorId,
 
     @Apply
     private void menuImported(MenuImported event) {
+
+        getBuilder().setId(event.getVendorId());
+    }
+
+    @Apply
+    private void dateRangeForMenuSet(DateRangeForMenuSet event) {
 
         getBuilder().setId(event.getVendorId());
     }

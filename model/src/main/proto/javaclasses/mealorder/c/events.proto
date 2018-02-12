@@ -118,7 +118,6 @@ message DateRangeForMenuSet {
 
     // Was set at this time.
     google.protobuf.Timestamp when_set = 4;
-    google.protobuf.Timestamp when_set = 4;
 
     // Date range that has been set.
     MenuDateRange menu_date_range = 5;
