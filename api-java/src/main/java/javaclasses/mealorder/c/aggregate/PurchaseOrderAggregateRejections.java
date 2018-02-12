@@ -20,7 +20,6 @@
 
 package javaclasses.mealorder.c.aggregate;
 
-import com.google.protobuf.Timestamp;
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.UserId;
@@ -57,13 +56,11 @@ public class PurchaseOrderAggregateRejections {
             throws CannotCreatePurchaseOrder {
         final VendorId vendorId = cmd.getId()
                                      .getVendorId();
-        final Timestamp poDate = cmd.getId()
+        final LocalDate poDate = cmd.getId()
                                     .getPoDate();
 
-        // TODO: 2/12/2018 replace with LocalDate value of poDate after rebuild.
         final CannotCreatePurchaseOrder errorMessage =
-                new CannotCreatePurchaseOrder(vendorId, LocalDate.newBuilder()
-                                                                 .build(), getCurrentTime());
+                new CannotCreatePurchaseOrder(vendorId, poDate, getCurrentTime());
         throw errorMessage;
     }
 

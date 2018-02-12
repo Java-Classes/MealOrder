@@ -65,7 +65,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     /**
      * {@inheritDoc}
      */
-    protected PurchaseOrderAggregate(PurchaseOrderId id) {
+    public PurchaseOrderAggregate(PurchaseOrderId id) {
         super(id);
     }
 
