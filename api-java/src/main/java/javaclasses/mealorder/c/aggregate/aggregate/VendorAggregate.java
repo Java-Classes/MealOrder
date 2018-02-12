@@ -24,10 +24,8 @@ import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
-import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.VendorVBuilder;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.ImportMenu;
@@ -43,7 +41,6 @@ import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
-import static javaclasses.mealorder.c.aggregate.aggregate.rejection.VendorAggregateRejections.UpdateRejections.throwVendorAlreadyExists;
 
 /**
  * The aggregate managing the state of a {@link Vendor}.
@@ -71,14 +68,10 @@ public class VendorAggregate extends Aggregate<VendorId,
 
     @Assign
     List<? extends Message> handle(AddVendor cmd) throws VendorAlreadyExists {
-        VendorName vendorName = cmd.getVendorName();
-        if (vendorName.equals(getState().getVendorName())) {
-            throwVendorAlreadyExists(cmd);
-        }
         final VendorAdded vendorAdded = VendorAdded.newBuilder()
                                                    .setVendorId(cmd.getVendorId())
                                                    .setWhoAdded(cmd.getUserId())
-                                                   .setVendorName(vendorName)
+                                                   .setVendorName(cmd.getVendorName())
                                                    .setEmail(cmd.getEmail())
                                                    .addAllPhoneNumbers(cmd.getPhoneNumbersList())
                                                    .setPoDailyDeadline(

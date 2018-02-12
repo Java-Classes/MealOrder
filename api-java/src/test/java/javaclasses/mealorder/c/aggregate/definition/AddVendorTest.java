@@ -85,4 +85,5 @@ public class AddVendorTest extends VendorCommandTest<AddVendor> {
         final Vendor state = aggregate.getState();
         assertEquals(state.getId(), addVendor.getVendorId());
     }
+
 }
