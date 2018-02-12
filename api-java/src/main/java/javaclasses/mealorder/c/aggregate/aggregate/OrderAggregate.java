@@ -22,6 +22,7 @@ package javaclasses.mealorder.c.aggregate.aggregate;
 
 import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
@@ -38,7 +39,6 @@ import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderCreated;
 
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -115,4 +115,22 @@ public class OrderAggregate extends Aggregate<OrderId,
         return singletonList(result);
     }
 
+    // Event appliers
+
+    @Apply
+    private void orderCreated(OrderCreated event) {
+        getBuilder().setId(event.getOrderId());
+    }
+
+    @Apply
+    private void dishAddedToOrder(DishAddedToOrder event) {
+    }
+
+    @Apply
+    private void dishRemovedFromOrder(DishRemovedFromOrder event) {
+    }
+
+    @Apply
+    private void orderCanceled(CancelOrder event) {
+    }
 }
