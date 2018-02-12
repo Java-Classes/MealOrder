@@ -101,15 +101,9 @@ public class VendorAggregate extends Aggregate<VendorId,
 
     @Assign
     List<? extends Message> handle(ImportMenu cmd) {
-
-        final MenuId menuId = MenuId.newBuilder()
-                                    .setVendorId(cmd.getVendorId())
-                                    .setWhenImported(getCurrentTime())
-                                    .build();
-
         final MenuImported menuImported = MenuImported.newBuilder()
                                                       .setVendorId(cmd.getVendorId())
-                                                      .setMenuId(menuId)
+                                                      .setMenuId(cmd.getMenuId())
                                                       .setWhoImported(cmd.getUserId())
                                                       .setWhenImported(getCurrentTime())
                                                       .addAllDishes(cmd.getDishesList())

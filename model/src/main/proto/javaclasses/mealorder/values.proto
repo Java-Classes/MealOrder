@@ -68,7 +68,7 @@ message VendorName {
 message VendorChange {
 
     // The name that's changing.
-    VendorName vendor_name = 1;
+    VendorName previous_vendor_name = 1;
 
     // The email address that's changing.
     spine.net.EmailAddress previous_email = 2;

@@ -84,11 +84,14 @@ message ImportMenu {
     // The identifier of a vendor.
     VendorId vendor_id = 1;
 
+    // The identifier of a imported menu
+    MenuId menuId = 2;
+
     // The identifier of the user who imports a menu.
-    UserId user_id = 2;
+    UserId user_id = 3;
 
     // The collection of dishes.
-    repeated Dish dishes = 3;
+    repeated Dish dishes = 4;
 }
 
 // Sets a menu date range.
