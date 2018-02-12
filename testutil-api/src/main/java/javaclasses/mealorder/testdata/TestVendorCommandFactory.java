@@ -22,9 +22,11 @@ package javaclasses.mealorder.testdata;
 
 import io.spine.money.Money;
 import io.spine.net.EmailAddress;
+import io.spine.time.LocalDate;
 import io.spine.time.LocalTime;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
+import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.PhoneNumber;
 import javaclasses.mealorder.UserId;
@@ -33,6 +35,7 @@ import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.ImportMenu;
+import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.command.UpdateVendor;
 
 import java.util.ArrayList;
@@ -99,6 +102,23 @@ public class TestVendorCommandFactory {
                                                .setVendorId(VENDOR_ID)
                                                .setWhenImported(getCurrentTime())
                                                .build();
+
+    public static final MenuDateRange MENU_DATE_RANGE = MenuDateRange.newBuilder()
+                                                                     .setRangeStart(
+                                                                             LocalDate.newBuilder()
+                                                                                      .setYear(2018)
+                                                                                      .setMonthValue(
+                                                                                              2)
+                                                                                      .setDay(12)
+                                                                                      .build())
+                                                                     .setRangeEnd(
+                                                                             LocalDate.newBuilder()
+                                                                                      .setYear(2018)
+                                                                                      .setMonthValue(
+                                                                                              2)
+                                                                                      .setDay(19)
+                                                                                      .build())
+                                                                     .build();
 
     public static final List<Dish> DISHES = new ArrayList<Dish>() {{
         add(Dish.newBuilder()
@@ -220,6 +240,39 @@ public class TestVendorCommandFactory {
                                             .setMenuId(menuId)
                                             .addAllDishes(dishes)
                                             .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link SetDateRangeForMenu} instance.
+     *
+     * @return the {@code ImportMenu} instance
+     */
+    public static SetDateRangeForMenu setDateRangeForMenuInstance() {
+        final SetDateRangeForMenu result = setDateRangeForMenuInstance(VENDOR_ID, MENU_ID, USER_ID,
+                                                                       MENU_DATE_RANGE);
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link SetDateRangeForMenu} instance.
+     *
+     * @param vendorId      the identifier of a created vendor
+     * @param userId        the identifier of the user who updates vendor profile
+     * @param menuId        the identifier of the imported menu
+     * @param menuDateRange a menu date range that should be set.
+     * @return the {@code CreateBasicTask} instance
+     */
+    public static SetDateRangeForMenu setDateRangeForMenuInstance(VendorId vendorId, MenuId menuId,
+                                                                  UserId userId,
+                                                                  MenuDateRange menuDateRange) {
+
+        final SetDateRangeForMenu result = SetDateRangeForMenu.newBuilder()
+                                                              .setVendorId(vendorId)
+                                                              .setUserId(userId)
+                                                              .setMenuId(menuId)
+                                                              .setMenuDateRange(menuDateRange)
+                                                              .build();
         return result;
     }
 }
