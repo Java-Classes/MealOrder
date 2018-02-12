@@ -24,6 +24,8 @@ import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import io.spine.time.LocalDate;
+import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorVBuilder;
@@ -35,12 +37,15 @@ import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.VendorAdded;
 import javaclasses.mealorder.c.event.VendorUpdated;
+import javaclasses.mealorder.c.rejection.CannotSetDateRange;
 import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
 
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static javaclasses.mealorder.c.aggregate.aggregate.VendorFlowValidator.isValidDateRange;
+import static javaclasses.mealorder.c.aggregate.aggregate.rejection.VendorAggregateRejections.UpdateRejections.throwCannotSetDateRange;
 
 /**
  * The aggregate managing the state of a {@link Vendor}.
@@ -67,7 +72,7 @@ public class VendorAggregate extends Aggregate<VendorId,
     }
 
     @Assign
-    List<? extends Message> handle(AddVendor cmd) throws VendorAlreadyExists {
+    List<? extends Message> handle(AddVendor cmd) {
         final VendorAdded vendorAdded = VendorAdded.newBuilder()
                                                    .setVendorId(cmd.getVendorId())
                                                    .setWhoAdded(cmd.getUserId())
@@ -105,7 +110,13 @@ public class VendorAggregate extends Aggregate<VendorId,
     }
 
     @Assign
-    List<? extends Message> handle(SetDateRangeForMenu cmd) {
+    List<? extends Message> handle(SetDateRangeForMenu cmd) throws CannotSetDateRange {
+
+        MenuDateRange menuDateRange = cmd.getMenuDateRange();
+
+        if (!isValidDateRange(menuDateRange)) {
+            throwCannotSetDateRange(cmd);
+        }
 
         final DateRangeForMenuSet dateRangeForMenuSet = DateRangeForMenuSet.newBuilder()
                                                                            .setVendorId(

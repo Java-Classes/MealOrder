@@ -109,7 +109,7 @@ public class TestVendorCommandFactory {
                                                                                       .setYear(2018)
                                                                                       .setMonthValue(
                                                                                               2)
-                                                                                      .setDay(12)
+                                                                                      .setDay(13)
                                                                                       .build())
                                                                      .setRangeEnd(
                                                                              LocalDate.newBuilder()
@@ -119,6 +119,25 @@ public class TestVendorCommandFactory {
                                                                                       .setDay(19)
                                                                                       .build())
                                                                      .build();
+
+    public static final MenuDateRange INVALID_MENU_DATE_RANGE = MenuDateRange.newBuilder()
+                                                                             .setRangeStart(
+                                                                                     LocalDate.newBuilder()
+                                                                                              .setYear(
+                                                                                                      2017)
+                                                                                              .setMonthValue(
+                                                                                                      2)
+                                                                                              .setDay(13)
+                                                                                              .build())
+                                                                             .setRangeEnd(
+                                                                                     LocalDate.newBuilder()
+                                                                                              .setYear(
+                                                                                                      2017)
+                                                                                              .setMonthValue(
+                                                                                                      2)
+                                                                                              .setDay(19)
+                                                                                              .build())
+                                                                             .build();
 
     public static final List<Dish> DISHES = new ArrayList<Dish>() {{
         add(Dish.newBuilder()
