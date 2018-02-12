@@ -37,6 +37,9 @@ import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
+import javaclasses.mealorder.c.rejection.CannotCancelDeliveredPurchaseOrder;
+import javaclasses.mealorder.c.rejection.CannotCreatePurchaseOrder;
+import javaclasses.mealorder.c.rejection.CannotMarkCanceledPurchaseOrderAsDelivered;
 
 import java.util.List;
 
@@ -67,7 +70,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     @Assign
-    List<? extends Message> handle(CreatePurchaseOrder cmd) {
+    List<? extends Message> handle(CreatePurchaseOrder cmd) throws CannotCreatePurchaseOrder {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoCreates();
         final List<Order> ordersList = cmd.getOrdersList();
@@ -101,7 +104,8 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     @Assign
-    List<? extends Message> handle(MarkPurchaseOrderAsDelivered cmd) {
+    List<? extends Message> handle(MarkPurchaseOrderAsDelivered cmd)
+            throws CannotMarkCanceledPurchaseOrderAsDelivered {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoMarksAsDelivered();
 
@@ -116,7 +120,8 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     @Assign
-    List<? extends Message> handle(CancelPurchaseOrder cmd) {
+    List<? extends Message> handle(CancelPurchaseOrder cmd)
+            throws CannotCancelDeliveredPurchaseOrder {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
 
