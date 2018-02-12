@@ -25,6 +25,7 @@ import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import io.spine.time.LocalDate;
+import io.spine.time.MonthOfYear;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderAggregate;
@@ -65,7 +66,11 @@ abstract class PurchaseOrderCommandTest<C extends Message> extends AggregateComm
                               .setVendorId(VendorId.newBuilder()
                                                    .setValue(newUuid())
                                                    .build())
-                              .setPoDate(LocalDate.getDefaultInstance())
+                              .setPoDate(LocalDate.newBuilder()
+                                                  .setDay(15)
+                                                  .setMonth(MonthOfYear.FEBRUARY)
+                                                  .setYear(2018)
+                                                  .build())
                               .build();
     }
 }

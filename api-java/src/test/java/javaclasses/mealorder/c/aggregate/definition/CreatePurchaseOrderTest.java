@@ -20,22 +20,28 @@
 
 package javaclasses.mealorder.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.PurchaseOrder;
+import javaclasses.mealorder.PurchaseOrderId;
+import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
+import javaclasses.mealorder.c.rejection.CannotCreatePurchaseOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.spine.Identifier.newUuid;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.ORDERS;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.USER_ID;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Yegor Udovchenko
@@ -51,8 +57,7 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
     @Test
     @DisplayName("produce PurchaseOrderCreated event")
     void produceEvent() {
-        final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance(purchaseOrderId, ORDERS,
-                                                                            USER_ID);
+        final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance(purchaseOrderId);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(createPOcmd));
 
@@ -63,17 +68,40 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
         final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) messageList.get(0);
 
         assertEquals(purchaseOrderId, purchaseOrderCreated.getId());
-        assertEquals(ORDERS, purchaseOrderCreated.getOrdersList());
     }
 
     @Test
     @DisplayName("create the purchase order")
-    void createTask() {
+    void createPurchaseOrder() {
         final CreatePurchaseOrder createPurchaseOrder = createPurchaseOrderInstance();
         dispatchCommand(aggregate, envelopeOf(createPurchaseOrder));
 
         final PurchaseOrder state = aggregate.getState();
         assertEquals(state.getId(), createPurchaseOrder.getId());
         assertEquals(state.getOrdersCount(), 1);
+    }
+
+    @Test
+    @DisplayName("throw CannotCreatePurchaseOrder rejection " +
+            "upon an attempt to add orders from another vendor")
+    void cannotCreatePurchaseOrderForNotMatchingOrders() {
+        final CreatePurchaseOrder createPurchaseOrderCmd = createPurchaseOrderInstance();
+        final CreatePurchaseOrder invalidCmd = CreatePurchaseOrder
+                .newBuilder()
+                .setId(PurchaseOrderId
+                               .newBuilder()
+                               .setVendorId(VendorId.newBuilder()
+                                                    .setValue(newUuid())
+                                                    .build())
+                               .setPoDate(createPurchaseOrderCmd.getId()
+                                                                .getPoDate()))
+                .setWhoCreates(createPurchaseOrderCmd.getWhoCreates())
+                .addAllOrders(createPurchaseOrderCmd.getOrdersList())
+                .build();
+
+        Throwable t = assertThrows(Throwable.class,
+                                   () -> dispatchCommand(aggregate,
+                                                         envelopeOf(invalidCmd)));
+        assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
     }
 }

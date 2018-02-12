@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.testdata;
 
+import com.google.protobuf.Timestamp;
 import io.spine.money.Currency;
 import io.spine.money.Money;
 import io.spine.net.EmailAddress;
@@ -108,26 +109,51 @@ public class TestPurchaseOrderCommandFactory {
      * @return the {@code CreatePurchaseOrder} instance
      */
     public static CreatePurchaseOrder createPurchaseOrderInstance() {
-        final CreatePurchaseOrder result = createPurchaseOrderInstance(PURCHASE_ORDER_ID, ORDERS,
-                                                                       USER_ID);
+        final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
+                                                              .setId(PURCHASE_ORDER_ID)
+                                                              .setWhoCreates(USER_ID)
+                                                              .addAllOrders(ORDERS)
+                                                              .build();
         return result;
     }
 
     /**
      * Provides a pre-configured {@link CreatePurchaseOrder} instance.
      *
-     * @param id         an identifier of the created purchase order
-     * @param orders     the list of orders
-     * @param whoCreates the user who calls the command
+     * @param id an identifier of the created purchase order
      * @return the {@code CreatePurchaseOrder} instance
      */
-    public static CreatePurchaseOrder createPurchaseOrderInstance(PurchaseOrderId id,
-                                                                  List<Order> orders,
-                                                                  UserId whoCreates) {
+    public static CreatePurchaseOrder createPurchaseOrderInstance(PurchaseOrderId id) {
+        final MenuId menuId = MenuId.newBuilder()
+                                    .setVendorId(id.getVendorId())
+                                    .setWhenImported(Timestamp.getDefaultInstance())
+                                    .build();
+        final DishId dishId = DishId.newBuilder()
+                                    .setMenuId(menuId)
+                                    .setSequentialNumber(1)
+                                    .build();
+        final Dish dish = Dish.newBuilder()
+                              .setId(dishId)
+                              .setName("Dish")
+                              .setCategory("Category")
+                              .setPrice(Money.newBuilder()
+                                             .setCurrency(Currency.USD)
+                                             .setAmount(100)
+                                             .build())
+                              .build();
+        final OrderId orderId = OrderId.newBuilder()
+                                       .setVendorId(id.getVendorId())
+                                       .setOrderDate(id.getPoDate())
+                                       .setUserId(USER_ID)
+                                       .build();
+        final Order order = Order.newBuilder()
+                                 .setId(orderId)
+                                 .addDishes(dish)
+                                 .build();
         final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
                                                               .setId(id)
-                                                              .addAllOrders(orders)
-                                                              .setWhoCreates(whoCreates)
+                                                              .setWhoCreates(USER_ID)
+                                                              .addOrders(order)
                                                               .build();
         return result;
     }

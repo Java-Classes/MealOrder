@@ -45,6 +45,7 @@ import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
 
 /**
  * The aggregate managing the state of a {@link PurchaseOrder}.
@@ -74,6 +75,16 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoCreates();
         final List<Order> ordersList = cmd.getOrdersList();
+        for (final Order order : ordersList) {
+            if (!order.getId()
+                      .getVendorId()
+                      .equals(purchaseOrderId.getVendorId()) ||
+                    !order.getId()
+                          .getOrderDate()
+                          .equals(purchaseOrderId.getPoDate())) {
+                throwCannotCreatePurchaseOrder(cmd);
+            }
+        }
 
         final PurchaseOrderCreated result = PurchaseOrderCreated
                 .newBuilder()
@@ -84,6 +95,11 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                 .build();
 
         return singletonList(result);
+    }
+
+    @Override
+    public PurchaseOrder getState() {
+        return super.getState();
     }
 
     @Assign
@@ -133,12 +149,14 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
         switch (cmd.getReasonCase()) {
             case INVALID:
-                builder.setInvalid(cmd.getInvalid());
+                return singletonList(builder.setInvalid(cmd.getInvalid())
+                                            .build());
             case CUSTOM_REASON:
-                builder.setCustomReason(cmd.getCustomReason());
+                return singletonList(builder.setCustomReason(cmd.getCustomReason())
+                                            .build());
+            default:
+                return singletonList(builder.build());
         }
-
-        return singletonList(builder.build());
     }
 
     /*

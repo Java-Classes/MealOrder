@@ -59,9 +59,7 @@ public class PurchaseOrderAggregateRejections {
         final LocalDate poDate = cmd.getId()
                                     .getPoDate();
 
-        final CannotCreatePurchaseOrder errorMessage =
-                new CannotCreatePurchaseOrder(vendorId, poDate, getCurrentTime());
-        throw errorMessage;
+        throw new CannotCreatePurchaseOrder(vendorId, poDate, getCurrentTime());
     }
 
     /**
@@ -76,10 +74,8 @@ public class PurchaseOrderAggregateRejections {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoMarksAsDelivered();
 
-        final CannotMarkCanceledPurchaseOrderAsDelivered errorMessage =
-                new CannotMarkCanceledPurchaseOrderAsDelivered(purchaseOrderId, userId,
-                                                               getCurrentTime());
-        throw errorMessage;
+        throw new CannotMarkCanceledPurchaseOrderAsDelivered(purchaseOrderId, userId,
+                                                             getCurrentTime());
     }
 
     /**
@@ -94,8 +90,6 @@ public class PurchaseOrderAggregateRejections {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
 
-        final CannotCancelDeliveredPurchaseOrder errorMessage =
-                new CannotCancelDeliveredPurchaseOrder(purchaseOrderId, userId, getCurrentTime());
-        throw errorMessage;
+        throw new CannotCancelDeliveredPurchaseOrder(purchaseOrderId, userId, getCurrentTime());
     }
 }
