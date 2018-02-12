@@ -27,6 +27,7 @@ import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
+import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 
 import static io.spine.time.MonthOfYear.FEBRUARY;
@@ -50,6 +51,12 @@ public class TestOrderCommandFactory {
         return CreateOrder.newBuilder()
                           .setOrderId(orderId)
                           .setMenuId(menuId)
+                          .build();
+    }
+
+    public static CancelOrder cancelOrderInstance(OrderId orderId) {
+        return CancelOrder.newBuilder()
+                          .setOrderId(orderId)
                           .build();
     }
 

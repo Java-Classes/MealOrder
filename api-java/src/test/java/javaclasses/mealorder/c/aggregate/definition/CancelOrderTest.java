@@ -22,9 +22,9 @@ package javaclasses.mealorder.c.aggregate.definition;
 
 import com.google.protobuf.Message;
 import javaclasses.mealorder.MenuId;
-import javaclasses.mealorder.Order;
+import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
-import javaclasses.mealorder.c.event.OrderCreated;
+import javaclasses.mealorder.c.event.OrderCanceled;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +33,7 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author Vlad Kozachenko
  */
-public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
+public class CancelOrderTest extends OrderCommandTest<CreateOrder> {
 
     @Override
     @BeforeEach
@@ -53,27 +54,17 @@ public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
     public void produceEvent() {
         final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
                                                                MenuId.getDefaultInstance());
+        dispatchCommand(aggregate, envelopeOf(createOrderCmd));
+
+        final CancelOrder cancelOrderCmd = cancelOrderInstance(ORDER_ID);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(createOrderCmd));
+                                                                    envelopeOf(cancelOrderCmd));
 
         assertNotNull(aggregate.getState());
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
-        assertEquals(OrderCreated.class, messageList.get(0)
-                                                    .getClass());
+        assertEquals(OrderCanceled.class, messageList.get(0)
+                                                     .getClass());
 
-    }
-
-    @Test
-    @DisplayName("create the order")
-    public void createOrder() {
-
-        MenuId menuId = MenuId.getDefaultInstance();
-
-        final CreateOrder createOrder = createOrderInstance(ORDER_ID, menuId);
-        dispatchCommand(aggregate, envelopeOf(createOrder));
-
-        final Order state = aggregate.getState();
-        assertEquals(state.getId(), createOrder.getOrderId());
     }
 }

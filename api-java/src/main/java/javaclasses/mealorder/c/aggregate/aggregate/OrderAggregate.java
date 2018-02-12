@@ -132,6 +132,6 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     @Apply
-    private void orderCanceled(CancelOrder event) {
+    private void orderCanceled(OrderCanceled event) {
     }
 }
