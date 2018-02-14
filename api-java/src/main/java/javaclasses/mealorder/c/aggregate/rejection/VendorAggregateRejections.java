@@ -18,9 +18,9 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package javaclasses.mealorder.c.aggregate.aggregate.rejection;
+package javaclasses.mealorder.c.aggregate.rejection;
 
-import javaclasses.mealorder.c.aggregate.aggregate.VendorAggregate;
+import javaclasses.mealorder.c.aggregate.VendorAggregate;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.rejection.CannotSetDateRange;

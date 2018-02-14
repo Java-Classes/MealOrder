@@ -18,15 +18,10 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package javaclasses.mealorder.c.aggregate;
-
-import javaclasses.mealorder.c.aggregate.aggregate.VendorAggregate;
-
 /**
- * Utility class for working with {@link VendorAggregate} rejection.
- *
- * @author Yurii Haidamaka
+ * This package provides implementation for the application context.
  */
-public class VendorAggregateRejections {
+@ParametersAreNonnullByDefault
+package javaclasses.mealorder.c.context;
 
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -18,19 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.aggregate;
+package javaclasses.mealorder.c.aggregate;
 
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.MenuDateRange;
+
+import java.util.Comparator;
 
 /**
  * Validates vendor commands and state transitions.
  *
  * @author Yurii Haidamaka
  */
-class VendorFlowValidator {
+class VendorValidator {
 
-    private VendorFlowValidator() {
+    private VendorValidator() {
     }
 
     /**

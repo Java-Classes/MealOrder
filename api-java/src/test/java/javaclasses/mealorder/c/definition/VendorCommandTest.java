@@ -18,14 +18,14 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package javaclasses.mealorder.c.aggregate.definition;
+package javaclasses.mealorder.c.definition;
 
 import com.google.protobuf.Message;
 import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.c.aggregate.aggregate.VendorAggregate;
+import javaclasses.mealorder.c.aggregate.VendorAggregate;
 
 import static io.spine.Identifier.newUuid;
 

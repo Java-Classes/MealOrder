@@ -18,10 +18,16 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-/**
- * This package provides classes for working with aggregate and projection repositories.
- */
-@ParametersAreNonnullByDefault
-package javaclasses.mealorder.c.aggregate.repository;
+package javaclasses.mealorder.c.repository;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.spine.server.aggregate.AggregateRepository;
+import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.c.aggregate.VendorAggregate;
+
+/**
+ * Repository for the {@link VendorAggregate}.
+ *
+ * @author Illia Shepilov
+ */
+public class VendorRepository extends AggregateRepository<VendorId, VendorAggregate> {
+}

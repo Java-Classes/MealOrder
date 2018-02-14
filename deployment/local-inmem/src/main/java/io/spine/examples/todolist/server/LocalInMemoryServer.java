@@ -25,7 +25,7 @@ import javaclasses.mealorder.server.Server;
 import java.io.IOException;
 
 import static io.spine.client.ConnectionConstants.DEFAULT_CLIENT_SERVICE_PORT;
-import static javaclasses.mealorder.c.aggregate.context.BoundedContexts.create;
+import static javaclasses.mealorder.c.context.BoundedContexts.create;
 import static javaclasses.mealorder.server.Server.newServer;
 
 /**
