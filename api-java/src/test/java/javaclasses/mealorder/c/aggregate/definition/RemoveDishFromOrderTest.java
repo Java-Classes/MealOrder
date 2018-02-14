@@ -21,6 +21,7 @@
 package javaclasses.mealorder.c.aggregate.definition;
 
 import com.google.protobuf.Message;
+import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
@@ -52,17 +53,45 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
     }
 
     @Test
-    @DisplayName("produce AddDishToOrder event")
+    @DisplayName("produce RemoveDishFromOrder event")
     public void produceEvent() {
+
+        final Dish dish = Dish.getDefaultInstance();
+
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, dish);
+        dispatchCommand(aggregate, envelopeOf(addDishToOrder));
         final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
-                                                                          DishId.getDefaultInstance());
+                                                                                    dish.getId());
         final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(removeDishFromOrder));
+                                                                    envelopeOf(
+                                                                            removeDishFromOrder));
 
         assertNotNull(aggregate.getState());
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
         assertEquals(DishRemovedFromOrder.class, messageList.get(0)
                                                             .getClass());
+    }
+
+    @Test
+    @DisplayName("removes the dish from the order")
+    public void removeDish() {
+
+        final Dish dish = Dish.newBuilder()
+                              .setId(DishId.newBuilder()
+                                           .setSequentialNumber(123)
+                                           .build())
+                              .setName("Картошка")
+                              .build();
+
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, dish);
+        dispatchCommand(aggregate, envelopeOf(addDishToOrder));
+        final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
+                                                                                    dish.getId());
+        dispatchCommand(aggregate, envelopeOf(removeDishFromOrder));
+
+        assertEquals(0, aggregate.getState()
+                                 .getDishesList()
+                                 .size());
     }
 }

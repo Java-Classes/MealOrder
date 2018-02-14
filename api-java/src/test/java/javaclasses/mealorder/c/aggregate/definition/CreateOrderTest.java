@@ -66,7 +66,7 @@ public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
     }
 
     @Test
-    @DisplayName("create the task")
+    @DisplayName("create the order")
     public void createTask() {
 
         MenuId menuId = MenuId.getDefaultInstance();

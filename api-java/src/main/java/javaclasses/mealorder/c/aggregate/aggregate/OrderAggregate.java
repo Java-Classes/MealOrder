@@ -39,11 +39,13 @@ import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderCreated;
+import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static javaclasses.mealorder.OrderStatus.*;
+import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
+import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwCannotRemoveMissingDish;
 
 /**
  * The aggregate managing the state of a {@link Order}.
@@ -84,25 +86,32 @@ public class OrderAggregate extends Aggregate<OrderId,
     @Assign
     List<? extends Message> handle(AddDishToOrder cmd) {
         final OrderId orderId = cmd.getOrderId();
-        final Dish dishId = cmd.getDish();
+        final Dish dish = cmd.getDish();
 
         final DishAddedToOrder result = DishAddedToOrder.newBuilder()
                                                         .setOrderId(orderId)
-                                                        .setDish(dishId)
+                                                        .setDish(dish)
                                                         .build();
         return singletonList(result);
     }
 
     @Assign
-    List<? extends Message> handle(RemoveDishFromOrder cmd) {
+    List<? extends Message> handle(RemoveDishFromOrder cmd) throws CannotRemoveMissingDish {
         final OrderId orderId = cmd.getOrderId();
         final DishId dishId = cmd.getDishId();
 
-        final DishRemovedFromOrder result = DishRemovedFromOrder.newBuilder()
-                                                                .setOrderId(orderId)
-                                                                .setDishId(dishId)
-                                                                .build();
-        return singletonList(result);
+        DishRemovedFromOrder result;
+        for (Dish dish : getState().getDishesList()) {
+            if (dish.getId().equals(dishId)) {
+                result = DishRemovedFromOrder.newBuilder()
+                                             .setOrderId(orderId)
+                                             .setDish(dish)
+                                             .build();
+                return singletonList(result);
+            }
+        }
+        throwCannotRemoveMissingDish(cmd);
+        return singletonList(null);
     }
 
     @Assign
@@ -111,9 +120,9 @@ public class OrderAggregate extends Aggregate<OrderId,
         final UserId userId = cmd.getWhoCancels();
 
         final OrderCanceled result = OrderCanceled.newBuilder()
-                                                         .setOrderId(orderId)
-                                                         .setWhoCanceled(userId)
-                                                         .build();
+                                                  .setOrderId(orderId)
+                                                  .setWhoCanceled(userId)
+                                                  .build();
         return singletonList(result);
     }
 
@@ -128,11 +137,20 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     private void dishAddedToOrder(DishAddedToOrder event) {
-        getBuilder().addDishes(event.getDish()).build();
+        getBuilder().addDishes(event.getDish())
+                    .build();
     }
 
     @Apply
     private void dishRemovedFromOrder(DishRemovedFromOrder event) {
+        for (int i = 0; i < getState().getDishesCount(); i++) {
+            if (event.getDish()
+                     .equals(getState().getDishes(i))) {
+                getBuilder().removeDishes(i)
+                            .build();
+                return;
+            }
+        }
     }
 
     @Apply

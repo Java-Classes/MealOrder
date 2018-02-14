@@ -157,8 +157,8 @@ message DishRemovedFromOrder {
     // The identifier of the order.
     OrderId order_id = 1;
 
-    // The identifier of a dish.
-    DishId dish_id = 2;
+    // A dish removed from an order.
+    Dish dish = 2;
 
     // Was removed at this time.
     google.protobuf.Timestamp when_removed = 3;
