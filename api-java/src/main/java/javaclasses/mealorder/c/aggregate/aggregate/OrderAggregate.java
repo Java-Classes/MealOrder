@@ -83,11 +83,11 @@ public class OrderAggregate extends Aggregate<OrderId,
     @Assign
     List<? extends Message> handle(AddDishToOrder cmd) {
         final OrderId orderId = cmd.getOrderId();
-        final DishId dishId = cmd.getDishId();
+        final Dish dishId = cmd.getDish();
 
         final DishAddedToOrder result = DishAddedToOrder.newBuilder()
                                                         .setOrderId(orderId)
-                                                        .setDishId(dishId)
+                                                        .setDish(dishId)
                                                         .build();
         return singletonList(result);
     }

@@ -21,6 +21,7 @@
 package javaclasses.mealorder.testdata;
 
 import io.spine.time.LocalDate;
+import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
@@ -61,10 +62,10 @@ public class TestOrderCommandFactory {
                           .build();
     }
 
-    public static AddDishToOrder addDishToOrderInstance(OrderId orderId, DishId dishId) {
+    public static AddDishToOrder addDishToOrderInstance(OrderId orderId, Dish dish) {
         return AddDishToOrder.newBuilder()
                              .setOrderId(orderId)
-                             .setDishId(dishId)
+                             .setDish(dish)
                              .build();
     }
 

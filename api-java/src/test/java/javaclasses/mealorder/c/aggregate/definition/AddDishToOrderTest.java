@@ -21,13 +21,10 @@
 package javaclasses.mealorder.c.aggregate.definition;
 
 import com.google.protobuf.Message;
-import javaclasses.mealorder.DishId;
-import javaclasses.mealorder.MenuId;
-import javaclasses.mealorder.Order;
+import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
-import javaclasses.mealorder.c.event.OrderCreated;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +34,6 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -56,7 +52,7 @@ public class AddDishToOrderTest extends OrderCommandTest<CreateOrder> {
     @DisplayName("produce AddDishToOrder event")
     public void produceEvent() {
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID,
-                                                                     DishId.getDefaultInstance());
+                                                                     Dish.getDefaultInstance());
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(addDishToOrder));
 

@@ -143,8 +143,8 @@ message DishAddedToOrder {
     // The identifier of the order.
     OrderId order_id = 1;
 
-    // The identifier of a dish.
-    DishId dish_id = 2;
+    // A dish that added to an order.
+    Dish dish = 2;
 
     // Was added at this time.
     google.protobuf.Timestamp when_added = 3;

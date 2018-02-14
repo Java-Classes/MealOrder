@@ -131,8 +131,8 @@ message AddDishToOrder {
     // The identifier of an order.
     OrderId order_id = 1;
 
-    // The identifier of a dish that should be added to an order.
-    DishId dish_id = 2;
+    // A dish that should be added to an order.
+    Dish dish = 2;
 }
 
 // Removes a dish from an order.
