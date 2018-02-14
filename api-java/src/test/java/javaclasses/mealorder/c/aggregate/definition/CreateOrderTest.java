@@ -23,6 +23,7 @@ package javaclasses.mealorder.c.aggregate.definition;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
+import javaclasses.mealorder.OrderStatus;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.OrderCreated;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,5 +76,7 @@ public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
 
         final Order state = aggregate.getState();
         assertEquals(state.getId(), createOrder.getOrderId());
+        assertEquals(OrderStatus.ORDER_ACTIVE, aggregate.getState()
+                                                        .getStatus());
     }
 }

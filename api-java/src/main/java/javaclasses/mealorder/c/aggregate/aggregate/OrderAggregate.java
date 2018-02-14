@@ -27,9 +27,9 @@ import io.spine.server.command.Assign;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
+import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.OrderVBuilder;
-import javaclasses.mealorder.Order;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
@@ -43,6 +43,7 @@ import javaclasses.mealorder.c.event.OrderCreated;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static javaclasses.mealorder.OrderStatus.*;
 
 /**
  * The aggregate managing the state of a {@link Order}.
@@ -120,7 +121,9 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     private void orderCreated(OrderCreated event) {
-        getBuilder().setId(event.getOrderId()).build();
+        getBuilder().setId(event.getOrderId())
+                    .setStatus(ORDER_ACTIVE)
+                    .build();
     }
 
     @Apply
