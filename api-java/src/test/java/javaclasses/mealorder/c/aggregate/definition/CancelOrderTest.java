@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
@@ -66,5 +67,20 @@ public class CancelOrderTest extends OrderCommandTest<CreateOrder> {
         assertEquals(OrderCanceled.class, messageList.get(0)
                                                      .getClass());
 
+    }
+
+    @Test
+    @DisplayName("cancel order")
+    public void cancelOrder() {
+        final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
+                                                               MenuId.getDefaultInstance());
+        dispatchCommand(aggregate, envelopeOf(createOrderCmd));
+
+        final CancelOrder cancelOrderCmd = cancelOrderInstance(ORDER_ID);
+        dispatchCommand(aggregate, envelopeOf(cancelOrderCmd));
+
+        assertNotNull(aggregate.getState());
+        assertNotNull(aggregate.getId());
+        assertEquals(ORDER_CANCELED, aggregate.getState().getStatus());
     }
 }

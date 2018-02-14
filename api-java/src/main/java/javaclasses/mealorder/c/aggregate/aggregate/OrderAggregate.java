@@ -45,6 +45,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
+import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwCannotRemoveMissingDish;
 
 /**
@@ -102,7 +103,8 @@ public class OrderAggregate extends Aggregate<OrderId,
 
         DishRemovedFromOrder result;
         for (Dish dish : getState().getDishesList()) {
-            if (dish.getId().equals(dishId)) {
+            if (dish.getId()
+                    .equals(dishId)) {
                 result = DishRemovedFromOrder.newBuilder()
                                              .setOrderId(orderId)
                                              .setDish(dish)
@@ -155,5 +157,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     private void orderCanceled(OrderCanceled event) {
+        getBuilder().setStatus(ORDER_CANCELED)
+                    .build();
     }
 }
