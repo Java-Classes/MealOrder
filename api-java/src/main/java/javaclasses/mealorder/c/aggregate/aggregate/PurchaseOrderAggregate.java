@@ -20,11 +20,11 @@
 
 package javaclasses.mealorder.c.aggregate.aggregate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
-import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.PurchaseOrderVBuilder;
@@ -46,6 +46,7 @@ import java.util.List;
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
+import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.isValidPurchaseOrderCreation;
 
 /**
  * The aggregate managing the state of a {@link PurchaseOrder}.
@@ -72,29 +73,15 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
     @Assign
     List<? extends Message> handle(CreatePurchaseOrder cmd) throws CannotCreatePurchaseOrder {
-        final PurchaseOrderId purchaseOrderId = cmd.getId();
-        final UserId userId = cmd.getWhoCreates();
-        final List<Order> ordersList = cmd.getOrdersList();
-        for (final Order order : ordersList) {
-            if (!order.getId()
-                      .getVendorId()
-                      .equals(purchaseOrderId.getVendorId()) ||
-                    !order.getId()
-                          .getOrderDate()
-                          .equals(purchaseOrderId.getPoDate())) {
-                throwCannotCreatePurchaseOrder(cmd);
-            }
+        if (!isValidPurchaseOrderCreation(cmd)) {
+            throwCannotCreatePurchaseOrder(cmd);
         }
 
-        final PurchaseOrderCreated result = PurchaseOrderCreated
-                .newBuilder()
-                .setId(purchaseOrderId)
-                .setWhoCreated(userId)
-                .setWhenCreated(getCurrentTime())
-                .addAllOrders(ordersList)
-                .build();
+        ImmutableList.Builder<Message> result = ImmutableList.builder();
+        final PurchaseOrderCreated createdEvent = createPurchaseOrderCreatedEvent(cmd);
+        result.add(createdEvent);
 
-        return singletonList(result);
+        return result.build();
     }
 
     @Override
@@ -167,6 +154,15 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     private void purchaseOrderCreated(PurchaseOrderCreated event) {
         getBuilder().setId(event.getId())
                     .addAllOrders(event.getOrdersList());
+
     }
 
+    private PurchaseOrderCreated createPurchaseOrderCreatedEvent(CreatePurchaseOrder cmd) {
+        return PurchaseOrderCreated.newBuilder()
+                                   .setId(cmd.getId())
+                                   .setWhoCreated(cmd.getWhoCreates())
+                                   .setWhenCreated(getCurrentTime())
+                                   .addAllOrders(cmd.getOrdersList())
+                                   .build();
+    }
 }
