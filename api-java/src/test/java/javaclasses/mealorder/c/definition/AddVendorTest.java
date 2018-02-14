@@ -20,10 +20,14 @@
 
 package javaclasses.mealorder.c.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.Vendor;
+import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.event.VendorAdded;
+import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
 import javaclasses.mealorder.testdata.TestVendorCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,8 +42,11 @@ import static javaclasses.mealorder.testdata.TestVendorCommandFactory.PO_DAILY_D
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_NAME;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Yurii Haidamaka
@@ -84,6 +91,30 @@ public class AddVendorTest extends VendorCommandTest<AddVendor> {
 
         final Vendor state = aggregate.getState();
         assertEquals(state.getId(), addVendor.getVendorId());
+    }
+
+    @Test
+    @DisplayName("throw VendorAlreadyExists rejection upon " +
+            "an attempt to add a vendor with the same name")
+    void notAddVendor() {
+        final AddVendor addVendor = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendor));
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(addVendor)));
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(VendorAlreadyExists.class));
+
+        final VendorAlreadyExists rejection = (VendorAlreadyExists) cause;
+        final VendorId actualVendorId = rejection.getMessageThrown()
+                                                 .getVendorId();
+        assertEquals(addVendor.getVendorId(), actualVendorId);
+        final VendorName actualVendorName = rejection.getMessageThrown()
+                                                     .getVendorName();
+        assertEquals(addVendor.getVendorName(), actualVendorName);
+
     }
 
 }

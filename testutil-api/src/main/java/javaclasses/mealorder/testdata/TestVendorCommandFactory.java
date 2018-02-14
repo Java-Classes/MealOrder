@@ -41,7 +41,6 @@ import javaclasses.mealorder.c.command.UpdateVendor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.spine.Identifier.newUuid;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
@@ -51,12 +50,12 @@ import static io.spine.time.Time.getCurrentTime;
  */
 public class TestVendorCommandFactory {
 
-    public static final VendorId VENDOR_ID = VendorId.newBuilder()
-                                                     .setValue(newUuid())
-                                                     .build();
     public static final VendorName VENDOR_NAME = VendorName.newBuilder()
                                                            .setValue("Mashed Potato")
                                                            .build();
+    public static final VendorId VENDOR_ID = VendorId.newBuilder()
+                                                     .setValue("vendor:" + VENDOR_NAME)
+                                                     .build();
     public static final VendorName NEW_VENDOR_NAME = VendorName.newBuilder()
                                                                .setValue("New Mashed Potato")
                                                                .build();
@@ -116,7 +115,7 @@ public class TestVendorCommandFactory {
                                                                                       .setYear(2018)
                                                                                       .setMonthValue(
                                                                                               2)
-                                                                                      .setDay(19)
+                                                                                      .setDay(21)
                                                                                       .build())
                                                                      .build();
 
@@ -124,7 +123,7 @@ public class TestVendorCommandFactory {
                                                                              .setRangeStart(
                                                                                      LocalDate.newBuilder()
                                                                                               .setYear(
-                                                                                                      2017)
+                                                                                                      2018)
                                                                                               .setMonthValue(
                                                                                                       2)
                                                                                               .setDay(13)

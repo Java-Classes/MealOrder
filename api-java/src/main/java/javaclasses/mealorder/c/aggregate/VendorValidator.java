@@ -21,9 +21,8 @@
 package javaclasses.mealorder.c.aggregate;
 
 import io.spine.time.LocalDate;
+import io.spine.time.MonthOfYear;
 import javaclasses.mealorder.MenuDateRange;
-
-import java.util.Comparator;
 
 /**
  * Validates vendor commands and state transitions.
@@ -42,28 +41,25 @@ class VendorValidator {
      */
     static boolean isValidDateRange(MenuDateRange menuDateRange) {
 
-        final LocalDate startDateRangeSpine = menuDateRange.getRangeStart();
-        final LocalDate endDateRangeSpine = menuDateRange.getRangeEnd();
+        final LocalDate startDateRange = menuDateRange.getRangeStart();
+        final LocalDate endDateRange = menuDateRange.getRangeEnd();
 
         final java.time.LocalDate currentDateJava = java.time.LocalDate.now();
-        final java.time.LocalDate startDateRangeJava = java.time.LocalDate.of(startDateRangeSpine
-                                                                                      .getYear(),
-                                                                              startDateRangeSpine
-                                                                                      .getMonth()
-                                                                                      .getNumber(),
-                                                                              startDateRangeSpine
-                                                                                      .getDay());
+        final LocalDate currentDate = LocalDate.newBuilder()
+                                               .setYear(currentDateJava.getYear())
+                                               .setMonth(
+                                                       MonthOfYear.valueOf(
+                                                               currentDateJava.getMonthValue()))
+                                               .setDay(currentDateJava.getDayOfMonth())
+                                               .build();
 
-        final java.time.LocalDate endDateRangeJava = java.time.LocalDate.of(endDateRangeSpine
-                                                                                    .getYear(),
-                                                                            endDateRangeSpine
-                                                                                    .getMonth()
-                                                                                    .getNumber(),
-                                                                            endDateRangeSpine
-                                                                                    .getDay());
+        LocalDateComparator localDateComparator = new LocalDateComparator();
+        int startAndCurrentDatesCompareResult = localDateComparator.compare(startDateRange,
+                                                                            currentDate);
+        int startAndEndDatesCompareResult = localDateComparator.compare(startDateRange,
+                                                                        endDateRange);
 
-        return startDateRangeJava.isBefore(endDateRangeJava) &&
-                !startDateRangeJava.isBefore(currentDateJava);
+        return startAndCurrentDatesCompareResult < 0 && startAndEndDatesCompareResult < 0;
     }
 
 }

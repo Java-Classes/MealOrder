@@ -27,6 +27,7 @@ import io.spine.server.command.Assign;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.VendorVBuilder;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.ImportMenu;
@@ -37,6 +38,7 @@ import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.VendorAdded;
 import javaclasses.mealorder.c.event.VendorUpdated;
 import javaclasses.mealorder.c.rejection.CannotSetDateRange;
+import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
 
 import java.util.List;
 
@@ -70,11 +72,18 @@ public class VendorAggregate extends Aggregate<VendorId,
     }
 
     @Assign
-    List<? extends Message> handle(AddVendor cmd) {
+    List<? extends Message> handle(AddVendor cmd) throws VendorAlreadyExists {
+
+        VendorName vendorName = cmd.getVendorName();
+
+        if (vendorName.equals(getState().getVendorName())) {
+            throw new VendorAlreadyExists(cmd.getVendorId(), vendorName, getCurrentTime());
+        }
+
         final VendorAdded vendorAdded = VendorAdded.newBuilder()
                                                    .setVendorId(cmd.getVendorId())
                                                    .setWhoAdded(cmd.getUserId())
-                                                   .setVendorName(cmd.getVendorName())
+                                                   .setVendorName(vendorName)
                                                    .setEmail(cmd.getEmail())
                                                    .addAllPhoneNumbers(cmd.getPhoneNumbersList())
                                                    .setPoDailyDeadline(
