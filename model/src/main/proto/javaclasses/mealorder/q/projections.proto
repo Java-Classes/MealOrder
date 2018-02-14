@@ -36,6 +36,7 @@ import "spine/money/money.proto";
 import "spine/net/email_address.proto";
 import "javaclasses/mealorder/identifiers.proto";
 import "javaclasses/mealorder/q/values.proto";
+import "javaclasses/mealorder/values.proto";
 
 // **** Projections for the UI role User. ****
 

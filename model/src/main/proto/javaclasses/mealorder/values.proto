@@ -85,3 +85,41 @@ message VendorChange {
     // The new daily deadline time.
     spine.time.LocalTime new_po_daily_deadline = 6;
 }
+
+// A purchase order status values.
+//
+enum PurchaseOrderStatus {
+
+    // Used as an undefined value marker.
+    POS_UNDEFINED = 0;
+
+    CREATED = 1;
+
+    VALID = 2;
+
+    INVALID = 3;
+
+    ERROR = 4;
+
+    SENT = 5;
+
+    CANCELED = 6;
+
+    DELIVERED = 7;
+}
+
+// An order status values.
+//
+enum OrderStatus {
+
+    // Used as an undefined value marker.
+    ORDER_UNDEFINED = 0;
+
+    // The 'Active' state is the only order state in which
+    // dishes can still be added or removed.
+    ORDER_ACTIVE = 1;
+
+    ORDER_PROCESSED = 2;
+
+    ORDER_CANCELED = 3;
+}
