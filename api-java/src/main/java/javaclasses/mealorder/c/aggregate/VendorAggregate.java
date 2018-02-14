@@ -24,6 +24,7 @@ import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.VendorId;
@@ -41,9 +42,11 @@ import javaclasses.mealorder.c.rejection.CannotSetDateRange;
 import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static javaclasses.mealorder.c.aggregate.VendorValidator.isThereMenuForThisDateRange;
 import static javaclasses.mealorder.c.aggregate.VendorValidator.isValidDateRange;
 import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejections.UpdateRejections.throwCannotSetDateRange;
 
@@ -121,7 +124,8 @@ public class VendorAggregate extends Aggregate<VendorId,
 
         MenuDateRange menuDateRange = cmd.getMenuDateRange();
 
-        if (!isValidDateRange(menuDateRange)) {
+        if (!isValidDateRange(menuDateRange) ||
+                isThereMenuForThisDateRange(getState(), menuDateRange)) {
             throwCannotSetDateRange(cmd);
         }
 
@@ -167,13 +171,29 @@ public class VendorAggregate extends Aggregate<VendorId,
     @Apply
     private void menuImported(MenuImported event) {
 
-        getBuilder().setId(event.getVendorId());
+        getBuilder().setId(event.getVendorId())
+                    .addMenus(Menu.newBuilder()
+                                  .setId(event.getMenuId())
+                                  .addAllDishes(event.getDishesList())
+                                  .build());
     }
 
     @Apply
     private void dateRangeForMenuSet(DateRangeForMenuSet event) {
 
-        getBuilder().setId(event.getVendorId());
+        final List<Menu> menus = getState().getMenusList();
+        final int index = IntStream.range(0, menus.size())
+                                   .filter(i -> menus.get(i)
+                                                     .getId()
+                                                     .equals(event.getMenuId()))
+                                   .findFirst()
+                                   .getAsInt();
+        final Menu menu = getState().getMenus(index);
+        Menu.newBuilder(menu)
+            .setMenuDateRange(event.getMenuDateRange())
+            .build();
+        getBuilder().setId(event.getVendorId())
+                    .setMenus(index, menu);
     }
 
 }

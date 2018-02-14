@@ -91,26 +91,5 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
         assertEquals(state.getId(), importMenu.getVendorId());
     }
 
-    @Test
-    @DisplayName("produce CannotSetDateRange rejection")
-    void produceRejection() {
-        final SetDateRangeForMenu setInvalidDateRangeForMenu = setDateRangeForMenuInstance(
-                VENDOR_ID, MENU_ID, USER_ID, INVALID_MENU_DATE_RANGE);
-
-        final Throwable t = assertThrows(Throwable.class,
-                                         () -> dispatchCommand(aggregate,
-                                                               envelopeOf(
-                                                                       setInvalidDateRangeForMenu)));
-        final Throwable cause = Throwables.getRootCause(t);
-        assertThat(cause, instanceOf(CannotSetDateRange.class));
-
-        @SuppressWarnings("ConstantConditions") // Instance type checked before.
-        final Rejections.CannotSetDateRange rejection =
-                ((CannotSetDateRange) cause).getMessageThrown();
-
-        assertEquals(setInvalidDateRangeForMenu.getVendorId(), rejection.getVendorId());
-        assertEquals(setInvalidDateRangeForMenu.getMenuId(), rejection.getMenuId());
-        assertEquals(setInvalidDateRangeForMenu.getMenuDateRange(), rejection.getMenuDateRange());
-    }
 
 }

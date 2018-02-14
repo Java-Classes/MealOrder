@@ -28,10 +28,10 @@ class LocalDateComparator implements Comparator<LocalDate> {
 
     @Override
     public int compare(LocalDate o1, LocalDate o2) {
-        String o1String = "" + o1.getYear() + o1.getMonth()
-                                                .getNumber() + o1.getDay();
-        String o2String = "" + o2.getYear() + o2.getMonth()
-                                                .getNumber() + o2.getDay();
+        final String o1String = "" + o1.getYear() + o1.getMonth()
+                                                      .getNumber() + o1.getDay();
+        final String o2String = "" + o2.getYear() + o2.getMonth()
+                                                      .getNumber() + o2.getDay();
         return o1String.compareTo(o2String);
     }
 }

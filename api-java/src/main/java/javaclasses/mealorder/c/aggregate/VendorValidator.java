@@ -22,7 +22,11 @@ package javaclasses.mealorder.c.aggregate;
 
 import io.spine.time.LocalDate;
 import io.spine.time.MonthOfYear;
+import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.MenuDateRange;
+import javaclasses.mealorder.Vendor;
+
+import java.util.List;
 
 /**
  * Validates vendor commands and state transitions.
@@ -35,7 +39,7 @@ class VendorValidator {
     }
 
     /**
-     * Checks whether the date range doesn't contains dates from the past and the start range is no more than the end range.
+     * Checks whether the date range doesn't contain dates from the past and the start range is no more than the end range.
      *
      * @param menuDateRange date range to check
      */
@@ -60,6 +64,25 @@ class VendorValidator {
                                                                         endDateRange);
 
         return startAndCurrentDatesCompareResult < 0 && startAndEndDatesCompareResult < 0;
+    }
+
+    /**
+     * Checks whether the vendor doesn't have an available menu on this date range.
+     *
+     * @param vendor        aggregate vendor
+     * @param menuDateRange date range to check
+     */
+    static boolean isThereMenuForThisDateRange(Vendor vendor, MenuDateRange menuDateRange) {
+        final List<Menu> menus = vendor.getMenusList();
+
+        final LocalDateComparator localDateComparator = new LocalDateComparator();
+
+        return menus.stream()
+                    .filter(m -> localDateComparator.compare(menuDateRange.getRangeStart(),
+                                                             m.getMenuDateRange()
+                                                              .getRangeEnd()) <= 0)
+                    .count() != 0;
+
     }
 
 }
