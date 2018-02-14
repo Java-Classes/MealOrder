@@ -25,6 +25,7 @@ import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.PurchaseOrderVBuilder;
@@ -36,7 +37,9 @@ import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
 import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationPassed;
 import javaclasses.mealorder.c.rejection.CannotCancelDeliveredPurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotCreatePurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotMarkCanceledPurchaseOrderAsDelivered;
@@ -81,12 +84,20 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         final PurchaseOrderCreated createdEvent = createPurchaseOrderCreatedEvent(cmd);
         result.add(createdEvent);
 
-        return result.build();
-    }
+        List<Order> invalidOrders = PurchaseOrderValidator.findInvalidOrders(cmd.getOrdersList());
 
-    @Override
-    public PurchaseOrder getState() {
-        return super.getState();
+        if (invalidOrders.isEmpty()) {
+            final PurchaseOrderValidationPassed validationPassedEvent =
+                    createPOValidationPassedEvent(cmd);
+            result.add(validationPassedEvent);
+        } else {
+            final PurchaseOrderValidationFailed validationFailedEvent =
+                    createPOValidationFailedEvent(cmd, invalidOrders);
+            return result.add(validationFailedEvent)
+                         .build();
+        }
+
+        return result.build();
     }
 
     @Assign
@@ -164,5 +175,21 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                    .setWhenCreated(getCurrentTime())
                                    .addAllOrders(cmd.getOrdersList())
                                    .build();
+    }
+
+    private PurchaseOrderValidationFailed createPOValidationFailedEvent(CreatePurchaseOrder cmd,
+                                                                        List<Order> invalidOrders) {
+        return PurchaseOrderValidationFailed.newBuilder()
+                                            .setId(cmd.getId())
+                                            .addAllFailureOrders(invalidOrders)
+                                            .setWhenFailed(getCurrentTime())
+                                            .build();
+    }
+
+    private PurchaseOrderValidationPassed createPOValidationPassedEvent(CreatePurchaseOrder cmd) {
+        return PurchaseOrderValidationPassed.newBuilder()
+                                            .setId(cmd.getId())
+                                            .setWhenPassed(getCurrentTime())
+                                            .build();
     }
 }

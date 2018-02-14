@@ -20,7 +20,11 @@
 
 package javaclasses.mealorder.c.aggregate.aggregate;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multiset;
 import io.spine.time.LocalDate;
+import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
@@ -38,6 +42,8 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
  * @author Yegor Udovchenko
  */
 public class PurchaseOrderValidator {
+
+    public static final int MAX_SINGLE_DISH_COUNT = 20;
 
     private PurchaseOrderValidator() {
     }
@@ -62,6 +68,33 @@ public class PurchaseOrderValidator {
                 return false;
             }
             if (!(checkOrderNotEmpty(order) && checkVendorsMatch(order, purchaseOrderVendorId))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Finds orders which contain more than {@code MAX_SINGLE_DISH_COUNT}
+     * equal dishes. Those orders are considered invalid.
+     *
+     * @param orders list of orders to check.
+     * @return list of invalid orders.(Empty if all orders are valid)
+     */
+    static List<Order> findInvalidOrders(List<Order> orders) {
+        ImmutableList.Builder<Order> invalidOrdersBuilder = ImmutableList.builder();
+        for (final Order order : orders) {
+            if (!isValidOrder(order)) {
+                invalidOrdersBuilder.add(order);
+            }
+        }
+        return invalidOrdersBuilder.build();
+    }
+
+    private static boolean isValidOrder(Order order) {
+        final HashMultiset<Dish> dishes = HashMultiset.create(order.getDishesList());
+        for (final Multiset.Entry<Dish> entry : dishes.entrySet()) {
+            if (entry.getCount() > MAX_SINGLE_DISH_COUNT) {
                 return false;
             }
         }
