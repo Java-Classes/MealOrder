@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
@@ -28,6 +29,7 @@ import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
+import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,7 @@ import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOr
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.removeDishFromOrderInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Vlad Kozachenko
@@ -93,5 +96,24 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
         assertEquals(0, aggregate.getState()
                                  .getDishesList()
                                  .size());
+    }
+
+    @Test
+    @DisplayName("throw CannotRemoveMissingDish rejection")
+    public void notRemoveDish() {
+
+        final DishId dishId = DishId.newBuilder()
+                                    .setSequentialNumber(123)
+                                    .build();
+
+        final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
+                                                                                    dishId);
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(removeDishFromOrder)));
+        final Throwable cause = Throwables.getRootCause(t);
+        final CannotRemoveMissingDish rejection = (CannotRemoveMissingDish) cause;
+        assertEquals(rejection.getMessageThrown()
+                              .getDishId(), dishId);
     }
 }
