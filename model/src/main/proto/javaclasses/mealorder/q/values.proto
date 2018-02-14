@@ -144,31 +144,6 @@ message FullMenuItem {
 
 // The item of the purchase order list.
 //
-// When a purchase order is automatically created at the
-// vendor `poDailyDeadline` time the validation process is performed.
-//
-// If validation process has failed a purchase order status gets `INVALID` value.
-// If the administrator decides to overrule failed validation and mark a
-// purchase order as valid it is automatically
-// sent to vendor.
-//
-// If validation process is completed successfully a purchase order is automatically
-// sent to vendor.
-//
-// If sending process hasn't caused errors, a purchase order status
-// gets `SENT` value.
-//
-// If errors occurred while sending a purchase order to the vendor
-// its status gets `ERROR` value.
-//
-// When the administrator decides to cancel a purchase order
-// in some reason its status gets `CANCELED` value.
-//
-// When the administrator receives ordered dishes and checks
-// the accordance to a the purchase order dish list, he marks
-// a purchase order as delivered. After this a purchase order
-// status gets `DELIVERED` value.
-//
 message PurchaseOrderItem {
 
     // The identifier of a purchase order.
@@ -176,24 +151,6 @@ message PurchaseOrderItem {
 
     // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
-}
-
-// A purchase order status values.
-//
-enum PurchaseOrderStatus {
-
-    // Used as an undefined value marker.
-    POS_UNDEFINED = 0;
-
-    SENT = 1;
-
-    ERROR = 2;
-
-    INVALID = 3;
-
-    DELIVERED = 4;
-
-    CANCELED = 5;
 }
 
 // The item of an order list.

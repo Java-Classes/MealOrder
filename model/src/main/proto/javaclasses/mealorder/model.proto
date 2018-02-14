@@ -73,6 +73,17 @@ message Menu {
 
 // The model representing the `Order` aggregate.
 //
+// The value of an order status is set to `ORDER_ACTIVE` when
+// created. In this state dishes can be added or removed from the order.
+//
+// When the order is included into purchase order
+// its status is set to `ORDER_PROCESSED`.
+//
+// When the order is canceled by the user or the purchase order
+// was canceled its status is set to `ORDER_CANCELED`. Order can
+// be canceled by the system when its dish list is empty and the
+// purchase order creation deadline has come.
+//
 message Order {
 
     // The identifier of an order.
@@ -80,9 +91,38 @@ message Order {
 
     // The collection of dishes.
     repeated Dish dishes = 2;
+
+    // The status of an order.
+    OrderStatus status = 3;
 }
 
 // The model representing the `PurchaseOrder` aggregate.
+//
+// When a purchase order is automatically created at the
+// vendor `poDailyDeadline` time its status gets `CREATED` value.
+// Then the validation process is performed.
+//
+// If the validation process has failed a purchase order status gets `INVALID` value.
+// If the administrator decides to overrule failed validation and mark a
+// purchase order as valid its status gets `VALID` value and it is automatically
+// sent to vendor.
+//
+// If validation process is completed successfully a purchase order  status gets `VALID`
+// value and it is automatically sent to vendor.
+//
+// If sending process hasn't caused errors, a purchase order status
+// gets `SENT` value.
+//
+// If errors occurred while sending a purchase order to the vendor
+// its status gets `ERROR` value.
+//
+// When the administrator decides to cancel a purchase order
+// in some reason its status gets `CANCELED` value.
+//
+// When the administrator receives ordered dishes and checks
+// the accordance to a the purchase order dish list, he marks
+// a purchase order as delivered. After this a purchase order
+// status gets `DELIVERED` value.
 //
 message PurchaseOrder {
 
@@ -91,6 +131,9 @@ message PurchaseOrder {
 
     // The collection of orders.
     repeated Order orders = 2;
+
+    // The status of a purchase order.
+    PurchaseOrderStatus status = 3;
 }
 
 // The model representing the `Vendor` aggregate.
@@ -114,4 +157,7 @@ message Vendor {
     // Time when orders for this vendor are closed for editing.
     // The purchase order for the specified vendor will be created exactly at this time.
     spine.time.LocalTime po_daily_deadline = 5;
+
+    // The collection of menus.
+    repeated Menu menus = 6;
 }
