@@ -128,6 +128,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     private void dishAddedToOrder(DishAddedToOrder event) {
+        getBuilder().addDishes(event.getDish()).build();
     }
 
     @Apply

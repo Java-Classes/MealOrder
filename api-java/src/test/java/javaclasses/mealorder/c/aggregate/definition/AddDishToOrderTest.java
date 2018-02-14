@@ -22,6 +22,7 @@ package javaclasses.mealorder.c.aggregate.definition;
 
 import com.google.protobuf.Message;
 import javaclasses.mealorder.Dish;
+import javaclasses.mealorder.Order;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
@@ -58,25 +59,21 @@ public class AddDishToOrderTest extends OrderCommandTest<CreateOrder> {
 
         assertNotNull(aggregate.getState());
         assertNotNull(aggregate.getId());
-        assertNotNull(aggregate.getState().getDishesCount());
         assertEquals(1, messageList.size());
         assertEquals(DishAddedToOrder.class, messageList.get(0)
                                                         .getClass());
     }
 
-    // TODO:2018-02-12:vladislav.kozachenko: Implement addition of the dish to the order.
-/*
     @Test
     @DisplayName("add dish to order")
     public void addDishToOrder() {
 
-        DishId dishId = DishId.getDefaultInstance();
+        Dish dish = Dish.getDefaultInstance();
 
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, dishId);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, dish);
         dispatchCommand(aggregate, envelopeOf(addDishToOrder));
 
         final Order state = aggregate.getState();
-        assertEquals(state.getDishes(0).getId(), dishId);
+        assertEquals(state.getDishes(0), dish);
     }
-*/
 }
