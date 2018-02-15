@@ -36,6 +36,7 @@ import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
+import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 
@@ -284,6 +285,19 @@ public class TestPurchaseOrderCommandFactory {
                                   .setId(id)
                                   .setCustomReason("Because why not")
                                   .setUserId(USER_ID)
+                                  .build();
+    }
+
+    /**
+     * Provides a pre-configured {@link MarkPurchaseOrderAsDelivered} instance
+     *
+     * @param id an identifier of the purchase order.
+     * @return the {@code MarkPurchaseOrderAsDelivered} instance.
+     */
+    public static MarkPurchaseOrderAsDelivered markPurchaseOrderAsDeliveredInstance(PurchaseOrderId id) {
+        return MarkPurchaseOrderAsDelivered.newBuilder()
+                                  .setId(id)
+                                  .setWhoMarksAsDelivered(USER_ID)
                                   .build();
     }
 

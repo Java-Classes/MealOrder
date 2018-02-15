@@ -52,7 +52,6 @@ import static javaclasses.mealorder.PurchaseOrderStatus.CANCELED;
 import static javaclasses.mealorder.PurchaseOrderStatus.CREATED;
 import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
 import static javaclasses.mealorder.PurchaseOrderStatus.INVALID;
-import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
 import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCancelDeliveredPurchaseOrder;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
@@ -172,12 +171,18 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         getBuilder().setStatus(CANCELED);
     }
 
+    @Apply
+    private void purchaseOrderCanceled(PurchaseOrderDelivered event) {
+        getBuilder().setStatus(DELIVERED);
+    }
+
     private boolean isAllowedToMarkAsValid() {
         return getState().getStatus() == INVALID;
     }
 
+    // TODO: 2/15/2018 shold be replaced with SENT value.
     private boolean isAllowedToMarkAsDelivered() {
-        return getState().getStatus() == SENT;
+        return getState().getStatus() == VALID;
     }
 
     private boolean isAllowedToCancel() {
