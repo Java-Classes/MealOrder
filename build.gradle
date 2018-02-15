@@ -244,7 +244,7 @@ subprojects {
 
         selectors {
             directory "${sourcesRootDir}/test/java"
-            packages 'io.spine.examples.todolist', 'io.spine.cli', 'io.spine.server'
+            packages 'javaclasses.mealorder', 'io.spine.cli', 'io.spine.server'
         }
 
         filters {
