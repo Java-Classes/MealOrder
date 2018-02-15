@@ -27,7 +27,7 @@ import javaclasses.mealorder.c.aggregate.VendorAggregate;
 /**
  * Repository for the {@link VendorAggregate}.
  *
- * @author Illia Shepilov
+ * @author Yurii Haidamaka
  */
 public class VendorRepository extends AggregateRepository<VendorId, VendorAggregate> {
 }
