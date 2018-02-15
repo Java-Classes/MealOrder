@@ -35,6 +35,7 @@ import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,8 +187,8 @@ public class TestPurchaseOrderCommandFactory {
      */
     public static CreatePurchaseOrder createPurchaseOrderWithNotActiveOrdersInstance(
             PurchaseOrderId id) {
-        CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
-        Order order = validCmd.getOrders(0);
+        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+        final Order order = validCmd.getOrders(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
                                   .addOrders(Order.newBuilder(order)
                                                   .setStatus(ORDER_CANCELED))
@@ -203,8 +204,8 @@ public class TestPurchaseOrderCommandFactory {
      */
     public static CreatePurchaseOrder createPurchaseOrderWithEmptyOrdersInstance(
             PurchaseOrderId id) {
-        CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
-        Order order = validCmd.getOrders(0);
+        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+        final Order order = validCmd.getOrders(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
                                   .addOrders(Order.newBuilder()
                                                   .setStatus(order.getStatus())
@@ -222,8 +223,8 @@ public class TestPurchaseOrderCommandFactory {
      */
     public static CreatePurchaseOrder createPurchaseOrderWithDatesMismatchOrdersInstance(
             PurchaseOrderId id) {
-        CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
-        Order order = validCmd.getOrders(0);
+        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+        final Order order = validCmd.getOrders(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
                                   .addOrders(Order.newBuilder(order)
                                                   .setId(OrderId.newBuilder(order.getId())
@@ -232,4 +233,27 @@ public class TestPurchaseOrderCommandFactory {
                                   .build();
     }
 
+    /**
+     * Provides a pre-configured {@link CreatePurchaseOrder} instance
+     * with orders which should fail order validation and cause
+     * {@link PurchaseOrderValidationFailed} event.
+     *
+     * @param id an identifier of the created purchase order.
+     * @return the {@code CreatePurchaseOrder} instance with invalid orders.
+     */
+    public static CreatePurchaseOrder createPurchaseOrderWithInvalidOrdersInstance(
+            PurchaseOrderId id) {
+        CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+        final Order order = validCmd.getOrders(0);
+        final Dish dish = order.getDishes(0);
+        List<Dish> dishes = new ArrayList<>();
+        for (int i =0; i < 100; i++) {
+            dishes.add(dish);
+        }
+        return CreatePurchaseOrder.newBuilder(validCmd)
+                                  .addOrders(Order.newBuilder(order)
+                                                  .addAllDishes(dishes)
+                                                  .build())
+                                  .build();
+    }
 }
