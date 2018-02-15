@@ -35,6 +35,7 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
+import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithDatesMismatchOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithEmptyOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithNotActiveOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithVendorMismatchInstance;
@@ -118,6 +119,19 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
             "upon an attempt to add an empty order")
     void cannotCreatePurchaseOrderForEmptyOrders() {
         final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithEmptyOrdersInstance(
+                purchaseOrderId);
+
+        Throwable t = assertThrows(Throwable.class,
+                                   () -> dispatchCommand(aggregate,
+                                                         envelopeOf(invalidCmd)));
+        assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
+    }
+
+    @Test
+    @DisplayName("throw CannotCreatePurchaseOrder rejection " +
+            "upon an attempt to add an order from another date")
+    void cannotCreatePurchaseOrderForOrdersFromAnotherDate() {
+        final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithDatesMismatchOrdersInstance(
                 purchaseOrderId);
 
         Throwable t = assertThrows(Throwable.class,

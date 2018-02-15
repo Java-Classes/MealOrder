@@ -213,4 +213,23 @@ public class TestPurchaseOrderCommandFactory {
                                   .build();
     }
 
+    /**
+     * Provides a pre-configured {@link CreatePurchaseOrder} instance
+     * with an order in the list which dish list is empty.
+     *
+     * @param id an identifier of the created purchase order.
+     * @return the invalid {@code CreatePurchaseOrder} instance.
+     */
+    public static CreatePurchaseOrder createPurchaseOrderWithDatesMismatchOrdersInstance(
+            PurchaseOrderId id) {
+        CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+        Order order = validCmd.getOrders(0);
+        return CreatePurchaseOrder.newBuilder(validCmd)
+                                  .addOrders(Order.newBuilder(order)
+                                                  .setId(OrderId.newBuilder(order.getId())
+                                                                .setOrderDate(DATE))
+                                                  .build())
+                                  .build();
+    }
+
 }
