@@ -184,7 +184,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         return getState().getStatus() == INVALID;
     }
 
-    private PurchaseOrderCreated createPurchaseOrderCreatedEvent(CreatePurchaseOrder cmd) {
+    private static PurchaseOrderCreated createPurchaseOrderCreatedEvent(CreatePurchaseOrder cmd) {
         return PurchaseOrderCreated.newBuilder()
                                    .setId(cmd.getId())
                                    .setWhoCreated(cmd.getWhoCreates())
@@ -193,7 +193,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                    .build();
     }
 
-    private PurchaseOrderValidationFailed createPOValidationFailedEvent(CreatePurchaseOrder cmd,
+    private static PurchaseOrderValidationFailed createPOValidationFailedEvent(CreatePurchaseOrder cmd,
                                                                         List<Order> invalidOrders) {
         return PurchaseOrderValidationFailed.newBuilder()
                                             .setId(cmd.getId())
@@ -202,14 +202,14 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                             .build();
     }
 
-    private PurchaseOrderValidationPassed createPOValidationPassedEvent(CreatePurchaseOrder cmd) {
+    private static PurchaseOrderValidationPassed createPOValidationPassedEvent(CreatePurchaseOrder cmd) {
         return PurchaseOrderValidationPassed.newBuilder()
                                             .setId(cmd.getId())
                                             .setWhenPassed(getCurrentTime())
                                             .build();
     }
 
-    private PurchaseOrderValidationOverruled createPOValidationOverruledEvent(
+    private static PurchaseOrderValidationOverruled createPOValidationOverruledEvent(
             MarkPurchaseOrderAsValid cmd) {
         return PurchaseOrderValidationOverruled.newBuilder()
                                                .setId(cmd.getId())

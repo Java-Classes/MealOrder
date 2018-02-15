@@ -20,19 +20,23 @@
 
 package javaclasses.mealorder.c.aggregate.definition;
 
+import com.google.protobuf.Message;
 import javaclasses.mealorder.PurchaseOrder;
-import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.mealorder.PurchaseOrderStatus.*;
+import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithInvalidOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsValidInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Yegor Udovchenko
@@ -46,19 +50,41 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
     }
 
     @Test
-    @DisplayName("set the purchase order status as valid")
+    @DisplayName("set the purchase order status to 'VALID'")
     void markAsValid() {
-        final CreatePurchaseOrder createPOcmd = createPurchaseOrderWithInvalidOrdersInstance(
-                purchaseOrderId);
-        dispatchCommand(aggregate, envelopeOf(createPOcmd));
+        setUpInvalidState();
         final MarkPurchaseOrderAsValid markAsValidCmd =
                 markPurchaseOrderAsValidInstance(purchaseOrderId);
         dispatchCommand(aggregate, envelopeOf(markAsValidCmd));
 
-        final PurchaseOrder state = aggregate.getState();
-        assertEquals(state.getId(), markAsValidCmd.getId());
-        assertEquals(state.getStatus(), VALID);
+        PurchaseOrder state = aggregate.getState();
+
+        assertEquals(purchaseOrderId, state.getId());
+        assertEquals(VALID, state.getStatus());
     }
 
+    @Test
+    @DisplayName("produce PurchaseOrderValidationOverruled event")
+    void producePurchaseOrderValidationOverruledEvent() {
+        setUpInvalidState();
+        final MarkPurchaseOrderAsValid markAsValidCmd =
+                markPurchaseOrderAsValidInstance(purchaseOrderId);
+        final List<? extends Message> messageList = dispatchCommand(aggregate,
+                                                                    envelopeOf(markAsValidCmd));
 
+        assertNotNull(aggregate.getId());
+        assertEquals(1, messageList.size());
+        assertEquals(PurchaseOrderValidationOverruled.class, messageList.get(0)
+                                                                        .getClass());
+        final PurchaseOrderValidationOverruled poValidationOverruled =
+                (PurchaseOrderValidationOverruled) messageList.get(0);
+
+        assertEquals(purchaseOrderId, poValidationOverruled.getId());
+    }
+
+    private void setUpInvalidState() {
+        final CreatePurchaseOrder createPOcmd = createPurchaseOrderWithInvalidOrdersInstance(
+                purchaseOrderId);
+        dispatchCommand(aggregate, envelopeOf(createPOcmd));
+    }
 }
