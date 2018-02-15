@@ -26,10 +26,12 @@ import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
+import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
+import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +43,7 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.DISH;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.removeDishFromOrderInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,7 +68,6 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
         final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
                                                                MenuId.getDefaultInstance());
         dispatchCommand(aggregate, envelopeOf(createOrderCmd));
-
 
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
         dispatchCommand(aggregate, envelopeOf(addDishToOrder));
@@ -105,6 +107,10 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
     @DisplayName("throw CannotRemoveMissingDish rejection")
     public void notRemoveDish() {
 
+        final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
+                                                               MenuId.getDefaultInstance());
+        dispatchCommand(aggregate, envelopeOf(createOrderCmd));
+
         final DishId dishId = DishId.newBuilder()
                                     .setSequentialNumber(123)
                                     .build();
@@ -118,5 +124,31 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
         final CannotRemoveMissingDish rejection = (CannotRemoveMissingDish) cause;
         assertEquals(rejection.getMessageThrown()
                               .getDishId(), dishId);
+    }
+
+    @Test
+    @DisplayName("throw CannotRemoveMissingDish rejection")
+    public void notRemoveDishFromNotActive() {
+
+        final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
+                                                               MenuId.getDefaultInstance());
+        dispatchCommand(aggregate, envelopeOf(createOrderCmd));
+
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
+        dispatchCommand(aggregate, envelopeOf(addDishToOrder));
+
+        final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
+                                                                                    DISH.getId());
+
+        final CancelOrder cancelOrderCmd = cancelOrderInstance(ORDER_ID);
+        dispatchCommand(aggregate, envelopeOf(cancelOrderCmd));
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(removeDishFromOrder)));
+        final Throwable cause = Throwables.getRootCause(t);
+        final CannotRemoveDishFromNotActiveOrder rejection = (CannotRemoveDishFromNotActiveOrder) cause;
+        assertEquals(rejection.getMessageThrown()
+                              .getDishId(), DISH.getId());
     }
 }

@@ -29,7 +29,6 @@ import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
-import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -30,6 +30,7 @@ import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
 import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
+import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
@@ -98,6 +99,16 @@ public class OrderAggregateRejections {
             final DishId dishId = cmd.getDishId();
             final Timestamp timestamp = getCurrentTime();
             throw new CannotRemoveMissingDish(orderId, userId, dishId, timestamp);
+        }
+
+        public static void throwCannotRemoveDishFromNotActiveOrder(RemoveDishFromOrder cmd, OrderStatus orderStatus) throws
+                                                                                                                CannotRemoveDishFromNotActiveOrder {
+            final OrderId orderId = cmd.getOrderId();
+            final UserId userId = cmd.getOrderId()
+                                     .getUserId();
+            final DishId dishId = cmd.getDishId();
+            final Timestamp timestamp = getCurrentTime();
+            throw new CannotRemoveDishFromNotActiveOrder(orderId, dishId, userId, orderStatus, timestamp);
         }
     }
 }

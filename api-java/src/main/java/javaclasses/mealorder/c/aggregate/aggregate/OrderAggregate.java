@@ -42,6 +42,7 @@ import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
+import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
@@ -54,6 +55,7 @@ import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
 import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
 import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwOrderAldeadyExists;
+import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveDishFromNotActiveOrder;
 import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveMissingDish;
 
 /**
@@ -126,9 +128,14 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     @Assign
-    List<? extends Message> handle(RemoveDishFromOrder cmd) throws CannotRemoveMissingDish {
+    List<? extends Message> handle(RemoveDishFromOrder cmd) throws CannotRemoveMissingDish,
+                                                                   CannotRemoveDishFromNotActiveOrder {
         final OrderId orderId = cmd.getOrderId();
         final DishId dishId = cmd.getDishId();
+
+        if (getState().getStatus() != ORDER_ACTIVE) {
+            throwCannotRemoveDishFromNotActiveOrder(cmd, getState().getStatus());
+        }
 
         DishRemovedFromOrder result;
         for (Dish dish : getState().getDishesList()) {
