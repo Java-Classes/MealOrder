@@ -24,6 +24,7 @@ import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
+import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
@@ -40,6 +41,7 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.DISH;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.removeDishFromOrderInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -60,6 +62,11 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
     @DisplayName("produce RemoveDishFromOrder event")
     public void produceEvent() {
 
+        final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
+                                                               MenuId.getDefaultInstance());
+        dispatchCommand(aggregate, envelopeOf(createOrderCmd));
+
+
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
         dispatchCommand(aggregate, envelopeOf(addDishToOrder));
         final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
@@ -78,6 +85,10 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
     @Test
     @DisplayName("removes the dish from the order")
     public void removeDish() {
+
+        final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
+                                                               MenuId.getDefaultInstance());
+        dispatchCommand(aggregate, envelopeOf(createOrderCmd));
 
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
         dispatchCommand(aggregate, envelopeOf(addDishToOrder));

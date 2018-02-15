@@ -41,6 +41,7 @@ import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderCreated;
+import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
@@ -50,9 +51,10 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
-import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwCannotRemoveMissingDish;
-import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwDishVendorMismatch;
+import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
+import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
 import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwOrderAldeadyExists;
+import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveMissingDish;
 
 /**
  * The aggregate managing the state of a {@link Order}.
@@ -95,13 +97,18 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     @Assign
-    List<? extends Message> handle(AddDishToOrder cmd) throws DishVendorMismatch {
+    List<? extends Message> handle(AddDishToOrder cmd) throws DishVendorMismatch,
+                                                              CannotAddDishToNotActiveOrder {
         final OrderId orderId = cmd.getOrderId();
         final Dish dish = cmd.getDish();
 
         final VendorId dishVendorId = dish.getId()
                                           .getMenuId()
                                           .getVendorId();
+
+        if (getState().getStatus() != ORDER_ACTIVE) {
+            throwCannotAddDishToNotActiveOrder(cmd, getState().getStatus());
+        }
 
         if (!orderId.getVendorId()
                     .equals(dishVendorId)) {

@@ -59,6 +59,11 @@ public class AddDishToOrderTest extends OrderCommandTest<CreateOrder> {
     @Test
     @DisplayName("produce AddDishToOrder event")
     public void produceEvent() {
+
+        final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
+                                                               MenuId.getDefaultInstance());
+        dispatchCommand(aggregate, envelopeOf(createOrderCmd));
+
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(addDishToOrder));
@@ -73,6 +78,10 @@ public class AddDishToOrderTest extends OrderCommandTest<CreateOrder> {
     @Test
     @DisplayName("add dish to order")
     public void addDishToOrder() {
+
+        final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
+                                                               MenuId.getDefaultInstance());
+        dispatchCommand(aggregate, envelopeOf(createOrderCmd));
 
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
         dispatchCommand(aggregate, envelopeOf(addDishToOrder));
