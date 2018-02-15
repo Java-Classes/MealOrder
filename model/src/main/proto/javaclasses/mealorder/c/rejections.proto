@@ -208,3 +208,19 @@ message CannotCancelDeliveredPurchaseOrder {
     // Cancellation was rejected at this time.
     google.protobuf.Timestamp when_rejected = 3;
 }
+
+// The rejection to overrule a purchase order validation.
+//
+// It is thrown if a purchase order is not invalid.
+//
+message CannotOverruleValidationOfNotInvalidPO {
+
+    // The identifier of a purchase order which validation the user tried to overrule.
+    PurchaseOrderId po_id = 1;
+
+    // The identifier of the user who tried to overrule validation.
+    UserId user_id = 2;
+
+    // Rejected at this time.
+    google.protobuf.Timestamp when_rejected = 3;
+}

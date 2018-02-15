@@ -28,9 +28,11 @@ import javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderAggregate;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;
+import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
 import javaclasses.mealorder.c.rejection.CannotCancelDeliveredPurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotCreatePurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotMarkCanceledPurchaseOrderAsDelivered;
+import javaclasses.mealorder.c.rejection.CannotOverruleValidationOfNotInvalidPO;
 
 import static io.spine.time.Time.getCurrentTime;
 
@@ -91,5 +93,20 @@ public class PurchaseOrderAggregateRejections {
         final UserId userId = cmd.getUserId();
 
         throw new CannotCancelDeliveredPurchaseOrder(purchaseOrderId, userId, getCurrentTime());
+    }
+
+    /**
+     * Constructs and throws the {@link CannotOverruleValidationOfNotInvalidPO} rejection
+     * according to the passed parameters.
+     *
+     * @param cmd the {@code CancelPurchaseOrder} command which thrown the rejection
+     * @throws CannotOverruleValidationOfNotInvalidPO the rejection to throw
+     */
+    public static void throwCannotOverruleValidationOfNotInvalidPO(
+            MarkPurchaseOrderAsValid cmd) throws CannotOverruleValidationOfNotInvalidPO {
+        final PurchaseOrderId purchaseOrderId = cmd.getId();
+        final UserId userId = cmd.getUserId();
+
+        throw new CannotOverruleValidationOfNotInvalidPO(purchaseOrderId, userId, getCurrentTime());
     }
 }

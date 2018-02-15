@@ -28,7 +28,6 @@ import io.spine.server.command.Assign;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
-import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.PurchaseOrderVBuilder;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
@@ -44,12 +43,16 @@ import javaclasses.mealorder.c.event.PurchaseOrderValidationPassed;
 import javaclasses.mealorder.c.rejection.CannotCancelDeliveredPurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotCreatePurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotMarkCanceledPurchaseOrderAsDelivered;
+import javaclasses.mealorder.c.rejection.CannotOverruleValidationOfNotInvalidPO;
 
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static javaclasses.mealorder.PurchaseOrderStatus.INVALID;
+import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
+import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
 import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.isValidPurchaseOrderCreation;
 
 /**
@@ -101,7 +104,11 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     @Assign
-    List<? extends Message> handle(MarkPurchaseOrderAsValid cmd) {
+    List<? extends Message> handle(MarkPurchaseOrderAsValid cmd)
+            throws CannotOverruleValidationOfNotInvalidPO {
+        if (!isAllowedToMarkAsValid()) {
+            throwCannotOverruleValidationOfNotInvalidPO(cmd);
+        }
         final PurchaseOrderValidationOverruled overruledEvent =
                 createPOValidationOverruledEvent(cmd);
         return singletonList(overruledEvent);
@@ -160,12 +167,16 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
     @Apply
     private void purchaseOrderValidationPassed(PurchaseOrderValidationPassed event) {
-        getBuilder().setStatus(PurchaseOrderStatus.VALID);
+        getBuilder().setStatus(VALID);
     }
 
     @Apply
     private void purchaseOrderValidationFailed(PurchaseOrderValidationFailed event) {
-        getBuilder().setStatus(PurchaseOrderStatus.INVALID);
+        getBuilder().setStatus(INVALID);
+    }
+
+    private boolean isAllowedToMarkAsValid() {
+        return getState().getStatus() == INVALID;
     }
 
     private PurchaseOrderCreated createPurchaseOrderCreatedEvent(CreatePurchaseOrder cmd) {
