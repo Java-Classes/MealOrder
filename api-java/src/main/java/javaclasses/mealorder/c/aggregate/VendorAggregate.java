@@ -20,7 +20,6 @@
 
 package javaclasses.mealorder.c.aggregate;
 
-import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
@@ -45,7 +44,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
-import static java.util.Collections.singletonList;
 import static javaclasses.mealorder.c.aggregate.VendorValidator.isThereMenuForThisDateRange;
 import static javaclasses.mealorder.c.aggregate.VendorValidator.isValidDateRange;
 import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejections.UpdateRejections.throwCannotSetDateRange;
@@ -77,7 +75,7 @@ public class VendorAggregate extends Aggregate<VendorId,
     }
 
     @Assign
-    List<? extends Message> handle(AddVendor cmd) throws VendorAlreadyExists {
+    VendorAdded handle(AddVendor cmd) throws VendorAlreadyExists {
 
         final VendorName vendorName = cmd.getVendorName();
 
@@ -94,23 +92,23 @@ public class VendorAggregate extends Aggregate<VendorId,
                                                    .setPoDailyDeadline(
                                                            cmd.getPoDailyDeadline())
                                                    .build();
-        return singletonList(vendorAdded);
+        return vendorAdded;
     }
 
     @Assign
-    List<? extends Message> handle(UpdateVendor cmd) {
+    VendorUpdated handle(UpdateVendor cmd) {
 
-        final VendorUpdated vendorAdded = VendorUpdated.newBuilder()
-                                                       .setVendorId(cmd.getVendorId())
-                                                       .setWhoUploaded(cmd.getUserId())
-                                                       .setWhenUpdated(getCurrentTime())
-                                                       .setVendorChange(cmd.getVendorChange())
-                                                       .build();
-        return singletonList(vendorAdded);
+        final VendorUpdated vendorUpdated = VendorUpdated.newBuilder()
+                                                         .setVendorId(cmd.getVendorId())
+                                                         .setWhoUploaded(cmd.getUserId())
+                                                         .setWhenUpdated(getCurrentTime())
+                                                         .setVendorChange(cmd.getVendorChange())
+                                                         .build();
+        return vendorUpdated;
     }
 
     @Assign
-    List<? extends Message> handle(ImportMenu cmd) {
+    MenuImported handle(ImportMenu cmd) {
         final MenuImported menuImported = MenuImported.newBuilder()
                                                       .setVendorId(cmd.getVendorId())
                                                       .setMenuId(cmd.getMenuId())
@@ -118,11 +116,11 @@ public class VendorAggregate extends Aggregate<VendorId,
                                                       .setWhenImported(getCurrentTime())
                                                       .addAllDishes(cmd.getDishesList())
                                                       .build();
-        return singletonList(menuImported);
+        return menuImported;
     }
 
     @Assign
-    List<? extends Message> handle(SetDateRangeForMenu cmd) throws CannotSetDateRange {
+    DateRangeForMenuSet handle(SetDateRangeForMenu cmd) throws CannotSetDateRange {
 
         final MenuDateRange menuDateRange = cmd.getMenuDateRange();
 
@@ -143,7 +141,7 @@ public class VendorAggregate extends Aggregate<VendorId,
                                                                            .setMenuDateRange(
                                                                                    cmd.getMenuDateRange())
                                                                            .build();
-        return singletonList(dateRangeForMenuSet);
+        return dateRangeForMenuSet;
     }
 
     @Apply
