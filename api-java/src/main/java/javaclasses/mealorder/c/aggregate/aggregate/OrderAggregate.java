@@ -21,6 +21,7 @@
 package javaclasses.mealorder.c.aggregate.aggregate;
 
 import com.google.protobuf.Message;
+import io.spine.change.ValueMismatch;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
@@ -31,6 +32,7 @@ import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.OrderVBuilder;
 import javaclasses.mealorder.UserId;
+import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
@@ -40,6 +42,7 @@ import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
+import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
 import java.util.List;
@@ -48,6 +51,7 @@ import static java.util.Collections.singletonList;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwCannotRemoveMissingDish;
+import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwDishVendorMismatch;
 import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwOrderAldeadyExists;
 
 /**
@@ -91,9 +95,21 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     @Assign
-    List<? extends Message> handle(AddDishToOrder cmd) {
+    List<? extends Message> handle(AddDishToOrder cmd) throws DishVendorMismatch {
         final OrderId orderId = cmd.getOrderId();
         final Dish dish = cmd.getDish();
+
+        final VendorId dishVendorId = dish.getId()
+                                          .getMenuId()
+                                          .getVendorId();
+
+        if (!orderId.getVendorId()
+                    .equals(dishVendorId)) {
+            // TODO:2018-02-15:vladislav.kozachenko: Learn more how to use ValueMismatch. What is 3rd argument (newValue)?
+            ValueMismatch vendorMismatch = unexpectedValue(orderId.getVendorId(), dishVendorId,
+                                                           dishVendorId);
+            throwDishVendorMismatch(cmd, vendorMismatch);
+        }
 
         final DishAddedToOrder result = DishAddedToOrder.newBuilder()
                                                         .setOrderId(orderId)

@@ -20,12 +20,16 @@
 
 package javaclasses.mealorder.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.Dish;
+import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
+import javaclasses.mealorder.c.rejection.DishVendorMismatch;
+import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,10 +37,13 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.DISH;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Vlad Kozachenko
@@ -52,8 +59,7 @@ public class AddDishToOrderTest extends OrderCommandTest<CreateOrder> {
     @Test
     @DisplayName("produce AddDishToOrder event")
     public void produceEvent() {
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID,
-                                                                     Dish.getDefaultInstance());
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(addDishToOrder));
 
@@ -68,12 +74,31 @@ public class AddDishToOrderTest extends OrderCommandTest<CreateOrder> {
     @DisplayName("add dish to order")
     public void addDishToOrder() {
 
-        Dish dish = Dish.getDefaultInstance();
-
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, dish);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
         dispatchCommand(aggregate, envelopeOf(addDishToOrder));
 
         final Order state = aggregate.getState();
-        assertEquals(state.getDishes(0), dish);
+        assertEquals(state.getDishes(0), DISH);
     }
+
+    @Test
+    @DisplayName("throw DishVendorMismatch rejection")
+    public void notAddDish() {
+
+        final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
+                                                               MenuId.getDefaultInstance());
+        dispatchCommand(aggregate, envelopeOf(createOrderCmd));
+
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID,
+                                                                     Dish.getDefaultInstance());
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(addDishToOrder)));
+        final Throwable cause = Throwables.getRootCause(t);
+        final DishVendorMismatch rejection = (DishVendorMismatch) cause;
+        assertEquals(rejection.getMessageThrown()
+                              .getOrderId(), ORDER_ID);
+    }
+
 }

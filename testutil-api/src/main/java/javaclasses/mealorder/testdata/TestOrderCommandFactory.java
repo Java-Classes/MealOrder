@@ -39,15 +39,32 @@ import static io.spine.time.MonthOfYear.FEBRUARY;
  */
 public class TestOrderCommandFactory {
 
+    private static final String defaultVendorName = "Positiv";
+
+    public static final VendorId VENDOR_ID = VendorId.newBuilder()
+                                                     .setValue(defaultVendorName)
+                                                     .build();
+
     public static final OrderId ORDER_ID = OrderId.newBuilder()
                                                   .setUserId(UserId.getDefaultInstance())
-                                                  .setVendorId(VendorId.getDefaultInstance())
+                                                  .setVendorId(VENDOR_ID)
                                                   .setOrderDate(LocalDate.newBuilder()
                                                                          .setYear(2018)
                                                                          .setMonth(FEBRUARY)
                                                                          .setDay(12)
                                                                          .build())
                                                   .build();
+
+    public static final DishId DISH_ID = DishId.newBuilder()
+                                               .setMenuId(MenuId.newBuilder()
+                                                                .setVendorId(VENDOR_ID)
+                                                                .build())
+                                               .setSequentialNumber(1)
+                                               .build();
+
+    public static final Dish DISH = Dish.newBuilder()
+                                        .setId(DISH_ID)
+                                        .build();
 
     public static CreateOrder createOrderInstance(OrderId orderId, MenuId menuId) {
         return CreateOrder.newBuilder()
@@ -71,8 +88,8 @@ public class TestOrderCommandFactory {
 
     public static RemoveDishFromOrder removeDishFromOrderInstance(OrderId orderId, DishId dishId) {
         return RemoveDishFromOrder.newBuilder()
-                             .setOrderId(orderId)
-                             .setDishId(dishId)
-                             .build();
+                                  .setOrderId(orderId)
+                                  .setDishId(dishId)
+                                  .build();
     }
 }

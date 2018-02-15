@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.DISH;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.removeDishFromOrderInstance;
@@ -59,12 +60,10 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
     @DisplayName("produce RemoveDishFromOrder event")
     public void produceEvent() {
 
-        final Dish dish = Dish.getDefaultInstance();
-
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, dish);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
         dispatchCommand(aggregate, envelopeOf(addDishToOrder));
         final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
-                                                                                    dish.getId());
+                                                                                    DISH.getId());
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(
                                                                             removeDishFromOrder));
@@ -80,17 +79,10 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
     @DisplayName("removes the dish from the order")
     public void removeDish() {
 
-        final Dish dish = Dish.newBuilder()
-                              .setId(DishId.newBuilder()
-                                           .setSequentialNumber(123)
-                                           .build())
-                              .setName("Картошка")
-                              .build();
-
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, dish);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
         dispatchCommand(aggregate, envelopeOf(addDishToOrder));
         final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
-                                                                                    dish.getId());
+                                                                                    DISH.getId());
         dispatchCommand(aggregate, envelopeOf(removeDishFromOrder));
 
         assertEquals(0, aggregate.getState()

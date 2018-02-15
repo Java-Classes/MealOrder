@@ -21,12 +21,15 @@
 package javaclasses.mealorder.c.aggregate.aggregate.rejection;
 
 import com.google.protobuf.Timestamp;
+import io.spine.change.ValueMismatch;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.UserId;
+import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
+import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -53,10 +56,22 @@ public class OrderAggregateRejections {
         public static void throwCannotRemoveMissingDish(RemoveDishFromOrder cmd) throws
                                                                                  CannotRemoveMissingDish {
             final OrderId orderId = cmd.getOrderId();
-            final UserId userId = cmd.getOrderId().getUserId();
+            final UserId userId = cmd.getOrderId()
+                                     .getUserId();
             final DishId dishId = cmd.getDishId();
             final Timestamp timestamp = getCurrentTime();
             throw new CannotRemoveMissingDish(orderId, userId, dishId, timestamp);
+        }
+
+        public static void throwDishVendorMismatch(AddDishToOrder cmd, ValueMismatch vendorMismatch) throws
+                                                                       DishVendorMismatch {
+            final OrderId orderId = cmd.getOrderId();
+            final UserId userId = cmd.getOrderId()
+                                     .getUserId();
+            final DishId dishId = cmd.getDish()
+                                     .getId();
+            final Timestamp timestamp = getCurrentTime();
+            throw new DishVendorMismatch(orderId, dishId, userId, vendorMismatch, timestamp);
         }
     }
 }
