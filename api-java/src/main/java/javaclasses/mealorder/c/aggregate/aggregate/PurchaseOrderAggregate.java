@@ -36,6 +36,7 @@ import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
 import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
+import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationPassed;
@@ -51,11 +52,13 @@ import static javaclasses.mealorder.PurchaseOrderStatus.CANCELED;
 import static javaclasses.mealorder.PurchaseOrderStatus.CREATED;
 import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
 import static javaclasses.mealorder.PurchaseOrderStatus.INVALID;
+import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
 import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCancelDeliveredPurchaseOrder;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
+import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderSender.formAndSendPurchaseOrder;
 import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.isValidPurchaseOrderCreation;
 
 /**
@@ -93,26 +96,31 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
         List<Order> invalidOrders = PurchaseOrderValidator.findInvalidOrders(cmd.getOrdersList());
 
+        // TODO: 2/15/2018 add PO event signalizing sending error.
         if (invalidOrders.isEmpty()) {
-            final PurchaseOrderValidationPassed validationPassedEvent =
-                    createPOValidationPassedEvent(cmd);
-            result.add(validationPassedEvent);
+            result.add(createPOValidationPassedEvent(cmd));
+            if (formAndSendPurchaseOrder(cmd.getId(), cmd.getOrdersList())) {
+                result.add(createPOSentEvent(cmd.getId(), cmd.getOrdersList()));
+            }
         } else {
-            final PurchaseOrderValidationFailed validationFailedEvent =
-                    createPOValidationFailedEvent(cmd, invalidOrders);
-            result.add(validationFailedEvent);
+            result.add(createPOValidationFailedEvent(cmd, invalidOrders));
         }
-        // TODO: 2/15/2018 How to handle sending process? Who emits 'POSent' event?
         return result.build();
     }
 
     @Assign
-    PurchaseOrderValidationOverruled handle(MarkPurchaseOrderAsValid cmd)
+    List<? extends Message> handle(MarkPurchaseOrderAsValid cmd)
             throws CannotOverruleValidationOfNotInvalidPO {
         if (!isAllowedToMarkAsValid()) {
             throwCannotOverruleValidationOfNotInvalidPO(cmd);
         }
-        return createPOValidationOverruledEvent(cmd);
+        ImmutableList.Builder<Message> result = ImmutableList.builder();
+        result.add(createPOValidationOverruledEvent(cmd));
+
+        if (formAndSendPurchaseOrder(getState().getId(), getState().getOrdersList())) {
+            result.add(createPOSentEvent(getState().getId(), getState().getOrdersList()));
+        }
+        return result.build();
     }
 
     @Assign
@@ -170,13 +178,17 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         getBuilder().setStatus(DELIVERED);
     }
 
+    @Apply
+    private void purchaseOrderSent(PurchaseOrderSent event) {
+        getBuilder().setStatus(SENT);
+    }
+
     private boolean isAllowedToMarkAsValid() {
         return getState().getStatus() == INVALID;
     }
 
-    // TODO: 2/15/2018 should be replaced with SENT value.
     private boolean isAllowedToMarkAsDelivered() {
-        return getState().getStatus() == VALID;
+        return getState().getStatus() == SENT;
     }
 
     private boolean isAllowedToCancel() {
@@ -246,5 +258,17 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
             default:
                 return builder.build();
         }
+    }
+
+    // TODO: 2/15/2018 Add email addresses.
+    private PurchaseOrderSent createPOSentEvent(PurchaseOrderId id, List<Order> orders) {
+        return PurchaseOrderSent.newBuilder()
+                                .setPurchaseOrder(PurchaseOrder.newBuilder()
+                                                               .setId(id)
+                                                               .setStatus(SENT)
+                                                               .addAllOrders(orders)
+                                                               .build())
+                                .setWhenSent(getCurrentTime())
+                                .build();
     }
 }
