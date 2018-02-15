@@ -57,7 +57,7 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
     @Test
     @DisplayName("set the purchase order status to 'DELIVERED'")
     void markAsValid() {
-        setUpState();
+        dispatchCreatedCmd();
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
                 markPurchaseOrderAsDeliveredInstance(purchaseOrderId);
         dispatchCommand(aggregate, envelopeOf(markAsDeliveredCmd));
@@ -71,7 +71,7 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
     @Test
     @DisplayName("produce PurchaseOrderDelivered event")
     void producePurchaseOrderDeliveredEvent() {
-        setUpState();
+        dispatchCreatedCmd();
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
                 markPurchaseOrderAsDeliveredInstance(purchaseOrderId);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -101,7 +101,7 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
                    instanceOf(CannotMarkPurchaseOrderAsDelivered.class));
     }
 
-    private void setUpState() {
+    private void dispatchCreatedCmd() {
         final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance(purchaseOrderId);
         dispatchCommand(aggregate, envelopeOf(createPOcmd));
     }

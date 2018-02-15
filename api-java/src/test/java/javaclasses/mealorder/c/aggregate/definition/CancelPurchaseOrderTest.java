@@ -59,7 +59,7 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
     @Test
     @DisplayName("set the purchase order status to 'CANCELED'")
     void cancelPurchaseOrder() {
-        setUpCreatedState();
+        dispatchCreatedCmd();
         final CancelPurchaseOrder cancelCmd =
                 cancelPurchaseOrderInstance(purchaseOrderId);
         dispatchCommand(aggregate, envelopeOf(cancelCmd));
@@ -73,7 +73,7 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
     @Test
     @DisplayName("produce PurchaseOrderCanceled event")
     void producePurchaseOrderCanceledEvent() {
-        setUpCreatedState();
+        dispatchCreatedCmd();
         final CancelPurchaseOrder cancelCmd =
                 cancelPurchaseOrderInstance(purchaseOrderId);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -93,7 +93,8 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
     @DisplayName("throw CannotCancelDeliveredPurchaseOrder rejection " +
             "upon an attempt to cancel delivered PO")
     void cannotCancelDeliveredPurchaseOrder() {
-        setUpDeliveredState();
+        dispatchCreatedCmd();
+        dispatchDeliveredCmd();
         final CancelPurchaseOrder cancelCmd =
                 cancelPurchaseOrderInstance(purchaseOrderId);
         Throwable t = assertThrows(Throwable.class,
@@ -103,14 +104,13 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
                    instanceOf(CannotCancelDeliveredPurchaseOrder.class));
     }
 
-    private void setUpCreatedState() {
+    private void dispatchCreatedCmd() {
         final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance(
                 purchaseOrderId);
         dispatchCommand(aggregate, envelopeOf(createPOcmd));
     }
 
-    private void setUpDeliveredState() {
-        setUpCreatedState();
+    private void dispatchDeliveredCmd() {
         MarkPurchaseOrderAsDelivered markPOAsDelivered = markPurchaseOrderAsDeliveredInstance(
                 purchaseOrderId);
         dispatchCommand(aggregate, envelopeOf(markPOAsDelivered));

@@ -57,7 +57,7 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
     @Test
     @DisplayName("set the purchase order status to 'VALID'")
     void markAsValid() {
-        setUpInvalidState();
+        dispatchCreatedWithInvalidStateCmd();
         final MarkPurchaseOrderAsValid markAsValidCmd =
                 markPurchaseOrderAsValidInstance(purchaseOrderId);
         dispatchCommand(aggregate, envelopeOf(markAsValidCmd));
@@ -71,7 +71,7 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
     @Test
     @DisplayName("produce PurchaseOrderValidationOverruled event")
     void producePurchaseOrderValidationOverruledEvent() {
-        setUpInvalidState();
+        dispatchCreatedWithInvalidStateCmd();
         final MarkPurchaseOrderAsValid markAsValidCmd =
                 markPurchaseOrderAsValidInstance(purchaseOrderId);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -101,7 +101,7 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
                    instanceOf(CannotOverruleValidationOfNotInvalidPO.class));
     }
 
-    private void setUpInvalidState() {
+    private void dispatchCreatedWithInvalidStateCmd() {
         final CreatePurchaseOrder createPOcmd = createPurchaseOrderWithInvalidOrdersInstance(
                 purchaseOrderId);
         dispatchCommand(aggregate, envelopeOf(createPOcmd));
