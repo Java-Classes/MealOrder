@@ -22,6 +22,6 @@
  * This package provides implementation for the application context.
  */
 @ParametersAreNonnullByDefault
-package javaclasses.mealorder.c.aggregate.context;
+package javaclasses.mealorder.c.context;
 
 import javax.annotation.ParametersAreNonnullByDefault;

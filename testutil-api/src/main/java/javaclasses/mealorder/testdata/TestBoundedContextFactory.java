@@ -18,11 +18,34 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-/**
- * This package contains implementation for classes which provides
- * methods to process aggregates and projection.
- */
-@ParametersAreNonnullByDefault
-package javaclasses.mealorder.c.aggregate;
+package javaclasses.mealorder.testdata;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.spine.server.BoundedContext;
+import io.spine.server.event.EventBus;
+import io.spine.server.storage.StorageFactorySwitch;
+
+/**
+ * Provides bounded context for the test needs.
+ *
+ * @author Yurii Haidamaka
+ */
+public class TestBoundedContextFactory {
+
+    private TestBoundedContextFactory() {
+    }
+
+    /**
+     * Provides a new {@link BoundedContext} instance
+     * built with the specified {@link EventBus.Builder} and {@link StorageFactorySwitch}.
+     *
+     * @param eventBus {@code EventBus.Builder} instance
+     * @return the {@code BoundedContext} instance
+     */
+    public static BoundedContext boundedContextInstance(EventBus.Builder eventBus,
+                                                        StorageFactorySwitch storageFactory) {
+        return BoundedContext.newBuilder()
+                             .setEventBus(eventBus)
+                             .setStorageFactorySupplier(storageFactory)
+                             .build();
+    }
+}

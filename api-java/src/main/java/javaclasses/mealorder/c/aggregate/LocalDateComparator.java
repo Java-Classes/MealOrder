@@ -18,10 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package provides classes for working with aggregate and projection repositories.
- */
-@ParametersAreNonnullByDefault
-package javaclasses.mealorder.c.aggregate.repository;
+package javaclasses.mealorder.c.aggregate;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.spine.time.LocalDate;
+
+import java.util.Comparator;
+
+class LocalDateComparator implements Comparator<LocalDate> {
+
+    @Override
+    public int compare(LocalDate o1, LocalDate o2) {
+        final String o1String = String.format("%04d%02d%02d", o1.getYear(), o1.getMonth()
+                                                                              .getNumber(),
+                                              o1.getDay());
+        final String o2String = String.format("%04d%02d%02d", o2.getYear(), o2.getMonth()
+                                                                              .getNumber(),
+                                              o2.getDay());
+        return o1String.compareTo(o2String);
+    }
+}

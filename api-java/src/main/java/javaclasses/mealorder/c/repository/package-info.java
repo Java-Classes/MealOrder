@@ -1,7 +1,7 @@
 //
 // Copyright 2018, TeamDev Ltd. All rights reserved.
 //
-// Redistribution and use in source and/or binary gorms, with or without
+// Redistribution and use in source and/or binary forms, with or without
 // modification, must retain the above copyright notice and the following
 // disclaimer.
 //
@@ -18,15 +18,10 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package javaclasses.mealorder.c.aggregate;
-
-import javaclasses.mealorder.c.aggregate.aggregate.VendorAggregate;
-
 /**
- * Utility class for working with {@link VendorAggregate} rejection.
- *
- * @author Yurii Haidamaka
+ * This package provides classes for working with aggregate and projection repositories.
  */
-public class VendorAggregateRejections {
+@ParametersAreNonnullByDefault
+package javaclasses.mealorder.c.repository;
 
-}
+import javax.annotation.ParametersAreNonnullByDefault;

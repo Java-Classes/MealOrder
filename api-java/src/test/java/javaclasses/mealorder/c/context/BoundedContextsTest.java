@@ -18,16 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.repository;
+package javaclasses.mealorder.c.context;
 
-import io.spine.server.aggregate.AggregateRepository;
-import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.c.aggregate.aggregate.VendorAggregate;
+import io.spine.test.Tests;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * Repository for the {@link VendorAggregate}.
- *
- * @author Illia Shepilov
- */
-public class VendorRepository extends AggregateRepository<VendorId, VendorAggregate> {
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static javaclasses.mealorder.c.context.BoundedContexts.createBoundedContext;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@DisplayName("BoundedContexts should")
+class BoundedContextsTest {
+
+    @Test
+    @DisplayName("have the private parameterless constructor")
+    void havePrivateCtor() {
+        assertHasPrivateParameterlessCtor(BoundedContexts.class);
+    }
+
+    @Test
+    @DisplayName("not create BoundedContext without a StorageFactory")
+    void notCreateBoundedContextWithoutStorageFactory() {
+        assertThrows(NullPointerException.class, () -> createBoundedContext(Tests.nullRef()));
+    }
 }

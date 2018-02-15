@@ -18,13 +18,13 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package javaclasses.mealorder.c.aggregate.context;
+package javaclasses.mealorder.c.context;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.server.BoundedContext;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
-import javaclasses.mealorder.c.aggregate.repository.VendorRepository;
+import javaclasses.mealorder.c.repository.VendorRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
