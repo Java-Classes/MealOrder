@@ -28,6 +28,7 @@ import javaclasses.mealorder.Order;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
+import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -109,4 +110,18 @@ public class AddDishToOrderTest extends OrderCommandTest<CreateOrder> {
                               .getOrderId(), ORDER_ID);
     }
 
+    @Test
+    @DisplayName("throw CannotAddDishToNotActiveOrder rejection")
+    public void notAddDishToNotActiveOrder() {
+
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH);
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(addDishToOrder)));
+        final Throwable cause = Throwables.getRootCause(t);
+        final CannotAddDishToNotActiveOrder rejection = (CannotAddDishToNotActiveOrder) cause;
+        assertEquals(rejection.getMessageThrown()
+                              .getOrderId(), ORDER_ID);
+    }
 }

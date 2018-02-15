@@ -27,7 +27,7 @@ import javaclasses.mealorder.c.aggregate.aggregate.OrderAggregate;
 /**
  * Repository for the {@link OrderAggregate}.
  *
- * @author Illia Shepilov
+ * @author Vlad Kozachenko
  */
 public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate> {
 }

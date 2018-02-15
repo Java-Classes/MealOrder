@@ -127,8 +127,8 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
     }
 
     @Test
-    @DisplayName("throw CannotRemoveMissingDish rejection")
-    public void notRemoveDishFromNotActive() {
+    @DisplayName("throw CannotRemoveDishFromNotActiveOrder rejection")
+    public void notRemoveDishFromNotActiveOrder() {
 
         final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
                                                                MenuId.getDefaultInstance());
