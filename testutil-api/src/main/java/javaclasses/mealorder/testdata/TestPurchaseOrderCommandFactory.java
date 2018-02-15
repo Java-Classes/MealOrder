@@ -194,4 +194,23 @@ public class TestPurchaseOrderCommandFactory {
                                   .build();
     }
 
+    /**
+     * Provides a pre-configured {@link CreatePurchaseOrder} instance
+     * with an order in the list which dish list is empty.
+     *
+     * @param id an identifier of the created purchase order.
+     * @return the invalid {@code CreatePurchaseOrder} instance.
+     */
+    public static CreatePurchaseOrder createPurchaseOrderWithEmptyOrdersInstance(
+            PurchaseOrderId id) {
+        CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+        Order order = validCmd.getOrders(0);
+        return CreatePurchaseOrder.newBuilder(validCmd)
+                                  .addOrders(Order.newBuilder()
+                                                  .setStatus(order.getStatus())
+                                                  .setId(order.getId())
+                                                  .build())
+                                  .build();
+    }
+
 }
