@@ -180,7 +180,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         return getState().getStatus() == INVALID;
     }
 
-    // TODO: 2/15/2018 shold be replaced with SENT value.
+    // TODO: 2/15/2018 should be replaced with SENT value.
     private boolean isAllowedToMarkAsDelivered() {
         return getState().getStatus() == VALID;
     }

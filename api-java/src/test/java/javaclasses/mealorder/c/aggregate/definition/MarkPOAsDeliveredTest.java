@@ -90,7 +90,7 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
     @Test
     @DisplayName("throw CannotMarkPurchaseOrderAsDelivered rejection " +
             "upon an attempt to mark PO with not sent state as delivered")
-    void cannotOverrulePurchaseOrderValidation() {
+    void cannotMarkPurchaseOrderAsDelivered() {
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
                 markPurchaseOrderAsDeliveredInstance(purchaseOrderId);
 
