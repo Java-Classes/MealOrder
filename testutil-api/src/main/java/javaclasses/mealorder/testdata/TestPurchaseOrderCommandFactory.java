@@ -35,6 +35,7 @@ import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
+import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 
 import java.util.ArrayList;
@@ -247,7 +248,7 @@ public class TestPurchaseOrderCommandFactory {
         final Order order = validCmd.getOrders(0);
         final Dish dish = order.getDishes(0);
         List<Dish> dishes = new ArrayList<>();
-        for (int i =0; i < 100; i++) {
+        for (int i = 0; i < 100; i++) {
             dishes.add(dish);
         }
         return CreatePurchaseOrder.newBuilder(validCmd)
@@ -255,5 +256,19 @@ public class TestPurchaseOrderCommandFactory {
                                                   .addAllDishes(dishes)
                                                   .build())
                                   .build();
+    }
+
+    /**
+     * Provides a pre-configured {@link MarkPurchaseOrderAsValid} instance
+     *
+     * @param id an identifier of the created purchase order.
+     * @return the {@code MarkPurchaseOrderAsValid} instance.
+     */
+    public static MarkPurchaseOrderAsValid markPurchaseOrderAsValidInstance(PurchaseOrderId id) {
+        return MarkPurchaseOrderAsValid.newBuilder()
+                                       .setId(id)
+                                       .setReason("Because I can.")
+                                       .setUserId(USER_ID)
+                                       .build();
     }
 }

@@ -175,6 +175,11 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         getBuilder().setStatus(INVALID);
     }
 
+    @Apply
+    private void purchaseOrderValidationOverruled(PurchaseOrderValidationOverruled event) {
+        getBuilder().setStatus(VALID);
+    }
+
     private boolean isAllowedToMarkAsValid() {
         return getState().getStatus() == INVALID;
     }
