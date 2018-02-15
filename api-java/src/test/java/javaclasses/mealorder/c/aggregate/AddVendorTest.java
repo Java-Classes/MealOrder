@@ -22,6 +22,7 @@ package javaclasses.mealorder.c.aggregate;
 
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
+import javaclasses.mealorder.PhoneNumber;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorName;
@@ -37,7 +38,8 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.EMAIL;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.PHONE_NUMBERS;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.PHONE_NUMBER1;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.PHONE_NUMBER2;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.PO_DAILY_DEADLINE;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
@@ -79,7 +81,10 @@ public class AddVendorTest extends VendorCommandTest<AddVendor> {
         assertEquals(VENDOR_NAME, vendorAdded.getVendorName());
         assertEquals(EMAIL, vendorAdded.getEmail());
         assertEquals(PO_DAILY_DEADLINE, vendorAdded.getPoDailyDeadline());
-        assertEquals(PHONE_NUMBERS, vendorAdded.getPhoneNumbersList());
+
+        final List<PhoneNumber> phones = vendorAdded.getPhoneNumbersList();
+        assertEquals(PHONE_NUMBER1, phones.get(0));
+        assertEquals(PHONE_NUMBER2, phones.get(1));
 
     }
 

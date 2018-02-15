@@ -21,6 +21,7 @@
 package javaclasses.mealorder.c.aggregate;
 
 import com.google.protobuf.Message;
+import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.ImportMenu;
@@ -33,15 +34,13 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISHES;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH1;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH2;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.setDateRangeForMenuInstance;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Yurii Haidamaka
@@ -72,7 +71,10 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
         assertEquals(VENDOR_ID, menuImported.getVendorId());
         assertEquals(MENU_ID, menuImported.getMenuId());
         assertEquals(USER_ID, menuImported.getWhoImported());
-        assertEquals(DISHES, menuImported.getDishesList());
+
+        final List<Dish> dishes = menuImported.getDishesList();
+        assertEquals(DISH1, dishes.get(0));
+        assertEquals(DISH2, dishes.get(1));
     }
 
     @Test
@@ -84,6 +86,5 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
         final Vendor state = aggregate.getState();
         assertEquals(state.getId(), importMenu.getVendorId());
     }
-
 
 }

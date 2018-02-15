@@ -38,10 +38,6 @@ import javaclasses.mealorder.c.command.ImportMenu;
 import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.command.UpdateVendor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import static io.spine.time.Time.getCurrentTime;
 
 /**
@@ -74,29 +70,36 @@ public class TestVendorCommandFactory {
                                                                .setHours(10)
                                                                .setMinutes(0)
                                                                .build();
-    public static final List<PhoneNumber> PHONE_NUMBERS = Collections.unmodifiableList(
-            new ArrayList<PhoneNumber>() {{
-                add(PhoneNumber.newBuilder()
-                               .setValue("0634596796")
-                               .build());
-                add(PhoneNumber.newBuilder()
-                               .setValue("0983162589")
-                               .build());
-            }});
+
+    public static final PhoneNumber PHONE_NUMBER1 = PhoneNumber.newBuilder()
+                                                               .setValue("0634596796")
+                                                               .build();
+    public static final PhoneNumber PHONE_NUMBER2 = PhoneNumber.newBuilder()
+                                                               .setValue("0983162589")
+                                                               .build();
 
     public static final VendorChange VENDOR_CHANGE = VendorChange.newBuilder()
                                                                  .setPreviousVendorName(VENDOR_NAME)
                                                                  .setPreviousEmail(EMAIL)
-                                                                 .addAllPreviousPhoneNumbers(
-                                                                         PHONE_NUMBERS)
-                                                                 .setPreviousPoDailyDeadline(
-                                                                         PO_DAILY_DEADLINE)
-                                                                 .setNewVendorName(NEW_VENDOR_NAME)
-                                                                 .setNewEmail(EMAIL)
-                                                                 .addAllNewPhoneNumbers(
-                                                                         PHONE_NUMBERS)
-                                                                 .setPreviousPoDailyDeadline(
-                                                                         PO_DAILY_DEADLINE)
+                                                                 .addPreviousPhoneNumbers(
+                                                                         PHONE_NUMBER1)
+                                                                 .addPreviousPhoneNumbers(
+                                                                         PHONE_NUMBER2)
+                                                                 .
+                                                                         setPreviousPoDailyDeadline(
+                                                                                 PO_DAILY_DEADLINE)
+                                                                 .
+                                                                         setNewVendorName(
+                                                                                 NEW_VENDOR_NAME)
+                                                                 .
+                                                                         setNewEmail(EMAIL)
+                                                                 .
+                                                                         addNewPhoneNumbers(
+                                                                                 PHONE_NUMBER1)
+                                                                 .addNewPhoneNumbers(PHONE_NUMBER2)
+                                                                 .
+                                                                         setPreviousPoDailyDeadline(
+                                                                                 PO_DAILY_DEADLINE)
                                                                  .build();
 
     public static final MenuId MENU_ID = MenuId.newBuilder()
@@ -140,27 +143,25 @@ public class TestVendorCommandFactory {
                                                                                               .build())
                                                                              .build();
 
-    public static final List<Dish> DISHES = Collections.unmodifiableList(new ArrayList<Dish>() {{
-        add(Dish.newBuilder()
-                .setId(DishId.newBuilder()
-                             .setMenuId(MENU_ID)
-                             .setSequentialNumber(1)
-                             .build())
-                .setName("chicken Kiev")
-                .setCategory("main course")
-                .setPrice(Money.getDefaultInstance())
-                .build());
+    public static final Dish DISH1 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("chicken Kiev")
+                                         .setCategory("main course")
+                                         .setPrice(Money.getDefaultInstance())
+                                         .build();
 
-        add(Dish.newBuilder()
-                .setId(DishId.newBuilder()
-                             .setMenuId(MENU_ID)
-                             .setSequentialNumber(2)
-                             .build())
-                .setName("noodles soup")
-                .setCategory("main course")
-                .setPrice(Money.getDefaultInstance())
-                .build());
-    }});
+    public static final Dish DISH2 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID)
+                                                      .setSequentialNumber(2)
+                                                      .build())
+                                         .setName("noodles soup")
+                                         .setCategory("main course")
+                                         .setPrice(Money.getDefaultInstance())
+                                         .build();
 
     private TestVendorCommandFactory() {
     }
@@ -172,8 +173,7 @@ public class TestVendorCommandFactory {
      */
     public static AddVendor addVendorInstance() {
         final AddVendor result = addVendorInstance(VENDOR_ID, USER_ID, VENDOR_NAME, EMAIL,
-                                                   PO_DAILY_DEADLINE,
-                                                   PHONE_NUMBERS);
+                                                   PO_DAILY_DEADLINE, PHONE_NUMBER1, PHONE_NUMBER2);
         return result;
     }
 
@@ -184,21 +184,21 @@ public class TestVendorCommandFactory {
      * @param vendorName      the name of a created vendor
      * @param email           the email address to send a purchase order
      * @param poDailyDeadline daily deadline time
-     * @param phoneNumbers    the phone numbers of a created vendor
+     * @param phones          the array of phone numbers of a created vendor
      * @return the {@code CreateBasicTask} instance
      */
     public static AddVendor addVendorInstance(VendorId vendorId, UserId userId,
                                               VendorName vendorName,
                                               EmailAddress email, LocalTime poDailyDeadline,
-                                              List<PhoneNumber> phoneNumbers) {
-
+                                              PhoneNumber... phones) {
         final AddVendor result = AddVendor.newBuilder()
                                           .setVendorId(vendorId)
                                           .setUserId(userId)
                                           .setVendorName(vendorName)
                                           .setEmail(email)
                                           .setPoDailyDeadline(poDailyDeadline)
-                                          .addAllPhoneNumbers(phoneNumbers)
+                                          .addPhoneNumbers(phones[0])
+                                          .addPhoneNumbers(phones[1])
                                           .build();
         return result;
     }
@@ -238,7 +238,7 @@ public class TestVendorCommandFactory {
      * @return the {@code ImportMenu} instance
      */
     public static ImportMenu importMenuInstance() {
-        final ImportMenu result = importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, DISHES);
+        final ImportMenu result = importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, DISH1, DISH2);
         return result;
     }
 
@@ -248,17 +248,18 @@ public class TestVendorCommandFactory {
      * @param vendorId the identifier of a created vendor
      * @param userId   the identifier of the user who updates vendor profile
      * @param menuId   the identifier of the imported menu
-     * @param dishes   the collection of dishes
+     * @param dishes   the array of dishes
      * @return the {@code CreateBasicTask} instance
      */
     public static ImportMenu importMenuInstance(VendorId vendorId, UserId userId, MenuId menuId,
-                                                List<Dish> dishes) {
+                                                Dish... dishes) {
 
         final ImportMenu result = ImportMenu.newBuilder()
                                             .setVendorId(vendorId)
                                             .setUserId(userId)
                                             .setMenuId(menuId)
-                                            .addAllDishes(dishes)
+                                            .addDishes(dishes[0])
+                                            .addDishes(dishes[1])
                                             .build();
         return result;
     }

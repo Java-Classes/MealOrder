@@ -146,6 +146,7 @@ public class VendorAggregate extends Aggregate<VendorId,
     }
 
     @Apply
+    @SuppressWarnings("unused") // The
     private void vendorAdded(VendorAdded event) {
 
         getBuilder().setId(event.getVendorId())
