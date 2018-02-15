@@ -62,8 +62,9 @@ import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejecti
                                                  The {@code Aggregate} does it with methods
                                                  annotated as {@code Assign} and {@code Apply}.
                                                  In that case class has too many methods.*/
-        "OverlyCoupledClass"}) /* As each method needs dependencies  necessary to perform execution
+        "OverlyCoupledClass",/* As each method needs dependencies  necessary to perform execution
                                                  that class also overly coupled.*/
+        "unused"}) /* Methods that modifies the state of the aggregate with data from the passed event is used in the internal logic. */
 public class VendorAggregate extends Aggregate<VendorId,
         Vendor,
         VendorVBuilder> {
@@ -146,7 +147,6 @@ public class VendorAggregate extends Aggregate<VendorId,
     }
 
     @Apply
-    @SuppressWarnings("unused") // The
     private void vendorAdded(VendorAdded event) {
 
         getBuilder().setId(event.getVendorId())
