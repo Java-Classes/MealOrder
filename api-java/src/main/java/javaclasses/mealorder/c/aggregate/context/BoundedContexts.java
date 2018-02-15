@@ -24,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import io.spine.server.BoundedContext;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
+import javaclasses.mealorder.c.aggregate.repository.OrderRepository;
 import javaclasses.mealorder.c.aggregate.repository.VendorRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -66,8 +67,10 @@ public final class BoundedContexts {
     public static BoundedContext create(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
         final VendorRepository vendorRepo = new VendorRepository();
+        final OrderRepository orderRepository = new OrderRepository();
         final BoundedContext boundedContext = createBoundedContext(storageFactory);
         boundedContext.register(vendorRepo);
+        boundedContext.register(orderRepository);
         return boundedContext;
     }
 
