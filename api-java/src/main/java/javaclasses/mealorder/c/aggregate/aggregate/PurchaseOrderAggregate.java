@@ -47,7 +47,6 @@ import javaclasses.mealorder.c.rejection.CannotOverruleValidationOfNotInvalidPO;
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
-import static java.util.Collections.singletonList;
 import static javaclasses.mealorder.PurchaseOrderStatus.CANCELED;
 import static javaclasses.mealorder.PurchaseOrderStatus.CREATED;
 import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
@@ -108,35 +107,30 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     @Assign
-    List<? extends Message> handle(MarkPurchaseOrderAsValid cmd)
+    PurchaseOrderValidationOverruled handle(MarkPurchaseOrderAsValid cmd)
             throws CannotOverruleValidationOfNotInvalidPO {
         if (!isAllowedToMarkAsValid()) {
             throwCannotOverruleValidationOfNotInvalidPO(cmd);
         }
-        final PurchaseOrderValidationOverruled overruledEvent =
-                createPOValidationOverruledEvent(cmd);
-        return singletonList(overruledEvent);
+        return createPOValidationOverruledEvent(cmd);
     }
 
     @Assign
-    List<? extends Message> handle(MarkPurchaseOrderAsDelivered cmd)
+    PurchaseOrderDelivered handle(MarkPurchaseOrderAsDelivered cmd)
             throws CannotMarkPurchaseOrderAsDelivered {
         if (!isAllowedToMarkAsDelivered()) {
             throwCannotMarkPurchaseOrderAsDelivered(cmd);
         }
-        final PurchaseOrderDelivered deliveredEvent = createPOMarkedAsDeliveredEvent(cmd);
-        return singletonList(deliveredEvent);
+        return createPOMarkedAsDeliveredEvent(cmd);
     }
 
     @Assign
-    List<? extends Message> handle(CancelPurchaseOrder cmd)
+    PurchaseOrderCanceled handle(CancelPurchaseOrder cmd)
             throws CannotCancelDeliveredPurchaseOrder {
         if (!isAllowedToCancel()) {
             throwCannotCancelDeliveredPurchaseOrder(cmd);
         }
-
-        final PurchaseOrderCanceled canceledEvent = createPOCanceledEvent(cmd);
-        return singletonList(canceledEvent);
+        return createPOCanceledEvent(cmd);
     }
 
     /*
