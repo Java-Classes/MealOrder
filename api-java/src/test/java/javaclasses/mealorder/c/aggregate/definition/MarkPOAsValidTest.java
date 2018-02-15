@@ -20,11 +20,13 @@
 
 package javaclasses.mealorder.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
+import javaclasses.mealorder.c.rejection.CannotOverruleValidationOfNotInvalidPO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,8 +37,11 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithInvalidOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsValidInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Yegor Udovchenko
@@ -80,6 +85,20 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
                 (PurchaseOrderValidationOverruled) messageList.get(0);
 
         assertEquals(purchaseOrderId, poValidationOverruled.getId());
+    }
+
+    @Test
+    @DisplayName("throw CannotOverruleValidationOfNotInvalidPO rejection " +
+            "upon an attempt to mark PO with not invalid state")
+    void cannotPurchaseOrderForNotMatchingOrders() {
+        final MarkPurchaseOrderAsValid markAsValidCmd =
+                markPurchaseOrderAsValidInstance(purchaseOrderId);
+
+        Throwable t = assertThrows(Throwable.class,
+                                   () -> dispatchCommand(aggregate,
+                                                         envelopeOf(markAsValidCmd)));
+        assertThat(Throwables.getRootCause(t),
+                   instanceOf(CannotOverruleValidationOfNotInvalidPO.class));
     }
 
     private void setUpInvalidState() {
