@@ -83,7 +83,7 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
 
     @Test
     @DisplayName("import menu")
-    void addVendor() {
+    void importMenu() {
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 

@@ -26,6 +26,7 @@ import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.Vendor;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -57,13 +58,10 @@ class VendorValidator {
                                                .setDay(currentDateJava.getDayOfMonth())
                                                .build();
 
-        LocalDateComparator localDateComparator = new LocalDateComparator();
-        int startAndCurrentDatesCompareResult = localDateComparator.compare(startDateRange,
-                                                                            currentDate);
-        int startAndEndDatesCompareResult = localDateComparator.compare(startDateRange,
-                                                                        endDateRange);
+        final Comparator<LocalDate> comparator = new LocalDateComparator();
 
-        return startAndCurrentDatesCompareResult < 0 && startAndEndDatesCompareResult < 0;
+        return comparator.compare(startDateRange, currentDate) < 0
+                && comparator.compare(startDateRange, endDateRange) < 0;
     }
 
     /**
@@ -74,15 +72,34 @@ class VendorValidator {
      */
     static boolean isThereMenuForThisDateRange(Vendor vendor, MenuDateRange menuDateRange) {
         final List<Menu> menus = vendor.getMenusList();
-
-        final LocalDateComparator localDateComparator = new LocalDateComparator();
-
         return menus.stream()
-                    .filter(m -> localDateComparator.compare(menuDateRange.getRangeStart(),
-                                                             m.getMenuDateRange()
-                                                              .getRangeEnd()) <= 0)
-                    .count() != 0;
+                    .anyMatch(m -> areRangesOverlapping(menuDateRange, m.getMenuDateRange()));
+    }
 
+    /**
+     * Checks checks whether two ranges overlap.
+     *
+     * @param menuDateRange1 the date range
+     * @param menuDateRange2 the date range
+     * @return boolean true if the date ranges are overlapped and false otherwise
+     */
+    private static boolean areRangesOverlapping(MenuDateRange menuDateRange1,
+                                                MenuDateRange menuDateRange2) {
+
+        final LocalDate startRange = menuDateRange1.getRangeStart();
+        final LocalDate endRange = menuDateRange1.getRangeEnd();
+
+        final Comparator<LocalDate> comparator = new LocalDateComparator();
+
+        final boolean startResult =
+                comparator.compare(startRange, menuDateRange2.getRangeStart()) >= 0
+                        && comparator.compare(startRange, menuDateRange2.getRangeEnd()) <= 0;
+
+        final boolean endResult =
+                comparator.compare(endRange, menuDateRange2.getRangeStart()) >= 0
+                        && comparator.compare(endRange, menuDateRange2.getRangeEnd()) <= 0;
+
+        return startResult || endResult;
     }
 
 }

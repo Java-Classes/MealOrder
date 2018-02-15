@@ -22,6 +22,7 @@ package javaclasses.mealorder.c.definition;
 
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
+import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.ImportMenu;
@@ -88,7 +89,7 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
 
     @Test
     @DisplayName("set date range for menu")
-    void addVendor() {
+    void setDateRange() {
 
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
@@ -98,6 +99,15 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
 
         final Vendor state = aggregate.getState();
         assertEquals(state.getId(), setDateRangeForMenu.getVendorId());
+
+        final Menu menu = state.getMenusList()
+                               .stream()
+                               .filter(m -> m.getId()
+                                             .equals(setDateRangeForMenu.getMenuId()))
+                               .findFirst()
+                               .get();
+
+        assertEquals(menu.getMenuDateRange(), setDateRangeForMenu.getMenuDateRange());
     }
 
     @Test
@@ -124,4 +134,30 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
         assertEquals(setInvalidDateRangeForMenu.getMenuId(), rejection.getMenuId());
         assertEquals(setInvalidDateRangeForMenu.getMenuDateRange(), rejection.getMenuDateRange());
     }
+
+    @Test
+    @DisplayName("produce CannotSetDateRange rejection if vendor already has menu on this date range")
+    void produceRejectionIfMenuExists() {
+        final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
+        dispatchCommand(aggregate, envelopeOf(importMenu));
+
+        final SetDateRangeForMenu setDateRangeForMenu = TestVendorCommandFactory.setDateRangeForMenuInstance();
+        dispatchCommand(aggregate, envelopeOf(setDateRangeForMenu));
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(
+                                                                       setDateRangeForMenu)));
+        final Throwable cause = Throwables.getRootCause(t);
+        assertThat(cause, instanceOf(CannotSetDateRange.class));
+
+        @SuppressWarnings("ConstantConditions") // Instance type checked before.
+        final Rejections.CannotSetDateRange rejection =
+                ((CannotSetDateRange) cause).getMessageThrown();
+
+        assertEquals(setDateRangeForMenu.getVendorId(), rejection.getVendorId());
+        assertEquals(setDateRangeForMenu.getMenuId(), rejection.getMenuId());
+        assertEquals(setDateRangeForMenu.getMenuDateRange(), rejection.getMenuDateRange());
+    }
+
 }

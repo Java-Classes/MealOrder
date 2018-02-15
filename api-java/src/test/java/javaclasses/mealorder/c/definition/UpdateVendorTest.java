@@ -73,7 +73,7 @@ public class UpdateVendorTest extends VendorCommandTest<AddVendor> {
 
     @Test
     @DisplayName("update vendor")
-    void addVendor() {
+    void updateVendor() {
         final UpdateVendor updateVendor = TestVendorCommandFactory.updateVendorInstance();
         dispatchCommand(aggregate, envelopeOf(updateVendor));
 

@@ -49,6 +49,7 @@ import static java.util.Collections.singletonList;
 import static javaclasses.mealorder.c.aggregate.VendorValidator.isThereMenuForThisDateRange;
 import static javaclasses.mealorder.c.aggregate.VendorValidator.isValidDateRange;
 import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejections.UpdateRejections.throwCannotSetDateRange;
+import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejections.UpdateRejections.throwVendorAlreadyExists;
 
 /**
  * The aggregate managing the state of a {@link Vendor}.
@@ -77,10 +78,10 @@ public class VendorAggregate extends Aggregate<VendorId,
     @Assign
     List<? extends Message> handle(AddVendor cmd) throws VendorAlreadyExists {
 
-        VendorName vendorName = cmd.getVendorName();
+        final VendorName vendorName = cmd.getVendorName();
 
         if (vendorName.equals(getState().getVendorName())) {
-            throw new VendorAlreadyExists(cmd.getVendorId(), vendorName, getCurrentTime());
+            throwVendorAlreadyExists(cmd);
         }
 
         final VendorAdded vendorAdded = VendorAdded.newBuilder()
@@ -122,7 +123,7 @@ public class VendorAggregate extends Aggregate<VendorId,
     @Assign
     List<? extends Message> handle(SetDateRangeForMenu cmd) throws CannotSetDateRange {
 
-        MenuDateRange menuDateRange = cmd.getMenuDateRange();
+        final MenuDateRange menuDateRange = cmd.getMenuDateRange();
 
         if (!isValidDateRange(menuDateRange) ||
                 isThereMenuForThisDateRange(getState(), menuDateRange)) {
@@ -180,7 +181,6 @@ public class VendorAggregate extends Aggregate<VendorId,
 
     @Apply
     private void dateRangeForMenuSet(DateRangeForMenuSet event) {
-
         final List<Menu> menus = getState().getMenusList();
         final int index = IntStream.range(0, menus.size())
                                    .filter(i -> menus.get(i)
@@ -188,12 +188,13 @@ public class VendorAggregate extends Aggregate<VendorId,
                                                      .equals(event.getMenuId()))
                                    .findFirst()
                                    .getAsInt();
-        final Menu menu = getState().getMenus(index);
-        Menu.newBuilder(menu)
-            .setMenuDateRange(event.getMenuDateRange())
-            .build();
+        final Menu menu = menus.get(index);
         getBuilder().setId(event.getVendorId())
-                    .setMenus(index, menu);
+                    .setMenus(index, Menu.newBuilder()
+                                         .setMenuDateRange(event.getMenuDateRange())
+                                         .setId(menu.getId())
+                                         .addAllDishes(menu.getDishesList())
+                                         .build());
     }
 
 }
