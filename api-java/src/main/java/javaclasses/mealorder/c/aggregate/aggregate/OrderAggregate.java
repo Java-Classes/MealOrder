@@ -83,7 +83,7 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     @Assign
-    List<? extends Message> handle(CreateOrder cmd) throws OrderAlreadyExists {
+    OrderCreated handle(CreateOrder cmd) throws OrderAlreadyExists {
         final OrderId orderId = cmd.getOrderId();
         final MenuId menuId = cmd.getMenuId();
 
@@ -95,11 +95,11 @@ public class OrderAggregate extends Aggregate<OrderId,
                                                 .setOrderId(orderId)
                                                 .setMenuId(menuId)
                                                 .build();
-        return singletonList(result);
+        return result;
     }
 
     @Assign
-    List<? extends Message> handle(AddDishToOrder cmd) throws DishVendorMismatch,
+    DishAddedToOrder handle(AddDishToOrder cmd) throws DishVendorMismatch,
                                                               CannotAddDishToNotActiveOrder {
         final OrderId orderId = cmd.getOrderId();
         final Dish dish = cmd.getDish();
@@ -124,11 +124,11 @@ public class OrderAggregate extends Aggregate<OrderId,
                                                         .setOrderId(orderId)
                                                         .setDish(dish)
                                                         .build();
-        return singletonList(result);
+        return result;
     }
 
     @Assign
-    List<? extends Message> handle(RemoveDishFromOrder cmd) throws CannotRemoveMissingDish,
+    DishRemovedFromOrder handle(RemoveDishFromOrder cmd) throws CannotRemoveMissingDish,
                                                                    CannotRemoveDishFromNotActiveOrder {
         final OrderId orderId = cmd.getOrderId();
         final DishId dishId = cmd.getDishId();
@@ -137,7 +137,7 @@ public class OrderAggregate extends Aggregate<OrderId,
             throwCannotRemoveDishFromNotActiveOrder(cmd, getState().getStatus());
         }
 
-        DishRemovedFromOrder result;
+        DishRemovedFromOrder result = null;
         for (Dish dish : getState().getDishesList()) {
             if (dish.getId()
                     .equals(dishId)) {
@@ -145,15 +145,15 @@ public class OrderAggregate extends Aggregate<OrderId,
                                              .setOrderId(orderId)
                                              .setDish(dish)
                                              .build();
-                return singletonList(result);
+                return result;
             }
         }
         throwCannotRemoveMissingDish(cmd);
-        return singletonList(null);
+        return result;
     }
 
     @Assign
-    List<? extends Message> handle(CancelOrder cmd) {
+    OrderCanceled handle(CancelOrder cmd) {
         final OrderId orderId = cmd.getOrderId();
         final UserId userId = cmd.getWhoCancels();
 
@@ -161,7 +161,7 @@ public class OrderAggregate extends Aggregate<OrderId,
                                                   .setOrderId(orderId)
                                                   .setWhoCanceled(userId)
                                                   .build();
-        return singletonList(result);
+        return result;
     }
 
     // Event appliers
