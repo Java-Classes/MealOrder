@@ -39,6 +39,7 @@ import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.command.UpdateVendor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -73,14 +74,15 @@ public class TestVendorCommandFactory {
                                                                .setHours(10)
                                                                .setMinutes(0)
                                                                .build();
-    public static final List<PhoneNumber> PHONE_NUMBERS = new ArrayList<PhoneNumber>() {{
-        add(PhoneNumber.newBuilder()
-                       .setValue("0634596796")
-                       .build());
-        add(PhoneNumber.newBuilder()
-                       .setValue("0983162589")
-                       .build());
-    }};
+    public static final List<PhoneNumber> PHONE_NUMBERS = Collections.unmodifiableList(
+            new ArrayList<PhoneNumber>() {{
+                add(PhoneNumber.newBuilder()
+                               .setValue("0634596796")
+                               .build());
+                add(PhoneNumber.newBuilder()
+                               .setValue("0983162589")
+                               .build());
+            }});
 
     public static final VendorChange VENDOR_CHANGE = VendorChange.newBuilder()
                                                                  .setPreviousVendorName(VENDOR_NAME)
@@ -138,7 +140,7 @@ public class TestVendorCommandFactory {
                                                                                               .build())
                                                                              .build();
 
-    public static final List<Dish> DISHES = new ArrayList<Dish>() {{
+    public static final List<Dish> DISHES = Collections.unmodifiableList(new ArrayList<Dish>() {{
         add(Dish.newBuilder()
                 .setId(DishId.newBuilder()
                              .setMenuId(MENU_ID)
@@ -158,7 +160,7 @@ public class TestVendorCommandFactory {
                 .setCategory("main course")
                 .setPrice(Money.getDefaultInstance())
                 .build());
-    }};
+    }});
 
     private TestVendorCommandFactory() {
     }
