@@ -22,6 +22,6 @@
  * This package provides implementation for aggregate classes.
  */
 @ParametersAreNonnullByDefault
-package javaclasses.mealorder.c.aggregate.aggregate;
+package javaclasses.mealorder.c.aggregate;
 
 import javax.annotation.ParametersAreNonnullByDefault;

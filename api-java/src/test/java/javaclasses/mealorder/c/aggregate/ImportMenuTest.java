@@ -18,13 +18,13 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package javaclasses.mealorder.c.definition;
+package javaclasses.mealorder.c.aggregate;
 
 import com.google.protobuf.Message;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.c.command.AddVendor;
-import javaclasses.mealorder.c.command.UpdateVendor;
-import javaclasses.mealorder.c.event.VendorUpdated;
+import javaclasses.mealorder.c.command.ImportMenu;
+import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.testdata.TestVendorCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,17 +33,21 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.NEW_VENDOR_NAME;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISHES;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.setDateRangeForMenuInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("UpdateVendor command should be interpreted by VendorAggregate and")
-public class UpdateVendorTest extends VendorCommandTest<AddVendor> {
+@DisplayName("ImportMenu command should be interpreted by VendorAggregate and")
+public class ImportMenuTest extends VendorCommandTest<AddVendor> {
 
     @Override
     @BeforeEach
@@ -52,32 +56,34 @@ public class UpdateVendorTest extends VendorCommandTest<AddVendor> {
     }
 
     @Test
-    @DisplayName("produce UpdateVendor event")
+    @DisplayName("produce MenuImported event")
     void produceEvent() {
-        final UpdateVendor updateVendorCmd = TestVendorCommandFactory.updateVendorInstance();
+        final ImportMenu importMenuCmd = TestVendorCommandFactory.importMenuInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(updateVendorCmd));
+                                                                    envelopeOf(importMenuCmd));
 
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
-        assertEquals(VendorUpdated.class, messageList.get(0)
-                                                     .getClass());
-        final VendorUpdated vendorUpdated = (VendorUpdated) messageList.get(0);
+        assertEquals(MenuImported.class, messageList.get(0)
+                                                    .getClass());
+        final MenuImported menuImported = (MenuImported) messageList.get(0);
 
-        assertEquals(VENDOR_ID, vendorUpdated.getVendorId());
-        assertEquals(USER_ID, vendorUpdated.getWhoUploaded());
-        assertEquals(NEW_VENDOR_NAME, vendorUpdated.getVendorChange()
-                                                   .getNewVendorName());
+        assertEquals(VENDOR_ID, menuImported.getVendorId());
+        assertEquals(MENU_ID, menuImported.getMenuId());
+        assertEquals(USER_ID, menuImported.getWhoImported());
+        assertEquals(DISHES, menuImported.getDishesList());
     }
 
     @Test
-    @DisplayName("update vendor")
-    void updateVendor() {
-        final UpdateVendor updateVendor = TestVendorCommandFactory.updateVendorInstance();
-        dispatchCommand(aggregate, envelopeOf(updateVendor));
+    @DisplayName("import menu")
+    void importMenu() {
+        final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
+        dispatchCommand(aggregate, envelopeOf(importMenu));
 
         final Vendor state = aggregate.getState();
-        assertEquals(state.getId(), updateVendor.getVendorId());
+        assertEquals(state.getId(), importMenu.getVendorId());
     }
+
+
 }
