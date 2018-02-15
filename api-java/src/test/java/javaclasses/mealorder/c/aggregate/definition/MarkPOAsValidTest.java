@@ -90,7 +90,7 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
     @Test
     @DisplayName("throw CannotOverruleValidationOfNotInvalidPO rejection " +
             "upon an attempt to mark PO with not invalid state")
-    void cannotPurchaseOrderForNotMatchingOrders() {
+    void cannotOverrulePurchaseOrderValidation() {
         final MarkPurchaseOrderAsValid markAsValidCmd =
                 markPurchaseOrderAsValidInstance(purchaseOrderId);
 

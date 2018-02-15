@@ -20,18 +20,23 @@
 
 package javaclasses.mealorder.c.aggregate.definition;
 
+import com.google.protobuf.Message;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
+import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.mealorder.PurchaseOrderStatus.CANCELED;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.cancelPurchaseOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Yegor Udovchenko
@@ -58,9 +63,43 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
         assertEquals(CANCELED, state.getStatus());
     }
 
+    @Test
+    @DisplayName("produce PurchaseOrderCanceled event")
+    void producePurchaseOrderCanceledEvent() {
+        setUpCreatedState();
+        final CancelPurchaseOrder cancelCmd =
+                cancelPurchaseOrderInstance(purchaseOrderId);
+        final List<? extends Message> messageList = dispatchCommand(aggregate,
+                                                                    envelopeOf(cancelCmd));
+
+        assertNotNull(aggregate.getId());
+        assertEquals(1, messageList.size());
+        assertEquals(PurchaseOrderCanceled.class, messageList.get(0)
+                                                             .getClass());
+        final PurchaseOrderCanceled poCanceled =
+                (PurchaseOrderCanceled) messageList.get(0);
+
+        assertEquals(purchaseOrderId, poCanceled.getId());
+    }
+
+//    @Test
+//    @DisplayName("throw CannotCancelDeliveredPurchaseOrder rejection " +
+//            "upon an attempt to cancel delivered PO")
+//    void cannotPurchaseOrderForNotMatchingOrders() {
+//        setUpDeliveredState();
+//        final CancelPurchaseOrder cancelCmd =
+//                cancelPurchaseOrderInstance(purchaseOrderId);
+//        Throwable t = assertThrows(Throwable.class,
+//                                   () -> dispatchCommand(aggregate,
+//                                                         envelopeOf(cancelCmd)));
+//        assertThat(Throwables.getRootCause(t),
+//                   instanceOf(CannotCancelDeliveredPurchaseOrder.class));
+//    }
+
     private void setUpCreatedState() {
         final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance(
                 purchaseOrderId);
         dispatchCommand(aggregate, envelopeOf(createPOcmd));
     }
+
 }
