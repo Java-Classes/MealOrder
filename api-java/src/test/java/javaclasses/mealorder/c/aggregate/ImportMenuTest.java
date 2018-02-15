@@ -57,6 +57,10 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("produce MenuImported event")
     void produceEvent() {
+
+        final AddVendor addVendorCmd = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendorCmd));
+
         final ImportMenu importMenuCmd = TestVendorCommandFactory.importMenuInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -80,6 +84,9 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("import menu")
     void importMenu() {
+        final AddVendor addVendorCmd = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendorCmd));
+
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 

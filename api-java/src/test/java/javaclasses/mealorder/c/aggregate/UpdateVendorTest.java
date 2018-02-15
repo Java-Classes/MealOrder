@@ -54,6 +54,10 @@ public class UpdateVendorTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("produce UpdateVendor event")
     void produceEvent() {
+
+        final AddVendor addVendorCmd = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendorCmd));
+
         final UpdateVendor updateVendorCmd = TestVendorCommandFactory.updateVendorInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -74,6 +78,10 @@ public class UpdateVendorTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("update vendor")
     void updateVendor() {
+
+        final AddVendor addVendorCmd = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendorCmd));
+
         final UpdateVendor updateVendor = TestVendorCommandFactory.updateVendorInstance();
         dispatchCommand(aggregate, envelopeOf(updateVendor));
 
