@@ -20,12 +20,14 @@
 
 package javaclasses.mealorder.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderStatus;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.OrderCreated;
+import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,7 @@ import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Vlad Kozachenko
@@ -67,7 +70,7 @@ public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
 
     @Test
     @DisplayName("create the order")
-    public void createTask() {
+    public void createOrder() {
 
         MenuId menuId = MenuId.getDefaultInstance();
 
@@ -79,4 +82,23 @@ public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
         assertEquals(OrderStatus.ORDER_ACTIVE, aggregate.getState()
                                                         .getStatus());
     }
+
+    @Test
+    @DisplayName("throw OrderAlreadyExists rejection")
+    public void notCreateOrder() {
+
+        final CreateOrder createOrderCmd = createOrderInstance(ORDER_ID,
+                                                               MenuId.getDefaultInstance());
+
+        dispatchCommand(aggregate, envelopeOf(createOrderCmd));
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(createOrderCmd)));
+        final Throwable cause = Throwables.getRootCause(t);
+        final OrderAlreadyExists rejection = (OrderAlreadyExists) cause;
+        assertEquals(rejection.getMessageThrown()
+                              .getOrderId(), ORDER_ID);
+    }
+
 }

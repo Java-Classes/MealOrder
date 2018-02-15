@@ -40,6 +40,7 @@ import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
+import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ import static java.util.Collections.singletonList;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwCannotRemoveMissingDish;
+import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwOrderAldeadyExists;
 
 /**
  * The aggregate managing the state of a {@link Order}.
@@ -73,9 +75,13 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     @Assign
-    List<? extends Message> handle(CreateOrder cmd) {
+    List<? extends Message> handle(CreateOrder cmd) throws OrderAlreadyExists {
         final OrderId orderId = cmd.getOrderId();
         final MenuId menuId = cmd.getMenuId();
+
+        if (getVersion().getNumber() != 0 && ORDER_CANCELED != getState().getStatus()) {
+            throwOrderAldeadyExists(cmd);
+        }
 
         final OrderCreated result = OrderCreated.newBuilder()
                                                 .setOrderId(orderId)
