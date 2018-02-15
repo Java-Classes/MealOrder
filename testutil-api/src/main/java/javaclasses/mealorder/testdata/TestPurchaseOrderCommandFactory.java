@@ -34,6 +34,7 @@ import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
@@ -261,7 +262,7 @@ public class TestPurchaseOrderCommandFactory {
     /**
      * Provides a pre-configured {@link MarkPurchaseOrderAsValid} instance
      *
-     * @param id an identifier of the created purchase order.
+     * @param id an identifier of the purchase order.
      * @return the {@code MarkPurchaseOrderAsValid} instance.
      */
     public static MarkPurchaseOrderAsValid markPurchaseOrderAsValidInstance(PurchaseOrderId id) {
@@ -271,4 +272,19 @@ public class TestPurchaseOrderCommandFactory {
                                        .setUserId(USER_ID)
                                        .build();
     }
+
+    /**
+     * Provides a pre-configured {@link CancelPurchaseOrder} instance
+     *
+     * @param id an identifier of the created purchase order.
+     * @return the {@code CancelPurchaseOrder} instance.
+     */
+    public static CancelPurchaseOrder cancelPurchaseOrderInstance(PurchaseOrderId id) {
+        return CancelPurchaseOrder.newBuilder()
+                                  .setId(id)
+                                  .setCustomReason("Because why not")
+                                  .setUserId(USER_ID)
+                                  .build();
+    }
+
 }

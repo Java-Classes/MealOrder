@@ -181,7 +181,7 @@ message CannotCreatePurchaseOrder {
 //
 // It is thrown if a purchase order was canceled.
 //
-message CannotMarkCanceledPurchaseOrderAsDelivered {
+message CannotMarkPurchaseOrderAsDelivered {
 
     // The identifier of a purchase order which the user tried to mark as delivered.
     PurchaseOrderId po_id = 1;

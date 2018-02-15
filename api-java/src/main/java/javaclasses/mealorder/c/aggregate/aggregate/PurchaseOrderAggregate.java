@@ -29,7 +29,6 @@ import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.PurchaseOrderVBuilder;
-import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;
@@ -42,16 +41,22 @@ import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationPassed;
 import javaclasses.mealorder.c.rejection.CannotCancelDeliveredPurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotCreatePurchaseOrder;
-import javaclasses.mealorder.c.rejection.CannotMarkCanceledPurchaseOrderAsDelivered;
+import javaclasses.mealorder.c.rejection.CannotMarkPurchaseOrderAsDelivered;
 import javaclasses.mealorder.c.rejection.CannotOverruleValidationOfNotInvalidPO;
 
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static javaclasses.mealorder.PurchaseOrderStatus.CANCELED;
+import static javaclasses.mealorder.PurchaseOrderStatus.CREATED;
+import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
 import static javaclasses.mealorder.PurchaseOrderStatus.INVALID;
+import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
 import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
+import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCancelDeliveredPurchaseOrder;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
+import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
 import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.isValidPurchaseOrderCreation;
 
@@ -116,42 +121,23 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
     @Assign
     List<? extends Message> handle(MarkPurchaseOrderAsDelivered cmd)
-            throws CannotMarkCanceledPurchaseOrderAsDelivered {
-        final PurchaseOrderId purchaseOrderId = cmd.getId();
-        final UserId userId = cmd.getWhoMarksAsDelivered();
-
-        final PurchaseOrderDelivered result = PurchaseOrderDelivered
-                .newBuilder()
-                .setId(purchaseOrderId)
-                .setWhoMarkedAsDelivered(userId)
-                .setWhenDelievered(getCurrentTime())
-                .build();
-
-        return singletonList(result);
+            throws CannotMarkPurchaseOrderAsDelivered {
+        if (!isAllowedToMarkAsDelivered()) {
+            throwCannotMarkPurchaseOrderAsDelivered(cmd);
+        }
+        final PurchaseOrderDelivered deliveredEvent = createPOMarkedAsDeliveredEvent(cmd);
+        return singletonList(deliveredEvent);
     }
 
     @Assign
     List<? extends Message> handle(CancelPurchaseOrder cmd)
             throws CannotCancelDeliveredPurchaseOrder {
-        final PurchaseOrderId purchaseOrderId = cmd.getId();
-        final UserId userId = cmd.getUserId();
-
-        final PurchaseOrderCanceled.Builder builder = PurchaseOrderCanceled
-                .newBuilder()
-                .setId(purchaseOrderId)
-                .setUserId(userId)
-                .setWhenCanceled(getCurrentTime());
-
-        switch (cmd.getReasonCase()) {
-            case INVALID:
-                return singletonList(builder.setInvalid(cmd.getInvalid())
-                                            .build());
-            case CUSTOM_REASON:
-                return singletonList(builder.setCustomReason(cmd.getCustomReason())
-                                            .build());
-            default:
-                return singletonList(builder.build());
+        if (!isAllowedToCancel()) {
+            throwCannotCancelDeliveredPurchaseOrder(cmd);
         }
+
+        final PurchaseOrderCanceled canceledEvent = createPOCanceledEvent(cmd);
+        return singletonList(canceledEvent);
     }
 
     /*
@@ -161,7 +147,8 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     @Apply
     private void purchaseOrderCreated(PurchaseOrderCreated event) {
         getBuilder().setId(event.getId())
-                    .addAllOrders(event.getOrdersList());
+                    .addAllOrders(event.getOrdersList())
+                    .setStatus(CREATED);
 
     }
 
@@ -180,8 +167,21 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         getBuilder().setStatus(VALID);
     }
 
+    @Apply
+    private void purchaseOrderCanceled(PurchaseOrderCanceled event) {
+        getBuilder().setStatus(CANCELED);
+    }
+
     private boolean isAllowedToMarkAsValid() {
         return getState().getStatus() == INVALID;
+    }
+
+    private boolean isAllowedToMarkAsDelivered() {
+        return getState().getStatus() == SENT;
+    }
+
+    private boolean isAllowedToCancel() {
+        return getState().getStatus() != DELIVERED;
     }
 
     private static PurchaseOrderCreated createPurchaseOrderCreatedEvent(CreatePurchaseOrder cmd) {
@@ -193,8 +193,9 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                    .build();
     }
 
-    private static PurchaseOrderValidationFailed createPOValidationFailedEvent(CreatePurchaseOrder cmd,
-                                                                        List<Order> invalidOrders) {
+    private static PurchaseOrderValidationFailed createPOValidationFailedEvent(
+            CreatePurchaseOrder cmd,
+            List<Order> invalidOrders) {
         return PurchaseOrderValidationFailed.newBuilder()
                                             .setId(cmd.getId())
                                             .addAllFailureOrders(invalidOrders)
@@ -202,7 +203,8 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                             .build();
     }
 
-    private static PurchaseOrderValidationPassed createPOValidationPassedEvent(CreatePurchaseOrder cmd) {
+    private static PurchaseOrderValidationPassed createPOValidationPassedEvent(
+            CreatePurchaseOrder cmd) {
         return PurchaseOrderValidationPassed.newBuilder()
                                             .setId(cmd.getId())
                                             .setWhenPassed(getCurrentTime())
@@ -217,5 +219,33 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                                .setWhenOverruled(getCurrentTime())
                                                .setReason(cmd.getReason())
                                                .build();
+    }
+
+    private static PurchaseOrderDelivered createPOMarkedAsDeliveredEvent(
+            MarkPurchaseOrderAsDelivered cmd) {
+        return PurchaseOrderDelivered.newBuilder()
+                                     .setId(cmd.getId())
+                                     .setWhoMarkedAsDelivered(cmd.getWhoMarksAsDelivered())
+                                     .setWhenDelievered(getCurrentTime())
+                                     .build();
+    }
+
+    private static PurchaseOrderCanceled createPOCanceledEvent(CancelPurchaseOrder cmd) {
+        final PurchaseOrderCanceled.Builder builder = PurchaseOrderCanceled
+                .newBuilder()
+                .setId(cmd.getId())
+                .setUserId(cmd.getUserId())
+                .setWhenCanceled(getCurrentTime());
+
+        switch (cmd.getReasonCase()) {
+            case INVALID:
+                return builder.setInvalid(cmd.getInvalid())
+                              .build();
+            case CUSTOM_REASON:
+                return builder.setCustomReason(cmd.getCustomReason())
+                              .build();
+            default:
+                return builder.build();
+        }
     }
 }

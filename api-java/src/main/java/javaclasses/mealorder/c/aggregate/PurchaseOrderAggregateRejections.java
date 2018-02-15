@@ -31,7 +31,7 @@ import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
 import javaclasses.mealorder.c.rejection.CannotCancelDeliveredPurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotCreatePurchaseOrder;
-import javaclasses.mealorder.c.rejection.CannotMarkCanceledPurchaseOrderAsDelivered;
+import javaclasses.mealorder.c.rejection.CannotMarkPurchaseOrderAsDelivered;
 import javaclasses.mealorder.c.rejection.CannotOverruleValidationOfNotInvalidPO;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -65,19 +65,19 @@ public class PurchaseOrderAggregateRejections {
     }
 
     /**
-     * Constructs and throws the {@link CannotMarkCanceledPurchaseOrderAsDelivered} rejection
+     * Constructs and throws the {@link CannotMarkPurchaseOrderAsDelivered} rejection
      * according to the passed parameters.
      *
      * @param cmd the {@code MarkPurchaseOrderAsDelivered} command which thrown the rejection
-     * @throws CannotMarkCanceledPurchaseOrderAsDelivered the rejection to throw
+     * @throws CannotMarkPurchaseOrderAsDelivered the rejection to throw
      */
-    public static void throwCannotMarkCanceledPurchaseOrderAsDelivered(
-            MarkPurchaseOrderAsDelivered cmd) throws CannotMarkCanceledPurchaseOrderAsDelivered {
+    public static void throwCannotMarkPurchaseOrderAsDelivered(
+            MarkPurchaseOrderAsDelivered cmd) throws CannotMarkPurchaseOrderAsDelivered {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoMarksAsDelivered();
 
-        throw new CannotMarkCanceledPurchaseOrderAsDelivered(purchaseOrderId, userId,
-                                                             getCurrentTime());
+        throw new CannotMarkPurchaseOrderAsDelivered(purchaseOrderId, userId,
+                                                     getCurrentTime());
     }
 
     /**
