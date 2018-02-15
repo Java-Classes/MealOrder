@@ -28,6 +28,7 @@ import io.spine.server.command.Assign;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
+import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.PurchaseOrderVBuilder;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
@@ -93,28 +94,17 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         } else {
             final PurchaseOrderValidationFailed validationFailedEvent =
                     createPOValidationFailedEvent(cmd, invalidOrders);
-            return result.add(validationFailedEvent)
-                         .build();
+            result.add(validationFailedEvent);
         }
-
+        // TODO: 2/15/2018 How to handle sending process? Who emits 'POSent' event?
         return result.build();
     }
 
     @Assign
     List<? extends Message> handle(MarkPurchaseOrderAsValid cmd) {
-        final PurchaseOrderId purchaseOrderId = cmd.getId();
-        final UserId userId = cmd.getUserId();
-        final String reason = cmd.getReason();
-
-        final PurchaseOrderValidationOverruled result = PurchaseOrderValidationOverruled
-                .newBuilder()
-                .setId(purchaseOrderId)
-                .setWhoOverruled(userId)
-                .setWhenOverruled(getCurrentTime())
-                .setReason(reason)
-                .build();
-
-        return singletonList(result);
+        final PurchaseOrderValidationOverruled overruledEvent =
+                createPOValidationOverruledEvent(cmd);
+        return singletonList(overruledEvent);
     }
 
     @Assign
@@ -168,6 +158,16 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
     }
 
+    @Apply
+    private void purchaseOrderValidationPassed(PurchaseOrderValidationPassed event) {
+        getBuilder().setStatus(PurchaseOrderStatus.VALID);
+    }
+
+    @Apply
+    private void purchaseOrderValidationFailed(PurchaseOrderValidationFailed event) {
+        getBuilder().setStatus(PurchaseOrderStatus.INVALID);
+    }
+
     private PurchaseOrderCreated createPurchaseOrderCreatedEvent(CreatePurchaseOrder cmd) {
         return PurchaseOrderCreated.newBuilder()
                                    .setId(cmd.getId())
@@ -191,5 +191,15 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                             .setId(cmd.getId())
                                             .setWhenPassed(getCurrentTime())
                                             .build();
+    }
+
+    private PurchaseOrderValidationOverruled createPOValidationOverruledEvent(
+            MarkPurchaseOrderAsValid cmd) {
+        return PurchaseOrderValidationOverruled.newBuilder()
+                                               .setId(cmd.getId())
+                                               .setWhoOverruled(cmd.getUserId())
+                                               .setWhenOverruled(getCurrentTime())
+                                               .setReason(cmd.getReason())
+                                               .build();
     }
 }

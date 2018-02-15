@@ -39,8 +39,9 @@ import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.spine.Identifier.newUuid;
 import static io.spine.time.Time.getCurrentTime;
+import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
+import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 
 /**
  * A factory of the purchase order commands for the test needs.
@@ -50,7 +51,7 @@ import static io.spine.time.Time.getCurrentTime;
 public class TestPurchaseOrderCommandFactory {
 
     public static final VendorId VENDOR_ID = VendorId.newBuilder()
-                                                     .setValue(newUuid())
+                                                     .setValue("vendor:vendor")
                                                      .build();
     public static final LocalDate DATE = LocalDate
             .newBuilder()
@@ -94,6 +95,7 @@ public class TestPurchaseOrderCommandFactory {
     public static final Order ORDER = Order.newBuilder()
                                            .setId(ORDER_ID)
                                            .addDishes(DISH)
+                                           .setStatus(ORDER_ACTIVE)
                                            .build();
 
     public static final List<Order> ORDERS = new ArrayList<Order>() {{
@@ -104,7 +106,7 @@ public class TestPurchaseOrderCommandFactory {
     }
 
     /**
-     * Provides a pre-configured {@link CreatePurchaseOrder} instance.
+     * Provides a default {@link CreatePurchaseOrder} instance.
      *
      * @return the {@code CreatePurchaseOrder} instance
      */
@@ -120,8 +122,8 @@ public class TestPurchaseOrderCommandFactory {
     /**
      * Provides a pre-configured {@link CreatePurchaseOrder} instance.
      *
-     * @param id an identifier of the created purchase order
-     * @return the {@code CreatePurchaseOrder} instance
+     * @param id an identifier of the created purchase order.
+     * @return the {@code CreatePurchaseOrder} instance.
      */
     public static CreatePurchaseOrder createPurchaseOrderInstance(PurchaseOrderId id) {
         final MenuId menuId = MenuId.newBuilder()
@@ -149,12 +151,47 @@ public class TestPurchaseOrderCommandFactory {
         final Order order = Order.newBuilder()
                                  .setId(orderId)
                                  .addDishes(dish)
+                                 .setStatus(ORDER_ACTIVE)
                                  .build();
-        final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
-                                                              .setId(id)
-                                                              .setWhoCreates(USER_ID)
-                                                              .addOrders(order)
-                                                              .build();
-        return result;
+        return CreatePurchaseOrder.newBuilder()
+                                  .setId(id)
+                                  .setWhoCreates(USER_ID)
+                                  .addOrders(order)
+                                  .build();
+
     }
+
+    /**
+     * Provides a pre-configured {@link CreatePurchaseOrder} instance
+     * with mismatch vendor identifier of purchase order and one of
+     * orders in the list.
+     *
+     * @param id an identifier of the created purchase order.
+     * @return the invalid {@code CreatePurchaseOrder} instance.
+     */
+    public static CreatePurchaseOrder createPurchaseOrderWithVendorMismatchInstance(
+            PurchaseOrderId id) {
+        return CreatePurchaseOrder.newBuilder(createPurchaseOrderInstance(id))
+                                  .setId(PurchaseOrderId.newBuilder(id)
+                                                        .setVendorId(VENDOR_ID))
+                                  .build();
+    }
+
+    /**
+     * Provides a pre-configured {@link CreatePurchaseOrder} instance
+     * with an order in the list which status is not {@code 'ORDER_ACTIVE'}
+     *
+     * @param id an identifier of the created purchase order.
+     * @return the invalid {@code CreatePurchaseOrder} instance.
+     */
+    public static CreatePurchaseOrder createPurchaseOrderWithNotActiveOrdersInstance(
+            PurchaseOrderId id) {
+        CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+        Order order = validCmd.getOrders(0);
+        return CreatePurchaseOrder.newBuilder(validCmd)
+                                  .addOrders(Order.newBuilder(order)
+                                                  .setStatus(ORDER_CANCELED))
+                                  .build();
+    }
+
 }

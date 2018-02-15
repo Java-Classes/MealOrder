@@ -64,7 +64,7 @@ abstract class PurchaseOrderCommandTest<C extends Message> extends AggregateComm
     private static PurchaseOrderId createPurchaseOrderId() {
         return PurchaseOrderId.newBuilder()
                               .setVendorId(VendorId.newBuilder()
-                                                   .setValue(newUuid())
+                                                   .setValue("vendor:for_test")
                                                    .build())
                               .setPoDate(LocalDate.newBuilder()
                                                   .setDay(15)
