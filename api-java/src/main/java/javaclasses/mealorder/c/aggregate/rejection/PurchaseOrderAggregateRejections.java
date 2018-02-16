@@ -18,13 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate;
+package javaclasses.mealorder.c.aggregate.rejection;
 
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderAggregate;
+import javaclasses.mealorder.c.aggregate.PurchaseOrderAggregate;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;

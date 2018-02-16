@@ -54,7 +54,7 @@ import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejecti
  *
  * @author Yurii Haidamaka
  */
-@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor definition cannot be separated and should
+@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor po cannot be separated and should
                                                  process all commands and events related to it
                                                  according to the domain model.
                                                  The {@code Aggregate} does it with methods

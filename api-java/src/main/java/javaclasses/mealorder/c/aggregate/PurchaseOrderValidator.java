@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.aggregate;
+package javaclasses.mealorder.c.aggregate;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableList;

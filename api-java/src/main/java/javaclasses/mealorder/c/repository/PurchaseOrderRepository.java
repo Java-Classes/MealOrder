@@ -18,33 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.aggregate;
+package javaclasses.mealorder.c.repository;
 
-import io.spine.net.EmailAddress;
-import javaclasses.mealorder.PurchaseOrder;
+import io.spine.server.aggregate.AggregateRepository;
+import javaclasses.mealorder.PurchaseOrderId;
+import javaclasses.mealorder.c.aggregate.PurchaseOrderAggregate;
 
 /**
- * Utility class managing the sending process of a purchase order
- * to the vendor.
+ * Repository for the {@link PurchaseOrderAggregate}.
  *
  * @author Yegor Udovchenko
  */
-public class PurchaseOrderSender {
-
-    /**
-     * Creates the Spreadsheet from the orders list of the purchase order.
-     * Sends it to vendor email address.
-     *
-     * @param purchaseOrder purchase order to form spreadsheet and send
-     * @param senderEmail   the email of the sender
-     * @param vendorEmail   the email of the vendor
-     * @return 'true' if the purchase order sent successfully,
-     * 'false' if sending errors occurred
-     */
-    public boolean formAndSendPurchaseOrder(PurchaseOrder purchaseOrder,
-                                            EmailAddress senderEmail,
-                                            EmailAddress vendorEmail) {
-        // TODO 2/16/2018[yegor.udovchenko]: implement method.
-        return true;
-    }
+public class PurchaseOrderRepository extends AggregateRepository<PurchaseOrderId, PurchaseOrderAggregate> {
 }

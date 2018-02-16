@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.definition;
+package javaclasses.mealorder.c.aggregate.po;
 
 import com.google.protobuf.Message;
 import io.spine.client.TestActorRequestFactory;
@@ -27,8 +27,8 @@ import io.spine.net.EmailAddress;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
-import javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderAggregate;
-import javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderSender;
+import javaclasses.mealorder.c.aggregate.PurchaseOrderAggregate;
+import javaclasses.mealorder.c.aggregate.PurchaseOrderSender;
 
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.DATE;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.VENDOR_ID;

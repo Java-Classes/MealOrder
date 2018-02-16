@@ -18,16 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.definition;
+package javaclasses.mealorder.c.aggregate.po;
 
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.PurchaseOrder;
-import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;
-import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
-import javaclasses.mealorder.c.rejection.CannotCancelDeliveredPurchaseOrder;
+import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
+import javaclasses.mealorder.c.rejection.CannotMarkPurchaseOrderAsDelivered;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,8 +34,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.mealorder.PurchaseOrderStatus.CANCELED;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.cancelPurchaseOrderInstance;
+import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsDeliveredInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -48,8 +46,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Yegor Udovchenko
  */
-@DisplayName("CancelPurchaseOrder command should be interpreted by PurchaseOrderAggregate and")
-public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurchaseOrder> {
+@DisplayName("MarkPurchaseOrderAsDelivered command should be interpreted by PurchaseOrderAggregate and")
+public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchaseOrderAsDelivered> {
     @Override
     @BeforeEach
     public void setUp() {
@@ -57,57 +55,53 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
     }
 
     @Test
-    @DisplayName("set the purchase order status to 'CANCELED'")
-    void cancelPurchaseOrder() {
+    @DisplayName("set the purchase order status to 'DELIVERED'")
+    void markAsValid() {
         dispatchCreatedCmd();
-        final CancelPurchaseOrder cancelCmd = cancelPurchaseOrderInstance();
-        dispatchCommand(aggregate, envelopeOf(cancelCmd));
+        final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
+                markPurchaseOrderAsDeliveredInstance();
+        dispatchCommand(aggregate, envelopeOf(markAsDeliveredCmd));
 
-        PurchaseOrder state = aggregate.getState();
+        final PurchaseOrder state = aggregate.getState();
 
         assertEquals(purchaseOrderId, state.getId());
-        assertEquals(CANCELED, state.getStatus());
+        assertEquals(DELIVERED, state.getStatus());
     }
 
     @Test
-    @DisplayName("produce PurchaseOrderCanceled event")
-    void producePurchaseOrderCanceledEvent() {
+    @DisplayName("produce PurchaseOrderDelivered event")
+    void producePurchaseOrderDeliveredEvent() {
         dispatchCreatedCmd();
-        final CancelPurchaseOrder cancelCmd = cancelPurchaseOrderInstance();
+        final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
+                markPurchaseOrderAsDeliveredInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(cancelCmd));
+                                                                    envelopeOf(markAsDeliveredCmd));
 
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
-        assertEquals(PurchaseOrderCanceled.class, messageList.get(0)
-                                                             .getClass());
-        final PurchaseOrderCanceled poCanceled = (PurchaseOrderCanceled) messageList.get(0);
+        assertEquals(PurchaseOrderDelivered.class, messageList.get(0)
+                                                              .getClass());
+        final PurchaseOrderDelivered poDelivered = (PurchaseOrderDelivered) messageList.get(0);
 
-        assertEquals(purchaseOrderId, poCanceled.getId());
+        assertEquals(purchaseOrderId, poDelivered.getId());
     }
 
     @Test
-    @DisplayName("throw CannotCancelDeliveredPurchaseOrder rejection " +
-            "upon an attempt to cancel delivered PO")
-    void cannotCancelDeliveredPurchaseOrder() {
-        dispatchCreatedCmd();
-        dispatchDeliveredCmd();
-        final CancelPurchaseOrder cancelCmd = cancelPurchaseOrderInstance();
+    @DisplayName("throw CannotMarkPurchaseOrderAsDelivered rejection " +
+            "upon an attempt to mark PO with not sent state as delivered")
+    void cannotMarkPurchaseOrderAsDelivered() {
+        final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
+                markPurchaseOrderAsDeliveredInstance();
+
         Throwable t = assertThrows(Throwable.class,
                                    () -> dispatchCommand(aggregate,
-                                                         envelopeOf(cancelCmd)));
+                                                         envelopeOf(markAsDeliveredCmd)));
         assertThat(Throwables.getRootCause(t),
-                   instanceOf(CannotCancelDeliveredPurchaseOrder.class));
+                   instanceOf(CannotMarkPurchaseOrderAsDelivered.class));
     }
 
     private void dispatchCreatedCmd() {
         final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance();
         dispatchCommand(aggregate, envelopeOf(createPOcmd));
     }
-
-    private void dispatchDeliveredCmd() {
-        final MarkPurchaseOrderAsDelivered markPOAsDelivered = markPurchaseOrderAsDeliveredInstance();
-        dispatchCommand(aggregate, envelopeOf(markPOAsDelivered));
-    }
-
 }

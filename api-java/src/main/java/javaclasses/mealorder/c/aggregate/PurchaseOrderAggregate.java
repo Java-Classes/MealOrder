@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.aggregate;
+package javaclasses.mealorder.c.aggregate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
@@ -55,19 +55,19 @@ import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
 import static javaclasses.mealorder.PurchaseOrderStatus.INVALID;
 import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
 import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
-import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCancelDeliveredPurchaseOrder;
-import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
-import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
-import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
-import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.findInvalidOrders;
-import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.isAllowedPurchaseOrderCreation;
+import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregateRejections.throwCannotCancelDeliveredPurchaseOrder;
+import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
+import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
+import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
+import static javaclasses.mealorder.c.aggregate.PurchaseOrderValidator.findInvalidOrders;
+import static javaclasses.mealorder.c.aggregate.PurchaseOrderValidator.isAllowedPurchaseOrderCreation;
 
 /**
  * The aggregate managing the state of a {@link PurchaseOrder}.
  *
  * @author Yegor Udovchenko
  */
-@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor definition cannot be separated and should
+@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor po cannot be separated and should
                                                  process all commands and events related to it
                                                  according to the domain model.
                                                  The {@code Aggregate} does it with methods
