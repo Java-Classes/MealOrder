@@ -18,13 +18,14 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package javaclasses.mealorder.c.aggregate;
+package javaclasses.mealorder.c.aggregate.vendor;
 
 import com.google.protobuf.Message;
 import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.c.aggregate.VendorAggregate;
 
 /**
  * The parent class for the {@link VendorAggregate} test classes.
