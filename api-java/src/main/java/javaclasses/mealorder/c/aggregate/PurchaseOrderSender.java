@@ -29,7 +29,7 @@ import javaclasses.mealorder.PurchaseOrder;
  *
  * @author Yegor Udovchenko
  */
-public class PurchaseOrderSender {
+public interface PurchaseOrderSender {
 
     /**
      * Creates the Spreadsheet from the orders list of the purchase order.
@@ -41,10 +41,8 @@ public class PurchaseOrderSender {
      * @return 'true' if the purchase order sent successfully,
      * 'false' if sending errors occurred
      */
-    public boolean formAndSendPurchaseOrder(PurchaseOrder purchaseOrder,
-                                            EmailAddress senderEmail,
-                                            EmailAddress vendorEmail) {
-        // TODO 2/16/2018[yegor.udovchenko]: implement method.
-        return true;
-    }
+    boolean formAndSendPurchaseOrder(PurchaseOrder purchaseOrder,
+                                     EmailAddress senderEmail,
+                                     EmailAddress vendorEmail);
+
 }
