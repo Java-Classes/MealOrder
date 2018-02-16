@@ -25,9 +25,6 @@ import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.c.aggregate.VendorAggregate;
-
-import static io.spine.Identifier.newUuid;
 
 /**
  * The parent class for the {@link VendorAggregate} test classes.
@@ -61,7 +58,7 @@ abstract class VendorCommandTest<C extends Message> extends AggregateCommandTest
 
     private static VendorId createVendorId() {
         return VendorId.newBuilder()
-                       .setValue(newUuid())
+                       .setValue("vendor:" + "testVendorNAme")
                        .build();
     }
 }
