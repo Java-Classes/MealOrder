@@ -157,8 +157,7 @@ public class VendorAggregate extends Aggregate<VendorId,
     @Apply
     private void vendorUpdated(VendorUpdated event) {
 
-        getBuilder().setId(event.getVendorId())
-                    .setVendorName(event.getVendorChange()
+        getBuilder().setVendorName(event.getVendorChange()
                                         .getNewVendorName())
                     .setEmail(event.getVendorChange()
                                    .getNewEmail())
@@ -171,8 +170,7 @@ public class VendorAggregate extends Aggregate<VendorId,
     @Apply
     private void menuImported(MenuImported event) {
 
-        getBuilder().setId(event.getVendorId())
-                    .addMenus(Menu.newBuilder()
+        getBuilder().addMenus(Menu.newBuilder()
                                   .setId(event.getMenuId())
                                   .addAllDishes(event.getDishesList())
                                   .build());
@@ -188,8 +186,7 @@ public class VendorAggregate extends Aggregate<VendorId,
                                    .findFirst()
                                    .getAsInt();
         final Menu menu = menus.get(index);
-        getBuilder().setId(event.getVendorId())
-                    .setMenus(index, Menu.newBuilder()
+        getBuilder().setMenus(index, Menu.newBuilder()
                                          .setMenuDateRange(event.getMenuDateRange())
                                          .setId(menu.getId())
                                          .addAllDishes(menu.getDishesList())

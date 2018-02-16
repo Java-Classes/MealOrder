@@ -90,6 +90,8 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("set date range for menu")
     void setDateRange() {
+        final AddVendor addVendor = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendor));
 
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));

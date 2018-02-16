@@ -40,7 +40,7 @@ class VendorValidator {
     }
 
     /**
-     * Checks whether the date range doesn't contain dates from the past and the start range is no more than the end range.
+     * Checks whether the date range doesn't contain dates from the past and the start date of the range is not greater than end date.
      *
      * @param menuDateRange date range to check
      */
