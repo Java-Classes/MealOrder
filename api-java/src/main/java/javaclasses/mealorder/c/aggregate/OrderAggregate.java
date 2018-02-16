@@ -20,7 +20,9 @@
 
 package javaclasses.mealorder.c.aggregate;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.change.ValueMismatch;
+import io.spine.core.React;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
@@ -40,14 +42,21 @@ import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderCreated;
+import javaclasses.mealorder.c.event.OrderProcessed;
+import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
+import java.sql.Timestamp;
+
+import static io.spine.core.Events.nothing;
+import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
+import static javaclasses.mealorder.OrderStatus.ORDER_PROCESSED;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwOrderAldeadyExists;
@@ -59,14 +68,16 @@ import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejectio
  *
  * @author Vlad Kozachenko
  */
-@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor definition cannot be separated and should
+@SuppressWarnings({"ClassWithTooManyMethods", /* Order cannot be separated and should
                                                  process all commands and events related to it
                                                  according to the domain model.
                                                  The {@code Aggregate} does it with methods
                                                  annotated as {@code Assign} and {@code Apply}.
                                                  In that case class has too many methods.*/
-        "OverlyCoupledClass"}) /* As each method needs dependencies  necessary to perform execution
+        "OverlyCoupledClass", /* As each method needs dependencies  necessary to perform execution
                                                  that class also overly coupled.*/
+        "unused"}) /* Methods that modifies the state of the aggregate with data from the passed
+                                                 event is used in the internal logic. */
 public class OrderAggregate extends Aggregate<OrderId,
         Order,
         OrderVBuilder> {
@@ -96,7 +107,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Assign
     DishAddedToOrder handle(AddDishToOrder cmd) throws DishVendorMismatch,
-                                                              CannotAddDishToNotActiveOrder {
+                                                       CannotAddDishToNotActiveOrder {
         final OrderId orderId = cmd.getOrderId();
         final Dish dish = cmd.getDish();
 
@@ -125,7 +136,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Assign
     DishRemovedFromOrder handle(RemoveDishFromOrder cmd) throws CannotRemoveMissingDish,
-                                                                   CannotRemoveDishFromNotActiveOrder {
+                                                                CannotRemoveDishFromNotActiveOrder {
         final OrderId orderId = cmd.getOrderId();
         final DishId dishId = cmd.getDishId();
 
@@ -191,5 +202,18 @@ public class OrderAggregate extends Aggregate<OrderId,
     private void orderCanceled(OrderCanceled event) {
         getBuilder().setStatus(ORDER_CANCELED)
                     .build();
+    }
+
+    @React
+    OrderProcessed on(PurchaseOrderCreated event) {
+        return OrderProcessed.newBuilder()
+                             .setOrder(getState())
+                             .setWhenProcessed(getCurrentTime())
+                             .build();
+    }
+
+    @Apply
+    private void orderProcessed(OrderProcessed event) {
+        getBuilder().setStatus(ORDER_PROCESSED).build();
     }
 }
