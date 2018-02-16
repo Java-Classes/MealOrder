@@ -56,8 +56,8 @@ public class Server {
     /**
      * Creates a new instance of {@code Server}.
      *
-     * @param port                      the port to bind the server to
-     * @param boundedContext            the {@link BoundedContext} to serve
+     * @param port           the port to bind the server to
+     * @param boundedContext the {@link BoundedContext} to serve
      */
     private Server(int port, BoundedContext boundedContext) {
         this.port = port;

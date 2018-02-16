@@ -19,8 +19,7 @@
 //
 
 /**
- * This package contains implementation for classes which provides
- * methods to process aggregates and projection.
+ * This package provides implementation for aggregate classes.
  */
 @ParametersAreNonnullByDefault
 package javaclasses.mealorder.c.aggregate;
