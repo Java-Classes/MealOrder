@@ -30,7 +30,7 @@ import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
  * @author Yegor Udovchenko
  */
 @DisplayName("PurchaseOrderValidator should")
-public class PurchaseOrderValidatorTest {
+class PurchaseOrderValidatorTest {
 
     @Test
     @DisplayName("have the private constructor")
