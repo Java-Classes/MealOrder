@@ -1,7 +1,7 @@
 //
 // Copyright 2018, TeamDev Ltd. All rights reserved.
 //
-// Redistribution and use in source and/or binary gorms, with or without
+// Redistribution and use in source and/or binary forms, with or without
 // modification, must retain the above copyright notice and the following
 // disclaimer.
 //
@@ -19,9 +19,9 @@
 //
 
 /**
- * This package provides implementation for the application context.
+ * This package provides classes for working with aggregate and projection repositories.
  */
 @ParametersAreNonnullByDefault
-package javaclasses.mealorder.c.aggregate.context;
+package javaclasses.mealorder.c.repository;
 
 import javax.annotation.ParametersAreNonnullByDefault;
