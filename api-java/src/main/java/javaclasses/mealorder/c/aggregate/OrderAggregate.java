@@ -18,9 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.aggregate;
+package javaclasses.mealorder.c.aggregate;
 
-import com.google.protobuf.Message;
 import io.spine.change.ValueMismatch;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
@@ -47,16 +46,13 @@ import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
-import java.util.List;
-
-import static java.util.Collections.singletonList;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
-import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
-import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
-import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwOrderAldeadyExists;
-import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveDishFromNotActiveOrder;
-import static javaclasses.mealorder.c.aggregate.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveMissingDish;
+import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
+import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
+import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwOrderAldeadyExists;
+import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveDishFromNotActiveOrder;
+import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveMissingDish;
 
 /**
  * The aggregate managing the state of a {@link Order}.

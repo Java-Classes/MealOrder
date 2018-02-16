@@ -24,7 +24,7 @@ import com.google.protobuf.Message;
 import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
-import javaclasses.mealorder.c.aggregate.aggregate.OrderAggregate;
+import javaclasses.mealorder.c.aggregate.OrderAggregate;
 
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 

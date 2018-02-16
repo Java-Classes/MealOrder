@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.repository;
+package javaclasses.mealorder.c.repository;
 
 import io.spine.server.aggregate.AggregateRepository;
 import javaclasses.mealorder.OrderId;
-import javaclasses.mealorder.c.aggregate.aggregate.OrderAggregate;
+import javaclasses.mealorder.c.aggregate.OrderAggregate;
 
 /**
  * Repository for the {@link OrderAggregate}.

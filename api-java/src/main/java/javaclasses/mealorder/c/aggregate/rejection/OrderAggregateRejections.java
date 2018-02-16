@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.aggregate.rejection;
+package javaclasses.mealorder.c.aggregate.rejection;
 
 import com.google.protobuf.Timestamp;
 import io.spine.change.ValueMismatch;
