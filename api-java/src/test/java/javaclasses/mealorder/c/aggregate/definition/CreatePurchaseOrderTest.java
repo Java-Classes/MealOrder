@@ -80,7 +80,7 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
     @DisplayName("produce PurchaseOrderCreated, PurchaseOrderValidationPassed, " +
             "PurchaseOrderSent events")
     void produceCreatedValidationPassedAndSentEvent() {
-        final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance(purchaseOrderId);
+        final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(createPOcmd));
 
@@ -109,8 +109,7 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
     @Test
     @DisplayName("produce PurchaseOrderCreated and PurchaseOrderValidationFailed events")
     void produceCreatedAndValidationFailedEvent() {
-        final CreatePurchaseOrder createPOcmd = createPurchaseOrderWithInvalidOrdersInstance(
-                purchaseOrderId);
+        final CreatePurchaseOrder createPOcmd = createPurchaseOrderWithInvalidOrdersInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(createPOcmd));
 
@@ -136,8 +135,7 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
         @Test
         @DisplayName("upon an attempt to add orders from another vendor")
         void cannotCreatePurchaseOrderForNotMatchingOrders() {
-            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithVendorMismatchInstance(
-                    purchaseOrderId);
+            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithVendorMismatchInstance();
 
             Throwable t = assertThrows(Throwable.class,
                                        () -> dispatchCommand(aggregate,
@@ -148,8 +146,7 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
         @Test
         @DisplayName("upon an attempt to add not active orders")
         void cannotCreatePurchaseOrderForNotActiveOrders() {
-            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithNotActiveOrdersInstance(
-                    purchaseOrderId);
+            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithNotActiveOrdersInstance();
 
             Throwable t = assertThrows(Throwable.class,
                                        () -> dispatchCommand(aggregate,
@@ -160,8 +157,7 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
         @Test
         @DisplayName("upon an attempt to add an empty order")
         void cannotCreatePurchaseOrderForEmptyOrders() {
-            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithEmptyOrdersInstance(
-                    purchaseOrderId);
+            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithEmptyOrdersInstance();
 
             Throwable t = assertThrows(Throwable.class,
                                        () -> dispatchCommand(aggregate,
@@ -172,8 +168,7 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
         @Test
         @DisplayName("upon an attempt to add an order from another date")
         void cannotCreatePurchaseOrderForOrdersFromAnotherDate() {
-            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithDatesMismatchOrdersInstance(
-                    purchaseOrderId);
+            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithDatesMismatchOrdersInstance();
 
             Throwable t = assertThrows(Throwable.class,
                                        () -> dispatchCommand(aggregate,

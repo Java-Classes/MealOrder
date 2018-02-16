@@ -24,7 +24,7 @@ import io.spine.net.EmailAddress;
 import javaclasses.mealorder.PurchaseOrder;
 
 /**
- * The util class managing the sending process of a purchase order
+ * Utility class managing the sending process of a purchase order
  * to the vendor.
  *
  * @author Yegor Udovchenko
@@ -32,14 +32,14 @@ import javaclasses.mealorder.PurchaseOrder;
 public class PurchaseOrderSender {
 
     /**
-     * Creates the Spreadsheet from the orders list of purchase order.
+     * Creates the Spreadsheet from the orders list of the purchase order.
      * Sends it to vendor email address.
      *
-     * @param purchaseOrder purchase order to form spreadsheet and send.
-     * @param senderEmail the email of the sender.
-     * @param vendorEmail the email of the vendor.
+     * @param purchaseOrder purchase order to form spreadsheet and send
+     * @param senderEmail   the email of the sender
+     * @param vendorEmail   the email of the vendor
      * @return 'true' if the purchase order sent successfully,
-     * 'false' if sending errors occured
+     * 'false' if sending errors occurred
      */
     public boolean formAndSendPurchaseOrder(PurchaseOrder purchaseOrder,
                                             EmailAddress senderEmail,

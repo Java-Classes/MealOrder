@@ -43,7 +43,7 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
  */
 public class PurchaseOrderValidator {
 
-    public static final int MAX_SINGLE_DISH_COUNT = 20;
+    private static final int MAX_SINGLE_DISH_COUNT = 20;
 
     private PurchaseOrderValidator() {
     }
@@ -57,7 +57,7 @@ public class PurchaseOrderValidator {
      * @param cmd command to create purchase order.
      * @return is purchase order creation possible.
      */
-    static boolean isValidPurchaseOrderCreation(CreatePurchaseOrder cmd) {
+    static boolean isAllowedPurchaseOrderCreation(CreatePurchaseOrder cmd) {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final VendorId purchaseOrderVendorId = purchaseOrderId.getVendorId();
         final LocalDate poDate = purchaseOrderId.getPoDate();
@@ -84,14 +84,14 @@ public class PurchaseOrderValidator {
     static List<Order> findInvalidOrders(List<Order> orders) {
         ImmutableList.Builder<Order> invalidOrdersBuilder = ImmutableList.builder();
         for (final Order order : orders) {
-            if (!isValidOrder(order)) {
+            if (!isOrderValid(order)) {
                 invalidOrdersBuilder.add(order);
             }
         }
         return invalidOrdersBuilder.build();
     }
 
-    private static boolean isValidOrder(Order order) {
+    private static boolean isOrderValid(Order order) {
         final HashMultiset<Dish> dishes = HashMultiset.create(order.getDishesList());
         for (final Multiset.Entry<Dish> entry : dishes.entrySet()) {
             if (entry.getCount() > MAX_SINGLE_DISH_COUNT) {

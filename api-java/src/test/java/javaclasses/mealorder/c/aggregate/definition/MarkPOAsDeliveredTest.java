@@ -59,10 +59,10 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
     void markAsValid() {
         dispatchCreatedCmd();
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
-                markPurchaseOrderAsDeliveredInstance(purchaseOrderId);
+                markPurchaseOrderAsDeliveredInstance();
         dispatchCommand(aggregate, envelopeOf(markAsDeliveredCmd));
 
-        PurchaseOrder state = aggregate.getState();
+        final PurchaseOrder state = aggregate.getState();
 
         assertEquals(purchaseOrderId, state.getId());
         assertEquals(DELIVERED, state.getStatus());
@@ -73,7 +73,7 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
     void producePurchaseOrderDeliveredEvent() {
         dispatchCreatedCmd();
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
-                markPurchaseOrderAsDeliveredInstance(purchaseOrderId);
+                markPurchaseOrderAsDeliveredInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(markAsDeliveredCmd));
 
@@ -81,8 +81,7 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
         assertEquals(1, messageList.size());
         assertEquals(PurchaseOrderDelivered.class, messageList.get(0)
                                                               .getClass());
-        final PurchaseOrderDelivered poDelivered =
-                (PurchaseOrderDelivered) messageList.get(0);
+        final PurchaseOrderDelivered poDelivered = (PurchaseOrderDelivered) messageList.get(0);
 
         assertEquals(purchaseOrderId, poDelivered.getId());
     }
@@ -92,7 +91,7 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
             "upon an attempt to mark PO with not sent state as delivered")
     void cannotMarkPurchaseOrderAsDelivered() {
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
-                markPurchaseOrderAsDeliveredInstance(purchaseOrderId);
+                markPurchaseOrderAsDeliveredInstance();
 
         Throwable t = assertThrows(Throwable.class,
                                    () -> dispatchCommand(aggregate,
@@ -102,8 +101,7 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
     }
 
     private void dispatchCreatedCmd() {
-        final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance(purchaseOrderId);
+        final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance();
         dispatchCommand(aggregate, envelopeOf(createPOcmd));
     }
-
 }

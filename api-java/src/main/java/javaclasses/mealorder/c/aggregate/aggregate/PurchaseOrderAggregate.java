@@ -60,7 +60,7 @@ import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
 import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.findInvalidOrders;
-import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.isValidPurchaseOrderCreation;
+import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.isAllowedPurchaseOrderCreation;
 
 /**
  * The aggregate managing the state of a {@link PurchaseOrder}.
@@ -79,6 +79,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         PurchaseOrder, PurchaseOrderVBuilder> {
 
     private PurchaseOrderSender poSender;
+
     /**
      * {@inheritDoc}
      */
@@ -87,16 +88,14 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         this.poSender = poSender;
     }
 
-
     @Assign
     List<? extends Message> handle(CreatePurchaseOrder cmd) throws CannotCreatePurchaseOrder {
-        if (!isValidPurchaseOrderCreation(cmd)) {
+        if (!isAllowedPurchaseOrderCreation(cmd)) {
             throwCannotCreatePurchaseOrder(cmd);
         }
 
         ImmutableList.Builder<Message> result = ImmutableList.builder();
-        final PurchaseOrderCreated createdEvent = createPurchaseOrderCreatedEvent(cmd);
-        result.add(createdEvent);
+        result.add(createPOCreatedEvent(cmd));
 
         List<Order> invalidOrders = findInvalidOrders(cmd.getOrdersList());
 
@@ -110,9 +109,12 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                                              .build();
 
             if (poSender.formAndSendPurchaseOrder(purchaseOrder, cmd.getWhoCreates()
-                                                           .getEmail(), cmd.getVendorEmail())) {
-                result.add(createPOSentEvent(purchaseOrder, cmd.getWhoCreates()
-                                                               .getEmail(), cmd.getVendorEmail()));
+                                                                    .getEmail(),
+                                                  cmd.getVendorEmail())) {
+                result.add(createPOSentEvent(purchaseOrder,
+                                             cmd.getWhoCreates()
+                                                .getEmail(),
+                                             cmd.getVendorEmail()));
             }
         } else {
             result.add(createPOValidationFailedEvent(cmd, invalidOrders));
@@ -130,9 +132,10 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         result.add(createPOValidationOverruledEvent(cmd));
         // TODO 2/16/2018[yegor.udovchenko]:add PO event signalizing sending error.
         if (poSender.formAndSendPurchaseOrder(getState(), cmd.getUserId()
-                                                    .getEmail(), cmd.getVendorEmail())) {
+                                                             .getEmail(), cmd.getVendorEmail())) {
             result.add(createPOSentEvent(getState(), cmd.getUserId()
-                                                        .getEmail(), cmd.getVendorEmail()));
+                                                        .getEmail(),
+                                         cmd.getVendorEmail()));
         }
         return result.build();
     }
@@ -209,7 +212,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         return getState().getStatus() != DELIVERED;
     }
 
-    private static PurchaseOrderCreated createPurchaseOrderCreatedEvent(CreatePurchaseOrder cmd) {
+    private static PurchaseOrderCreated createPOCreatedEvent(CreatePurchaseOrder cmd) {
         return PurchaseOrderCreated.newBuilder()
                                    .setId(cmd.getId())
                                    .setWhoCreated(cmd.getWhoCreates())

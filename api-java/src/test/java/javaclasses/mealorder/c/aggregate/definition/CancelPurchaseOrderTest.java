@@ -60,8 +60,7 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
     @DisplayName("set the purchase order status to 'CANCELED'")
     void cancelPurchaseOrder() {
         dispatchCreatedCmd();
-        final CancelPurchaseOrder cancelCmd =
-                cancelPurchaseOrderInstance(purchaseOrderId);
+        final CancelPurchaseOrder cancelCmd = cancelPurchaseOrderInstance();
         dispatchCommand(aggregate, envelopeOf(cancelCmd));
 
         PurchaseOrder state = aggregate.getState();
@@ -74,8 +73,7 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
     @DisplayName("produce PurchaseOrderCanceled event")
     void producePurchaseOrderCanceledEvent() {
         dispatchCreatedCmd();
-        final CancelPurchaseOrder cancelCmd =
-                cancelPurchaseOrderInstance(purchaseOrderId);
+        final CancelPurchaseOrder cancelCmd = cancelPurchaseOrderInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(cancelCmd));
 
@@ -83,8 +81,7 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
         assertEquals(1, messageList.size());
         assertEquals(PurchaseOrderCanceled.class, messageList.get(0)
                                                              .getClass());
-        final PurchaseOrderCanceled poCanceled =
-                (PurchaseOrderCanceled) messageList.get(0);
+        final PurchaseOrderCanceled poCanceled = (PurchaseOrderCanceled) messageList.get(0);
 
         assertEquals(purchaseOrderId, poCanceled.getId());
     }
@@ -95,8 +92,7 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
     void cannotCancelDeliveredPurchaseOrder() {
         dispatchCreatedCmd();
         dispatchDeliveredCmd();
-        final CancelPurchaseOrder cancelCmd =
-                cancelPurchaseOrderInstance(purchaseOrderId);
+        final CancelPurchaseOrder cancelCmd = cancelPurchaseOrderInstance();
         Throwable t = assertThrows(Throwable.class,
                                    () -> dispatchCommand(aggregate,
                                                          envelopeOf(cancelCmd)));
@@ -105,14 +101,12 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
     }
 
     private void dispatchCreatedCmd() {
-        final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance(
-                purchaseOrderId);
+        final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance();
         dispatchCommand(aggregate, envelopeOf(createPOcmd));
     }
 
     private void dispatchDeliveredCmd() {
-        MarkPurchaseOrderAsDelivered markPOAsDelivered = markPurchaseOrderAsDeliveredInstance(
-                purchaseOrderId);
+        final MarkPurchaseOrderAsDelivered markPOAsDelivered = markPurchaseOrderAsDeliveredInstance();
         dispatchCommand(aggregate, envelopeOf(markPOAsDelivered));
     }
 

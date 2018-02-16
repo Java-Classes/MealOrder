@@ -59,11 +59,11 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
     @DisplayName("set the purchase order status to 'SENT'")
     void markAsValid() {
         dispatchCreatedWithInvalidStateCmd();
-        final MarkPurchaseOrderAsValid markAsValidCmd =
-                markPurchaseOrderAsValidInstance(purchaseOrderId);
-        dispatchCommand(aggregate, envelopeOf(markAsValidCmd));
 
-        PurchaseOrder state = aggregate.getState();
+        final MarkPurchaseOrderAsValid markAsValidCmd = markPurchaseOrderAsValidInstance();
+
+        dispatchCommand(aggregate, envelopeOf(markAsValidCmd));
+        final PurchaseOrder state = aggregate.getState();
 
         assertEquals(purchaseOrderId, state.getId());
         assertEquals(SENT, state.getStatus());
@@ -73,8 +73,8 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
     @DisplayName("produce PurchaseOrderValidationOverruled and event")
     void producePairOFEvent() {
         dispatchCreatedWithInvalidStateCmd();
-        final MarkPurchaseOrderAsValid markAsValidCmd =
-                markPurchaseOrderAsValidInstance(purchaseOrderId);
+
+        final MarkPurchaseOrderAsValid markAsValidCmd = markPurchaseOrderAsValidInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(markAsValidCmd));
 
@@ -89,15 +89,15 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
         final PurchaseOrderSent purchaseOrderSent = (PurchaseOrderSent) messageList.get(1);
 
         assertEquals(purchaseOrderId, poValidationOverruled.getId());
-        assertEquals(purchaseOrderId, purchaseOrderSent.getPurchaseOrder().getId());
+        assertEquals(purchaseOrderId, purchaseOrderSent.getPurchaseOrder()
+                                                       .getId());
     }
 
     @Test
     @DisplayName("throw CannotOverruleValidationOfNotInvalidPO rejection " +
             "upon an attempt to mark PO with not invalid state")
     void cannotOverrulePurchaseOrderValidation() {
-        final MarkPurchaseOrderAsValid markAsValidCmd =
-                markPurchaseOrderAsValidInstance(purchaseOrderId);
+        final MarkPurchaseOrderAsValid markAsValidCmd = markPurchaseOrderAsValidInstance();
 
         Throwable t = assertThrows(Throwable.class,
                                    () -> dispatchCommand(aggregate,
@@ -107,8 +107,7 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
     }
 
     private void dispatchCreatedWithInvalidStateCmd() {
-        final CreatePurchaseOrder createPOcmd = createPurchaseOrderWithInvalidOrdersInstance(
-                purchaseOrderId);
+        final CreatePurchaseOrder createPOcmd = createPurchaseOrderWithInvalidOrdersInstance();
         dispatchCommand(aggregate, envelopeOf(createPOcmd));
     }
 }

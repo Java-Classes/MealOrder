@@ -20,7 +20,6 @@
 
 package javaclasses.mealorder.testdata;
 
-import com.google.protobuf.Timestamp;
 import io.spine.money.Currency;
 import io.spine.money.Money;
 import io.spine.net.EmailAddress;
@@ -124,60 +123,19 @@ public class TestPurchaseOrderCommandFactory {
     }
 
     /**
-     * Provides a pre-configured {@link CreatePurchaseOrder} instance.
-     *
-     * @param id an identifier of the created purchase order.
-     * @return the {@code CreatePurchaseOrder} instance.
-     */
-    public static CreatePurchaseOrder createPurchaseOrderInstance(PurchaseOrderId id) {
-        final MenuId menuId = MenuId.newBuilder()
-                                    .setVendorId(id.getVendorId())
-                                    .setWhenImported(Timestamp.getDefaultInstance())
-                                    .build();
-        final DishId dishId = DishId.newBuilder()
-                                    .setMenuId(menuId)
-                                    .setSequentialNumber(1)
-                                    .build();
-        final Dish dish = Dish.newBuilder()
-                              .setId(dishId)
-                              .setName("Dish")
-                              .setCategory("Category")
-                              .setPrice(Money.newBuilder()
-                                             .setCurrency(Currency.USD)
-                                             .setAmount(100)
-                                             .build())
-                              .build();
-        final OrderId orderId = OrderId.newBuilder()
-                                       .setVendorId(id.getVendorId())
-                                       .setOrderDate(id.getPoDate())
-                                       .setUserId(USER_ID)
-                                       .build();
-        final Order order = Order.newBuilder()
-                                 .setId(orderId)
-                                 .addDishes(dish)
-                                 .setStatus(ORDER_ACTIVE)
-                                 .build();
-        return CreatePurchaseOrder.newBuilder()
-                                  .setId(id)
-                                  .setWhoCreates(USER_ID)
-                                  .addOrders(order)
-                                  .build();
-
-    }
-
-    /**
      * Provides a pre-configured {@link CreatePurchaseOrder} instance
      * with mismatch vendor identifier of purchase order and one of
      * orders in the list.
      *
-     * @param id an identifier of the created purchase order.
      * @return the invalid {@code CreatePurchaseOrder} instance.
      */
-    public static CreatePurchaseOrder createPurchaseOrderWithVendorMismatchInstance(
-            PurchaseOrderId id) {
-        return CreatePurchaseOrder.newBuilder(createPurchaseOrderInstance(id))
-                                  .setId(PurchaseOrderId.newBuilder(id)
-                                                        .setVendorId(VENDOR_ID))
+    public static CreatePurchaseOrder createPurchaseOrderWithVendorMismatchInstance() {
+        return CreatePurchaseOrder.newBuilder(createPurchaseOrderInstance())
+                                  .setId(PurchaseOrderId.newBuilder(PURCHASE_ORDER_ID)
+                                                        .setVendorId(VendorId.newBuilder()
+                                                                             .setValue(
+                                                                                     "vendor:other")
+                                                                             .build()))
                                   .build();
     }
 
@@ -185,12 +143,10 @@ public class TestPurchaseOrderCommandFactory {
      * Provides a pre-configured {@link CreatePurchaseOrder} instance
      * with an order in the list which status is not {@code 'ORDER_ACTIVE'}
      *
-     * @param id an identifier of the created purchase order.
      * @return the invalid {@code CreatePurchaseOrder} instance.
      */
-    public static CreatePurchaseOrder createPurchaseOrderWithNotActiveOrdersInstance(
-            PurchaseOrderId id) {
-        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+    public static CreatePurchaseOrder createPurchaseOrderWithNotActiveOrdersInstance() {
+        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
         final Order order = validCmd.getOrders(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
                                   .addOrders(Order.newBuilder(order)
@@ -202,12 +158,10 @@ public class TestPurchaseOrderCommandFactory {
      * Provides a pre-configured {@link CreatePurchaseOrder} instance
      * with an order in the list which dish list is empty.
      *
-     * @param id an identifier of the created purchase order.
      * @return the invalid {@code CreatePurchaseOrder} instance.
      */
-    public static CreatePurchaseOrder createPurchaseOrderWithEmptyOrdersInstance(
-            PurchaseOrderId id) {
-        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+    public static CreatePurchaseOrder createPurchaseOrderWithEmptyOrdersInstance() {
+        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
         final Order order = validCmd.getOrders(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
                                   .addOrders(Order.newBuilder()
@@ -219,19 +173,18 @@ public class TestPurchaseOrderCommandFactory {
 
     /**
      * Provides a pre-configured {@link CreatePurchaseOrder} instance
-     * with an order in the list which dish list is empty.
+     * with an order in the list which date is not consistent with PO date.
      *
-     * @param id an identifier of the created purchase order.
      * @return the invalid {@code CreatePurchaseOrder} instance.
      */
-    public static CreatePurchaseOrder createPurchaseOrderWithDatesMismatchOrdersInstance(
-            PurchaseOrderId id) {
-        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+    public static CreatePurchaseOrder createPurchaseOrderWithDatesMismatchOrdersInstance() {
+        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
         final Order order = validCmd.getOrders(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
                                   .addOrders(Order.newBuilder(order)
                                                   .setId(OrderId.newBuilder(order.getId())
-                                                                .setOrderDate(DATE))
+                                                                .setOrderDate(
+                                                                        LocalDate.getDefaultInstance()))
                                                   .build())
                                   .build();
     }
@@ -241,12 +194,10 @@ public class TestPurchaseOrderCommandFactory {
      * with orders which should fail order validation and cause
      * {@link PurchaseOrderValidationFailed} event.
      *
-     * @param id an identifier of the created purchase order.
      * @return the {@code CreatePurchaseOrder} instance with invalid orders.
      */
-    public static CreatePurchaseOrder createPurchaseOrderWithInvalidOrdersInstance(
-            PurchaseOrderId id) {
-        CreatePurchaseOrder validCmd = createPurchaseOrderInstance(id);
+    public static CreatePurchaseOrder createPurchaseOrderWithInvalidOrdersInstance() {
+        CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
         final Order order = validCmd.getOrders(0);
         final Dish dish = order.getDishes(0);
         List<Dish> dishes = new ArrayList<>();
@@ -261,44 +212,40 @@ public class TestPurchaseOrderCommandFactory {
     }
 
     /**
-     * Provides a pre-configured {@link MarkPurchaseOrderAsValid} instance
+     * Provides a default {@link MarkPurchaseOrderAsValid} instance
      *
-     * @param id an identifier of the purchase order.
      * @return the {@code MarkPurchaseOrderAsValid} instance.
      */
-    public static MarkPurchaseOrderAsValid markPurchaseOrderAsValidInstance(PurchaseOrderId id) {
+    public static MarkPurchaseOrderAsValid markPurchaseOrderAsValidInstance() {
         return MarkPurchaseOrderAsValid.newBuilder()
-                                       .setId(id)
+                                       .setId(PURCHASE_ORDER_ID)
                                        .setReason("Because I can.")
                                        .setUserId(USER_ID)
                                        .build();
     }
 
     /**
-     * Provides a pre-configured {@link CancelPurchaseOrder} instance
+     * Provides a default {@link CancelPurchaseOrder} instance
      *
-     * @param id an identifier of the created purchase order.
      * @return the {@code CancelPurchaseOrder} instance.
      */
-    public static CancelPurchaseOrder cancelPurchaseOrderInstance(PurchaseOrderId id) {
+    public static CancelPurchaseOrder cancelPurchaseOrderInstance() {
         return CancelPurchaseOrder.newBuilder()
-                                  .setId(id)
+                                  .setId(PURCHASE_ORDER_ID)
                                   .setCustomReason("Because why not")
                                   .setUserId(USER_ID)
                                   .build();
     }
 
     /**
-     * Provides a pre-configured {@link MarkPurchaseOrderAsDelivered} instance
+     * Provides a default {@link MarkPurchaseOrderAsDelivered} instance
      *
-     * @param id an identifier of the purchase order.
      * @return the {@code MarkPurchaseOrderAsDelivered} instance.
      */
-    public static MarkPurchaseOrderAsDelivered markPurchaseOrderAsDeliveredInstance(PurchaseOrderId id) {
+    public static MarkPurchaseOrderAsDelivered markPurchaseOrderAsDeliveredInstance() {
         return MarkPurchaseOrderAsDelivered.newBuilder()
-                                  .setId(id)
-                                  .setWhoMarksAsDelivered(USER_ID)
-                                  .build();
+                                           .setId(PURCHASE_ORDER_ID)
+                                           .setWhoMarksAsDelivered(USER_ID)
+                                           .build();
     }
-
 }
