@@ -177,6 +177,9 @@ message CreatePurchaseOrder {
 
     // The identifier of the user who creates a purchase order.
     UserId who_creates = 3;
+
+    // The email adress of a vendor to send a purchase order.
+    spine.net.EmailAddress vendor_email = 4;
 }
 
 // Marks a purchase order as delivered.
@@ -206,6 +209,9 @@ message MarkPurchaseOrderAsValid {
 
     // The reason why a purchase order should be marked as valid.
     string reason = 3;
+
+    // The email adress of a vendor to send a purchase order.
+    spine.net.EmailAddress vendor_email = 4;
 }
 
 // Cancel a purchase order.

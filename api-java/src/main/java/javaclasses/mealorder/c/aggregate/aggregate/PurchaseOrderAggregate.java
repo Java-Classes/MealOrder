@@ -22,6 +22,7 @@ package javaclasses.mealorder.c.aggregate.aggregate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
+import io.spine.net.EmailAddress;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
@@ -58,7 +59,7 @@ import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
 import static javaclasses.mealorder.c.aggregate.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
-import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderSender.formAndSendPurchaseOrder;
+import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.findInvalidOrders;
 import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator.isValidPurchaseOrderCreation;
 
 /**
@@ -77,12 +78,15 @@ import static javaclasses.mealorder.c.aggregate.aggregate.PurchaseOrderValidator
 public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         PurchaseOrder, PurchaseOrderVBuilder> {
 
+    private PurchaseOrderSender poSender;
     /**
      * {@inheritDoc}
      */
-    public PurchaseOrderAggregate(PurchaseOrderId id) {
+    public PurchaseOrderAggregate(PurchaseOrderId id, PurchaseOrderSender poSender) {
         super(id);
+        this.poSender = poSender;
     }
+
 
     @Assign
     List<? extends Message> handle(CreatePurchaseOrder cmd) throws CannotCreatePurchaseOrder {
@@ -94,13 +98,21 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         final PurchaseOrderCreated createdEvent = createPurchaseOrderCreatedEvent(cmd);
         result.add(createdEvent);
 
-        List<Order> invalidOrders = PurchaseOrderValidator.findInvalidOrders(cmd.getOrdersList());
+        List<Order> invalidOrders = findInvalidOrders(cmd.getOrdersList());
 
-        // TODO: 2/15/2018 add PO event signalizing sending error.
+        // TODO 2/16/2018[yegor.udovchenko]:add PO event signalizing sending error.
         if (invalidOrders.isEmpty()) {
             result.add(createPOValidationPassedEvent(cmd));
-            if (formAndSendPurchaseOrder(cmd.getId(), cmd.getOrdersList())) {
-                result.add(createPOSentEvent(cmd.getId(), cmd.getOrdersList()));
+            final PurchaseOrder purchaseOrder = PurchaseOrder.newBuilder()
+                                                             .setId(cmd.getId())
+                                                             .setStatus(VALID)
+                                                             .addAllOrders(cmd.getOrdersList())
+                                                             .build();
+
+            if (poSender.formAndSendPurchaseOrder(purchaseOrder, cmd.getWhoCreates()
+                                                           .getEmail(), cmd.getVendorEmail())) {
+                result.add(createPOSentEvent(purchaseOrder, cmd.getWhoCreates()
+                                                               .getEmail(), cmd.getVendorEmail()));
             }
         } else {
             result.add(createPOValidationFailedEvent(cmd, invalidOrders));
@@ -116,9 +128,11 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         }
         ImmutableList.Builder<Message> result = ImmutableList.builder();
         result.add(createPOValidationOverruledEvent(cmd));
-
-        if (formAndSendPurchaseOrder(getState().getId(), getState().getOrdersList())) {
-            result.add(createPOSentEvent(getState().getId(), getState().getOrdersList()));
+        // TODO 2/16/2018[yegor.udovchenko]:add PO event signalizing sending error.
+        if (poSender.formAndSendPurchaseOrder(getState(), cmd.getUserId()
+                                                    .getEmail(), cmd.getVendorEmail())) {
+            result.add(createPOSentEvent(getState(), cmd.getUserId()
+                                                        .getEmail(), cmd.getVendorEmail()));
         }
         return result.build();
     }
@@ -260,14 +274,13 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         }
     }
 
-    // TODO: 2/15/2018 Add email addresses.
-    private PurchaseOrderSent createPOSentEvent(PurchaseOrderId id, List<Order> orders) {
+    private PurchaseOrderSent createPOSentEvent(PurchaseOrder purchaseOrder,
+                                                EmailAddress senderEmail,
+                                                EmailAddress vendorEmail) {
         return PurchaseOrderSent.newBuilder()
-                                .setPurchaseOrder(PurchaseOrder.newBuilder()
-                                                               .setId(id)
-                                                               .setStatus(SENT)
-                                                               .addAllOrders(orders)
-                                                               .build())
+                                .setPurchaseOrder(purchaseOrder)
+                                .setSenderEmail(senderEmail)
+                                .setVendorEmail(vendorEmail)
                                 .setWhenSent(getCurrentTime())
                                 .build();
     }

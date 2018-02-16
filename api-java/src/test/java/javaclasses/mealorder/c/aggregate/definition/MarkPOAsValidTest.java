@@ -25,6 +25,7 @@ import com.google.protobuf.Message;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
+import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
 import javaclasses.mealorder.c.rejection.CannotOverruleValidationOfNotInvalidPO;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
+import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithInvalidOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsValidInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -55,7 +56,7 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
     }
 
     @Test
-    @DisplayName("set the purchase order status to 'VALID'")
+    @DisplayName("set the purchase order status to 'SENT'")
     void markAsValid() {
         dispatchCreatedWithInvalidStateCmd();
         final MarkPurchaseOrderAsValid markAsValidCmd =
@@ -65,12 +66,12 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
         PurchaseOrder state = aggregate.getState();
 
         assertEquals(purchaseOrderId, state.getId());
-        assertEquals(VALID, state.getStatus());
+        assertEquals(SENT, state.getStatus());
     }
 
     @Test
-    @DisplayName("produce PurchaseOrderValidationOverruled event")
-    void producePurchaseOrderValidationOverruledEvent() {
+    @DisplayName("produce PurchaseOrderValidationOverruled and event")
+    void producePairOFEvent() {
         dispatchCreatedWithInvalidStateCmd();
         final MarkPurchaseOrderAsValid markAsValidCmd =
                 markPurchaseOrderAsValidInstance(purchaseOrderId);
@@ -78,13 +79,17 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
                                                                     envelopeOf(markAsValidCmd));
 
         assertNotNull(aggregate.getId());
-        assertEquals(1, messageList.size());
+        assertEquals(2, messageList.size());
         assertEquals(PurchaseOrderValidationOverruled.class, messageList.get(0)
                                                                         .getClass());
+        assertEquals(PurchaseOrderSent.class, messageList.get(1)
+                                                         .getClass());
         final PurchaseOrderValidationOverruled poValidationOverruled =
                 (PurchaseOrderValidationOverruled) messageList.get(0);
+        final PurchaseOrderSent purchaseOrderSent = (PurchaseOrderSent) messageList.get(1);
 
         assertEquals(purchaseOrderId, poValidationOverruled.getId());
+        assertEquals(purchaseOrderId, purchaseOrderSent.getPurchaseOrder().getId());
     }
 
     @Test

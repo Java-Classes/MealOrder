@@ -25,16 +25,20 @@ import com.google.protobuf.Message;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
+import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationPassed;
 import javaclasses.mealorder.c.rejection.CannotCreatePurchaseOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
+import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.ORDER;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithDatesMismatchOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithEmptyOrdersInstance;
@@ -65,29 +69,41 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
         dispatchCommand(aggregate, envelopeOf(createPurchaseOrder));
 
         final PurchaseOrder state = aggregate.getState();
-        assertEquals(state.getId(), createPurchaseOrder.getId());
-        assertEquals(state.getOrdersCount(), 1);
+        assertEquals(createPurchaseOrder.getId(), state.getId());
+        assertEquals(1, state.getOrdersCount());
+        assertEquals(ORDER, state.getOrdersList()
+                                 .get(0));
+        assertEquals(SENT, state.getStatus());
     }
 
     @Test
-    @DisplayName("produce PurchaseOrderCreated and PurchaseOrderValidationPassed events")
-    void produceCreatedAndValidationPassedEvent() {
+    @DisplayName("produce PurchaseOrderCreated, PurchaseOrderValidationPassed, " +
+            "PurchaseOrderSent events")
+    void produceCreatedValidationPassedAndSentEvent() {
         final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance(purchaseOrderId);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(createPOcmd));
 
         assertNotNull(aggregate.getId());
-        assertEquals(2, messageList.size());
+        assertEquals(3, messageList.size());
         assertEquals(PurchaseOrderCreated.class, messageList.get(0)
                                                             .getClass());
         assertEquals(PurchaseOrderValidationPassed.class, messageList.get(1)
                                                                      .getClass());
+        assertEquals(PurchaseOrderSent.class, messageList.get(2)
+                                                         .getClass());
         final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) messageList.get(0);
         final PurchaseOrderValidationPassed purchaseOrderValidationPassed =
                 (PurchaseOrderValidationPassed) messageList.get(1);
+        final PurchaseOrderSent purchaseOrderSent = (PurchaseOrderSent) messageList.get(2);
 
         assertEquals(purchaseOrderId, purchaseOrderCreated.getId());
         assertEquals(purchaseOrderId, purchaseOrderValidationPassed.getId());
+        assertEquals(purchaseOrderId, purchaseOrderSent.getPurchaseOrder()
+                                                       .getId());
+        assertEquals(purchaseOrderSent.getPurchaseOrder()
+                                      .getOrdersList(), aggregate.getState()
+                                                                 .getOrdersList());
     }
 
     @Test
@@ -111,58 +127,58 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
         assertEquals(purchaseOrderId, purchaseOrderCreated.getId());
         assertEquals(purchaseOrderId, purchaseOrderValidationFailed.getId());
         assertEquals(1, purchaseOrderValidationFailed.getFailureOrdersCount());
+        assertEquals(1, purchaseOrderValidationFailed.getFailureOrdersCount());
     }
 
-    @Test
-    @DisplayName("throw CannotCreatePurchaseOrder rejection " +
-            "upon an attempt to add orders from another vendor")
-    void cannotCreatePurchaseOrderForNotMatchingOrders() {
-        final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithVendorMismatchInstance(
-                purchaseOrderId);
+    @Nested
+    @DisplayName("throw CannotCreatePurchaseOrder rejection ")
+    class CannotCreatePurchaseOrderTests {
+        @Test
+        @DisplayName("upon an attempt to add orders from another vendor")
+        void cannotCreatePurchaseOrderForNotMatchingOrders() {
+            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithVendorMismatchInstance(
+                    purchaseOrderId);
 
-        Throwable t = assertThrows(Throwable.class,
-                                   () -> dispatchCommand(aggregate,
-                                                         envelopeOf(invalidCmd)));
-        assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
+            Throwable t = assertThrows(Throwable.class,
+                                       () -> dispatchCommand(aggregate,
+                                                             envelopeOf(invalidCmd)));
+            assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
+        }
+
+        @Test
+        @DisplayName("upon an attempt to add not active orders")
+        void cannotCreatePurchaseOrderForNotActiveOrders() {
+            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithNotActiveOrdersInstance(
+                    purchaseOrderId);
+
+            Throwable t = assertThrows(Throwable.class,
+                                       () -> dispatchCommand(aggregate,
+                                                             envelopeOf(invalidCmd)));
+            assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
+        }
+
+        @Test
+        @DisplayName("upon an attempt to add an empty order")
+        void cannotCreatePurchaseOrderForEmptyOrders() {
+            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithEmptyOrdersInstance(
+                    purchaseOrderId);
+
+            Throwable t = assertThrows(Throwable.class,
+                                       () -> dispatchCommand(aggregate,
+                                                             envelopeOf(invalidCmd)));
+            assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
+        }
+
+        @Test
+        @DisplayName("upon an attempt to add an order from another date")
+        void cannotCreatePurchaseOrderForOrdersFromAnotherDate() {
+            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithDatesMismatchOrdersInstance(
+                    purchaseOrderId);
+
+            Throwable t = assertThrows(Throwable.class,
+                                       () -> dispatchCommand(aggregate,
+                                                             envelopeOf(invalidCmd)));
+            assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
+        }
     }
-
-    @Test
-    @DisplayName("throw CannotCreatePurchaseOrder rejection " +
-            "upon an attempt to add not active orders")
-    void cannotCreatePurchaseOrderForNotActiveOrders() {
-        final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithNotActiveOrdersInstance(
-                purchaseOrderId);
-
-        Throwable t = assertThrows(Throwable.class,
-                                   () -> dispatchCommand(aggregate,
-                                                         envelopeOf(invalidCmd)));
-        assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
-    }
-
-    @Test
-    @DisplayName("throw CannotCreatePurchaseOrder rejection " +
-            "upon an attempt to add an empty order")
-    void cannotCreatePurchaseOrderForEmptyOrders() {
-        final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithEmptyOrdersInstance(
-                purchaseOrderId);
-
-        Throwable t = assertThrows(Throwable.class,
-                                   () -> dispatchCommand(aggregate,
-                                                         envelopeOf(invalidCmd)));
-        assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
-    }
-
-    @Test
-    @DisplayName("throw CannotCreatePurchaseOrder rejection " +
-            "upon an attempt to add an order from another date")
-    void cannotCreatePurchaseOrderForOrdersFromAnotherDate() {
-        final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithDatesMismatchOrdersInstance(
-                purchaseOrderId);
-
-        Throwable t = assertThrows(Throwable.class,
-                                   () -> dispatchCommand(aggregate,
-                                                         envelopeOf(invalidCmd)));
-        assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
-    }
-
 }
