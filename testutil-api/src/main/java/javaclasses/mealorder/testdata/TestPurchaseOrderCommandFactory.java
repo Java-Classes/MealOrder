@@ -101,10 +101,6 @@ public class TestPurchaseOrderCommandFactory {
                                            .setStatus(ORDER_ACTIVE)
                                            .build();
 
-    public static final List<Order> ORDERS = new ArrayList<Order>() {{
-        add(ORDER);
-    }};
-
     private TestPurchaseOrderCommandFactory() {
     }
 
@@ -117,7 +113,7 @@ public class TestPurchaseOrderCommandFactory {
         final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
                                                               .setId(PURCHASE_ORDER_ID)
                                                               .setWhoCreates(USER_ID)
-                                                              .addAllOrders(ORDERS)
+                                                              .addOrders(ORDER)
                                                               .build();
         return result;
     }
