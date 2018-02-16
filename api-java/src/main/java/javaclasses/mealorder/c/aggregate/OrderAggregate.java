@@ -22,10 +22,14 @@ package javaclasses.mealorder.c.aggregate;
 
 import io.spine.change.ValueMismatch;
 import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import io.spine.time.LocalDate;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
+import javaclasses.mealorder.Menu;
+import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
@@ -44,12 +48,17 @@ import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
+import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
+import javaclasses.mealorder.c.repository.VendorRepository;
+
+import java.util.List;
 
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
+import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwMenuNotAvailable;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwOrderAldeadyExists;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveDishFromNotActiveOrder;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveMissingDish;
@@ -78,10 +87,42 @@ public class OrderAggregate extends Aggregate<OrderId,
         super(id);
     }
 
+    private boolean isMenuAvailable(MenuDateRange range, LocalDate orderDate) {
+        LocalDateComparator comparator = new LocalDateComparator();
+
+        return comparator.compare(range.getRangeStart(), orderDate) <= 0 &&
+                comparator.compare(range.getRangeEnd(), orderDate) >= 0;
+    }
+
     @Assign
-    OrderCreated handle(CreateOrder cmd) throws OrderAlreadyExists {
+    OrderCreated handle(CreateOrder cmd) throws OrderAlreadyExists, MenuNotAvailable {
         final OrderId orderId = cmd.getOrderId();
         final MenuId menuId = cmd.getMenuId();
+
+        AggregateRepository vendorRepository = VendorRepository.getInstance()
+                                                               .getConnection();
+
+        VendorAggregate vendorAggregate = (VendorAggregate) vendorRepository.find(
+                orderId.getVendorId())
+                                                                            .get();
+
+        vendorAggregate.getState()
+                       .getMenusList();
+
+        List<Menu> menus = vendorAggregate
+                .getState()
+                .getMenusList();
+
+        java.util.Optional<Menu> menu = menus.stream()
+                                             .filter(m -> cmd.getMenuId()
+                                                             .equals(m.getId()))
+                                             .findFirst();
+
+        if (!menu.isPresent() || !isMenuAvailable(menu.get()
+                                                      .getMenuDateRange(), cmd.getOrderId()
+                                                                              .getOrderDate())) {
+            throwMenuNotAvailable(cmd);
+        }
 
         if (getVersion().getNumber() != 0 && ORDER_CANCELED != getState().getStatus()) {
             throwOrderAldeadyExists(cmd);
@@ -96,7 +137,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Assign
     DishAddedToOrder handle(AddDishToOrder cmd) throws DishVendorMismatch,
-                                                              CannotAddDishToNotActiveOrder {
+                                                       CannotAddDishToNotActiveOrder {
         final OrderId orderId = cmd.getOrderId();
         final Dish dish = cmd.getDish();
 
@@ -125,7 +166,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Assign
     DishRemovedFromOrder handle(RemoveDishFromOrder cmd) throws CannotRemoveMissingDish,
-                                                                   CannotRemoveDishFromNotActiveOrder {
+                                                                CannotRemoveDishFromNotActiveOrder {
         final OrderId orderId = cmd.getOrderId();
         final DishId dishId = cmd.getDishId();
 

@@ -30,4 +30,5 @@ import javaclasses.mealorder.c.aggregate.OrderAggregate;
  * @author Vlad Kozachenko
  */
 public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate> {
+
 }

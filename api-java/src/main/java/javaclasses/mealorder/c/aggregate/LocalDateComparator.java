@@ -27,7 +27,7 @@ import java.util.Comparator;
 /**
  * @author Yurii Haidamaka
  */
-class LocalDateComparator implements Comparator<LocalDate> {
+public class LocalDateComparator implements Comparator<LocalDate> {
 
     /**
      * Compares its two arguments for order.  Returns a negative integer,

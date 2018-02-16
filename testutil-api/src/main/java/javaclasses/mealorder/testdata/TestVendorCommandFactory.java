@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.testdata;
 
+import com.google.protobuf.Timestamp;
 import io.spine.money.Money;
 import io.spine.net.EmailAddress;
 import io.spine.time.LocalDate;
@@ -106,6 +107,11 @@ public class TestVendorCommandFactory {
                                                .setVendorId(VENDOR_ID)
                                                .setWhenImported(getCurrentTime())
                                                .build();
+
+    public static final MenuId MENU_ID_2 = MenuId.newBuilder()
+                                                 .setVendorId(VENDOR_ID)
+                                                 .setWhenImported(Timestamp.getDefaultInstance())
+                                                 .build();
 
     public static final MenuDateRange MENU_DATE_RANGE = MenuDateRange.newBuilder()
                                                                      .setRangeStart(

@@ -22,10 +22,12 @@ package javaclasses.mealorder.c.aggregate.rejection;
 
 import com.google.protobuf.Timestamp;
 import io.spine.change.ValueMismatch;
+import io.spine.time.LocalDate;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.OrderStatus;
 import javaclasses.mealorder.UserId;
+import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
@@ -33,6 +35,7 @@ import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
+import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -55,6 +58,16 @@ public class OrderAggregateRejections {
             final Timestamp timestamp = getCurrentTime();
             throw new OrderAlreadyExists(orderId, timestamp);
         }
+
+        public static void throwMenuNotAvailable(CreateOrder cmd) throws MenuNotAvailable {
+            final UserId userId = cmd.getOrderId()
+                                     .getUserId();
+            final VendorId vendorId = cmd.getOrderId()
+                                         .getVendorId();
+            final LocalDate orderDate = cmd.getOrderId()
+                                           .getOrderDate();
+            throw new MenuNotAvailable(userId, vendorId, orderDate, getCurrentTime());
+        }
     }
 
     public static class AddDishToOrderRejections {
@@ -74,15 +87,17 @@ public class OrderAggregateRejections {
             throw new DishVendorMismatch(orderId, dishId, userId, vendorMismatch, timestamp);
         }
 
-        public static void throwCannotAddDishToNotActiveOrder(AddDishToOrder cmd, OrderStatus orderStatus) throws
-                                                                                  CannotAddDishToNotActiveOrder {
+        public static void throwCannotAddDishToNotActiveOrder(AddDishToOrder cmd,
+                                                              OrderStatus orderStatus) throws
+                                                                                       CannotAddDishToNotActiveOrder {
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final DishId dishId = cmd.getDish()
                                      .getId();
             final Timestamp timestamp = getCurrentTime();
-            throw new CannotAddDishToNotActiveOrder(orderId, dishId, userId, orderStatus, timestamp);
+            throw new CannotAddDishToNotActiveOrder(orderId, dishId, userId, orderStatus,
+                                                    timestamp);
         }
     }
 
@@ -101,14 +116,16 @@ public class OrderAggregateRejections {
             throw new CannotRemoveMissingDish(orderId, userId, dishId, timestamp);
         }
 
-        public static void throwCannotRemoveDishFromNotActiveOrder(RemoveDishFromOrder cmd, OrderStatus orderStatus) throws
-                                                                                                                CannotRemoveDishFromNotActiveOrder {
+        public static void throwCannotRemoveDishFromNotActiveOrder(RemoveDishFromOrder cmd,
+                                                                   OrderStatus orderStatus) throws
+                                                                                            CannotRemoveDishFromNotActiveOrder {
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final DishId dishId = cmd.getDishId();
             final Timestamp timestamp = getCurrentTime();
-            throw new CannotRemoveDishFromNotActiveOrder(orderId, dishId, userId, orderStatus, timestamp);
+            throw new CannotRemoveDishFromNotActiveOrder(orderId, dishId, userId, orderStatus,
+                                                         timestamp);
         }
     }
 }
