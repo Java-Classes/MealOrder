@@ -116,14 +116,14 @@ public class TestVendorCommandFactory {
     public static final MenuDateRange MENU_DATE_RANGE = MenuDateRange.newBuilder()
                                                                      .setRangeStart(
                                                                              LocalDate.newBuilder()
-                                                                                      .setYear(2018)
+                                                                                      .setYear(2019)
                                                                                       .setMonthValue(
                                                                                               2)
                                                                                       .setDay(13)
                                                                                       .build())
                                                                      .setRangeEnd(
                                                                              LocalDate.newBuilder()
-                                                                                      .setYear(2018)
+                                                                                      .setYear(2019)
                                                                                       .setMonthValue(
                                                                                               2)
                                                                                       .setDay(21)

@@ -45,7 +45,7 @@ public enum VendorRepository {
         return INSTANCE;
     }
 
-    public AggregateRepository getConnection() {
+    public AggregateRepository getRepository() {
         return repository;
     }
 }

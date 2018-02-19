@@ -54,7 +54,7 @@ import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejecti
  *
  * @author Yurii Haidamaka
  */
-@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor definition cannot be separated and should
+@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor po cannot be separated and should
                                                  process all commands and events related to it
                                                  according to the domain model.
                                                  The {@code Aggregate} does it with methods
@@ -129,24 +129,19 @@ public class VendorAggregate extends Aggregate<VendorId,
             throwCannotSetDateRange(cmd);
         }
 
-        final DateRangeForMenuSet dateRangeForMenuSet = DateRangeForMenuSet.newBuilder()
-                                                                           .setVendorId(
-                                                                                   cmd.getVendorId())
-                                                                           .setMenuId(
-                                                                                   cmd.getMenuId())
-                                                                           .setWhoSet(
-                                                                                   cmd.getUserId())
-                                                                           .setWhenSet(
-                                                                                   getCurrentTime())
-                                                                           .setMenuDateRange(
-                                                                                   cmd.getMenuDateRange())
-                                                                           .build();
+        final DateRangeForMenuSet dateRangeForMenuSet =
+                DateRangeForMenuSet.newBuilder()
+                                   .setVendorId(cmd.getVendorId())
+                                   .setMenuId(cmd.getMenuId())
+                                   .setWhoSet(cmd.getUserId())
+                                   .setWhenSet(getCurrentTime())
+                                   .setMenuDateRange(cmd.getMenuDateRange())
+                                   .build();
         return dateRangeForMenuSet;
     }
 
     @Apply
     private void vendorAdded(VendorAdded event) {
-
         getBuilder().setId(event.getVendorId())
                     .setVendorName(event.getVendorName())
                     .setEmail(event.getEmail())
@@ -178,7 +173,7 @@ public class VendorAggregate extends Aggregate<VendorId,
 
     @Apply
     private void dateRangeForMenuSet(DateRangeForMenuSet event) {
-        final List<Menu> menus = getState().getMenusList();
+        final List<Menu> menus = getBuilder().getMenus();
         final int index = IntStream.range(0, menus.size())
                                    .filter(i -> menus.get(i)
                                                      .getId()
@@ -186,10 +181,8 @@ public class VendorAggregate extends Aggregate<VendorId,
                                    .findFirst()
                                    .getAsInt();
         final Menu menu = menus.get(index);
-        getBuilder().setMenus(index, Menu.newBuilder()
+        getBuilder().setMenus(index, Menu.newBuilder(menu)
                                          .setMenuDateRange(event.getMenuDateRange())
-                                         .setId(menu.getId())
-                                         .addAllDishes(menu.getDishesList())
                                          .build());
     }
 

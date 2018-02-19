@@ -68,7 +68,7 @@ public final class BoundedContexts {
     public static BoundedContext create(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
         final AggregateRepository vendorRepository = VendorRepository.getInstance()
-                                                         .getConnection();
+                                                         .getRepository();
         final OrderRepository orderRepository = new OrderRepository();
         final BoundedContext boundedContext = createBoundedContext(storageFactory);
         boundedContext.register(vendorRepository);

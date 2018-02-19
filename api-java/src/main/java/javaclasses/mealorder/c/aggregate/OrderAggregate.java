@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.c.aggregate;
 
+import com.google.common.base.Optional;
 import io.spine.change.ValueMismatch;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.AggregateRepository;
@@ -99,24 +100,25 @@ public class OrderAggregate extends Aggregate<OrderId,
         final OrderId orderId = cmd.getOrderId();
         final MenuId menuId = cmd.getMenuId();
 
-        AggregateRepository vendorRepository = VendorRepository.getInstance()
-                                                               .getConnection();
+        final AggregateRepository vendorRepository = VendorRepository.getInstance()
+                                                                     .getRepository();
 
-        VendorAggregate vendorAggregate = (VendorAggregate) vendorRepository.find(
-                orderId.getVendorId())
-                                                                            .get();
+        final Optional<VendorAggregate> vendor = vendorRepository.find(
+                orderId.getVendorId());
+        if (!vendor.isPresent()) {
+            throwMenuNotAvailable(cmd);
+        }
 
-        vendorAggregate.getState()
-                       .getMenusList();
+        final VendorAggregate vendorAggregate = vendor.get();
 
-        List<Menu> menus = vendorAggregate
+        final List<Menu> menus = vendorAggregate
                 .getState()
                 .getMenusList();
 
-        java.util.Optional<Menu> menu = menus.stream()
-                                             .filter(m -> cmd.getMenuId()
+        final java.util.Optional<Menu> menu = menus.stream()
+                                                   .filter(m -> cmd.getMenuId()
                                                              .equals(m.getId()))
-                                             .findFirst();
+                                                   .findFirst();
 
         if (!menu.isPresent() || !isMenuAvailable(menu.get()
                                                       .getMenuDateRange(), cmd.getOrderId()

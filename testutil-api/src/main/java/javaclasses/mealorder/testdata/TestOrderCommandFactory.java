@@ -66,6 +66,14 @@ public class TestOrderCommandFactory {
                                         .setId(DISH_ID)
                                         .build();
 
+    public static final LocalDate ORDER_DATE = LocalDate.newBuilder()
+                                                        .setYear(
+                                                                2018)
+                                                        .setMonth(
+                                                                FEBRUARY)
+                                                        .setDay(12)
+                                                        .build();
+
     public static CreateOrder createOrderInstance(OrderId orderId, MenuId menuId) {
         return CreateOrder.newBuilder()
                           .setOrderId(orderId)

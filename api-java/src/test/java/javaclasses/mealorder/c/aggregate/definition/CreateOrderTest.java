@@ -26,45 +26,82 @@ import io.spine.client.ActorRequestFactory;
 import io.spine.client.TestActorRequestFactory;
 import io.spine.core.Ack;
 import io.spine.core.Command;
+import io.spine.grpc.MemoizingObserver;
 import io.spine.grpc.StreamObservers;
+import io.spine.protobuf.AnyPacker;
 import io.spine.server.BoundedContext;
 import io.spine.server.commandbus.CommandBus;
-import io.spine.time.LocalDate;
+import io.spine.server.rejection.RejectionBus;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
-import javaclasses.mealorder.OrderStatus;
-import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.context.BoundedContexts;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
+import javaclasses.mealorder.c.rejection.Rejections;
 import javaclasses.mealorder.testdata.TestVendorCommandFactory;
+import javaclasses.mealorder.testdata.VendorTestEnv.VendorRejectionsSubscriber;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.spine.grpc.StreamObservers.memoizingObserver;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static io.spine.time.MonthOfYear.FEBRUARY;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_DATE;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID_2;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Vlad Kozachenko
+ * @author Yurii Haidamaka
  */
 public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
+
+    private final ActorRequestFactory requestFactory =
+            TestActorRequestFactory.newInstance(getClass());
+
+    private final BoundedContext boundedContext = BoundedContexts.create();
+
+    private final CommandBus commandBus = boundedContext.getCommandBus();
+    private final RejectionBus rejectionBus = boundedContext.getRejectionBus();
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
+        executeVendorCommands(requestFactory, commandBus);
+    }
+
+    private void executeVendorCommands(ActorRequestFactory requestFactory, CommandBus commandBus) {
+
+        final Command addVendor = requestFactory.command()
+                                                .create(toMessage(
+                                                        TestVendorCommandFactory.addVendorInstance()));
+
+        commandBus.post(addVendor, StreamObservers.noOpObserver());
+
+        final Command importMenu = requestFactory.command()
+                                                 .create(toMessage(
+                                                         TestVendorCommandFactory.importMenuInstance()));
+        commandBus.post(importMenu, StreamObservers.noOpObserver());
+
+        final Command setDateRangeForMenu = requestFactory.command()
+                                                          .create(toMessage(
+                                                                  TestVendorCommandFactory.setDateRangeForMenuInstance()));
+        commandBus.post(setDateRangeForMenu, StreamObservers.noOpObserver());
+
     }
 
     @Test
@@ -87,15 +124,24 @@ public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
     @DisplayName("create the order")
     public void createOrder() {
 
-        MenuId menuId = MenuId.getDefaultInstance();
+        final MenuId menuId = MenuId.getDefaultInstance();
 
         final CreateOrder createOrder = createOrderInstance(ORDER_ID, menuId);
-        dispatchCommand(aggregate, envelopeOf(createOrder));
 
-        final Order state = aggregate.getState();
-        assertEquals(state.getId(), createOrder.getOrderId());
-        assertEquals(OrderStatus.ORDER_ACTIVE, aggregate.getState()
-                                                        .getStatus());
+        final Command createOrderCommand = requestFactory.command()
+                                                         .create(toMessage(createOrder));
+        final MemoizingObserver<Ack> memoizingObserver = memoizingObserver();
+        commandBus.post(createOrderCommand, memoizingObserver);
+
+        assertTrue(memoizingObserver.isCompleted());
+        System.out.println(memoizingObserver.firstResponse()
+                                            .getMessageId());
+        final Order oder = AnyPacker.unpack((memoizingObserver.firstResponse().));
+
+//        final Order state = aggregate.getState();
+//        assertEquals(state.getId(), createOrder.getOrderId());
+//        assertEquals(OrderStatus.ORDER_ACTIVE, aggregate.getState()
+//                                                        .getStatus());
     }
 
     @Test
@@ -120,55 +166,29 @@ public class CreateOrderTest extends OrderCommandTest<CreateOrder> {
     @DisplayName("throw MenuNotAvailable rejection")
     public void throwMenuNotAvailable() {
 
-        final ActorRequestFactory requestFactory =
-                TestActorRequestFactory.newInstance(getClass());
-
-        final BoundedContext boundedContext = BoundedContexts.create();
-
-        CommandBus commandBus = boundedContext.getCommandBus();
-
-        final AddVendor addVendorCmd = TestVendorCommandFactory.addVendorInstance();
-
-        final Command addVendor =
-                requestFactory.command()
-                              .create(toMessage(addVendorCmd));
-
-        commandBus.post(addVendor, StreamObservers.noOpObserver());
-
-        final Command importMenu =
-                requestFactory.command()
-                              .create(toMessage(TestVendorCommandFactory.importMenuInstance()));
-
-        commandBus.post(importMenu, StreamObservers.noOpObserver());
-
-        final Command setDateRangeForMenu =
-                requestFactory.command()
-                              .create(toMessage(
-                                      TestVendorCommandFactory.setDateRangeForMenuInstance()));
-
-        commandBus.post(setDateRangeForMenu, StreamObservers.noOpObserver());
-
         final Command createOrderCmd =
                 requestFactory.command()
                               .create(toMessage(createOrderInstance(OrderId.newBuilder()
                                                                            .setUserId(
-                                                                                   addVendorCmd.getUserId())
+                                                                                   USER_ID)
                                                                            .setVendorId(
-                                                                                   addVendorCmd.getVendorId())
-                                                                           .setOrderDate(
-                                                                                   LocalDate.newBuilder()
-                                                                                            .setYear(
-                                                                                                    2018)
-                                                                                            .setMonth(
-                                                                                                    FEBRUARY)
-                                                                                            .setDay(12)
-                                                                                            .build())
+                                                                                   VENDOR_ID)
+                                                                           .setOrderDate(ORDER_DATE)
                                                                            .build(), MENU_ID_2)));
 
-//        final Throwable t = assertThrows(Throwable.class,
-//                                         () -> commandBus.post(createOrderCmd,
-//                                                               StreamObservers.<Ack>noOpObserver()));
-        commandBus.post(createOrderCmd, StreamObservers.<Ack>noOpObserver());
-        //TODO:2018-55-16:yurii.haidamaka  Add asserts.
+        final VendorRejectionsSubscriber vendorRejectionsSubscriber = new VendorRejectionsSubscriber();
+
+        rejectionBus.register(vendorRejectionsSubscriber);
+
+        assertNull(VendorRejectionsSubscriber.getRejection());
+
+        commandBus.post(createOrderCmd, StreamObservers.noOpObserver());
+
+        Rejections.MenuNotAvailable menuNotAvailable = VendorRejectionsSubscriber.getRejection();
+
+        assertEquals(USER_ID, menuNotAvailable.getUserId());
+        assertEquals(ORDER_DATE, menuNotAvailable.getOrderDate());
+        assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
     }
+
 }

@@ -109,6 +109,10 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
                                .findFirst()
                                .get();
 
+
+        assertEquals(VENDOR_ID, setDateRangeForMenu.getVendorId());
+        assertEquals(MENU_ID, setDateRangeForMenu.getMenuId());
+        assertEquals(USER_ID, setDateRangeForMenu.getUserId());
         assertEquals(menu.getMenuDateRange(), setDateRangeForMenu.getMenuDateRange());
     }
 
