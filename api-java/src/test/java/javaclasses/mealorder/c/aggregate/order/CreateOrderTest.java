@@ -18,13 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.definition;
+package javaclasses.mealorder.c.aggregate.order;
 
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderStatus;
+import javaclasses.mealorder.c.aggregate.order.OrderCommandTest;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;

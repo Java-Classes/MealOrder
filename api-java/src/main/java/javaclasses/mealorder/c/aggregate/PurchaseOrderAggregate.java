@@ -89,6 +89,11 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         this.poSender = poSender;
     }
 
+    public PurchaseOrderAggregate(PurchaseOrderId id) {
+        super(id);
+        poSender = new PurchaseOrderSender();
+    }
+
     @Assign
     List<? extends Message> handle(CreatePurchaseOrder cmd) throws CannotCreatePurchaseOrder {
         if (!isAllowedPurchaseOrderCreation(cmd)) {

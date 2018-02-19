@@ -40,16 +40,19 @@ public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate
 
     public OrderRepository() {
         super();
-        getEventRouting().replaceDefault((EventRoute<OrderId, Message>) (messsage, context) -> {
-            if (messsage instanceof PurchaseOrderCreated) {
-                final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) messsage;
+
+        EventRoute<OrderId, Message> defaultRoute = getEventRouting().getDefault();
+
+        getEventRouting().replaceDefault((EventRoute<OrderId, Message>) (message, context) -> {
+            if (message instanceof PurchaseOrderCreated) {
+                final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) message;
                 Set<OrderId> orderIds = new HashSet<>();
                 for (Order order : purchaseOrderCreated.getOrdersList()) {
                     orderIds.add(order.getId());
                 }
                 return orderIds;
             }
-            return null;
+            return defaultRoute.apply(message, context);
         });
     }
 }

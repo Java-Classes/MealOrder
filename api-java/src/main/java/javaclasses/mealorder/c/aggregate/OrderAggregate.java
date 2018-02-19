@@ -188,9 +188,9 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     private void dishRemovedFromOrder(DishRemovedFromOrder event) {
-        for (int i = 0; i < getState().getDishesCount(); i++) {
+        for (int i = 0; i < getBuilder().getDishes().size(); i++) {
             if (event.getDish()
-                     .equals(getState().getDishes(i))) {
+                     .equals(getBuilder().getDishes().get(i))) {
                 getBuilder().removeDishes(i)
                             .build();
                 return;
