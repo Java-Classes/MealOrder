@@ -87,7 +87,7 @@ allprojects {
     apply plugin: 'jacoco'
     apply plugin: 'idea'
 
-    group = 'io.spine.examples.todolist'       // Generated output GroupId
+    group = 'javaclasses.mealorder'       // Generated output GroupId
     version = appVersion  // Version in generated output. This is the version of the code.
     // For the deployment version see `project.ext.getDeploymentVersion`.
 
