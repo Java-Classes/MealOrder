@@ -35,7 +35,8 @@ public class ServiceFactory {
     private ServiceFactory() {
     }
 
-    private static PurchaseOrderSender poSenderInstance = new PurchaseOrderSenderImpl();
+    // TODO 2/20/2018[yegor.udovchenko]: Replace with implementation
+    private static PurchaseOrderSender poSenderInstance = null;
 
     /**
      * Provides instance of {@link PurchaseOrderSender}
