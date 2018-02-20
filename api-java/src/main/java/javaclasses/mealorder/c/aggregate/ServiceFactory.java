@@ -32,6 +32,9 @@ import io.spine.Environment;
  */
 public class ServiceFactory {
 
+    private ServiceFactory() {
+    }
+
     private static PurchaseOrderSender poSenderInstance = new PurchaseOrderSenderImpl();
 
     /**
