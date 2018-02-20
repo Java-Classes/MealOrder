@@ -53,6 +53,7 @@ import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 import javaclasses.mealorder.c.repository.VendorRepository;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
@@ -89,7 +90,7 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     private boolean isMenuAvailable(MenuDateRange range, LocalDate orderDate) {
-        LocalDateComparator comparator = new LocalDateComparator();
+        Comparator comparator = new LocalDateComparator();
 
         return comparator.compare(range.getRangeStart(), orderDate) <= 0 &&
                 comparator.compare(range.getRangeEnd(), orderDate) >= 0;

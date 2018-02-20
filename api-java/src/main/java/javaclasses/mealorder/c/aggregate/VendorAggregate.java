@@ -62,9 +62,7 @@ import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejecti
                                                  In that case class has too many methods.*/
         "OverlyCoupledClass",/* As each method needs dependencies  necessary to perform execution
                                                  that class also overly coupled.*/})
-public class VendorAggregate extends Aggregate<VendorId,
-        Vendor,
-        VendorVBuilder> {
+public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder> {
 
     /**
      * {@inheritDoc}
@@ -184,7 +182,6 @@ public class VendorAggregate extends Aggregate<VendorId,
                                          .setMenuDateRange(event.getMenuDateRange())
                                          .build());
     }
-
 }
 
 

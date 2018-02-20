@@ -86,21 +86,14 @@ public class TestVendorCommandFactory {
                                                                          PHONE_NUMBER1)
                                                                  .addPreviousPhoneNumbers(
                                                                          PHONE_NUMBER2)
-                                                                 .
-                                                                         setPreviousPoDailyDeadline(
-                                                                                 PO_DAILY_DEADLINE)
-                                                                 .
-                                                                         setNewVendorName(
-                                                                                 NEW_VENDOR_NAME)
-                                                                 .
-                                                                         setNewEmail(EMAIL)
-                                                                 .
-                                                                         addNewPhoneNumbers(
-                                                                                 PHONE_NUMBER1)
+                                                                 .setPreviousPoDailyDeadline(
+                                                                         PO_DAILY_DEADLINE)
+                                                                 .setNewVendorName(NEW_VENDOR_NAME)
+                                                                 .setNewEmail(EMAIL)
+                                                                 .addNewPhoneNumbers(PHONE_NUMBER1)
                                                                  .addNewPhoneNumbers(PHONE_NUMBER2)
-                                                                 .
-                                                                         setPreviousPoDailyDeadline(
-                                                                                 PO_DAILY_DEADLINE)
+                                                                 .setPreviousPoDailyDeadline(
+                                                                         PO_DAILY_DEADLINE)
                                                                  .build();
 
     public static final MenuId MENU_ID = MenuId.newBuilder()
@@ -110,44 +103,44 @@ public class TestVendorCommandFactory {
 
     public static final MenuId NONEXISTENT_MENU_ID = MenuId.newBuilder()
                                                            .setVendorId(VENDOR_ID)
-                                                           .setWhenImported(Timestamp.getDefaultInstance())
+                                                           .setWhenImported(
+                                                                   Timestamp.getDefaultInstance())
                                                            .build();
 
+    public static final LocalDate START_DATE = LocalDate.newBuilder()
+                                                        .setYear(2019)
+                                                        .setMonthValue(2)
+                                                        .setDay(13)
+                                                        .build();
+
+    public static final LocalDate END_DATE = LocalDate.newBuilder()
+                                                      .setYear(2019)
+                                                      .setMonthValue(2)
+                                                      .setDay(21)
+                                                      .build();
+
     public static final MenuDateRange MENU_DATE_RANGE = MenuDateRange.newBuilder()
-                                                                     .setRangeStart(
-                                                                             LocalDate.newBuilder()
-                                                                                      .setYear(2019)
-                                                                                      .setMonthValue(
-                                                                                              2)
-                                                                                      .setDay(13)
-                                                                                      .build())
-                                                                     .setRangeEnd(
-                                                                             LocalDate.newBuilder()
-                                                                                      .setYear(2019)
-                                                                                      .setMonthValue(
-                                                                                              2)
-                                                                                      .setDay(21)
-                                                                                      .build())
+                                                                     .setRangeStart(START_DATE)
+                                                                     .setRangeEnd(END_DATE)
                                                                      .build();
 
-    public static final MenuDateRange INVALID_MENU_DATE_RANGE = MenuDateRange.newBuilder()
-                                                                             .setRangeStart(
-                                                                                     LocalDate.newBuilder()
-                                                                                              .setYear(
-                                                                                                      2018)
-                                                                                              .setMonthValue(
-                                                                                                      2)
-                                                                                              .setDay(13)
-                                                                                              .build())
-                                                                             .setRangeEnd(
-                                                                                     LocalDate.newBuilder()
-                                                                                              .setYear(
-                                                                                                      2017)
-                                                                                              .setMonthValue(
-                                                                                                      2)
-                                                                                              .setDay(19)
-                                                                                              .build())
-                                                                             .build();
+    public static final LocalDate INVALID_START_DATE = LocalDate.newBuilder()
+                                                                .setYear(2019)
+                                                                .setMonthValue(2)
+                                                                .setDay(13)
+                                                                .build();
+
+    public static final LocalDate INVALID_END_DATE = LocalDate.newBuilder()
+                                                              .setYear(2018)
+                                                              .setMonthValue(2)
+                                                              .setDay(19)
+                                                              .build();
+
+    public static final MenuDateRange INVALID_MENU_DATE_RANGE = MenuDateRange
+            .newBuilder()
+            .setRangeStart(INVALID_START_DATE)
+            .setRangeEnd(INVALID_END_DATE)
+            .build();
 
     public static final Dish DISH1 = Dish.newBuilder()
                                          .setId(DishId.newBuilder()
