@@ -60,9 +60,8 @@ abstract class PurchaseOrderCommandTest<C extends Message>
         return purchaseOrderAggregate;
     }
 
-    protected void setSenderMock() {
+    private void setSenderMock() {
         PurchaseOrderSender purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
-
         ServiceFactory.setPoSenderInstance(purchaseOrderSenderMock);
     }
 

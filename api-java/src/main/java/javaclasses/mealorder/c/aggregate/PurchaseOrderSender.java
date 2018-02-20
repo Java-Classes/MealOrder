@@ -40,6 +40,6 @@ public interface PurchaseOrderSender {
      * @param vendorEmail   the email of the vendor
      */
     void formAndSendPurchaseOrder(PurchaseOrder purchaseOrder,
-                             EmailAddress senderEmail,
-                             EmailAddress vendorEmail);
+                                  EmailAddress senderEmail,
+                                  EmailAddress vendorEmail);
 }

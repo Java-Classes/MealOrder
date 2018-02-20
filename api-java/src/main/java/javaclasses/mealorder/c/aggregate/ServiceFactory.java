@@ -21,14 +21,24 @@
 package javaclasses.mealorder.c.aggregate;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.Environment;
 
 /**
+ * The utility class representing service factory.
+ * Used by {@code PurchaseOrderAggregate} upon the purchase
+ * order creation.
+ *
  * @author Yegor Udovchenko
  */
 public class ServiceFactory {
 
-    static PurchaseOrderSender poSenderInstance = new PurchaseOrderSenderImpl();
+    private static PurchaseOrderSender poSenderInstance = new PurchaseOrderSenderImpl();
 
+    /**
+     * Provides instance of {@link PurchaseOrderSender}
+     *
+     * @return {@code PurchaseOrderSender} default instance.
+     */
     static PurchaseOrderSender getPurchaseOrderSender() {
         return poSenderInstance;
     }
@@ -36,6 +46,10 @@ public class ServiceFactory {
     @VisibleForTesting
     public static void setPoSenderInstance(
             PurchaseOrderSender poSenderInstance) {
-        ServiceFactory.poSenderInstance = poSenderInstance;
+        if (Environment.getInstance().isTests()) {
+            ServiceFactory.poSenderInstance = poSenderInstance;
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 }

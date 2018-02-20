@@ -24,8 +24,8 @@ import io.spine.net.EmailAddress;
 import javaclasses.mealorder.PurchaseOrder;
 
 /**
- * Utility class managing the sending process of a purchase order
- * to the vendor.
+ * Implementation of purchase order sender.
+ * See {@link PurchaseOrderSender} for details.
  *
  * @author Yegor Udovchenko
  */
@@ -34,7 +34,7 @@ public class PurchaseOrderSenderImpl implements PurchaseOrderSender {
     public void formAndSendPurchaseOrder(PurchaseOrder purchaseOrder,
                                          EmailAddress senderEmail,
                                          EmailAddress vendorEmail) {
-
+        // TODO 2/20/2018[yegor.udovchenko]: Implement.
+        throw new UnsupportedOperationException();
     }
-
 }
