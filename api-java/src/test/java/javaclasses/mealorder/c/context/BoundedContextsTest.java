@@ -20,14 +20,26 @@
 
 package javaclasses.mealorder.c.context;
 
+import com.google.common.base.Optional;
+import io.spine.server.BoundedContext;
+import io.spine.server.entity.Repository;
+import io.spine.server.storage.StorageFactory;
+import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.test.Tests;
+import javaclasses.mealorder.PurchaseOrder;
+import javaclasses.mealorder.Vendor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static javaclasses.mealorder.c.context.BoundedContexts.createBoundedContext;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Yurii Haidamaka
+ */
 @DisplayName("BoundedContexts should")
 class BoundedContextsTest {
 
@@ -41,5 +53,46 @@ class BoundedContextsTest {
     @DisplayName("not create BoundedContext without a StorageFactory")
     void notCreateBoundedContextWithoutStorageFactory() {
         assertThrows(NullPointerException.class, () -> createBoundedContext(Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("create BoundedContext with the InMemoryStorageFactory")
+    void createBoundedContextWithInMemoryStorageFactory() {
+
+        BoundedContext boundedContext = BoundedContexts.create();
+
+        assertEquals(InMemoryStorageFactory.class, boundedContext.getStorageFactory()
+                                                                 .getClass());
+    }
+
+    @Test
+    @DisplayName("create BoundedContext with a given StorageFactory ")
+    void createBoundedContextWithStorageFactory() {
+
+        final StorageFactory inMemoryFactory =
+                InMemoryStorageFactory.newInstance(
+                        BoundedContext.newName("MealOrderBoundedContext"), false);
+
+        BoundedContext boundedContext = BoundedContexts.createBoundedContext(inMemoryFactory);
+
+        assertEquals(inMemoryFactory, boundedContext.getStorageFactory());
+    }
+
+    @Test
+    @DisplayName("create BoundedContext with VendorRepository and PurchaseOrderRepository")
+    void createBoundedContextWithoutVendorRepository() {
+
+        final StorageFactory inMemoryFactory =
+                InMemoryStorageFactory.newInstance(
+                        BoundedContext.newName("MealOrderBoundedContext"), false);
+
+        BoundedContext boundedContext = BoundedContexts.create(inMemoryFactory);
+
+        final Optional<Repository> vendorRepository = boundedContext.findRepository(Vendor.class);
+        final Optional<Repository> poRepository = boundedContext.findRepository(
+                PurchaseOrder.class);
+
+        assertTrue(vendorRepository.isPresent());
+        assertTrue(poRepository.isPresent());
     }
 }
