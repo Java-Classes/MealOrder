@@ -44,14 +44,25 @@ class ServiceFactoryTest {
     }
 
     @Test
-    @DisplayName("should throw UnsupportedOperationException upon an attempt " +
+    @DisplayName("return mock instance in test mode")
+    void returnsInTest() {
+        ServiceFactory.setPoSenderInstance(mock(PurchaseOrderSender.class));
+        assertThat(ServiceFactory.getPurchaseOrderSender()
+                                 .getClass(), instanceOf(Class.class));
+    }
+
+    @Test
+    @DisplayName("throw UnsupportedOperationException upon an attempt " +
             "to set Purchase Order instance in production")
     void setPOSenderInstanceInProduction() {
-        Environment.getInstance().setToProduction();
+        Environment.getInstance()
+                   .setToProduction();
         Throwable t = assertThrows(Throwable.class,
-                                   () -> ServiceFactory.setPoSenderInstance(mock(PurchaseOrderSender.class)));
+                                   () -> ServiceFactory.setPoSenderInstance(
+                                           mock(PurchaseOrderSender.class)));
 
         assertThat(Throwables.getRootCause(t), instanceOf(UnsupportedOperationException.class));
-        Environment.getInstance().reset();
+        Environment.getInstance()
+                   .reset();
     }
 }

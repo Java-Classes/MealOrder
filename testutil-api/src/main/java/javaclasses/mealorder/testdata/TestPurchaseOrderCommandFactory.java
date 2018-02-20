@@ -221,7 +221,8 @@ public class TestPurchaseOrderCommandFactory {
     }
 
     /**
-     * Provides a default {@link CancelPurchaseOrder} instance
+     * Provides a pre-configured {@link CancelPurchaseOrder} instance
+     * with 'CUSTOM_REASON' set.
      *
      * @return the {@code CancelPurchaseOrder} instance.
      */
@@ -234,7 +235,21 @@ public class TestPurchaseOrderCommandFactory {
     }
 
     /**
-     * Provides a default {@link CancelPurchaseOrder} instance
+     * Provides a pre-configured {@link CancelPurchaseOrder} instance
+     * with non set reason.
+     *
+     * @return the {@code CancelPurchaseOrder} instance.
+     */
+    public static CancelPurchaseOrder cancelPOWithEmptyReasonInstance() {
+        return CancelPurchaseOrder.newBuilder()
+                                  .setId(PURCHASE_ORDER_ID)
+                                  .setUserId(USER_ID)
+                                  .build();
+    }
+
+    /**
+     * Provides a pre-configured {@link CancelPurchaseOrder} instance
+     * with 'INVALID' reason set.
      *
      * @return the {@code CancelPurchaseOrder} instance.
      */

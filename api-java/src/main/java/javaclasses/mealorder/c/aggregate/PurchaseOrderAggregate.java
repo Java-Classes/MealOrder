@@ -290,9 +290,14 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
         switch (cmd.getReasonCase()) {
             case INVALID:
-                builder.setInvalid(cmd.getInvalid()); break;
+                builder.setInvalid(cmd.getInvalid());
+                break;
             case CUSTOM_REASON:
-                builder.setCustomReason(cmd.getCustomReason()); break;
+                builder.setCustomReason(cmd.getCustomReason());
+                break;
+            case REASON_NOT_SET:
+                builder.setCustomReason("Reason not set.");
+                break;
         }
         return builder.build();
     }

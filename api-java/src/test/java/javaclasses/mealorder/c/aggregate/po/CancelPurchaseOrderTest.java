@@ -38,6 +38,7 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.mealorder.PurchaseOrderStatus.CANCELED;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.cancelPOWithCustomReasonInstance;
+import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.cancelPOWithEmptyReasonInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.cancelPOWithInvalidReasonInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsDeliveredInstance;
@@ -87,6 +88,26 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
 
         assertEquals(purchaseOrderId, poCanceled.getId());
         assertEquals(PurchaseOrderCanceled.ReasonCase.CUSTOM_REASON, poCanceled.getReasonCase());
+        assertEquals(cancelCmd.getCustomReason(), poCanceled.getCustomReason());
+    }
+
+    @Test
+    @DisplayName("produce PurchaseOrderCanceled event with 'CUSTOM' reason for undefined reason")
+    void producePOCanceledWithCustomReasonFromUndefinedEvent() {
+        dispatchCreatedCmd();
+        final CancelPurchaseOrder cancelCmd = cancelPOWithEmptyReasonInstance();
+        final List<? extends Message> messageList = dispatchCommand(aggregate,
+                                                                    envelopeOf(cancelCmd));
+
+        assertNotNull(aggregate.getId());
+        assertEquals(1, messageList.size());
+        assertEquals(PurchaseOrderCanceled.class, messageList.get(0)
+                                                             .getClass());
+        final PurchaseOrderCanceled poCanceled = (PurchaseOrderCanceled) messageList.get(0);
+
+        assertEquals(purchaseOrderId, poCanceled.getId());
+        assertEquals(PurchaseOrderCanceled.ReasonCase.CUSTOM_REASON, poCanceled.getReasonCase());
+        assertEquals("Reason not set.", poCanceled.getCustomReason());
     }
 
     @Test
@@ -105,6 +126,7 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
 
         assertEquals(purchaseOrderId, poCanceled.getId());
         assertEquals(PurchaseOrderCanceled.ReasonCase.INVALID, poCanceled.getReasonCase());
+        assertEquals(cancelCmd.getInvalid(), poCanceled.getInvalid());
     }
 
     @Test
