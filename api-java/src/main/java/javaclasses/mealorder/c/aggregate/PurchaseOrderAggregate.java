@@ -173,7 +173,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         if (!isAllowedToCancel()) {
             throwCannotCancelDeliveredPurchaseOrder(cmd);
         }
-        return createPOCanceledEvent(cmd);
+        return createPOCanceledEvent(cmd, getState().getOrdersList());
     }
 
     /*
@@ -282,11 +282,13 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                      .build();
     }
 
-    private static PurchaseOrderCanceled createPOCanceledEvent(CancelPurchaseOrder cmd) {
+    private static PurchaseOrderCanceled createPOCanceledEvent(CancelPurchaseOrder cmd,
+                                                               List<Order> orders) {
         final PurchaseOrderCanceled.Builder builder = PurchaseOrderCanceled
                 .newBuilder()
                 .setId(cmd.getId())
                 .setUserId(cmd.getUserId())
+                .addAllOrder(orders)
                 .setWhenCanceled(getCurrentTime());
 
         switch (cmd.getReasonCase()) {
