@@ -26,6 +26,7 @@ import io.spine.core.Subscribe;
 import io.spine.server.event.EventSubscriber;
 import io.spine.server.rejection.RejectionSubscriber;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
+import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.Rejections;
 
@@ -92,6 +93,42 @@ public class OrderTestEnv {
         }
     }
 
+    public static class CannotRemoveMissingDishSubscriber extends RejectionSubscriber {
+
+        private static Rejections.CannotRemoveMissingDish rejection = null;
+
+        @Subscribe
+        public void on(Rejections.CannotRemoveMissingDish rejection) {
+            this.rejection = rejection;
+        }
+
+        public static Rejections.CannotRemoveMissingDish getRejection() {
+            return rejection;
+        }
+
+        public static void clear() {
+            rejection = null;
+        }
+    }
+
+    public static class CannotRemoveDishFromNotActiveOrderSubscriber extends RejectionSubscriber {
+
+        private static Rejections.CannotRemoveDishFromNotActiveOrder rejection = null;
+
+        @Subscribe
+        public void on(Rejections.CannotRemoveDishFromNotActiveOrder rejection) {
+            this.rejection = rejection;
+        }
+
+        public static Rejections.CannotRemoveDishFromNotActiveOrder getRejection() {
+            return rejection;
+        }
+
+        public static void clear() {
+            rejection = null;
+        }
+    }
+
     public static class CannotAddDishToNotActiveOrderSubscriber extends RejectionSubscriber {
 
         private static Rejections.CannotAddDishToNotActiveOrder rejection = null;
@@ -137,6 +174,26 @@ public class OrderTestEnv {
 
         @Subscribe
         public void on(DishAddedToOrder eventMsg, EventContext context) {
+            this.eventMessage = eventMsg;
+            this.eventContext = context;
+        }
+
+        public Message getEventMessage() {
+            return eventMessage;
+        }
+
+        public EventContext getEventContext() {
+            return eventContext;
+        }
+    }
+
+    public static class DishRemovedFromOrderSubscriber extends EventSubscriber {
+
+        private Message eventMessage;
+        private EventContext eventContext;
+
+        @Subscribe
+        public void on(DishRemovedFromOrder eventMsg, EventContext context) {
             this.eventMessage = eventMsg;
             this.eventContext = context;
         }

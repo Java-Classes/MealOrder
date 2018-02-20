@@ -24,11 +24,8 @@ import com.google.common.base.Optional;
 import io.spine.core.Command;
 import io.spine.grpc.StreamObservers;
 import io.spine.server.entity.Repository;
-import javaclasses.mealorder.Dish;
-import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.c.aggregate.OrderAggregate;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
@@ -39,14 +36,12 @@ import javaclasses.mealorder.testdata.OrderTestEnv;
 import javaclasses.mealorder.testdata.OrderTestEnv.CannotAddDishToNotActiveOrderSubscriber;
 import javaclasses.mealorder.testdata.OrderTestEnv.DishAddedToOrderSubscriber;
 import javaclasses.mealorder.testdata.OrderTestEnv.DishVendorMismatchSubscriber;
-import javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
-import static javaclasses.mealorder.OrderStatus.ORDER_PROCESSED;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.INVALID_DISH;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
@@ -64,14 +59,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class AddDishToOrderTest extends OrderCommandTest {
 
-    final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
-    final Command createOrderCommand = requestFactory.command()
-                                                     .create(toMessage(createOrder));
-
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
+        final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+        final Command createOrderCommand = requestFactory.command()
+                                                         .create(toMessage(createOrder));
         commandBus.post(createOrderCommand, StreamObservers.noOpObserver());
     }
 
@@ -166,7 +160,7 @@ public class AddDishToOrderTest extends OrderCommandTest {
                 = new CannotAddDishToNotActiveOrderSubscriber();
 
         final Command cancelOrderCommand = requestFactory.command()
-                                                            .create(toMessage(cancelOrder));
+                                                         .create(toMessage(cancelOrder));
         final Command addDishToOrderCommand = requestFactory.command()
                                                             .create(toMessage(addDishToOrder));
 
