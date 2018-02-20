@@ -20,12 +20,15 @@
 
 package javaclasses.mealorder.c.aggregate;
 
-import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.spine.net.EmailAddress;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import io.spine.server.tuple.EitherOfTwo;
+import io.spine.server.tuple.Pair;
+import io.spine.server.tuple.Triplet;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
@@ -47,6 +50,7 @@ import javaclasses.mealorder.c.rejection.CannotMarkPurchaseOrderAsDelivered;
 import javaclasses.mealorder.c.rejection.CannotOverruleValidationOfNotInvalidPO;
 
 import java.util.List;
+import java.util.Optional;
 
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.PurchaseOrderStatus.CANCELED;
@@ -87,18 +91,23 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     @Assign
-    List<? extends Message> handle(CreatePurchaseOrder cmd) throws CannotCreatePurchaseOrder {
+    Triplet<PurchaseOrderCreated,
+            EitherOfTwo<PurchaseOrderValidationPassed,
+                    PurchaseOrderValidationFailed>,
+            Optional<PurchaseOrderSent>> handle(CreatePurchaseOrder cmd)
+            throws CannotCreatePurchaseOrder {
+
         if (!isAllowedPurchaseOrderCreation(cmd)) {
             throwCannotCreatePurchaseOrder(cmd);
         }
 
-        ImmutableList.Builder<Message> result = ImmutableList.builder();
-        result.add(createPOCreatedEvent(cmd));
+        Triplet result;
+        final PurchaseOrderCreated poCreatedEvent = createPOCreatedEvent(cmd);
 
         List<Order> invalidOrders = findInvalidOrders(cmd.getOrdersList());
 
         if (invalidOrders.isEmpty()) {
-            result.add(createPOValidationPassedEvent(cmd));
+            final PurchaseOrderValidationPassed passedEvent = createPOValidationPassedEvent(cmd);
             final PurchaseOrder purchaseOrder = PurchaseOrder.newBuilder()
                                                              .setId(cmd.getId())
                                                              .setStatus(VALID)
@@ -113,24 +122,28 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                   purchaseOrder,
                                   senderEmail,
                                   vendorEmail);
-            result.add(createPOSentEvent(purchaseOrder,
-                                         senderEmail,
-                                         vendorEmail));
+            final PurchaseOrderSent poSentEvent = createPOSentEvent(purchaseOrder,
+                                                                    senderEmail,
+                                                                    vendorEmail);
+            result = Triplet.of(poCreatedEvent, passedEvent, poSentEvent);
 
         } else {
-            result.add(createPOValidationFailedEvent(cmd, invalidOrders));
+            PurchaseOrderValidationFailed validationFailedEvent = createPOValidationFailedEvent(
+                    cmd, invalidOrders);
+            result = Triplet.withNullable(poCreatedEvent, validationFailedEvent, null);
         }
-        return result.build();
+        return result;
     }
 
     @Assign
-    List<? extends Message> handle(MarkPurchaseOrderAsValid cmd)
+    Pair<PurchaseOrderValidationOverruled, PurchaseOrderSent> handle(MarkPurchaseOrderAsValid cmd)
             throws CannotOverruleValidationOfNotInvalidPO {
         if (!isAllowedToMarkAsValid()) {
             throwCannotOverruleValidationOfNotInvalidPO(cmd);
         }
-        ImmutableList.Builder<Message> result = ImmutableList.builder();
-        result.add(createPOValidationOverruledEvent(cmd));
+
+        final PurchaseOrderValidationOverruled overruledEvent =
+                createPOValidationOverruledEvent(cmd);
         final EmailAddress senderEmail = cmd.getUserId()
                                             .getEmail();
         final EmailAddress vendorEmail = cmd.getVendorEmail();
@@ -139,10 +152,11 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                               getState(),
                               senderEmail,
                               vendorEmail);
-        result.add(createPOSentEvent(getState(),
-                                     senderEmail,
-                                     vendorEmail));
-        return result.build();
+        final PurchaseOrderSent poSentEvent = createPOSentEvent(getState(),
+                                                                senderEmail,
+                                                                vendorEmail);
+        final Pair result = Pair.of(overruledEvent, poSentEvent);
+        return result;
     }
 
     @Assign
@@ -168,7 +182,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
      *****************/
 
     @Apply
-    private void purchaseOrderCreated(PurchaseOrderCreated event) {
+    void purchaseOrderCreated(PurchaseOrderCreated event) {
         getBuilder().setId(event.getId())
                     .addAllOrders(event.getOrdersList())
                     .setStatus(CREATED);
@@ -176,32 +190,37 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     @Apply
-    private void purchaseOrderValidationPassed(PurchaseOrderValidationPassed event) {
+    void purchaseOrderValidationPassed(PurchaseOrderValidationPassed event) {
         getBuilder().setStatus(VALID);
     }
 
     @Apply
-    private void purchaseOrderValidationFailed(PurchaseOrderValidationFailed event) {
+    void empteEvent(Empty event) {
+
+    }
+
+    @Apply
+    void purchaseOrderValidationFailed(PurchaseOrderValidationFailed event) {
         getBuilder().setStatus(INVALID);
     }
 
     @Apply
-    private void purchaseOrderValidationOverruled(PurchaseOrderValidationOverruled event) {
+    void purchaseOrderValidationOverruled(PurchaseOrderValidationOverruled event) {
         getBuilder().setStatus(VALID);
     }
 
     @Apply
-    private void purchaseOrderCanceled(PurchaseOrderCanceled event) {
+    void purchaseOrderCanceled(PurchaseOrderCanceled event) {
         getBuilder().setStatus(CANCELED);
     }
 
     @Apply
-    private void purchaseOrderCanceled(PurchaseOrderDelivered event) {
+    void purchaseOrderCanceled(PurchaseOrderDelivered event) {
         getBuilder().setStatus(DELIVERED);
     }
 
     @Apply
-    private void purchaseOrderSent(PurchaseOrderSent event) {
+    void purchaseOrderSent(PurchaseOrderSent event) {
         getBuilder().setStatus(SENT);
     }
 
