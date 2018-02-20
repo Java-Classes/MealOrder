@@ -26,33 +26,33 @@ import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.UserId;
-import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
 
 import static io.spine.time.MonthOfYear.FEBRUARY;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID_2;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
 
 /**
  * @author Vlad Kozachenko
  */
 public class TestOrderCommandFactory {
 
-    private static final String defaultVendorName = "Positiv";
-
-    public static final VendorId VENDOR_ID = VendorId.newBuilder()
-                                                     .setValue(defaultVendorName)
-                                                     .build();
+    public static final LocalDate ORDER_DATE = LocalDate.newBuilder()
+                                                        .setYear(
+                                                                2019)
+                                                        .setMonth(
+                                                                FEBRUARY)
+                                                        .setDay(15)
+                                                        .build();
 
     public static final OrderId ORDER_ID = OrderId.newBuilder()
-                                                  .setUserId(UserId.getDefaultInstance())
+                                                  .setUserId(USER_ID)
                                                   .setVendorId(VENDOR_ID)
-                                                  .setOrderDate(LocalDate.newBuilder()
-                                                                         .setYear(2018)
-                                                                         .setMonth(FEBRUARY)
-                                                                         .setDay(12)
-                                                                         .build())
+                                                  .setOrderDate(ORDER_DATE)
                                                   .build();
 
     public static final DishId DISH_ID = DishId.newBuilder()
@@ -66,13 +66,9 @@ public class TestOrderCommandFactory {
                                         .setId(DISH_ID)
                                         .build();
 
-    public static final LocalDate ORDER_DATE = LocalDate.newBuilder()
-                                                        .setYear(
-                                                                2018)
-                                                        .setMonth(
-                                                                FEBRUARY)
-                                                        .setDay(12)
-                                                        .build();
+    public static CreateOrder createOrderInstanceForNonExistenMenu() {
+        return createOrderInstance(ORDER_ID, MENU_ID_2);
+    }
 
     public static CreateOrder createOrderInstance(OrderId orderId, MenuId menuId) {
         return CreateOrder.newBuilder()

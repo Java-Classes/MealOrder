@@ -20,20 +20,24 @@
 
 package javaclasses.mealorder.testdata;
 
+import com.google.protobuf.Message;
+import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
+import io.spine.server.event.EventSubscriber;
 import io.spine.server.rejection.RejectionSubscriber;
+import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.Rejections;
 
 /**
  * @author Yurii Haidamaka
  */
-public class VendorTestEnv {
+public class OrderTestEnv {
 
-    private VendorTestEnv() {
+    private OrderTestEnv() {
         // Prevent instantiation of this utility class.
     }
 
-    public static class VendorRejectionsSubscriber extends RejectionSubscriber {
+    public static class MenuNotAvailableSubscriber extends RejectionSubscriber {
 
         private static Rejections.MenuNotAvailable rejection = null;
 
@@ -51,4 +55,42 @@ public class VendorTestEnv {
         }
     }
 
+    public static class OrderAlreadyExistsSubscriber extends RejectionSubscriber {
+
+        private static Rejections.OrderAlreadyExists rejection = null;
+
+        @Subscribe
+        public void on(Rejections.OrderAlreadyExists rejection) {
+            this.rejection = rejection;
+        }
+
+        public static Rejections.OrderAlreadyExists getRejection() {
+            return rejection;
+        }
+
+        public static void clear() {
+            rejection = null;
+        }
+    }
+
+    public static class OrderCreatedSubscriber extends EventSubscriber {
+
+        private Message eventMessage;
+        private EventContext eventContext;
+
+        @Subscribe
+        public void on(OrderCreated eventMsg, EventContext context) {
+            this.eventMessage = eventMsg;
+            this.eventContext = context;
+        }
+
+        public Message getEventMessage() {
+            return eventMessage;
+        }
+
+        public EventContext getEventContext() {
+            return eventContext;
+        }
+    }
 }
+
