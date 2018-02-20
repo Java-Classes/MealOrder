@@ -64,7 +64,6 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
         dispatchCreatedCmd();
         final CancelPurchaseOrder cancelCmd = cancelPOWithCustomReasonInstance();
         dispatchCommand(aggregate, envelopeOf(cancelCmd));
-
         final PurchaseOrder state = aggregate.getState();
 
         assertEquals(purchaseOrderId, state.getId());
@@ -78,7 +77,6 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
         final CancelPurchaseOrder cancelCmd = cancelPOWithCustomReasonInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(cancelCmd));
-
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
         assertEquals(PurchaseOrderCanceled.class, messageList.get(0)
@@ -89,7 +87,6 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
         assertEquals(PurchaseOrderCanceled.ReasonCase.CUSTOM_REASON, poCanceled.getReasonCase());
         assertEquals(cancelCmd.getCustomReason(), poCanceled.getCustomReason());
         assertEquals(1, poCanceled.getOrderCount());
-
     }
 
     @Test
@@ -155,5 +152,4 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
         final MarkPurchaseOrderAsDelivered markPOAsDelivered = markPurchaseOrderAsDeliveredInstance();
         dispatchCommand(aggregate, envelopeOf(markPOAsDelivered));
     }
-
 }
