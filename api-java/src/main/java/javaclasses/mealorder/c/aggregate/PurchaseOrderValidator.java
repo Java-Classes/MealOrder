@@ -46,6 +46,7 @@ public class PurchaseOrderValidator {
     private static final int MAX_SINGLE_DISH_COUNT = 20;
 
     private PurchaseOrderValidator() {
+        // Prevent instantiation of this utility class.
     }
 
     /**

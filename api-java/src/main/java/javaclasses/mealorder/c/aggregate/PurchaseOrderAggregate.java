@@ -195,7 +195,8 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
     @Apply
     void empteEvent(Empty event) {
-
+        // Empty applier for 'io.spine.server.tuple.Triplet' return value with 'null'
+        // value in constructor.
     }
 
     @Apply

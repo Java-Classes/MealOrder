@@ -32,11 +32,12 @@ import io.spine.Environment;
  */
 public class ServiceFactory {
 
-    private ServiceFactory() {
-    }
-
     // TODO 2/20/2018[yegor.udovchenko]: Replace with implementation
     private static PurchaseOrderSender poSenderInstance = null;
+
+    private ServiceFactory() {
+        // Prevent instantiation of this utility class.
+    }
 
     /**
      * Provides instance of {@link PurchaseOrderSender}
@@ -50,7 +51,8 @@ public class ServiceFactory {
     @VisibleForTesting
     public static void setPoSenderInstance(
             PurchaseOrderSender poSenderInstance) {
-        if (Environment.getInstance().isTests()) {
+        if (Environment.getInstance()
+                       .isTests()) {
             ServiceFactory.poSenderInstance = poSenderInstance;
         } else {
             throw new UnsupportedOperationException();
