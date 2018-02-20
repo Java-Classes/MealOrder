@@ -18,18 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.definition;
+package javaclasses.mealorder.c.aggregate.order;
 
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
-import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
-import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;

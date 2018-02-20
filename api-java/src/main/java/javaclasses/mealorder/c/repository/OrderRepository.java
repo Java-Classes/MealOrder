@@ -20,9 +20,16 @@
 
 package javaclasses.mealorder.c.repository;
 
+import com.google.protobuf.Message;
 import io.spine.server.aggregate.AggregateRepository;
+import io.spine.server.route.EventRoute;
+import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.c.aggregate.OrderAggregate;
+import javaclasses.mealorder.c.event.PurchaseOrderCreated;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Repository for the {@link OrderAggregate}.
@@ -31,4 +38,21 @@ import javaclasses.mealorder.c.aggregate.OrderAggregate;
  */
 public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate> {
 
+    public OrderRepository() {
+        super();
+
+        EventRoute<OrderId, Message> defaultRoute = getEventRouting().getDefault();
+
+        getEventRouting().replaceDefault((EventRoute<OrderId, Message>) (message, context) -> {
+            if (message instanceof PurchaseOrderCreated) {
+                final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) message;
+                Set<OrderId> orderIds = new HashSet<>();
+                for (Order order : purchaseOrderCreated.getOrdersList()) {
+                    orderIds.add(order.getId());
+                }
+                return orderIds;
+            }
+            return defaultRoute.apply(message, context);
+        });
+    }
 }

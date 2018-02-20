@@ -21,7 +21,7 @@
 package javaclasses.mealorder.c.aggregate;
 
 import com.google.common.base.Optional;
-import io.spine.change.ValueMismatch;
+import io.spine.core.React;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.aggregate.Apply;
@@ -37,6 +37,7 @@ import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.OrderVBuilder;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.VendorMismatch;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
@@ -45,6 +46,8 @@ import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderCreated;
+import javaclasses.mealorder.c.event.OrderProcessed;
+import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
@@ -56,8 +59,10 @@ import javaclasses.mealorder.c.repository.VendorRepository;
 import java.util.Comparator;
 import java.util.List;
 
+import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
+import static javaclasses.mealorder.OrderStatus.ORDER_PROCESSED;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwMenuNotAvailable;
@@ -154,9 +159,10 @@ public class OrderAggregate extends Aggregate<OrderId,
 
         if (!orderId.getVendorId()
                     .equals(dishVendorId)) {
-            // TODO:2018-02-15:vladislav.kozachenko: Learn more how to use ValueMismatch. What is 3rd argument (newValue)?
-            ValueMismatch vendorMismatch = unexpectedValue(orderId.getVendorId(), dishVendorId,
-                                                           dishVendorId);
+            VendorMismatch vendorMismatch = VendorMismatch.newBuilder()
+                                                          .setTarget(orderId.getVendorId())
+                                                          .setActual(dishVendorId)
+                                                          .build();
             throwDishVendorMismatch(cmd, vendorMismatch);
         }
 
@@ -221,9 +227,9 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     void dishRemovedFromOrder(DishRemovedFromOrder event) {
-        for (int i = 0; i < getState().getDishesCount(); i++) {
+        for (int i = 0; i < getBuilder().getDishes().size(); i++) {
             if (event.getDish()
-                     .equals(getState().getDishes(i))) {
+                     .equals(getBuilder().getDishes().get(i))) {
                 getBuilder().removeDishes(i)
                             .build();
                 return;
@@ -235,5 +241,18 @@ public class OrderAggregate extends Aggregate<OrderId,
     void orderCanceled(OrderCanceled event) {
         getBuilder().setStatus(ORDER_CANCELED)
                     .build();
+    }
+
+    @React
+    OrderProcessed on(PurchaseOrderCreated event) {
+        return OrderProcessed.newBuilder()
+                             .setOrder(getState())
+                             .setWhenProcessed(getCurrentTime())
+                             .build();
+    }
+
+    @Apply
+    private void orderProcessed(OrderProcessed event) {
+        getBuilder().setStatus(ORDER_PROCESSED).build();
     }
 }

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate.definition;
+package javaclasses.mealorder.c.aggregate.order;
 
 import com.google.protobuf.Message;
 import javaclasses.mealorder.MenuId;

@@ -129,3 +129,14 @@ enum OrderStatus {
 
     ORDER_CANCELED = 3;
 }
+
+// Attribute for the `DishVendorMismath` rejection.
+// Contains a dish vendor id value and the mismatching value in the order.
+message VendorMismatch {
+
+    // The vendor id in an order.
+    VendorId target = 1;
+
+    // The vendor id in a dish.
+    VendorId actual = 2;
+}
