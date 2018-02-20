@@ -25,6 +25,7 @@ import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
+import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
@@ -54,15 +55,20 @@ public class TestOrderCommandFactory {
                                                   .setOrderDate(ORDER_DATE)
                                                   .build();
 
-    public static final DishId DISH_ID = DishId.newBuilder()
+    public static final VendorId INVALID_VENDOR_ID = VendorId.newBuilder()
+                                                     .setValue("vendor:INVALID")
+                                                     .build();
+
+
+    public static final DishId INVALID_DISH_ID = DishId.newBuilder()
                                                .setMenuId(MenuId.newBuilder()
-                                                                .setVendorId(VENDOR_ID)
+                                                                .setVendorId(INVALID_VENDOR_ID)
                                                                 .build())
                                                .setSequentialNumber(1)
                                                .build();
 
-    public static final Dish DISH = Dish.newBuilder()
-                                        .setId(DISH_ID)
+    public static final Dish INVALID_DISH = Dish.newBuilder()
+                                        .setId(INVALID_DISH_ID)
                                         .build();
 
     public static CreateOrder createOrderInstanceForNonExistenMenu() {

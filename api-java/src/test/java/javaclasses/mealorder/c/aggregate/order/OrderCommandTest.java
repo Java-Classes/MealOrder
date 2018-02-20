@@ -21,36 +21,54 @@
 package javaclasses.mealorder.c.aggregate.order;
 
 import com.google.protobuf.Message;
+import io.spine.client.ActorRequestFactory;
 import io.spine.client.TestActorRequestFactory;
-import io.spine.core.CommandEnvelope;
-import io.spine.server.aggregate.AggregateCommandTest;
-import javaclasses.mealorder.c.aggregate.OrderAggregate;
+import io.spine.core.Command;
+import io.spine.grpc.StreamObservers;
+import io.spine.server.BoundedContext;
+import io.spine.server.commandbus.CommandBus;
+import io.spine.server.event.EventBus;
+import io.spine.server.rejection.RejectionBus;
+import javaclasses.mealorder.c.context.BoundedContexts;
+import javaclasses.mealorder.testdata.TestVendorCommandFactory;
 
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
+import static io.spine.protobuf.TypeConverter.toMessage;
 
 /**
  * @author Vlad Kozachenko
  */
-public class OrderCommandTest<T extends Message> extends AggregateCommandTest<T, OrderAggregate> {
+public class OrderCommandTest<T extends Message> {
 
-    private final TestActorRequestFactory requestFactory =
+    final ActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
-    OrderAggregate aggregate;
+    final BoundedContext boundedContext = BoundedContexts.create();
 
-    public OrderCommandTest() {
-        super.setUp();
-        this.aggregate = aggregate().get();
+    final CommandBus commandBus = boundedContext.getCommandBus();
+    final RejectionBus rejectionBus = boundedContext.getRejectionBus();
+    final EventBus eventBus = boundedContext.getEventBus();
+
+    public void setUp() {
+        executeVendorCommands(requestFactory, commandBus);
     }
 
-    @Override
-    protected OrderAggregate createAggregate() {
-        return new OrderAggregate(ORDER_ID);
-    }
+    private void executeVendorCommands(ActorRequestFactory requestFactory, CommandBus commandBus) {
 
-    CommandEnvelope envelopeOf(Message commandMessage) {
-        return CommandEnvelope.of(requestFactory.command()
-                                                .create(commandMessage));
+        final Command addVendor = requestFactory.command()
+                                                .create(toMessage(
+                                                        TestVendorCommandFactory.addVendorInstance()));
+
+        commandBus.post(addVendor, StreamObservers.noOpObserver());
+
+        final Command importMenu = requestFactory.command()
+                                                 .create(toMessage(
+                                                         TestVendorCommandFactory.importMenuInstance()));
+        commandBus.post(importMenu, StreamObservers.noOpObserver());
+
+        final Command setDateRangeForMenu = requestFactory.command()
+                                                          .create(toMessage(
+                                                                  TestVendorCommandFactory.setDateRangeForMenuInstance()));
+        commandBus.post(setDateRangeForMenu, StreamObservers.noOpObserver());
     }
 
 }

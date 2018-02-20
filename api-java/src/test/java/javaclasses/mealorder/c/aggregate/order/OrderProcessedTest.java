@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author Vlad Kozachenko
  */
-public class OprderProcessedTest {
+public class OrderProcessedTest {
 
     private final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
     private final TestActorRequestFactory requestFactory = TestActorRequestFactory.newInstance(

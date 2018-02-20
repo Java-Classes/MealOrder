@@ -21,29 +21,22 @@
 package javaclasses.mealorder.c.aggregate.order;
 
 import com.google.common.base.Optional;
-import io.spine.client.ActorRequestFactory;
-import io.spine.client.TestActorRequestFactory;
 import io.spine.core.Ack;
 import io.spine.core.Command;
 import io.spine.grpc.MemoizingObserver;
 import io.spine.grpc.StreamObservers;
-import io.spine.server.BoundedContext;
-import io.spine.server.commandbus.CommandBus;
 import io.spine.server.entity.Repository;
-import io.spine.server.event.EventBus;
-import io.spine.server.rejection.RejectionBus;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderStatus;
 import javaclasses.mealorder.c.aggregate.OrderAggregate;
 import javaclasses.mealorder.c.aggregate.VendorAggregate;
 import javaclasses.mealorder.c.command.CreateOrder;
-import javaclasses.mealorder.c.context.BoundedContexts;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.Rejections;
+import javaclasses.mealorder.testdata.OrderTestEnv;
 import javaclasses.mealorder.testdata.OrderTestEnv.MenuNotAvailableSubscriber;
 import javaclasses.mealorder.testdata.OrderTestEnv.OrderAlreadyExistsSubscriber;
 import javaclasses.mealorder.testdata.OrderTestEnv.OrderCreatedSubscriber;
-import javaclasses.mealorder.testdata.TestVendorCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,39 +63,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Vlad Kozachenko
  * @author Yurii Haidamaka
  */
-public class CreateOrderTest {
+public class CreateOrderTest extends OrderCommandTest{
 
-    private final ActorRequestFactory requestFactory =
-            TestActorRequestFactory.newInstance(getClass());
 
-    private final BoundedContext boundedContext = BoundedContexts.create();
-
-    private final CommandBus commandBus = boundedContext.getCommandBus();
-    private final RejectionBus rejectionBus = boundedContext.getRejectionBus();
-    private final EventBus eventBus = boundedContext.getEventBus();
 
     @BeforeEach
     public void setUp() {
-        executeVendorCommands(requestFactory, commandBus);
-    }
-
-    private void executeVendorCommands(ActorRequestFactory requestFactory, CommandBus commandBus) {
-
-        final Command addVendor = requestFactory.command()
-                                                .create(toMessage(
-                                                        TestVendorCommandFactory.addVendorInstance()));
-
-        commandBus.post(addVendor, StreamObservers.noOpObserver());
-
-        final Command importMenu = requestFactory.command()
-                                                 .create(toMessage(
-                                                         TestVendorCommandFactory.importMenuInstance()));
-        commandBus.post(importMenu, StreamObservers.noOpObserver());
-
-        final Command setDateRangeForMenu = requestFactory.command()
-                                                          .create(toMessage(
-                                                                  TestVendorCommandFactory.setDateRangeForMenuInstance()));
-        commandBus.post(setDateRangeForMenu, StreamObservers.noOpObserver());
+        super.setUp();
     }
 
     @Test

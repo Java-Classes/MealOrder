@@ -183,18 +183,32 @@ public class OrderAggregate extends Aggregate<OrderId,
             throwCannotRemoveDishFromNotActiveOrder(cmd, getState().getStatus());
         }
 
-        DishRemovedFromOrder result = null;
-        for (Dish dish : getState().getDishesList()) {
-            if (dish.getId()
-                    .equals(dishId)) {
-                result = DishRemovedFromOrder.newBuilder()
-                                             .setOrderId(orderId)
-                                             .setDish(dish)
-                                             .build();
-                return result;
-            }
+//        DishRemovedFromOrder result = null;
+//
+//        for (Dish dish : getState().getDishesList()) {
+//            if (dish.getId()
+//                    .equals(dishId)) {
+//                result = DishRemovedFromOrder.newBuilder()
+//                                             .setOrderId(orderId)
+//                                             .setDish(dish)
+//                                             .build();
+//                return result;
+//            }
+//        }
+        List<Dish> dishesList = getState().getDishesList();
+
+        java.util.Optional<Dish> dish = dishesList.stream()
+                                                  .filter(d -> d.getId()
+                                                                .equals(dishId))
+                                                  .findFirst();
+
+        if (!dish.isPresent()) {
+            throwCannotRemoveMissingDish(cmd);
         }
-        throwCannotRemoveMissingDish(cmd);
+        DishRemovedFromOrder result = DishRemovedFromOrder.newBuilder()
+                                                          .setOrderId(orderId)
+                                                          .setDish(dish.get())
+                                                          .build();
         return result;
     }
 
@@ -227,9 +241,11 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     void dishRemovedFromOrder(DishRemovedFromOrder event) {
-        for (int i = 0; i < getBuilder().getDishes().size(); i++) {
+        for (int i = 0; i < getBuilder().getDishes()
+                                        .size(); i++) {
             if (event.getDish()
-                     .equals(getBuilder().getDishes().get(i))) {
+                     .equals(getBuilder().getDishes()
+                                         .get(i))) {
                 getBuilder().removeDishes(i)
                             .build();
                 return;
@@ -253,6 +269,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     private void orderProcessed(OrderProcessed event) {
-        getBuilder().setStatus(ORDER_PROCESSED).build();
+        getBuilder().setStatus(ORDER_PROCESSED)
+                    .build();
     }
 }
