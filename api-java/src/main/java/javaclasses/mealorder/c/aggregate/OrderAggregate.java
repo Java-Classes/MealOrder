@@ -47,6 +47,7 @@ import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.event.OrderProcessed;
+import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
@@ -202,6 +203,7 @@ public class OrderAggregate extends Aggregate<OrderId,
         final OrderCanceled result = OrderCanceled.newBuilder()
                                                   .setOrderId(orderId)
                                                   .setWhoCanceled(userId)
+                                                  .setWhenCanceled(getCurrentTime())
                                                   .build();
         return result;
     }
@@ -258,5 +260,14 @@ public class OrderAggregate extends Aggregate<OrderId,
     private void orderProcessed(OrderProcessed event) {
         getBuilder().setStatus(ORDER_PROCESSED)
                     .build();
+    }
+
+    @React
+    OrderCanceled on(PurchaseOrderCanceled event) {
+        return OrderCanceled.newBuilder()
+                            .setOrderId(getState().getId())
+                            .setWhoCanceled(event.getUserId())
+                            .setWhenCanceled(getCurrentTime())
+                            .build();
     }
 }
