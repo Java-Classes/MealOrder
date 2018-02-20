@@ -46,8 +46,8 @@ import java.util.stream.IntStream;
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.c.aggregate.VendorValidator.isThereMenuForThisDateRange;
 import static javaclasses.mealorder.c.aggregate.VendorValidator.isValidDateRange;
-import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejections.UpdateRejections.throwCannotSetDateRange;
-import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejections.UpdateRejections.throwVendorAlreadyExists;
+import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejections.throwCannotSetDateRange;
+import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejections.throwVendorAlreadyExists;
 
 /**
  * The aggregate managing the state of a {@link Vendor}.

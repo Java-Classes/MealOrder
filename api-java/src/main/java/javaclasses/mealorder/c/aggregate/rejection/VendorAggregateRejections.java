@@ -39,10 +39,6 @@ public class VendorAggregateRejections {
         // Prevent instantiation of this utility class.
     }
 
-    public static class UpdateRejections {
-
-        private UpdateRejections() {
-        }
 
         /**
          * Constructs and throws the {@link VendorAlreadyExists} rejection
@@ -69,5 +65,4 @@ public class VendorAggregateRejections {
                                          getCurrentTime());
         }
 
-    }
 }

@@ -18,28 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.c.aggregate;
+package javaclasses.mealorder.c.aggregate.po;
 
-import io.spine.net.EmailAddress;
-import javaclasses.mealorder.PurchaseOrder;
+import javaclasses.mealorder.c.aggregate.PurchaseOrderValidator;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 
 /**
- * Utility interface managing the sending process of a purchase order
- * to the vendor.
- *
  * @author Yegor Udovchenko
  */
-public interface PurchaseOrderSender {
+@DisplayName("PurchaseOrderValidator should")
+class PurchaseOrderValidatorTest {
 
-    /**
-     * Creates the Spreadsheet from the order list of the purchase order.
-     * Sends it to vendor email address.
-     *
-     * @param purchaseOrder purchase order to form spreadsheet and send
-     * @param senderEmail   the email of the sender
-     * @param vendorEmail   the email of the vendor
-     */
-    void formAndSendPurchaseOrder(PurchaseOrder purchaseOrder,
-                                  EmailAddress senderEmail,
-                                  EmailAddress vendorEmail);
+    @Test
+    @DisplayName("have the private constructor")
+    void havePrivateConstructor() {
+        assertHasPrivateParameterlessCtor(PurchaseOrderValidator.class);
+    }
 }

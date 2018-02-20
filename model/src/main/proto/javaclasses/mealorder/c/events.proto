@@ -310,4 +310,7 @@ message PurchaseOrderCanceled {
         bool invalid = 4;
         string custom_reason = 5;
     }
+
+    // The collection of orders to cancel.
+    repeated Order order = 6;
 }
