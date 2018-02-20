@@ -26,18 +26,15 @@ import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
-import io.spine.time.LocalDate;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.Menu;
-import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.OrderVBuilder;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.VendorMismatch;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
@@ -50,6 +47,7 @@ import javaclasses.mealorder.c.event.OrderProcessed;
 import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
+import javaclasses.mealorder.c.rejection.CannotCancelProcessedOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
@@ -57,7 +55,6 @@ import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 import javaclasses.mealorder.c.repository.VendorRepository;
 
-import java.util.Comparator;
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -67,8 +64,9 @@ import static javaclasses.mealorder.OrderStatus.ORDER_PROCESSED;
 import static javaclasses.mealorder.c.aggregate.OrderValidator.isMenuAvailable;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
+import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.CancelOrderRejections.throwCannotCancelProcessedOrder;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwMenuNotAvailable;
-import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwOrderAldeadyExists;
+import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwOrderAlreadyExists;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveDishFromNotActiveOrder;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveMissingDish;
 
@@ -128,7 +126,7 @@ public class OrderAggregate extends Aggregate<OrderId,
         }
 
         if (getVersion().getNumber() != 0 && ORDER_CANCELED != getState().getStatus()) {
-            throwOrderAldeadyExists(cmd);
+            throwOrderAlreadyExists(cmd);
         }
 
         final OrderCreated result = OrderCreated.newBuilder()
@@ -154,11 +152,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
         if (!orderId.getVendorId()
                     .equals(dishVendorId)) {
-            VendorMismatch vendorMismatch = VendorMismatch.newBuilder()
-                                                          .setTarget(orderId.getVendorId())
-                                                          .setActual(dishVendorId)
-                                                          .build();
-            throwDishVendorMismatch(cmd, vendorMismatch);
+            throwDishVendorMismatch(cmd);
         }
 
         final DishAddedToOrder result = DishAddedToOrder.newBuilder()
@@ -196,9 +190,13 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     @Assign
-    OrderCanceled handle(CancelOrder cmd) {
+    OrderCanceled handle(CancelOrder cmd) throws CannotCancelProcessedOrder {
         final OrderId orderId = cmd.getOrderId();
         final UserId userId = cmd.getWhoCancels();
+
+        if (getState().getStatus() == ORDER_PROCESSED) {
+            throwCannotCancelProcessedOrder(cmd);
+        }
 
         final OrderCanceled result = OrderCanceled.newBuilder()
                                                   .setOrderId(orderId)

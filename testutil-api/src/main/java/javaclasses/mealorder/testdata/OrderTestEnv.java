@@ -130,6 +130,24 @@ public class OrderTestEnv {
         }
     }
 
+    public static class CannotCancelProcessedOrderSubscriber extends RejectionSubscriber {
+
+        private static Rejections.CannotCancelProcessedOrder rejection = null;
+
+        @Subscribe
+        public void on(Rejections.CannotCancelProcessedOrder rejection) {
+            this.rejection = rejection;
+        }
+
+        public static Rejections.CannotCancelProcessedOrder getRejection() {
+            return rejection;
+        }
+
+        public static void clear() {
+            rejection = null;
+        }
+    }
+
     public static class CannotAddDishToNotActiveOrderSubscriber extends RejectionSubscriber {
 
         private static Rejections.CannotAddDishToNotActiveOrder rejection = null;

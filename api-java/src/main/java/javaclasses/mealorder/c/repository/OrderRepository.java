@@ -26,6 +26,7 @@ import io.spine.server.route.EventRoute;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.c.aggregate.OrderAggregate;
+import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 
 import java.util.HashSet;
@@ -52,8 +53,16 @@ public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate
                     }
                 }
                 return orderIds;
+            } else {
+                final PurchaseOrderCanceled purchaseOrderCanceled = (PurchaseOrderCanceled) message;
+                Set<OrderId> orderIds = new HashSet<>();
+                for (Order order : purchaseOrderCanceled.getOrderList()) {
+                    if (find(order.getId()).isPresent()) {
+                        orderIds.add(order.getId());
+                    }
+                }
+                return orderIds;
             }
-            return defaultRoute.apply(message, context);
         });
     }
 }

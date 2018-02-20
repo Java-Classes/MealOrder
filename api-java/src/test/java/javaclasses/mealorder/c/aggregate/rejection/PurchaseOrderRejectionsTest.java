@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Yegor Udovchenko
  */
 @DisplayName("PurchaseOrderAggregateRejections should")
-class PurchaseOrderRejectionsTest {
+class PurchaseOrderAggregateRejectionsTest {
 
     @Test
     @DisplayName("have the private constructor")

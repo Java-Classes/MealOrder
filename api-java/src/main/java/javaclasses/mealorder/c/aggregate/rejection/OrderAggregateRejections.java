@@ -21,7 +21,6 @@
 package javaclasses.mealorder.c.aggregate.rejection;
 
 import com.google.protobuf.Timestamp;
-import io.spine.change.ValueMismatch;
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.OrderId;
@@ -30,9 +29,11 @@ import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorMismatch;
 import javaclasses.mealorder.c.command.AddDishToOrder;
+import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
 import javaclasses.mealorder.c.rejection.CannotAddDishToNotActiveOrder;
+import javaclasses.mealorder.c.rejection.CannotCancelProcessedOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveDishFromNotActiveOrder;
 import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
@@ -54,7 +55,7 @@ public class OrderAggregateRejections {
         private CreateOrderRejections() {
         }
 
-        public static void throwOrderAldeadyExists(CreateOrder cmd) throws OrderAlreadyExists {
+        public static void throwOrderAlreadyExists(CreateOrder cmd) throws OrderAlreadyExists {
             final OrderId orderId = cmd.getOrderId();
             final Timestamp timestamp = getCurrentTime();
             throw new OrderAlreadyExists(orderId, timestamp);
@@ -76,15 +77,18 @@ public class OrderAggregateRejections {
         private AddDishToOrderRejections() {
         }
 
-        public static void throwDishVendorMismatch(AddDishToOrder cmd,
-                                                   VendorMismatch vendorMismatch) throws
-                                                                                 DishVendorMismatch {
+        public static void throwDishVendorMismatch(AddDishToOrder cmd) throws DishVendorMismatch {
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final DishId dishId = cmd.getDish()
                                      .getId();
+            VendorMismatch vendorMismatch = VendorMismatch.newBuilder()
+                                                          .setTarget(orderId.getVendorId())
+                                                          .setActual(dishId.getMenuId().getVendorId())
+                                                          .build();
             final Timestamp timestamp = getCurrentTime();
+
             throw new DishVendorMismatch(orderId, dishId, userId, vendorMismatch, timestamp);
         }
 
@@ -128,5 +132,21 @@ public class OrderAggregateRejections {
             throw new CannotRemoveDishFromNotActiveOrder(orderId, dishId, userId, orderStatus,
                                                          timestamp);
         }
+    }
+
+    public static class CancelOrderRejections {
+
+        private CancelOrderRejections(){}
+
+        public static void throwCannotCancelProcessedOrder(CancelOrder cmd) throws
+                                                                            CannotCancelProcessedOrder {
+
+            final OrderId orderId = cmd.getOrderId();
+            final UserId userId = cmd.getOrderId()
+                                     .getUserId();
+            final Timestamp timestamp = getCurrentTime();
+            throw new CannotCancelProcessedOrder(orderId, userId, timestamp);
+        }
+
     }
 }

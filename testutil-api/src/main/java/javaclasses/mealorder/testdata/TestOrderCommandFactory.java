@@ -32,6 +32,8 @@ import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
 
 import static io.spine.time.MonthOfYear.FEBRUARY;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH1;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.NONEXISTENT_MENU_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
@@ -43,9 +45,9 @@ public class TestOrderCommandFactory {
 
     public static final LocalDate DATE = LocalDate.newBuilder()
                                                   .setYear(
-                                                                2019)
+                                                          2019)
                                                   .setMonth(
-                                                                FEBRUARY)
+                                                          FEBRUARY)
                                                   .setDay(15)
                                                   .build();
 
@@ -56,23 +58,28 @@ public class TestOrderCommandFactory {
                                                   .build();
 
     public static final VendorId INVALID_VENDOR_ID = VendorId.newBuilder()
-                                                     .setValue("vendor:INVALID")
-                                                     .build();
-
+                                                             .setValue("vendor:INVALID")
+                                                             .build();
 
     public static final DishId INVALID_DISH_ID = DishId.newBuilder()
-                                               .setMenuId(MenuId.newBuilder()
-                                                                .setVendorId(INVALID_VENDOR_ID)
-                                                                .build())
-                                               .setSequentialNumber(1)
-                                               .build();
+                                                       .setMenuId(MenuId.newBuilder()
+                                                                        .setVendorId(
+                                                                                INVALID_VENDOR_ID)
+                                                                        .build())
+                                                       .setSequentialNumber(1)
+                                                       .build();
 
     public static final Dish INVALID_DISH = Dish.newBuilder()
-                                        .setId(INVALID_DISH_ID)
-                                        .build();
+                                                .setId(INVALID_DISH_ID)
+                                                .build();
 
     public static CreateOrder createOrderInstanceForNonExistenMenu() {
         return createOrderInstance(ORDER_ID, NONEXISTENT_MENU_ID);
+    }
+
+    public static CreateOrder createOrderInstance() {
+
+        return createOrderInstance(ORDER_ID, MENU_ID);
     }
 
     public static CreateOrder createOrderInstance(OrderId orderId, MenuId menuId) {
@@ -80,6 +87,10 @@ public class TestOrderCommandFactory {
                           .setOrderId(orderId)
                           .setMenuId(menuId)
                           .build();
+    }
+
+    public static CancelOrder cancelOrderInstance() {
+        return cancelOrderInstance(ORDER_ID);
     }
 
     public static CancelOrder cancelOrderInstance(OrderId orderId) {
@@ -93,6 +104,14 @@ public class TestOrderCommandFactory {
                              .setOrderId(orderId)
                              .setDish(dish)
                              .build();
+    }
+
+    public static AddDishToOrder addDishToOrderInstance() {
+        return addDishToOrderInstance(ORDER_ID, DISH1);
+    }
+
+    public static RemoveDishFromOrder removeDishFromOrderInstance() {
+        return removeDishFromOrderInstance(ORDER_ID, DISH1.getId());
     }
 
     public static RemoveDishFromOrder removeDishFromOrderInstance(OrderId orderId, DishId dishId) {

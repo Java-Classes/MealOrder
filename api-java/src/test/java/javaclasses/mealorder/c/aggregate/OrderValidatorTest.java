@@ -20,23 +20,20 @@
 
 package javaclasses.mealorder.c.aggregate;
 
-import io.spine.time.LocalDate;
-import javaclasses.mealorder.MenuDateRange;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.Comparator;
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 
 /**
  * @author Vlad Kozachenko
  */
-public class OrderValidator {
+@DisplayName("OrderValidator should")
+class OrderValidatorTest {
 
-    private OrderValidator() {
-    }
-
-    public static boolean isMenuAvailable(MenuDateRange range, LocalDate orderDate) {
-        Comparator comparator = new LocalDateComparator();
-
-        return comparator.compare(range.getRangeStart(), orderDate) <= 0 &&
-                comparator.compare(range.getRangeEnd(), orderDate) >= 0;
+    @Test
+    @DisplayName("have the private constructor")
+    void havePrivateConstructor() {
+        assertHasPrivateParameterlessCtor(OrderValidator.class);
     }
 }
