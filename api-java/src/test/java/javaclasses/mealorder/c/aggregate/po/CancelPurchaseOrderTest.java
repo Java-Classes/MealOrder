@@ -23,7 +23,6 @@ package javaclasses.mealorder.c.aggregate.po;
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.PurchaseOrder;
-import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;
@@ -89,6 +88,8 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
         assertEquals(purchaseOrderId, poCanceled.getId());
         assertEquals(PurchaseOrderCanceled.ReasonCase.CUSTOM_REASON, poCanceled.getReasonCase());
         assertEquals(cancelCmd.getCustomReason(), poCanceled.getCustomReason());
+        assertEquals(1, poCanceled.getOrderCount());
+
     }
 
     @Test
@@ -108,6 +109,7 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
         assertEquals(purchaseOrderId, poCanceled.getId());
         assertEquals(PurchaseOrderCanceled.ReasonCase.CUSTOM_REASON, poCanceled.getReasonCase());
         assertEquals("Reason not set.", poCanceled.getCustomReason());
+        assertEquals(1, poCanceled.getOrderCount());
     }
 
     @Test
@@ -127,6 +129,7 @@ public class CancelPurchaseOrderTest extends PurchaseOrderCommandTest<CancelPurc
         assertEquals(purchaseOrderId, poCanceled.getId());
         assertEquals(PurchaseOrderCanceled.ReasonCase.INVALID, poCanceled.getReasonCase());
         assertEquals(cancelCmd.getInvalid(), poCanceled.getInvalid());
+        assertEquals(1, poCanceled.getOrderCount());
     }
 
     @Test
