@@ -61,7 +61,7 @@ class VendorValidator {
         final Comparator<LocalDate> comparator = new LocalDateComparator();
 
         return comparator.compare(startDateRange, currentDate) >= 0
-                && comparator.compare(startDateRange, endDateRange) < 0;
+                && comparator.compare(startDateRange, endDateRange) <= 0;
     }
 
     /**

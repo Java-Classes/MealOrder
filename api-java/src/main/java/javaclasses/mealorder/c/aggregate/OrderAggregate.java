@@ -210,6 +210,11 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     void orderCreated(OrderCreated event) {
+
+        if (getBuilder().getStatus() == ORDER_CANCELED) {
+            getBuilder().clearDishes();
+        }
+
         getBuilder().setId(event.getOrderId())
                     .setStatus(ORDER_ACTIVE)
                     .build();
