@@ -63,6 +63,7 @@ import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 import static javaclasses.mealorder.OrderStatus.ORDER_PROCESSED;
+import static javaclasses.mealorder.c.aggregate.OrderValidator.isMenuAvailable;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
 import static javaclasses.mealorder.c.aggregate.rejection.OrderAggregateRejections.CreateOrderRejections.throwMenuNotAvailable;
@@ -92,13 +93,6 @@ public class OrderAggregate extends Aggregate<OrderId,
      */
     public OrderAggregate(OrderId id) {
         super(id);
-    }
-
-    private boolean isMenuAvailable(MenuDateRange range, LocalDate orderDate) {
-        Comparator comparator = new LocalDateComparator();
-
-        return comparator.compare(range.getRangeStart(), orderDate) <= 0 &&
-                comparator.compare(range.getRangeEnd(), orderDate) >= 0;
     }
 
     @Assign
@@ -183,18 +177,6 @@ public class OrderAggregate extends Aggregate<OrderId,
             throwCannotRemoveDishFromNotActiveOrder(cmd, getState().getStatus());
         }
 
-//        DishRemovedFromOrder result = null;
-//
-//        for (Dish dish : getState().getDishesList()) {
-//            if (dish.getId()
-//                    .equals(dishId)) {
-//                result = DishRemovedFromOrder.newBuilder()
-//                                             .setOrderId(orderId)
-//                                             .setDish(dish)
-//                                             .build();
-//                return result;
-//            }
-//        }
         List<Dish> dishesList = getState().getDishesList();
 
         java.util.Optional<Dish> dish = dishesList.stream()
