@@ -26,6 +26,7 @@ import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.OrderStatus;
 import javaclasses.mealorder.UserId;
+import javaclasses.mealorder.VendorMismatch;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
@@ -63,7 +64,7 @@ public class OrderAggregateRejections {
         }
 
         public static void throwDishVendorMismatch(AddDishToOrder cmd,
-                                                   ValueMismatch vendorMismatch) throws
+                                                   VendorMismatch vendorMismatch) throws
                                                                                  DishVendorMismatch {
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()

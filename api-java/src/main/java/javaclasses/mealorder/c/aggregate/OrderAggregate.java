@@ -34,6 +34,7 @@ import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.OrderVBuilder;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.VendorMismatch;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
@@ -121,9 +122,10 @@ public class OrderAggregate extends Aggregate<OrderId,
 
         if (!orderId.getVendorId()
                     .equals(dishVendorId)) {
-            // TODO:2018-02-15:vladislav.kozachenko: Learn more how to use ValueMismatch. What is 3rd argument (newValue)?
-            ValueMismatch vendorMismatch = unexpectedValue(orderId.getVendorId(), dishVendorId,
-                                                           dishVendorId);
+            VendorMismatch vendorMismatch = VendorMismatch.newBuilder()
+                                                          .setTarget(orderId.getVendorId())
+                                                          .setActual(dishVendorId)
+                                                          .build();
             throwDishVendorMismatch(cmd, vendorMismatch);
         }
 

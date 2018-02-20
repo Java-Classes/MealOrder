@@ -120,7 +120,7 @@ message DishVendorMismatch {
     UserId user_id = 3;
 
     // The mismatching vendor value.
-    spine.change.ValueMismatch vendor_mismatch = 4;
+    VendorMismatch vendor_mismatch = 4;
 
     // Addition was rejected at this time.
     google.protobuf.Timestamp when_rejected = 5;
