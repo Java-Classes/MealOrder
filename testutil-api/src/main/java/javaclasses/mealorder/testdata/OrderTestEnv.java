@@ -27,6 +27,7 @@ import io.spine.server.event.EventSubscriber;
 import io.spine.server.rejection.RejectionSubscriber;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
+import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.Rejections;
 
@@ -194,6 +195,27 @@ public class OrderTestEnv {
 
         @Subscribe
         public void on(DishRemovedFromOrder eventMsg, EventContext context) {
+            this.eventMessage = eventMsg;
+            this.eventContext = context;
+        }
+
+        public Message getEventMessage() {
+            return eventMessage;
+        }
+
+        public EventContext getEventContext() {
+            return eventContext;
+        }
+    }
+
+
+    public static class OrderCanceledSubscriber extends EventSubscriber {
+
+        private Message eventMessage;
+        private EventContext eventContext;
+
+        @Subscribe
+        public void on(OrderCanceled eventMsg, EventContext context) {
             this.eventMessage = eventMsg;
             this.eventContext = context;
         }
