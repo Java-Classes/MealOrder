@@ -24,22 +24,17 @@ import io.spine.net.EmailAddress;
 import javaclasses.mealorder.PurchaseOrder;
 
 /**
- * Utility interface managing the sending process of a purchase order
+ * Utility class managing the sending process of a purchase order
  * to the vendor.
  *
  * @author Yegor Udovchenko
  */
-public interface PurchaseOrderSender {
+public class PurchaseOrderSenderImpl implements PurchaseOrderSender {
 
-    /**
-     * Creates the Spreadsheet from the order list of the purchase order.
-     * Sends it to vendor email address.
-     *
-     * @param purchaseOrder purchase order to form spreadsheet and send
-     * @param senderEmail   the email of the sender
-     * @param vendorEmail   the email of the vendor
-     */
-    void formAndSendPurchaseOrder(PurchaseOrder purchaseOrder,
-                             EmailAddress senderEmail,
-                             EmailAddress vendorEmail);
+    public void formAndSendPurchaseOrder(PurchaseOrder purchaseOrder,
+                                         EmailAddress senderEmail,
+                                         EmailAddress vendorEmail) {
+
+    }
+
 }

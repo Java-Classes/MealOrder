@@ -79,14 +79,11 @@ import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregate
 public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         PurchaseOrder, PurchaseOrderVBuilder> {
 
-    private PurchaseOrderSender poSender;
-
     /**
      * {@inheritDoc}
      */
-    public PurchaseOrderAggregate(PurchaseOrderId id, PurchaseOrderSender poSender) {
+    public PurchaseOrderAggregate(PurchaseOrderId id) {
         super(id);
-        this.poSender = poSender;
     }
 
     @Assign
@@ -100,7 +97,6 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
         List<Order> invalidOrders = findInvalidOrders(cmd.getOrdersList());
 
-        // TODO 2/16/2018[yegor.udovchenko]:add PO event signalizing sending error.
         if (invalidOrders.isEmpty()) {
             result.add(createPOValidationPassedEvent(cmd));
             final PurchaseOrder purchaseOrder = PurchaseOrder.newBuilder()
@@ -109,14 +105,18 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                                              .addAllOrders(cmd.getOrdersList())
                                                              .build();
 
-            if (poSender.formAndSendPurchaseOrder(purchaseOrder, cmd.getWhoCreates()
-                                                                    .getEmail(),
-                                                  cmd.getVendorEmail())) {
-                result.add(createPOSentEvent(purchaseOrder,
-                                             cmd.getWhoCreates()
-                                                .getEmail(),
-                                             cmd.getVendorEmail()));
-            }
+            final EmailAddress senderEmail = cmd.getWhoCreates()
+                                                .getEmail();
+            final EmailAddress vendorEmail = cmd.getVendorEmail();
+            ServiceFactory.getPurchaseOrderSender()
+                          .formAndSendPurchaseOrder(
+                                  purchaseOrder,
+                                  senderEmail,
+                                  vendorEmail);
+            result.add(createPOSentEvent(purchaseOrder,
+                                         senderEmail,
+                                         vendorEmail));
+
         } else {
             result.add(createPOValidationFailedEvent(cmd, invalidOrders));
         }
@@ -131,13 +131,17 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         }
         ImmutableList.Builder<Message> result = ImmutableList.builder();
         result.add(createPOValidationOverruledEvent(cmd));
-        // TODO 2/16/2018[yegor.udovchenko]:add PO event signalizing sending error.
-        if (poSender.formAndSendPurchaseOrder(getState(), cmd.getUserId()
-                                                             .getEmail(), cmd.getVendorEmail())) {
-            result.add(createPOSentEvent(getState(), cmd.getUserId()
-                                                        .getEmail(),
-                                         cmd.getVendorEmail()));
-        }
+        final EmailAddress senderEmail = cmd.getUserId()
+                                            .getEmail();
+        final EmailAddress vendorEmail = cmd.getVendorEmail();
+        ServiceFactory.getPurchaseOrderSender()
+                      .formAndSendPurchaseOrder(
+                              getState(),
+                              senderEmail,
+                              vendorEmail);
+        result.add(createPOSentEvent(getState(),
+                                     senderEmail,
+                                     vendorEmail));
         return result.build();
     }
 
@@ -279,13 +283,12 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     private PurchaseOrderSent createPOSentEvent(PurchaseOrder purchaseOrder,
-                                                EmailAddress senderEmail,
-                                                EmailAddress vendorEmail) {
+                                                EmailAddress senderEmail, EmailAddress vendorEmail
+    ) {
         return PurchaseOrderSent.newBuilder()
                                 .setPurchaseOrder(purchaseOrder)
                                 .setSenderEmail(senderEmail)
                                 .setVendorEmail(vendorEmail)
-                                .setWhenSent(getCurrentTime())
                                 .build();
     }
 }
