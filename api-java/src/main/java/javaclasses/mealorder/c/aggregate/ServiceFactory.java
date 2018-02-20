@@ -20,26 +20,42 @@
 
 package javaclasses.mealorder.c.aggregate;
 
-import io.spine.net.EmailAddress;
-import javaclasses.mealorder.PurchaseOrder;
+import com.google.common.annotations.VisibleForTesting;
+import io.spine.Environment;
 
 /**
- * Utility interface managing the sending process of a purchase order
- * to the vendor.
+ * The utility class representing service factory.
+ * Used by {@code PurchaseOrderAggregate} upon the purchase
+ * order creation.
  *
  * @author Yegor Udovchenko
  */
-public interface PurchaseOrderSender {
+public class ServiceFactory {
+
+    // TODO 2/20/2018[yegor.udovchenko]: Replace with implementation
+    private static PurchaseOrderSender poSenderInstance = null;
+
+    private ServiceFactory() {
+        // Prevent instantiation of this utility class.
+    }
 
     /**
-     * Creates the Spreadsheet from the order list of the purchase order.
-     * Sends it to vendor email address.
+     * Provides instance of {@link PurchaseOrderSender}
      *
-     * @param purchaseOrder purchase order to form spreadsheet and send
-     * @param senderEmail   the email of the sender
-     * @param vendorEmail   the email of the vendor
+     * @return {@code PurchaseOrderSender} default instance.
      */
-    void formAndSendPurchaseOrder(PurchaseOrder purchaseOrder,
-                                  EmailAddress senderEmail,
-                                  EmailAddress vendorEmail);
+    static PurchaseOrderSender getPurchaseOrderSender() {
+        return poSenderInstance;
+    }
+
+    @VisibleForTesting
+    public static void setPoSenderInstance(
+            PurchaseOrderSender poSenderInstance) {
+        if (Environment.getInstance()
+                       .isTests()) {
+            ServiceFactory.poSenderInstance = poSenderInstance;
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
 }

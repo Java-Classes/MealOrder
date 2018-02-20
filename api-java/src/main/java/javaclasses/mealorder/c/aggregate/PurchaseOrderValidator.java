@@ -46,6 +46,7 @@ public class PurchaseOrderValidator {
     private static final int MAX_SINGLE_DISH_COUNT = 20;
 
     private PurchaseOrderValidator() {
+        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -102,9 +103,9 @@ public class PurchaseOrderValidator {
     }
 
     private static boolean checkOrderingDatesMatch(Order order, LocalDate poDate) {
-        return order.hasId() && order.getId()
-                                     .getOrderDate()
-                                     .equals(poDate);
+        return order.getId()
+                    .getOrderDate()
+                    .equals(poDate);
     }
 
     private static boolean checkOrderNotEmpty(Order order) {
@@ -113,10 +114,9 @@ public class PurchaseOrderValidator {
     }
 
     private static boolean checkVendorsMatch(Order order, VendorId vendorId) {
-        return order.hasId() && order.getId()
-                                     .hasVendorId() && order.getId()
-                                                            .getVendorId()
-                                                            .equals(vendorId);
+        return order.getId()
+                    .getVendorId()
+                    .equals(vendorId);
     }
 
     private static boolean checkOrderIsActive(Order order) {

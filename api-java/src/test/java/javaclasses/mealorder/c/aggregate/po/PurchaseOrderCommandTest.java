@@ -23,18 +23,15 @@ package javaclasses.mealorder.c.aggregate.po;
 import com.google.protobuf.Message;
 import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
-import io.spine.net.EmailAddress;
 import io.spine.server.aggregate.AggregateCommandTest;
-import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.c.aggregate.PurchaseOrderAggregate;
 import javaclasses.mealorder.c.aggregate.PurchaseOrderSender;
+import javaclasses.mealorder.c.aggregate.ServiceFactory;
 
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.DATE;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.VENDOR_ID;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * The parent class for the {@link PurchaseOrderAggregate} test classes.
@@ -48,42 +45,29 @@ abstract class PurchaseOrderCommandTest<C extends Message>
             TestActorRequestFactory.newInstance(getClass());
     PurchaseOrderAggregate aggregate;
     PurchaseOrderId purchaseOrderId;
-    private PurchaseOrderSender purchaseOrderSenderMock;
 
     @Override
     protected void setUp() {
-        if (purchaseOrderSenderMock == null) {
-            setSenderMockWithTrueAnswer();
-        }
         super.setUp();
         aggregate = aggregate().get();
+        setSenderMock();
     }
 
     @Override
     protected PurchaseOrderAggregate createAggregate() {
         purchaseOrderId = createPurchaseOrderId();
-        return new PurchaseOrderAggregate(purchaseOrderId, purchaseOrderSenderMock);
+        PurchaseOrderAggregate purchaseOrderAggregate = new PurchaseOrderAggregate(purchaseOrderId);
+        return purchaseOrderAggregate;
     }
 
-    protected void setSenderMockWithFalseAnswer() {
-        purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
-        when(purchaseOrderSenderMock.formAndSendPurchaseOrder(any(PurchaseOrder.class),
-                                                              any(EmailAddress.class),
-                                                              any(EmailAddress.class)))
-                .thenReturn(false);
+    private void setSenderMock() {
+        PurchaseOrderSender purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
+        ServiceFactory.setPoSenderInstance(purchaseOrderSenderMock);
     }
 
     CommandEnvelope envelopeOf(Message commandMessage) {
         return CommandEnvelope.of(requestFactory.command()
                                                 .create(commandMessage));
-    }
-
-    private void setSenderMockWithTrueAnswer() {
-        purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
-        when(purchaseOrderSenderMock.formAndSendPurchaseOrder(any(PurchaseOrder.class),
-                                                              any(EmailAddress.class),
-                                                              any(EmailAddress.class)))
-                .thenReturn(true);
     }
 
     private static PurchaseOrderId createPurchaseOrderId() {

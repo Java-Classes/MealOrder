@@ -29,11 +29,11 @@ import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
  * @author Yurii Haidamaka
  */
 @DisplayName("VendorValidator should")
-public class VendorValidatorTest {
+class VendorValidatorTest {
 
     @Test
     @DisplayName("have the private constructor")
-    public void havePrivateConstructor() {
+    void havePrivateConstructor() {
         assertHasPrivateParameterlessCtor(VendorValidator.class);
     }
 }
