@@ -117,7 +117,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
         final java.util.Optional<Menu> menu = menus.stream()
                                                    .filter(m -> cmd.getMenuId()
-                                                             .equals(m.getId()))
+                                                                   .equals(m.getId()))
                                                    .findFirst();
 
         if (!menu.isPresent() || !isMenuAvailable(menu.get()
@@ -206,20 +206,20 @@ public class OrderAggregate extends Aggregate<OrderId,
     // Event appliers
 
     @Apply
-    private void orderCreated(OrderCreated event) {
+    void orderCreated(OrderCreated event) {
         getBuilder().setId(event.getOrderId())
                     .setStatus(ORDER_ACTIVE)
                     .build();
     }
 
     @Apply
-    private void dishAddedToOrder(DishAddedToOrder event) {
+    void dishAddedToOrder(DishAddedToOrder event) {
         getBuilder().addDishes(event.getDish())
                     .build();
     }
 
     @Apply
-    private void dishRemovedFromOrder(DishRemovedFromOrder event) {
+    void dishRemovedFromOrder(DishRemovedFromOrder event) {
         for (int i = 0; i < getState().getDishesCount(); i++) {
             if (event.getDish()
                      .equals(getState().getDishes(i))) {
@@ -231,7 +231,7 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     @Apply
-    private void orderCanceled(OrderCanceled event) {
+    void orderCanceled(OrderCanceled event) {
         getBuilder().setStatus(ORDER_CANCELED)
                     .build();
     }

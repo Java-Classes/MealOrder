@@ -25,14 +25,13 @@ import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
-import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
 
 import static io.spine.time.MonthOfYear.FEBRUARY;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID_2;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.NONEXISTENT_MENU_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
 
@@ -67,7 +66,7 @@ public class TestOrderCommandFactory {
                                         .build();
 
     public static CreateOrder createOrderInstanceForNonExistenMenu() {
-        return createOrderInstance(ORDER_ID, MENU_ID_2);
+        return createOrderInstance(ORDER_ID, NONEXISTENT_MENU_ID);
     }
 
     public static CreateOrder createOrderInstance(OrderId orderId, MenuId menuId) {
