@@ -103,7 +103,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         Triplet result;
         final PurchaseOrderCreated poCreatedEvent = createPOCreatedEvent(cmd);
 
-        List<Order> invalidOrders = findInvalidOrders(cmd.getOrdersList());
+        final List<Order> invalidOrders = findInvalidOrders(cmd.getOrdersList());
 
         if (invalidOrders.isEmpty()) {
             final PurchaseOrderValidationPassed passedEvent = createPOValidationPassedEvent(cmd);
@@ -127,7 +127,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
             result = Triplet.of(poCreatedEvent, passedEvent, poSentEvent);
 
         } else {
-            PurchaseOrderValidationFailed validationFailedEvent = createPOValidationFailedEvent(
+            final PurchaseOrderValidationFailed validationFailedEvent = createPOValidationFailedEvent(
                     cmd, invalidOrders);
             result = Triplet.withNullable(poCreatedEvent, validationFailedEvent, null);
         }
