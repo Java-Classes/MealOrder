@@ -114,7 +114,7 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
                                                                     envelopeOf(createPOcmd));
 
         assertNotNull(aggregate.getId());
-        assertEquals(2, messageList.size());
+        assertEquals(3, messageList.size());
         assertEquals(PurchaseOrderCreated.class, messageList.get(0)
                                                             .getClass());
         assertEquals(PurchaseOrderValidationFailed.class, messageList.get(1)

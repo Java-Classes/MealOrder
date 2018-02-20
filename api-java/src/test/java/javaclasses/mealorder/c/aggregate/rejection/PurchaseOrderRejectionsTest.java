@@ -42,7 +42,7 @@ import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregate
 import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.PURCHASE_ORDER_ID;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.USER_ID;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.cancelPurchaseOrderInstance;
+import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.cancelPOWithCustomReasonInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithNotActiveOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsDeliveredInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsValidInstance;
@@ -95,7 +95,7 @@ class PurchaseOrderRejectionsTest {
     @Test
     @DisplayName("throw CannotCancelDeliveredPurchaseOrder rejection")
     void throwCannotCancelDeliveredPurchaseOrderRejection() {
-        CancelPurchaseOrder cmd = cancelPurchaseOrderInstance();
+        CancelPurchaseOrder cmd = cancelPOWithCustomReasonInstance();
         final CannotCancelDeliveredPurchaseOrder rejection =
                 assertThrows(CannotCancelDeliveredPurchaseOrder.class,
                              () -> throwCannotCancelDeliveredPurchaseOrder(cmd));

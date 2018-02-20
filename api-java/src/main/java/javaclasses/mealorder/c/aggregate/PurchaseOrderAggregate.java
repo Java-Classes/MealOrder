@@ -21,7 +21,6 @@
 package javaclasses.mealorder.c.aggregate;
 
 import com.google.protobuf.Empty;
-import com.google.protobuf.Message;
 import io.spine.net.EmailAddress;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
@@ -291,14 +290,11 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
         switch (cmd.getReasonCase()) {
             case INVALID:
-                return builder.setInvalid(cmd.getInvalid())
-                              .build();
+                builder.setInvalid(cmd.getInvalid()); break;
             case CUSTOM_REASON:
-                return builder.setCustomReason(cmd.getCustomReason())
-                              .build();
-            default:
-                return builder.build();
+                builder.setCustomReason(cmd.getCustomReason()); break;
         }
+        return builder.build();
     }
 
     private PurchaseOrderSent createPOSentEvent(PurchaseOrder purchaseOrder,

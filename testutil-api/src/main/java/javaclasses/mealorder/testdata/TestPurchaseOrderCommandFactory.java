@@ -225,10 +225,23 @@ public class TestPurchaseOrderCommandFactory {
      *
      * @return the {@code CancelPurchaseOrder} instance.
      */
-    public static CancelPurchaseOrder cancelPurchaseOrderInstance() {
+    public static CancelPurchaseOrder cancelPOWithCustomReasonInstance() {
         return CancelPurchaseOrder.newBuilder()
                                   .setId(PURCHASE_ORDER_ID)
                                   .setCustomReason("Because why not")
+                                  .setUserId(USER_ID)
+                                  .build();
+    }
+
+    /**
+     * Provides a default {@link CancelPurchaseOrder} instance
+     *
+     * @return the {@code CancelPurchaseOrder} instance.
+     */
+    public static CancelPurchaseOrder cancelPOWithInvalidReasonInstance() {
+        return CancelPurchaseOrder.newBuilder()
+                                  .setId(PURCHASE_ORDER_ID)
+                                  .setInvalid(true)
                                   .setUserId(USER_ID)
                                   .build();
     }
