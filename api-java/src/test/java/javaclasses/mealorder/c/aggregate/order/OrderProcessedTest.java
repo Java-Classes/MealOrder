@@ -21,73 +21,67 @@
 package javaclasses.mealorder.c.aggregate.order;
 
 import com.google.common.base.Optional;
-import io.grpc.stub.StreamObserver;
-import io.spine.client.TestActorRequestFactory;
-import io.spine.core.Ack;
 import io.spine.core.Command;
 import io.spine.grpc.StreamObservers;
-import io.spine.server.BoundedContext;
 import io.spine.server.entity.Repository;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.c.aggregate.OrderAggregate;
+import javaclasses.mealorder.c.aggregate.PurchaseOrderSender;
+import javaclasses.mealorder.c.aggregate.ServiceFactory;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
-import javaclasses.mealorder.c.context.BoundedContexts;
 import javaclasses.mealorder.c.repository.OrderRepository;
-import javaclasses.mealorder.testdata.TestVendorCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.OrderStatus.ORDER_PROCESSED;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.DISH;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.ORDER;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.ORDER_ID;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.PURCHASE_ORDER_ID;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.USER_ID;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH1;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Vlad Kozachenko
  */
-public class OrderProcessedTest {
+public class OrderProcessedTest extends OrderCommandTest {
 
-    private final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
-    private final TestActorRequestFactory requestFactory = TestActorRequestFactory.newInstance(
-            getClass());
-    private BoundedContext boundedContext;
+    final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+    final Command createOrderCommand = requestFactory.command()
+                                                     .create(toMessage(createOrder));
 
     @BeforeEach
-    public void setUpBoundedContext() {
-        boundedContext = BoundedContexts.create();
+    public void setUp() {
+        super.setUp();
+        commandBus.post(createOrderCommand, StreamObservers.noOpObserver());
     }
 
     @Test
     @DisplayName("create order and add it to purchase order")
     public void testMarkOrderProcessed() {
 
-        final CreateOrder createOrder = CreateOrder.newBuilder()
-                                                   .setOrderId(ORDER_ID)
-                                                   .build();
-        final Command createOrderCommand = requestFactory.createCommand(createOrder);
-        boundedContext.getCommandBus()
-                      .post(createOrderCommand, observer);
-
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
-                                                            .setDish(DISH)
+                                                            .setDish(DISH1)
                                                             .setOrderId(ORDER_ID)
                                                             .build();
-        final Command addDishToOrderCommand = requestFactory.createCommand(addDishToOrder);
+        final Command addDishToOrderCommand = requestFactory.command()
+                                                            .create(toMessage(addDishToOrder));
         boundedContext.getCommandBus()
-                      .post(addDishToOrderCommand, observer);
+                      .post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
         final CreatePurchaseOrder createPurchaseOrder = createPurchaseOrderInstance();
-        final Command createPOCommand = requestFactory.createCommand(createPurchaseOrder);
+        final Command createPOCommand = requestFactory.command()
+                                                      .create(createPurchaseOrder);
+        ServiceFactory.setPoSenderInstance(mock(PurchaseOrderSender.class));
+
         boundedContext.getCommandBus()
-                      .post(createPOCommand, observer);
+                      .post(createPOCommand, StreamObservers.noOpObserver());
 
         final Optional<Repository> repositoryOptional = boundedContext.findRepository(Order.class);
 
@@ -95,11 +89,10 @@ public class OrderProcessedTest {
         assertTrue(repositoryOptional.get() instanceof OrderRepository);
         final OrderRepository orderRepository = (OrderRepository) repositoryOptional.get();
 
-        final OrderAggregate order = orderRepository.find(ORDER_ID).get();
+        final OrderAggregate order = orderRepository.find(ORDER_ID)
+                                                    .get();
 
         assertEquals(ORDER_PROCESSED, order.getState()
                                            .getStatus());
-
     }
-
 }

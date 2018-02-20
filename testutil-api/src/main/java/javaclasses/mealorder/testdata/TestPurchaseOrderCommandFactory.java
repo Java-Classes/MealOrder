@@ -20,14 +20,8 @@
 
 package javaclasses.mealorder.testdata;
 
-import io.spine.money.Currency;
-import io.spine.money.Money;
-import io.spine.net.EmailAddress;
 import io.spine.time.LocalDate;
-import io.spine.time.MonthOfYear;
 import javaclasses.mealorder.Dish;
-import javaclasses.mealorder.DishId;
-import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.PurchaseOrderId;
@@ -42,9 +36,13 @@ import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.DATE;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH1;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
 
 /**
  * A factory of the purchase order commands for the test needs.
@@ -53,51 +51,15 @@ import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
  */
 public class TestPurchaseOrderCommandFactory {
 
-    public static final VendorId VENDOR_ID = VendorId.newBuilder()
-                                                     .setValue("vendor:vendor")
-                                                     .build();
-    public static final LocalDate DATE = LocalDate
-            .newBuilder()
-            .setYear(2018)
-            .setMonth(MonthOfYear.FEBRUARY)
-            .setDay(12)
-            .build();
     public static final PurchaseOrderId PURCHASE_ORDER_ID = PurchaseOrderId
             .newBuilder()
             .setVendorId(VENDOR_ID)
             .setPoDate(DATE)
             .build();
-    public static final UserId USER_ID = UserId.newBuilder()
-                                               .setEmail(EmailAddress
-                                                                 .newBuilder()
-                                                                 .setValue("example@example.net")
-                                                                 .build())
-                                               .build();
-    public static final OrderId ORDER_ID = OrderId.newBuilder()
-                                                  .setVendorId(VENDOR_ID)
-                                                  .setUserId(USER_ID)
-                                                  .setOrderDate(DATE)
-                                                  .build();
-    public static final MenuId MENU_ID = MenuId.newBuilder()
-                                               .setVendorId(VENDOR_ID)
-                                               .setWhenImported(getCurrentTime())
-                                               .build();
-    public static final DishId DISH_ID = DishId.newBuilder()
-                                               .setMenuId(MENU_ID)
-                                               .setSequentialNumber(1)
-                                               .build();
-    public static final Dish DISH = Dish.newBuilder()
-                                        .setId(DISH_ID)
-                                        .setName("Dish")
-                                        .setCategory("Category")
-                                        .setPrice(Money.newBuilder()
-                                                       .setCurrency(Currency.USD)
-                                                       .setAmount(100)
-                                                       .build())
-                                        .build();
+
     public static final Order ORDER = Order.newBuilder()
                                            .setId(ORDER_ID)
-                                           .addDishes(DISH)
+                                           .addDishes(DISH1)
                                            .setStatus(ORDER_ACTIVE)
                                            .build();
 
@@ -110,10 +72,18 @@ public class TestPurchaseOrderCommandFactory {
      * @return the {@code CreatePurchaseOrder} instance
      */
     public static CreatePurchaseOrder createPurchaseOrderInstance() {
+        final CreatePurchaseOrder result = createPurchaseOrderInstance(PURCHASE_ORDER_ID, USER_ID,
+                                                                       ORDER);
+        return result;
+    }
+
+    /// TODO: 2/20/2018
+    public static CreatePurchaseOrder createPurchaseOrderInstance(PurchaseOrderId purchaseOrderId,
+                                                                  UserId userId, Order order) {
         final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
-                                                              .setId(PURCHASE_ORDER_ID)
-                                                              .setWhoCreates(USER_ID)
-                                                              .addOrders(ORDER)
+                                                              .setId(purchaseOrderId)
+                                                              .setWhoCreates(userId)
+                                                              .addOrders(order)
                                                               .build();
         return result;
     }

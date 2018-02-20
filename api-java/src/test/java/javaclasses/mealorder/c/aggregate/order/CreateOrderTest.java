@@ -33,7 +33,6 @@ import javaclasses.mealorder.c.aggregate.VendorAggregate;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.Rejections;
-import javaclasses.mealorder.testdata.OrderTestEnv;
 import javaclasses.mealorder.testdata.OrderTestEnv.MenuNotAvailableSubscriber;
 import javaclasses.mealorder.testdata.OrderTestEnv.OrderAlreadyExistsSubscriber;
 import javaclasses.mealorder.testdata.OrderTestEnv.OrderCreatedSubscriber;
@@ -43,7 +42,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.grpc.StreamObservers.memoizingObserver;
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_DATE;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.DATE;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistenMenu;
@@ -176,7 +175,7 @@ public class CreateOrderTest extends OrderCommandTest{
         Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
 
         assertEquals(USER_ID, menuNotAvailable.getUserId());
-        assertEquals(ORDER_DATE, menuNotAvailable.getOrderDate());
+        assertEquals(DATE, menuNotAvailable.getOrderDate());
         assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
     }
 }

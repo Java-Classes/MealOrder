@@ -41,11 +41,11 @@ import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregate
 import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
 import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.PURCHASE_ORDER_ID;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.USER_ID;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.cancelPOWithCustomReasonInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithNotActiveOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsDeliveredInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsValidInstance;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

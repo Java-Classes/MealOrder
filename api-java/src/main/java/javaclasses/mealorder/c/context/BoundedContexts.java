@@ -77,9 +77,8 @@ public final class BoundedContexts {
         final OrderRepository orderRepository = new OrderRepository();
         final PurchaseOrderRepository purchaseOrderRepository = new PurchaseOrderRepository();
 
-        final EventBus.Builder eventBus = createEventBus(storageFactory);
 
-        final BoundedContext boundedContext = createBoundedContext(eventBus);
+        final BoundedContext boundedContext = createBoundedContext(storageFactory);
 
         boundedContext.register(vendorRepository);
         boundedContext.register(orderRepository);
@@ -87,24 +86,12 @@ public final class BoundedContexts {
         return boundedContext;
     }
 
-    private static EventBus.Builder createEventBus(StorageFactory storageFactory) {
-
-        final EventBus.Builder eventBus = EventBus.newBuilder()
-                                                  .setStorageFactory(storageFactory);
-        return eventBus;
-    }
-
     @VisibleForTesting
-    static BoundedContext createBoundedContext(EventBus.Builder eventBus) {
-        checkNotNull(eventBus);
-        final Optional<StorageFactory> storageFactory = eventBus.getStorageFactory();
-        if (!storageFactory.isPresent()) {
-            throw newIllegalStateException("EventBus does not specify a StorageFactory.");
-        }
+    static BoundedContext createBoundedContext(StorageFactory storageFactory) {
+        checkNotNull(storageFactory);
         return BoundedContext.newBuilder()
-                             .setStorageFactorySupplier(storageFactory::get)
+                             .setStorageFactorySupplier(() -> storageFactory)
                              .setName(NAME)
-                             .setEventBus(eventBus)
                              .build();
     }
 }

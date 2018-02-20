@@ -41,18 +41,18 @@ import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
  */
 public class TestOrderCommandFactory {
 
-    public static final LocalDate ORDER_DATE = LocalDate.newBuilder()
-                                                        .setYear(
+    public static final LocalDate DATE = LocalDate.newBuilder()
+                                                  .setYear(
                                                                 2019)
-                                                        .setMonth(
+                                                  .setMonth(
                                                                 FEBRUARY)
-                                                        .setDay(15)
-                                                        .build();
+                                                  .setDay(15)
+                                                  .build();
 
     public static final OrderId ORDER_ID = OrderId.newBuilder()
                                                   .setUserId(USER_ID)
                                                   .setVendorId(VENDOR_ID)
-                                                  .setOrderDate(ORDER_DATE)
+                                                  .setOrderDate(DATE)
                                                   .build();
 
     public static final VendorId INVALID_VENDOR_ID = VendorId.newBuilder()

@@ -85,13 +85,9 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     /**
      * {@inheritDoc}
      */
-    public PurchaseOrderAggregate(PurchaseOrderId id) {
-        super(id);
-    }
 
     public PurchaseOrderAggregate(PurchaseOrderId id) {
         super(id);
-        poSender = new PurchaseOrderSender();
     }
 
     @Assign
