@@ -132,6 +132,12 @@ public class TestValues {
                                                                      .setRangeEnd(END_DATE)
                                                                      .build();
 
+    public static final LocalDate START_DATE_FROM_PAST = LocalDate.newBuilder()
+                                                                  .setYear(2017)
+                                                                  .setMonthValue(2)
+                                                                  .setDay(13)
+                                                                  .build();
+
     public static final LocalDate INVALID_START_DATE = LocalDate.newBuilder()
                                                                 .setYear(2019)
                                                                 .setMonthValue(2)
@@ -147,6 +153,13 @@ public class TestValues {
     public static final MenuDateRange INVALID_MENU_DATE_RANGE = MenuDateRange.newBuilder()
                                                                              .setRangeStart(
                                                                                      INVALID_START_DATE)
+                                                                             .setRangeEnd(
+                                                                                     INVALID_END_DATE)
+                                                                             .build();
+
+    public static final MenuDateRange MENU_DATE_RANGE_START_FROM_PAST = MenuDateRange.newBuilder()
+                                                                             .setRangeStart(
+                                                                                     START_DATE_FROM_PAST)
                                                                              .setRangeEnd(
                                                                                      INVALID_END_DATE)
                                                                              .build();
