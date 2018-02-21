@@ -40,7 +40,7 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.mealorder.testdata.TestValues.INVALID_MENU_DATE_RANGE;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
-import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_START_FROM_PAST;
+import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_FROM_PAST;
 import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.USER_ID;
 import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
@@ -141,29 +141,31 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
         assertEquals(setInvalidDateRangeForMenu.getMenuDateRange(), rejection.getMenuDateRange());
     }
 
-
     @Test
     @DisplayName("produce CannotSetDateRange rejection if the order date  is from the past")
     void produceCannotSetDateRangeRejection() {
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 
-        final SetDateRangeForMenu setInvalidDateRangeForMenuWithStartFromPast = setDateRangeForMenuInstance(
-                VENDOR_ID, MENU_ID, USER_ID, MENU_DATE_RANGE_START_FROM_PAST);
+        final SetDateRangeForMenu setInvalidDateRangeForMenuFromPast = setDateRangeForMenuInstance(
+                VENDOR_ID, MENU_ID, USER_ID, MENU_DATE_RANGE_FROM_PAST);
 
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(
-                                                                       setInvalidDateRangeForMenuWithStartFromPast)));
+                                                                       setInvalidDateRangeForMenuFromPast)));
         final Throwable cause = Throwables.getRootCause(t);
 
         @SuppressWarnings("ConstantConditions") // Instance type checked before.
         final Rejections.CannotSetDateRange rejection =
                 ((CannotSetDateRange) cause).getMessageThrown();
 
-        assertEquals(setInvalidDateRangeForMenuWithStartFromPast.getVendorId(), rejection.getVendorId());
-        assertEquals(setInvalidDateRangeForMenuWithStartFromPast.getMenuId(), rejection.getMenuId());
-        assertEquals(setInvalidDateRangeForMenuWithStartFromPast.getMenuDateRange(), rejection.getMenuDateRange());
+        assertEquals(setInvalidDateRangeForMenuFromPast.getVendorId(),
+                     rejection.getVendorId());
+        assertEquals(setInvalidDateRangeForMenuFromPast.getMenuId(),
+                     rejection.getMenuId());
+        assertEquals(setInvalidDateRangeForMenuFromPast.getMenuDateRange(),
+                     rejection.getMenuDateRange());
     }
 
     @Test

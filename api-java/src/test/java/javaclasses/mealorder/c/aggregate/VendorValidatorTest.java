@@ -20,10 +20,16 @@
 
 package javaclasses.mealorder.c.aggregate;
 
+import javaclasses.mealorder.Menu;
+import javaclasses.mealorder.Vendor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static javaclasses.mealorder.c.aggregate.VendorValidator.isThereMenuForThisDateRange;
+import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_FROM_PAST;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * @author Yurii Haidamaka
@@ -35,5 +41,19 @@ class VendorValidatorTest {
     @DisplayName("have the private constructor")
     void havePrivateConstructor() {
         assertHasPrivateParameterlessCtor(VendorValidator.class);
+    }
+
+    @Test
+    @DisplayName("return false if menu date ranges are not overlapping")
+    void returnFalseIfDateRangesAreNotOverlapping() {
+
+        final Vendor vendor = Vendor.newBuilder()
+                                    .addMenu(Menu.newBuilder()
+                                                 .setMenuDateRange(MENU_DATE_RANGE)
+                                                 .build())
+                                    .build();
+
+        assertFalse(isThereMenuForThisDateRange(vendor, MENU_DATE_RANGE_FROM_PAST));
+
     }
 }

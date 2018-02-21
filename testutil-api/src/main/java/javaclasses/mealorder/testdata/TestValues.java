@@ -138,6 +138,12 @@ public class TestValues {
                                                                   .setDay(13)
                                                                   .build();
 
+    public static final LocalDate END_DATE_FROM_PAST = LocalDate.newBuilder()
+                                                                .setYear(2017)
+                                                                .setMonthValue(2)
+                                                                .setDay(19)
+                                                                .build();
+
     public static final LocalDate INVALID_START_DATE = LocalDate.newBuilder()
                                                                 .setYear(2020)
                                                                 .setMonthValue(2)
@@ -157,12 +163,12 @@ public class TestValues {
                                                                                      INVALID_END_DATE)
                                                                              .build();
 
-    public static final MenuDateRange MENU_DATE_RANGE_START_FROM_PAST = MenuDateRange.newBuilder()
-                                                                             .setRangeStart(
-                                                                                     START_DATE_FROM_PAST)
-                                                                             .setRangeEnd(
-                                                                                     INVALID_END_DATE)
-                                                                             .build();
+    public static final MenuDateRange MENU_DATE_RANGE_FROM_PAST = MenuDateRange.newBuilder()
+                                                                               .setRangeStart(
+                                                                                             START_DATE_FROM_PAST)
+                                                                               .setRangeEnd(
+                                                                                             END_DATE_FROM_PAST)
+                                                                               .build();
 
     public static final Dish DISH1 = Dish.newBuilder()
                                          .setId(DishId.newBuilder()
@@ -198,22 +204,23 @@ public class TestValues {
                                                   .setOrderDate(DATE)
                                                   .build();
 
-
     public static final VendorId INVALID_VENDOR_ID = VendorId.newBuilder()
                                                              .setValue("vendor:INVALID")
                                                              .build();
 
     public static final OrderId ORDER_ID_WITH_INVALID_VENDOR = OrderId.newBuilder()
-                                                  .setUserId(USER_ID)
-                                                  .setVendorId(INVALID_VENDOR_ID)
-                                                  .setOrderDate(DATE)
-                                                  .build();
+                                                                      .setUserId(USER_ID)
+                                                                      .setVendorId(
+                                                                              INVALID_VENDOR_ID)
+                                                                      .setOrderDate(DATE)
+                                                                      .build();
 
     public static final OrderId ORDER_ID_WITH_INVALID_DATE = OrderId.newBuilder()
-                                                  .setUserId(USER_ID)
-                                                  .setVendorId(VENDOR_ID)
-                                                  .setOrderDate(INVALID_START_DATE)
-                                                  .build();
+                                                                    .setUserId(USER_ID)
+                                                                    .setVendorId(VENDOR_ID)
+                                                                    .setOrderDate(
+                                                                            INVALID_START_DATE)
+                                                                    .build();
 
     public static final DishId INVALID_DISH_ID = DishId.newBuilder()
                                                        .setMenuId(MenuId.newBuilder()
