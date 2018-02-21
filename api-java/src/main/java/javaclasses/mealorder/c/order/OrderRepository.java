@@ -25,10 +25,10 @@ import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.route.EventRoute;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
-import javaclasses.mealorder.c.order.OrderAggregate;
 import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,27 +40,25 @@ import java.util.stream.Collectors;
 public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate> {
 
     public OrderRepository() {
-        super();
         getEventRouting().replaceDefault((EventRoute<OrderId, Message>) (message, context) -> {
             if (message instanceof PurchaseOrderCreated) {
                 final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) message;
-                Set<OrderId> orderIds = purchaseOrderCreated.getOrderList()
-                                                            .stream()
-                                                            .filter(d -> find(
-                                                                    d.getId()).isPresent())
-                                                            .map(Order::getId)
-                                                            .collect(Collectors.toSet());
-                return orderIds;
-            } else {
-                final PurchaseOrderCanceled purchaseOrderCanceled = (PurchaseOrderCanceled) message;
-                Set<OrderId> orderIds = purchaseOrderCanceled.getOrderList()
-                                                             .stream()
-                                                             .filter(d -> find(
-                                                                     d.getId()).isPresent())
-                                                             .map(Order::getId)
-                                                             .collect(Collectors.toSet());
+                final Set<OrderId> orderIds = filterOrderIds(purchaseOrderCreated.getOrderList());
                 return orderIds;
             }
+            final PurchaseOrderCanceled purchaseOrderCanceled = (PurchaseOrderCanceled) message;
+            final Set<OrderId> orderIds =
+                    filterOrderIds(purchaseOrderCanceled.getOrderList());
+            return orderIds;
         });
+    }
+
+    private Set<OrderId> filterOrderIds(List<Order> orderList) {
+        final Set<OrderId> orderIdSet =
+                orderList.stream()
+                         .filter(d -> find(d.getId()).isPresent())
+                         .map(Order::getId)
+                         .collect(Collectors.toSet());
+        return orderIdSet;
     }
 }
