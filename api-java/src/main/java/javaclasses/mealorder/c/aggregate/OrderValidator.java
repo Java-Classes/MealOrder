@@ -33,6 +33,13 @@ public class OrderValidator {
     private OrderValidator() {
     }
 
+    /**
+     * Checks whether the menu is available on the date of the order.
+     *
+     * @param range     menu date range to check
+     * @param orderDate order date to check
+     * @return boolean true if there is a menu on the order date
+     */
     public static boolean isMenuAvailable(MenuDateRange range, LocalDate orderDate) {
         Comparator comparator = new LocalDateComparator();
 

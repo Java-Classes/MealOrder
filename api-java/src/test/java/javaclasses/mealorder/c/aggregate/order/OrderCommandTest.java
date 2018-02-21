@@ -70,5 +70,4 @@ public class OrderCommandTest<T extends Message> {
                                                                   TestVendorCommandFactory.setDateRangeForMenuInstance()));
         commandBus.post(setDateRangeForMenu, StreamObservers.noOpObserver());
     }
-
 }

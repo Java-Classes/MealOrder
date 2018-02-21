@@ -147,6 +147,5 @@ public class OrderAggregateRejections {
             final Timestamp timestamp = getCurrentTime();
             throw new CannotCancelProcessedOrder(orderId, userId, timestamp);
         }
-
     }
 }
