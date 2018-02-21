@@ -32,6 +32,7 @@ import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
@@ -65,148 +66,199 @@ class OrderAggregateRejectionsTest {
         assertHasPrivateParameterlessCtor(OrderAggregateRejections.class);
     }
 
-    @Test
-    @DisplayName("throw OrderAlreadyExists rejection")
-    void throwOrderAlreadyExistsRejection() {
+    @Nested
+    @DisplayName("CreateOrderRejections should")
+    class CreateOrderRejectionsTest {
 
-        CreateOrder cmd = createOrderInstance();
 
-        final OrderAlreadyExists rejection =
-                assertThrows(OrderAlreadyExists.class,
-                             () -> throwOrderAlreadyExists(cmd));
+        @Test
+        @DisplayName("have the private constructor")
+        void havePrivateConstructor() {
+            assertHasPrivateParameterlessCtor(OrderAggregateRejections.CreateOrderRejections.class);
+        }
 
-        assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
-                                                .getOrderId());
-    }
 
-    @Test
-    @DisplayName("throw MenuNotAvailable rejection")
-    void throwMenuNotAvailableRejection() {
+        @Test
+        @DisplayName("throw OrderAlreadyExists rejection")
+        void throwOrderAlreadyExistsRejection() {
 
-        CreateOrder cmd = createOrderInstance();
+            final CreateOrder cmd = createOrderInstance();
 
-        final MenuNotAvailable rejection =
-                assertThrows(MenuNotAvailable.class,
-                             () -> throwMenuNotAvailable(cmd));
+            final OrderAlreadyExists rejection =
+                    assertThrows(OrderAlreadyExists.class,
+                                 () -> throwOrderAlreadyExists(cmd));
 
-        assertEquals(cmd.getOrderId()
-                        .getVendorId(), rejection.getMessageThrown()
-                                                 .getVendorId());
-        assertEquals(cmd.getOrderId()
-                        .getUserId(), rejection.getMessageThrown()
-                                               .getUserId());
-        assertEquals(cmd.getOrderId()
-                        .getOrderDate(), rejection.getMessageThrown()
-                                                  .getOrderDate());
-    }
+            assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
+                                                    .getOrderId());
+        }
 
-    @Test
-    @DisplayName("throw DishVendorMismatch rejection")
-    void throwDishVendorMismatchRejection() {
+        @Test
+        @DisplayName("throw MenuNotAvailable rejection")
+        void throwMenuNotAvailableRejection() {
 
-        AddDishToOrder cmd = addDishToOrderInstance();
+            final CreateOrder cmd = createOrderInstance();
 
-        final DishVendorMismatch rejection =
-                assertThrows(DishVendorMismatch.class,
-                             () -> throwDishVendorMismatch(cmd));
+            final MenuNotAvailable rejection =
+                    assertThrows(MenuNotAvailable.class,
+                                 () -> throwMenuNotAvailable(cmd));
 
-        assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
-                                                .getOrderId());
-        assertEquals(cmd.getOrderId()
-                        .getUserId(), rejection.getMessageThrown()
-                                               .getUserId());
-        assertEquals(cmd.getOrderId()
-                        .getVendorId(), rejection.getMessageThrown()
-                                                 .getVendorMismatch()
-                                                 .getTarget());
-        assertEquals(cmd.getDish()
-                        .getId()
-                        .getMenuId()
-                        .getVendorId(), rejection.getMessageThrown()
-                                                 .getVendorMismatch()
-                                                 .getActual());
-    }
-
-    @Test
-    @DisplayName("throw CannotAddDishToNotActiveOrder rejection")
-    void throwCannotAddDishToNotActiveOrderRejection() {
-
-        AddDishToOrder cmd = addDishToOrderInstance();
-
-        final CannotAddDishToNotActiveOrder rejection =
-                assertThrows(CannotAddDishToNotActiveOrder.class,
-                             () -> throwCannotAddDishToNotActiveOrder(cmd, ORDER_PROCESSED));
-
-        assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
-                                                .getOrderId());
-        assertEquals(cmd.getOrderId()
-                        .getUserId(), rejection.getMessageThrown()
-                                               .getUserId());
-        assertEquals(cmd.getDish()
-                        .getId(), rejection.getMessageThrown()
-                                           .getDishId());
-        assertNotEquals(ORDER_ACTIVE, rejection.getMessageThrown()
-                                               .getOrderStatus());
+            assertEquals(cmd.getOrderId()
+                            .getVendorId(), rejection.getMessageThrown()
+                                                     .getVendorId());
+            assertEquals(cmd.getOrderId()
+                            .getUserId(), rejection.getMessageThrown()
+                                                   .getUserId());
+            assertEquals(cmd.getOrderId()
+                            .getOrderDate(), rejection.getMessageThrown()
+                                                      .getOrderDate());
+        }
     }
 
 
-    @Test
-    @DisplayName("throw CannotRemoveMissingDish rejection")
-    void throwCannotRemoveMissingDishRejection() {
-
-        RemoveDishFromOrder cmd = removeDishFromOrderInstance();
-
-        final CannotRemoveMissingDish rejection =
-                assertThrows(CannotRemoveMissingDish.class,
-                             () -> throwCannotRemoveMissingDish(cmd));
-
-        assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
-                                                .getOrderId());
-        assertEquals(cmd.getOrderId()
-                        .getUserId(), rejection.getMessageThrown()
-                                               .getUserId());
-        assertEquals(cmd.getDishId(), rejection.getMessageThrown()
-                                           .getDishId());
-    }
+    @Nested
+    @DisplayName("AddDishToOrderRejections should")
+    class AddDishToOrderRejectionsTest {
 
 
-    @Test
-    @DisplayName("throw CannotRemoveDishFromNotActiveOrder rejection")
-    void throwCannotRemoveDishFromNotActiveOrderRejection() {
+        @Test
+        @DisplayName("have the private constructor")
+        void havePrivateConstructor() {
+            assertHasPrivateParameterlessCtor(OrderAggregateRejections.AddDishToOrderRejections.class);
+        }
 
-        RemoveDishFromOrder cmd = removeDishFromOrderInstance();
 
-        final CannotRemoveDishFromNotActiveOrder rejection =
-                assertThrows(CannotRemoveDishFromNotActiveOrder.class,
-                             () -> throwCannotRemoveDishFromNotActiveOrder(cmd, ORDER_CANCELED));
+        @Test
+        @DisplayName("throw DishVendorMismatch rejection")
+        void throwDishVendorMismatchRejection() {
 
-        assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
-                                                .getOrderId());
-        assertEquals(cmd.getOrderId()
-                        .getUserId(), rejection.getMessageThrown()
-                                               .getUserId());
-        assertEquals(cmd.getDishId(), rejection.getMessageThrown()
+            final AddDishToOrder cmd = addDishToOrderInstance();
+
+            final DishVendorMismatch rejection =
+                    assertThrows(DishVendorMismatch.class,
+                                 () -> throwDishVendorMismatch(cmd));
+
+            assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
+                                                    .getOrderId());
+            assertEquals(cmd.getOrderId()
+                            .getUserId(), rejection.getMessageThrown()
+                                                   .getUserId());
+            assertEquals(cmd.getOrderId()
+                            .getVendorId(), rejection.getMessageThrown()
+                                                     .getVendorMismatch()
+                                                     .getTarget());
+            assertEquals(cmd.getDish()
+                            .getId()
+                            .getMenuId()
+                            .getVendorId(), rejection.getMessageThrown()
+                                                     .getVendorMismatch()
+                                                     .getActual());
+        }
+
+        @Test
+        @DisplayName("throw CannotAddDishToNotActiveOrder rejection")
+        void throwCannotAddDishToNotActiveOrderRejection() {
+
+            final AddDishToOrder cmd = addDishToOrderInstance();
+
+            final CannotAddDishToNotActiveOrder rejection =
+                    assertThrows(CannotAddDishToNotActiveOrder.class,
+                                 () -> throwCannotAddDishToNotActiveOrder(cmd, ORDER_PROCESSED));
+
+            assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
+                                                    .getOrderId());
+            assertEquals(cmd.getOrderId()
+                            .getUserId(), rejection.getMessageThrown()
+                                                   .getUserId());
+            assertEquals(cmd.getDish()
+                            .getId(), rejection.getMessageThrown()
                                                .getDishId());
+            assertNotEquals(ORDER_ACTIVE, rejection.getMessageThrown()
+                                                   .getOrderStatus());
+        }
+    }
 
-        assertNotEquals(ORDER_ACTIVE, rejection.getMessageThrown()
-                                               .getOrderStatus());
+    @Nested
+    @DisplayName("RemoveDishFromOrderRejections should")
+    class RemoveDishFromOrderRejectionsTest {
+
+        @Test
+        @DisplayName("have the private constructor")
+        void havePrivateConstructor() {
+            assertHasPrivateParameterlessCtor(
+                    OrderAggregateRejections.RemoveDishFromOrderRejections.class);
+        }
+
+        @Test
+        @DisplayName("throw CannotRemoveMissingDish rejection")
+        void throwCannotRemoveMissingDishRejection() {
+
+            final RemoveDishFromOrder cmd = removeDishFromOrderInstance();
+
+            final CannotRemoveMissingDish rejection =
+                    assertThrows(CannotRemoveMissingDish.class,
+                                 () -> throwCannotRemoveMissingDish(cmd));
+
+            assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
+                                                    .getOrderId());
+            assertEquals(cmd.getOrderId()
+                            .getUserId(), rejection.getMessageThrown()
+                                                   .getUserId());
+            assertEquals(cmd.getDishId(), rejection.getMessageThrown()
+                                                   .getDishId());
+        }
+
+
+        @Test
+        @DisplayName("throw CannotRemoveDishFromNotActiveOrder rejection")
+        void throwCannotRemoveDishFromNotActiveOrderRejection() {
+
+            final RemoveDishFromOrder cmd = removeDishFromOrderInstance();
+
+            final CannotRemoveDishFromNotActiveOrder rejection =
+                    assertThrows(CannotRemoveDishFromNotActiveOrder.class,
+                                 () -> throwCannotRemoveDishFromNotActiveOrder(cmd, ORDER_CANCELED));
+
+            assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
+                                                    .getOrderId());
+            assertEquals(cmd.getOrderId()
+                            .getUserId(), rejection.getMessageThrown()
+                                                   .getUserId());
+            assertEquals(cmd.getDishId(), rejection.getMessageThrown()
+                                                   .getDishId());
+
+            assertNotEquals(ORDER_ACTIVE, rejection.getMessageThrown()
+                                                   .getOrderStatus());
+        }
     }
 
 
-    @Test
-    @DisplayName("throw CannotCancelProcessedOrder rejection")
-    void throwCannotCancelProcessedOrderRejection() {
 
-        CancelOrder cmd = cancelOrderInstance();
+    @Nested
+    @DisplayName("CancelOrderRejections should")
+    class CancelOrderRejectionsTest {
 
-        final CannotCancelProcessedOrder rejection =
-                assertThrows(CannotCancelProcessedOrder.class,
-                             () -> throwCannotCancelProcessedOrder(cmd));
+        @Test
+        @DisplayName("have the private constructor")
+        void havePrivateConstructor() {
+            assertHasPrivateParameterlessCtor(
+                    OrderAggregateRejections.CancelOrderRejections.class);
+        }
 
-        assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
-                                                .getOrderId());
-        assertEquals(cmd.getOrderId()
-                        .getUserId(), rejection.getMessageThrown()
-                                               .getUserId());
+        @Test
+        @DisplayName("throw CannotCancelProcessedOrder rejection")
+        void throwCannotCancelProcessedOrderRejection() {
+
+            final CancelOrder cmd = cancelOrderInstance();
+
+            final CannotCancelProcessedOrder rejection =
+                    assertThrows(CannotCancelProcessedOrder.class,
+                                 () -> throwCannotCancelProcessedOrder(cmd));
+
+            assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
+                                                    .getOrderId());
+            assertEquals(cmd.getOrderId()
+                            .getUserId(), rejection.getMessageThrown()
+                                                   .getUserId());
+        }
     }
 }
