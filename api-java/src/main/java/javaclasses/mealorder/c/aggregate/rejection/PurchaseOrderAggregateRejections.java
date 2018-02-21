@@ -60,7 +60,6 @@ public class PurchaseOrderAggregateRejections {
                                      .getVendorId();
         final LocalDate poDate = cmd.getId()
                                     .getPoDate();
-
         throw new CannotCreatePurchaseOrder(vendorId, poDate, getCurrentTime());
     }
 
@@ -75,7 +74,6 @@ public class PurchaseOrderAggregateRejections {
             MarkPurchaseOrderAsDelivered cmd) throws CannotMarkPurchaseOrderAsDelivered {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoMarksAsDelivered();
-
         throw new CannotMarkPurchaseOrderAsDelivered(purchaseOrderId, userId,
                                                      getCurrentTime());
     }
@@ -91,7 +89,6 @@ public class PurchaseOrderAggregateRejections {
             CancelPurchaseOrder cmd) throws CannotCancelDeliveredPurchaseOrder {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
-
         throw new CannotCancelDeliveredPurchaseOrder(purchaseOrderId, userId, getCurrentTime());
     }
 
@@ -106,7 +103,6 @@ public class PurchaseOrderAggregateRejections {
             MarkPurchaseOrderAsValid cmd) throws CannotOverruleValidationOfNotInvalidPO {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
-
         throw new CannotOverruleValidationOfNotInvalidPO(purchaseOrderId, userId, getCurrentTime());
     }
 }
