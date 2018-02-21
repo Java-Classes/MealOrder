@@ -81,7 +81,7 @@ public class CancelOrderTest extends OrderCommandTest {
 
     @Test
     @DisplayName("produce OrderCanceled event")
-    public void produceEvent() {
+    void produceEvent() {
 
         final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
 
@@ -102,7 +102,7 @@ public class CancelOrderTest extends OrderCommandTest {
 
     @Test
     @DisplayName("cancel order")
-    public void cancelOrder() {
+    void cancelOrder() {
 
         final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
 
@@ -135,7 +135,7 @@ public class CancelOrderTest extends OrderCommandTest {
 
     @Test
     @DisplayName("cancel order by react on PurchaseOrderCanceled")
-    public void testOrderCanceledByReact() {
+    void testOrderCanceledByReact() {
 
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
                                                             .setDish(DISH1)
@@ -172,7 +172,7 @@ public class CancelOrderTest extends OrderCommandTest {
 
     @Test
     @DisplayName("throw cannotCreateProcessedOrder")
-    public void throwsCannotCreateProcessedOrder() {
+    void throwsCannotCreateProcessedOrder() {
 
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
                                                             .setDish(DISH1)

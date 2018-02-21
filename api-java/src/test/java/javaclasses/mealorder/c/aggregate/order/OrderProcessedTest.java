@@ -65,7 +65,7 @@ public class OrderProcessedTest extends OrderCommandTest {
 
     @Test
     @DisplayName("mark order as processed")
-    public void testMarkOrderProcessed() {
+    void testMarkOrderProcessed() {
 
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
                                                             .setDish(DISH1)

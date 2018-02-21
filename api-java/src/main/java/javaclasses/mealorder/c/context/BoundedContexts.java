@@ -21,10 +21,8 @@
 package javaclasses.mealorder.c.context;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import io.spine.server.BoundedContext;
 import io.spine.server.aggregate.AggregateRepository;
-import io.spine.server.event.EventBus;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.mealorder.c.repository.OrderRepository;
@@ -32,7 +30,6 @@ import javaclasses.mealorder.c.repository.PurchaseOrderRepository;
 import javaclasses.mealorder.c.repository.VendorRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Utilities for creation the {@link BoundedContext} instances.

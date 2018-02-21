@@ -256,7 +256,7 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     @Apply
-    private void orderProcessed(OrderProcessed event) {
+    void orderProcessed(OrderProcessed event) {
         getBuilder().setStatus(ORDER_PROCESSED)
                     .build();
     }
