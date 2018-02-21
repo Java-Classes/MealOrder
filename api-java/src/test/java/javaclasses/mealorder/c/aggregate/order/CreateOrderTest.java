@@ -30,6 +30,7 @@ import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderStatus;
 import javaclasses.mealorder.c.aggregate.OrderAggregate;
 import javaclasses.mealorder.c.aggregate.VendorAggregate;
+import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.Rejections;
@@ -41,7 +42,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.grpc.StreamObservers.memoizingObserver;
+import static io.spine.grpc.StreamObservers.noOpObserver;
 import static io.spine.protobuf.TypeConverter.toMessage;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentMenu;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentVendor;
@@ -106,6 +109,46 @@ public class CreateOrderTest extends OrderCommandTest {
                                                          .create(toMessage(createOrder));
         final MemoizingObserver<Ack> memoizingObserver = memoizingObserver();
 
+        commandBus.post(createOrderCommand, memoizingObserver);
+
+        assertTrue(memoizingObserver.isCompleted());
+
+        final Optional<Repository> repositoryOptional = boundedContext.findRepository(
+                Order.class);
+
+        assertTrue(repositoryOptional.isPresent());
+
+        final Optional<OrderAggregate> orderAggregateOptional
+                = repositoryOptional.get()
+                                    .find(createOrder.getOrderId());
+
+        assertTrue(orderAggregateOptional.isPresent());
+
+        final Order state = orderAggregateOptional.get()
+                                                  .getState();
+
+        assertEquals(createOrder.getOrderId(), state.getId());
+        assertEquals(OrderStatus.ORDER_ACTIVE, state.getStatus());
+    }
+
+    @Test
+    @DisplayName("create the order after its cancellation")
+    void createOrderAfterCancellation() {
+
+        final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+
+        final Command createOrderCommand = requestFactory.command()
+                                                         .create(toMessage(createOrder));
+
+        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+
+        final Command cancelOrderCommand = requestFactory.command()
+                                                         .create(toMessage(cancelOrder));
+
+        final MemoizingObserver<Ack> memoizingObserver = memoizingObserver();
+
+        commandBus.post(createOrderCommand, noOpObserver());
+        commandBus.post(cancelOrderCommand, noOpObserver());
         commandBus.post(createOrderCommand, memoizingObserver);
 
         assertTrue(memoizingObserver.isCompleted());
