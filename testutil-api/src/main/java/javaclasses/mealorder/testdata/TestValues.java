@@ -44,9 +44,9 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
 /**
  * The utility class that provides constant instances of
- * value objects and entities of the domain model. Those
- * values are used for test needs upon creation of test
- * command instances.
+ * value objects and entities of the domain model. These
+ * values are used for test needs upon creation of command
+ * instances.
  *
  * @author Yegor Udovchenko
  */
@@ -139,7 +139,7 @@ public class TestValues {
                                                                   .build();
 
     public static final LocalDate INVALID_START_DATE = LocalDate.newBuilder()
-                                                                .setYear(2019)
+                                                                .setYear(2020)
                                                                 .setMonthValue(2)
                                                                 .setDay(13)
                                                                 .build();
@@ -169,8 +169,8 @@ public class TestValues {
                                                       .setMenuId(MENU_ID)
                                                       .setSequentialNumber(1)
                                                       .build())
-                                         .setName("chicken Kiev")
-                                         .setCategory("main course")
+                                         .setName("dishName1")
+                                         .setCategory("category")
                                          .setPrice(Money.getDefaultInstance())
                                          .build();
 
@@ -179,8 +179,8 @@ public class TestValues {
                                                       .setMenuId(MENU_ID)
                                                       .setSequentialNumber(2)
                                                       .build())
-                                         .setName("noodles soup")
-                                         .setCategory("main course")
+                                         .setName("dishName2")
+                                         .setCategory("category")
                                          .setPrice(Money.getDefaultInstance())
                                          .build();
 
@@ -198,9 +198,22 @@ public class TestValues {
                                                   .setOrderDate(DATE)
                                                   .build();
 
+
     public static final VendorId INVALID_VENDOR_ID = VendorId.newBuilder()
                                                              .setValue("vendor:INVALID")
                                                              .build();
+
+    public static final OrderId ORDER_ID_WITH_INVALID_VENDOR = OrderId.newBuilder()
+                                                  .setUserId(USER_ID)
+                                                  .setVendorId(INVALID_VENDOR_ID)
+                                                  .setOrderDate(DATE)
+                                                  .build();
+
+    public static final OrderId ORDER_ID_WITH_INVALID_DATE = OrderId.newBuilder()
+                                                  .setUserId(USER_ID)
+                                                  .setVendorId(VENDOR_ID)
+                                                  .setOrderDate(INVALID_START_DATE)
+                                                  .build();
 
     public static final DishId INVALID_DISH_ID = DishId.newBuilder()
                                                        .setMenuId(MenuId.newBuilder()

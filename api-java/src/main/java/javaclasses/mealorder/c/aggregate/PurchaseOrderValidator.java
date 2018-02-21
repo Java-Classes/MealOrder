@@ -37,7 +37,7 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
 /**
  * Validates command {@link CreatePurchaseOrder} to
- * create {@link PurchaseOrder} instance.
+ * creation {@link PurchaseOrder} instance.
  *
  * @author Yegor Udovchenko
  */
@@ -50,22 +50,22 @@ public class PurchaseOrderValidator {
     }
 
     /**
-     * Performs the validation of purchase order creation process.
+     * Performs the validation of a purchase order creation process.
      * Checks each order in the list to match purchase order date
      * and vendor. Also checks for empty dish list orders and orders with
      * not {@code 'ORDER_ACTIVE'} status.
      *
-     * @param cmd command to create purchase order.
-     * @return is purchase order creation possible.
+     * @param cmd command to create a purchase order.
+     * @return is allowed a purchase order creation.
      */
     static boolean isAllowedPurchaseOrderCreation(CreatePurchaseOrder cmd) {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final VendorId purchaseOrderVendorId = purchaseOrderId.getVendorId();
-        final LocalDate poDate = purchaseOrderId.getPoDate();
+        final LocalDate purchaseOrderDate = purchaseOrderId.getPoDate();
         final List<Order> ordersList = cmd.getOrderList();
 
         for (final Order order : ordersList) {
-            if (!(checkOrderIsActive(order) && checkOrderingDatesMatch(order, poDate))) {
+            if (!(checkOrderIsActive(order) && checkOrderingDatesMatch(order, purchaseOrderDate))) {
                 return false;
             }
             if (!(checkOrderNotEmpty(order) && checkVendorsMatch(order, purchaseOrderVendorId))) {
@@ -79,7 +79,7 @@ public class PurchaseOrderValidator {
      * Finds orders which contain more than {@code MAX_SINGLE_DISH_COUNT}
      * equal dishes. Those orders are considered invalid.
      *
-     * @param orders list of orders to check.
+     * @param orders list to check.
      * @return list of invalid orders.(Empty if all orders are valid)
      */
     static List<Order> findInvalidOrders(List<Order> orders) {
@@ -110,7 +110,6 @@ public class PurchaseOrderValidator {
 
     private static boolean checkOrderNotEmpty(Order order) {
         return order.getDishCount() != 0;
-
     }
 
     private static boolean checkVendorsMatch(Order order, VendorId vendorId) {

@@ -79,7 +79,7 @@ public class CancelOrderTest extends OrderCommandTest {
     }
 
     @Test
-    @DisplayName("produce OrderCreated event")
+    @DisplayName("produce OrderCanceled event")
     public void produceEvent() {
 
         final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);

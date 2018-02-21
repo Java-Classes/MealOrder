@@ -30,6 +30,7 @@ import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderStatus;
 import javaclasses.mealorder.c.aggregate.OrderAggregate;
 import javaclasses.mealorder.c.aggregate.VendorAggregate;
+import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.Rejections;
@@ -41,10 +42,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.grpc.StreamObservers.memoizingObserver;
+import static io.spine.grpc.StreamObservers.noOpObserver;
 import static io.spine.protobuf.TypeConverter.toMessage;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistenMenu;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentMenu;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentVendor;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceWithInvalidDate;
 import static javaclasses.mealorder.testdata.TestValues.DATE;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_START_DATE;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_VENDOR_ID;
 import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestValues.USER_ID;
@@ -62,9 +69,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Vlad Kozachenko
  * @author Yurii Haidamaka
  */
-public class CreateOrderTest extends OrderCommandTest{
-
-
+@DisplayName("CreateOrder should ")
+public class CreateOrderTest extends OrderCommandTest {
 
     @BeforeEach
     public void setUp() {
@@ -128,6 +134,46 @@ public class CreateOrderTest extends OrderCommandTest{
     }
 
     @Test
+    @DisplayName("create the order after its cancellation")
+    void createOrderAfterCancellation() {
+
+        final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+
+        final Command createOrderCommand = requestFactory.command()
+                                                         .create(toMessage(createOrder));
+
+        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+
+        final Command cancelOrderCommand = requestFactory.command()
+                                                         .create(toMessage(cancelOrder));
+
+        final MemoizingObserver<Ack> memoizingObserver = memoizingObserver();
+
+        commandBus.post(createOrderCommand, noOpObserver());
+        commandBus.post(cancelOrderCommand, noOpObserver());
+        commandBus.post(createOrderCommand, memoizingObserver);
+
+        assertTrue(memoizingObserver.isCompleted());
+
+        final Optional<Repository> repositoryOptional = boundedContext.findRepository(
+                Order.class);
+
+        assertTrue(repositoryOptional.isPresent());
+
+        final Optional<OrderAggregate> orderAggregateOptional
+                = repositoryOptional.get()
+                                    .find(createOrder.getOrderId());
+
+        assertTrue(orderAggregateOptional.isPresent());
+
+        final Order state = orderAggregateOptional.get()
+                                                  .getState();
+
+        assertEquals(createOrder.getOrderId(), state.getId());
+        assertEquals(OrderStatus.ORDER_ACTIVE, state.getStatus());
+    }
+
+    @Test
     @DisplayName("throw OrderAlreadyExists rejection")
     void notCreateOrder() {
 
@@ -155,14 +201,16 @@ public class CreateOrderTest extends OrderCommandTest{
     }
 
     @Test
-    @DisplayName("throw MenuNotAvailable rejection")
-    void throwMenuNotAvailable() {
+    @DisplayName("throw MenuNotAvailable rejection if menu is absent")
+    void throwMenuNotAvailableIfMenuAbsent() {
 
         final Command createOrderCmd =
                 requestFactory.command()
-                              .create(toMessage(createOrderInstanceForNonExistenMenu()));
+                              .create(toMessage(createOrderInstanceForNonExistentMenu()));
 
         final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
+
+        MenuNotAvailableSubscriber.clear();
 
         rejectionBus.register(menuNotAvailableSubscriber);
 
@@ -177,5 +225,59 @@ public class CreateOrderTest extends OrderCommandTest{
         assertEquals(USER_ID, menuNotAvailable.getUserId());
         assertEquals(DATE, menuNotAvailable.getOrderDate());
         assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
+    }
+
+    @Test
+    @DisplayName("throw MenuNotAvailable rejection if the order date isn't in menu date range")
+    void throwMenuNotAvailableIfOrderDateWrong() {
+
+        final Command createOrderCmd =
+                requestFactory.command()
+                              .create(toMessage(createOrderInstanceWithInvalidDate()));
+
+        final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
+
+        MenuNotAvailableSubscriber.clear();
+
+        rejectionBus.register(menuNotAvailableSubscriber);
+
+        assertNull(MenuNotAvailableSubscriber.getRejection());
+
+        commandBus.post(createOrderCmd, StreamObservers.noOpObserver());
+
+        assertNotNull(MenuNotAvailableSubscriber.getRejection());
+
+        Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
+
+        assertEquals(USER_ID, menuNotAvailable.getUserId());
+        assertEquals(INVALID_START_DATE, menuNotAvailable.getOrderDate());
+        assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
+    }
+
+    @Test
+    @DisplayName("throw MenuNotAvailable rejection if the vendor doesn't exist ")
+    void throwMenuNotAvailableIfVendorAbsent() {
+
+        final Command createOrderCmd =
+                requestFactory.command()
+                              .create(toMessage(createOrderInstanceForNonExistentVendor()));
+
+        final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
+
+        MenuNotAvailableSubscriber.clear();
+
+        rejectionBus.register(menuNotAvailableSubscriber);
+
+        assertNull(MenuNotAvailableSubscriber.getRejection());
+
+        commandBus.post(createOrderCmd, StreamObservers.noOpObserver());
+
+        assertNotNull(MenuNotAvailableSubscriber.getRejection());
+
+        Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
+
+        assertEquals(USER_ID, menuNotAvailable.getUserId());
+        assertEquals(DATE, menuNotAvailable.getOrderDate());
+        assertEquals(INVALID_VENDOR_ID, menuNotAvailable.getVendorId());
     }
 }
