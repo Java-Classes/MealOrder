@@ -20,13 +20,12 @@
 
 package javaclasses.mealorder.c.aggregate;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.spine.Environment;
 
 /**
  * The utility class representing service factory.
- * Used by {@code PurchaseOrderAggregate} upon the purchase
- * order creation.
+ * Used by {@code PurchaseOrderAggregate} upon creation of
+ * a purchase order.
  *
  * @author Yegor Udovchenko
  */
@@ -48,7 +47,15 @@ public class ServiceFactory {
         return poSenderInstance;
     }
 
-    @VisibleForTesting
+    /**
+     * Setter method is used to substitute {@code PurchaseOrderSender}
+     * with a mock instance for tests. Applicable only in test runtime
+     * environment.
+     * Throws {@code UnsupportedOperationException} if called in
+     * production runtime environment.
+     *
+     * @param poSenderInstance
+     */
     public static void setPoSenderInstance(
             PurchaseOrderSender poSenderInstance) {
         if (Environment.getInstance()
