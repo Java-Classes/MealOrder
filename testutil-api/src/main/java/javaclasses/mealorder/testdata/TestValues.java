@@ -44,9 +44,9 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
 /**
  * The utility class that provides constant instances of
- * value objects and entities of the domain model. Those
- * values are used for test needs upon creation of test
- * command instances.
+ * value objects and entities of the domain model. These
+ * values are used for test needs upon creation of command
+ * instances.
  *
  * @author Yegor Udovchenko
  */
@@ -132,6 +132,12 @@ public class TestValues {
                                                                      .setRangeEnd(END_DATE)
                                                                      .build();
 
+    public static final LocalDate START_DATE_FROM_PAST = LocalDate.newBuilder()
+                                                                  .setYear(2017)
+                                                                  .setMonthValue(2)
+                                                                  .setDay(13)
+                                                                  .build();
+
     public static final LocalDate INVALID_START_DATE = LocalDate.newBuilder()
                                                                 .setYear(2020)
                                                                 .setMonthValue(2)
@@ -151,13 +157,20 @@ public class TestValues {
                                                                                      INVALID_END_DATE)
                                                                              .build();
 
+    public static final MenuDateRange MENU_DATE_RANGE_START_FROM_PAST = MenuDateRange.newBuilder()
+                                                                             .setRangeStart(
+                                                                                     START_DATE_FROM_PAST)
+                                                                             .setRangeEnd(
+                                                                                     INVALID_END_DATE)
+                                                                             .build();
+
     public static final Dish DISH1 = Dish.newBuilder()
                                          .setId(DishId.newBuilder()
                                                       .setMenuId(MENU_ID)
                                                       .setSequentialNumber(1)
                                                       .build())
-                                         .setName("chicken Kiev")
-                                         .setCategory("main course")
+                                         .setName("dishName1")
+                                         .setCategory("category")
                                          .setPrice(Money.getDefaultInstance())
                                          .build();
 
@@ -166,8 +179,8 @@ public class TestValues {
                                                       .setMenuId(MENU_ID)
                                                       .setSequentialNumber(2)
                                                       .build())
-                                         .setName("noodles soup")
-                                         .setCategory("main course")
+                                         .setName("dishName2")
+                                         .setCategory("category")
                                          .setPrice(Money.getDefaultInstance())
                                          .build();
 

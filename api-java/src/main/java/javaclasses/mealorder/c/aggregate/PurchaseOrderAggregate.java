@@ -85,7 +85,6 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     /**
      * {@inheritDoc}
      */
-
     public PurchaseOrderAggregate(PurchaseOrderId id) {
         super(id);
     }
@@ -103,7 +102,6 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
         Triplet result;
         final PurchaseOrderCreated poCreatedEvent = createPOCreatedEvent(cmd);
-
         final List<Order> invalidOrders = findInvalidOrders(cmd.getOrderList());
 
         if (invalidOrders.isEmpty()) {
@@ -113,20 +111,15 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                                              .setStatus(VALID)
                                                              .addAllOrder(cmd.getOrderList())
                                                              .build();
-
             final EmailAddress senderEmail = cmd.getWhoCreates()
                                                 .getEmail();
             final EmailAddress vendorEmail = cmd.getVendorEmail();
             ServiceFactory.getPurchaseOrderSender()
-                          .formAndSendPurchaseOrder(
-                                  purchaseOrder,
-                                  senderEmail,
-                                  vendorEmail);
+                          .formAndSendPurchaseOrder(purchaseOrder, senderEmail, vendorEmail);
             final PurchaseOrderSent poSentEvent = createPOSentEvent(purchaseOrder,
                                                                     senderEmail,
                                                                     vendorEmail);
             result = Triplet.of(poCreatedEvent, passedEvent, poSentEvent);
-
         } else {
             final PurchaseOrderValidationFailed validationFailedEvent = createPOValidationFailedEvent(
                     cmd, invalidOrders);
@@ -186,7 +179,6 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         getBuilder().setId(event.getId())
                     .addAllOrder(event.getOrderList())
                     .setStatus(CREATED);
-
     }
 
     @Apply
@@ -195,9 +187,11 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     @Apply
-    void empteEvent(Empty event) {
-        // Empty applier for 'io.spine.server.tuple.Triplet' return value with 'null'
-        // value in constructor.
+    void emptyEvent(Empty event) {
+        // Applier for empty event.
+        // Used when CreatePurchaseOrder handler returns three events:
+        // PurchaseOrderCreated, PurchaseOrderValidationFailed, Empty
+        // to handle Empty event without changing aggregate state.
     }
 
     @Apply
@@ -307,8 +301,8 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     private PurchaseOrderSent createPOSentEvent(PurchaseOrder purchaseOrder,
-                                                EmailAddress senderEmail, EmailAddress vendorEmail
-    ) {
+                                                EmailAddress senderEmail,
+                                                EmailAddress vendorEmail) {
         return PurchaseOrderSent.newBuilder()
                                 .setPurchaseOrder(purchaseOrder)
                                 .setSenderEmail(senderEmail)
