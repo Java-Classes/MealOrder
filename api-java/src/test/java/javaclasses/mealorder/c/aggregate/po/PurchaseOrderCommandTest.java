@@ -29,8 +29,8 @@ import javaclasses.mealorder.c.aggregate.PurchaseOrderAggregate;
 import javaclasses.mealorder.c.aggregate.PurchaseOrderSender;
 import javaclasses.mealorder.c.aggregate.ServiceFactory;
 
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.DATE;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
+import static javaclasses.mealorder.testdata.TestValues.DATE;
+import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
 import static org.mockito.Mockito.mock;
 
 /**

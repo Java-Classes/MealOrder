@@ -25,7 +25,6 @@ import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.PurchaseOrderId;
-import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
@@ -36,13 +35,10 @@ import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.DATE;
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH1;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
+import static javaclasses.mealorder.testdata.TestValues.ORDER;
+import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID;
 
 /**
  * A factory of the purchase order commands for the test needs.
@@ -50,18 +46,6 @@ import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
  * @author Yegor Udovchenko
  */
 public class TestPurchaseOrderCommandFactory {
-
-    public static final PurchaseOrderId PURCHASE_ORDER_ID = PurchaseOrderId
-            .newBuilder()
-            .setVendorId(VENDOR_ID)
-            .setPoDate(DATE)
-            .build();
-
-    public static final Order ORDER = Order.newBuilder()
-                                           .setId(ORDER_ID)
-                                           .addDishes(DISH1)
-                                           .setStatus(ORDER_ACTIVE)
-                                           .build();
 
     private TestPurchaseOrderCommandFactory() {
     }
@@ -72,18 +56,10 @@ public class TestPurchaseOrderCommandFactory {
      * @return the {@code CreatePurchaseOrder} instance
      */
     public static CreatePurchaseOrder createPurchaseOrderInstance() {
-        final CreatePurchaseOrder result = createPurchaseOrderInstance(PURCHASE_ORDER_ID, USER_ID,
-                                                                       ORDER);
-        return result;
-    }
-
-    /// TODO: 2/20/2018
-    public static CreatePurchaseOrder createPurchaseOrderInstance(PurchaseOrderId purchaseOrderId,
-                                                                  UserId userId, Order order) {
         final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
-                                                              .setId(purchaseOrderId)
-                                                              .setWhoCreates(userId)
-                                                              .addOrders(order)
+                                                              .setId(PURCHASE_ORDER_ID)
+                                                              .setWhoCreates(USER_ID)
+                                                              .addOrders(ORDER)
                                                               .build();
         return result;
     }

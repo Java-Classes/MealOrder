@@ -20,58 +20,25 @@
 
 package javaclasses.mealorder.testdata;
 
-import io.spine.time.LocalDate;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
-import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.command.RemoveDishFromOrder;
 
-import static io.spine.time.MonthOfYear.FEBRUARY;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH1;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.NONEXISTENT_MENU_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
+import static javaclasses.mealorder.testdata.TestValues.DISH1;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.NONEXISTENT_MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
+
 
 /**
  * @author Vlad Kozachenko
  */
 public class TestOrderCommandFactory {
-
-    public static final LocalDate DATE = LocalDate.newBuilder()
-                                                  .setYear(
-                                                          2019)
-                                                  .setMonth(
-                                                          FEBRUARY)
-                                                  .setDay(15)
-                                                  .build();
-
-    public static final OrderId ORDER_ID = OrderId.newBuilder()
-                                                  .setUserId(USER_ID)
-                                                  .setVendorId(VENDOR_ID)
-                                                  .setOrderDate(DATE)
-                                                  .build();
-
-    public static final VendorId INVALID_VENDOR_ID = VendorId.newBuilder()
-                                                             .setValue("vendor:INVALID")
-                                                             .build();
-
-    public static final DishId INVALID_DISH_ID = DishId.newBuilder()
-                                                       .setMenuId(MenuId.newBuilder()
-                                                                        .setVendorId(
-                                                                                INVALID_VENDOR_ID)
-                                                                        .build())
-                                                       .setSequentialNumber(1)
-                                                       .build();
-
-    public static final Dish INVALID_DISH = Dish.newBuilder()
-                                                .setId(INVALID_DISH_ID)
-                                                .build();
 
     public static CreateOrder createOrderInstanceForNonExistenMenu() {
         return createOrderInstance(ORDER_ID, NONEXISTENT_MENU_ID);
