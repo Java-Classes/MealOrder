@@ -20,13 +20,9 @@
 
 package javaclasses.mealorder.testdata;
 
-import com.google.protobuf.Timestamp;
-import io.spine.money.Money;
 import io.spine.net.EmailAddress;
-import io.spine.time.LocalDate;
 import io.spine.time.LocalTime;
 import javaclasses.mealorder.Dish;
-import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.PhoneNumber;
@@ -39,7 +35,7 @@ import javaclasses.mealorder.c.command.ImportMenu;
 import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.command.UpdateVendor;
 
-import static io.spine.time.Time.getCurrentTime;
+import static javaclasses.mealorder.testdata.TestValues.*;
 
 /**
  * A factory of the vendor commands for the test needs.
@@ -47,120 +43,6 @@ import static io.spine.time.Time.getCurrentTime;
  * @author Yurii Haidamaka
  */
 public class TestVendorCommandFactory {
-
-    public static final VendorName VENDOR_NAME = VendorName.newBuilder()
-                                                           .setValue("Mashed Potato")
-                                                           .build();
-    public static final VendorId VENDOR_ID = VendorId.newBuilder()
-                                                     .setValue("vendor:" + VENDOR_NAME)
-                                                     .build();
-    public static final VendorName NEW_VENDOR_NAME = VendorName.newBuilder()
-                                                               .setValue("New Mashed Potato")
-                                                               .build();
-    public static final EmailAddress EMAIL = EmailAddress.newBuilder()
-                                                         .setValue("mashed.potato@gmail.com")
-                                                         .build();
-    public static final UserId USER_ID = UserId.newBuilder()
-                                               .setEmail(EmailAddress.newBuilder()
-                                                                     .setValue(
-                                                                             "yurii.haidamaka@teamdev.com")
-                                                                     .build())
-                                               .build();
-
-    public static final LocalTime PO_DAILY_DEADLINE = LocalTime.newBuilder()
-                                                               .setHours(10)
-                                                               .setMinutes(0)
-                                                               .build();
-
-    public static final PhoneNumber PHONE_NUMBER1 = PhoneNumber.newBuilder()
-                                                               .setValue("0634596796")
-                                                               .build();
-    public static final PhoneNumber PHONE_NUMBER2 = PhoneNumber.newBuilder()
-                                                               .setValue("0983162589")
-                                                               .build();
-
-    public static final VendorChange VENDOR_CHANGE = VendorChange.newBuilder()
-                                                                 .setPreviousVendorName(VENDOR_NAME)
-                                                                 .setPreviousEmail(EMAIL)
-                                                                 .addPreviousPhoneNumbers(
-                                                                         PHONE_NUMBER1)
-                                                                 .addPreviousPhoneNumbers(
-                                                                         PHONE_NUMBER2)
-                                                                 .setPreviousPoDailyDeadline(
-                                                                         PO_DAILY_DEADLINE)
-                                                                 .setNewVendorName(NEW_VENDOR_NAME)
-                                                                 .setNewEmail(EMAIL)
-                                                                 .addNewPhoneNumbers(PHONE_NUMBER1)
-                                                                 .addNewPhoneNumbers(PHONE_NUMBER2)
-                                                                 .setPreviousPoDailyDeadline(
-                                                                         PO_DAILY_DEADLINE)
-                                                                 .build();
-
-    public static final MenuId MENU_ID = MenuId.newBuilder()
-                                               .setVendorId(VENDOR_ID)
-                                               .setWhenImported(getCurrentTime())
-                                               .build();
-
-    public static final MenuId NONEXISTENT_MENU_ID = MenuId.newBuilder()
-                                                           .setVendorId(VENDOR_ID)
-                                                           .setWhenImported(
-                                                                   Timestamp.getDefaultInstance())
-                                                           .build();
-
-    public static final LocalDate START_DATE = LocalDate.newBuilder()
-                                                        .setYear(2019)
-                                                        .setMonthValue(2)
-                                                        .setDay(13)
-                                                        .build();
-
-    public static final LocalDate END_DATE = LocalDate.newBuilder()
-                                                      .setYear(2019)
-                                                      .setMonthValue(2)
-                                                      .setDay(21)
-                                                      .build();
-
-    public static final MenuDateRange MENU_DATE_RANGE = MenuDateRange.newBuilder()
-                                                                     .setRangeStart(START_DATE)
-                                                                     .setRangeEnd(END_DATE)
-                                                                     .build();
-
-    public static final LocalDate INVALID_START_DATE = LocalDate.newBuilder()
-                                                                .setYear(2019)
-                                                                .setMonthValue(2)
-                                                                .setDay(13)
-                                                                .build();
-
-    public static final LocalDate INVALID_END_DATE = LocalDate.newBuilder()
-                                                              .setYear(2018)
-                                                              .setMonthValue(2)
-                                                              .setDay(19)
-                                                              .build();
-
-    public static final MenuDateRange INVALID_MENU_DATE_RANGE = MenuDateRange
-            .newBuilder()
-            .setRangeStart(INVALID_START_DATE)
-            .setRangeEnd(INVALID_END_DATE)
-            .build();
-
-    public static final Dish DISH1 = Dish.newBuilder()
-                                         .setId(DishId.newBuilder()
-                                                      .setMenuId(MENU_ID)
-                                                      .setSequentialNumber(1)
-                                                      .build())
-                                         .setName("chicken Kiev")
-                                         .setCategory("main course")
-                                         .setPrice(Money.getDefaultInstance())
-                                         .build();
-
-    public static final Dish DISH2 = Dish.newBuilder()
-                                         .setId(DishId.newBuilder()
-                                                      .setMenuId(MENU_ID)
-                                                      .setSequentialNumber(2)
-                                                      .build())
-                                         .setName("noodles soup")
-                                         .setCategory("main course")
-                                         .setPrice(Money.getDefaultInstance())
-                                         .build();
 
     private TestVendorCommandFactory() {
     }

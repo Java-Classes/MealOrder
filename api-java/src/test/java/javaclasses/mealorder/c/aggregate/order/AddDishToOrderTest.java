@@ -42,13 +42,13 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.INVALID_DISH;
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH1;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.DISH1;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_DISH;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;

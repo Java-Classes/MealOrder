@@ -36,13 +36,10 @@ import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.DATE;
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.ORDER_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH1;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
+import static javaclasses.mealorder.testdata.TestValues.ORDER;
+import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID;
 
 /**
  * A factory of the purchase order commands for the test needs.
@@ -50,18 +47,6 @@ import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
  * @author Yegor Udovchenko
  */
 public class TestPurchaseOrderCommandFactory {
-
-    public static final PurchaseOrderId PURCHASE_ORDER_ID = PurchaseOrderId
-            .newBuilder()
-            .setVendorId(VENDOR_ID)
-            .setPoDate(DATE)
-            .build();
-
-    public static final Order ORDER = Order.newBuilder()
-                                           .setId(ORDER_ID)
-                                           .addDishes(DISH1)
-                                           .setStatus(ORDER_ACTIVE)
-                                           .build();
 
     private TestPurchaseOrderCommandFactory() {
     }

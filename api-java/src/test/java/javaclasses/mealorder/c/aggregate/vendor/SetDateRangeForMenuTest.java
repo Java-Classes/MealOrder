@@ -38,11 +38,11 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.INVALID_MENU_DATE_RANGE;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_DATE_RANGE;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID;
+import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.setDateRangeForMenuInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
@@ -108,7 +108,6 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
                                              .equals(setDateRangeForMenu.getMenuId()))
                                .findFirst()
                                .get();
-
 
         assertEquals(VENDOR_ID, setDateRangeForMenu.getVendorId());
         assertEquals(MENU_ID, setDateRangeForMenu.getMenuId());

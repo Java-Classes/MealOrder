@@ -34,11 +34,11 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH1;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.DISH2;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
+import static javaclasses.mealorder.testdata.TestValues.DISH1;
+import static javaclasses.mealorder.testdata.TestValues.DISH2;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID;
+import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
