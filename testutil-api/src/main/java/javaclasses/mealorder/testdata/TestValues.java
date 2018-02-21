@@ -44,7 +44,9 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
 /**
  * The utility class that provides constant instances of
- * value objects and entities of the domain model for tests.
+ * value objects and entities of the domain model. Those
+ * values are used for test needs upon creation of test
+ * command instances.
  *
  * @author Yegor Udovchenko
  */
@@ -52,15 +54,19 @@ public class TestValues {
     public static final VendorName VENDOR_NAME = VendorName.newBuilder()
                                                            .setValue("VendorName1")
                                                            .build();
+
     public static final VendorId VENDOR_ID = VendorId.newBuilder()
                                                      .setValue("vendor:" + VENDOR_NAME)
                                                      .build();
+
     public static final VendorName NEW_VENDOR_NAME = VendorName.newBuilder()
                                                                .setValue("VendorName2")
                                                                .build();
+
     public static final EmailAddress EMAIL = EmailAddress.newBuilder()
                                                          .setValue("vendor1@example.com")
                                                          .build();
+
     public static final UserId USER_ID = UserId.newBuilder()
                                                .setEmail(EmailAddress.newBuilder()
                                                                      .setValue(
@@ -76,6 +82,7 @@ public class TestValues {
     public static final PhoneNumber PHONE_NUMBER1 = PhoneNumber.newBuilder()
                                                                .setValue("1234567890")
                                                                .build();
+
     public static final PhoneNumber PHONE_NUMBER2 = PhoneNumber.newBuilder()
                                                                .setValue("0987654321")
                                                                .build();
@@ -137,11 +144,12 @@ public class TestValues {
                                                               .setDay(19)
                                                               .build();
 
-    public static final MenuDateRange INVALID_MENU_DATE_RANGE = MenuDateRange
-            .newBuilder()
-            .setRangeStart(INVALID_START_DATE)
-            .setRangeEnd(INVALID_END_DATE)
-            .build();
+    public static final MenuDateRange INVALID_MENU_DATE_RANGE = MenuDateRange.newBuilder()
+                                                                             .setRangeStart(
+                                                                                     INVALID_START_DATE)
+                                                                             .setRangeEnd(
+                                                                                     INVALID_END_DATE)
+                                                                             .build();
 
     public static final Dish DISH1 = Dish.newBuilder()
                                          .setId(DishId.newBuilder()
@@ -162,6 +170,7 @@ public class TestValues {
                                          .setCategory("main course")
                                          .setPrice(Money.getDefaultInstance())
                                          .build();
+
     public static final LocalDate DATE = LocalDate.newBuilder()
                                                   .setYear(
                                                           2019)
@@ -203,5 +212,4 @@ public class TestValues {
                                            .addDishes(DISH1)
                                            .setStatus(ORDER_ACTIVE)
                                            .build();
-
 }

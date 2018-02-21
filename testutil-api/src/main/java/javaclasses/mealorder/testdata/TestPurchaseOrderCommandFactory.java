@@ -25,7 +25,6 @@ import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.PurchaseOrderId;
-import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
@@ -57,18 +56,10 @@ public class TestPurchaseOrderCommandFactory {
      * @return the {@code CreatePurchaseOrder} instance
      */
     public static CreatePurchaseOrder createPurchaseOrderInstance() {
-        final CreatePurchaseOrder result = createPurchaseOrderInstance(PURCHASE_ORDER_ID, USER_ID,
-                                                                       ORDER);
-        return result;
-    }
-
-    /// TODO: 2/20/2018
-    public static CreatePurchaseOrder createPurchaseOrderInstance(PurchaseOrderId purchaseOrderId,
-                                                                  UserId userId, Order order) {
         final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
-                                                              .setId(purchaseOrderId)
-                                                              .setWhoCreates(userId)
-                                                              .addOrders(order)
+                                                              .setId(PURCHASE_ORDER_ID)
+                                                              .setWhoCreates(USER_ID)
+                                                              .addOrders(ORDER)
                                                               .build();
         return result;
     }
