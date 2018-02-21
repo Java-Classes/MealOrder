@@ -82,7 +82,7 @@ public class AddVendorTest extends VendorCommandTest<AddVendor> {
         assertEquals(EMAIL, vendorAdded.getEmail());
         assertEquals(PO_DAILY_DEADLINE, vendorAdded.getPoDailyDeadline());
 
-        final List<PhoneNumber> phones = vendorAdded.getPhoneNumbersList();
+        final List<PhoneNumber> phones = vendorAdded.getPhoneNumberList();
         assertEquals(PHONE_NUMBER1, phones.get(0));
         assertEquals(PHONE_NUMBER2, phones.get(1));
 

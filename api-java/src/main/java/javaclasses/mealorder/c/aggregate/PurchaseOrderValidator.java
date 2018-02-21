@@ -62,7 +62,7 @@ public class PurchaseOrderValidator {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final VendorId purchaseOrderVendorId = purchaseOrderId.getVendorId();
         final LocalDate poDate = purchaseOrderId.getPoDate();
-        final List<Order> ordersList = cmd.getOrdersList();
+        final List<Order> ordersList = cmd.getOrderList();
 
         for (final Order order : ordersList) {
             if (!(checkOrderIsActive(order) && checkOrderingDatesMatch(order, poDate))) {
@@ -93,7 +93,7 @@ public class PurchaseOrderValidator {
     }
 
     private static boolean isOrderValid(Order order) {
-        final HashMultiset<Dish> dishes = HashMultiset.create(order.getDishesList());
+        final HashMultiset<Dish> dishes = HashMultiset.create(order.getDishList());
         for (final Multiset.Entry<Dish> entry : dishes.entrySet()) {
             if (entry.getCount() > MAX_SINGLE_DISH_COUNT) {
                 return false;
@@ -109,7 +109,7 @@ public class PurchaseOrderValidator {
     }
 
     private static boolean checkOrderNotEmpty(Order order) {
-        return order.getDishesCount() != 0;
+        return order.getDishCount() != 0;
 
     }
 

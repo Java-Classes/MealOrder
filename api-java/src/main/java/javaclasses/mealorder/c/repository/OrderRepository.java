@@ -47,7 +47,7 @@ public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate
             if (message instanceof PurchaseOrderCreated) {
                 final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) message;
                 Set<OrderId> orderIds = new HashSet<>();
-                for (Order order : purchaseOrderCreated.getOrdersList()) {
+                for (Order order : purchaseOrderCreated.getOrderList()) {
                     if (find(order.getId()).isPresent()) {
                         orderIds.add(order.getId());
                     }

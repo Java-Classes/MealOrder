@@ -102,7 +102,7 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
         final Vendor state = aggregate.getState();
         assertEquals(state.getId(), setDateRangeForMenu.getVendorId());
 
-        final Menu menu = state.getMenusList()
+        final Menu menu = state.getMenuList()
                                .stream()
                                .filter(m -> m.getId()
                                              .equals(setDateRangeForMenu.getMenuId()))

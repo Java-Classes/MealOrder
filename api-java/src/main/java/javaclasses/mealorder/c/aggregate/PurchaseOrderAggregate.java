@@ -104,14 +104,14 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         Triplet result;
         final PurchaseOrderCreated poCreatedEvent = createPOCreatedEvent(cmd);
 
-        final List<Order> invalidOrders = findInvalidOrders(cmd.getOrdersList());
+        final List<Order> invalidOrders = findInvalidOrders(cmd.getOrderList());
 
         if (invalidOrders.isEmpty()) {
             final PurchaseOrderValidationPassed passedEvent = createPOValidationPassedEvent(cmd);
             final PurchaseOrder purchaseOrder = PurchaseOrder.newBuilder()
                                                              .setId(cmd.getId())
                                                              .setStatus(VALID)
-                                                             .addAllOrders(cmd.getOrdersList())
+                                                             .addAllOrder(cmd.getOrderList())
                                                              .build();
 
             final EmailAddress senderEmail = cmd.getWhoCreates()
@@ -174,7 +174,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         if (!isAllowedToCancel()) {
             throwCannotCancelDeliveredPurchaseOrder(cmd);
         }
-        return createPOCanceledEvent(cmd, getState().getOrdersList());
+        return createPOCanceledEvent(cmd, getState().getOrderList());
     }
 
     /*
@@ -184,7 +184,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     @Apply
     void purchaseOrderCreated(PurchaseOrderCreated event) {
         getBuilder().setId(event.getId())
-                    .addAllOrders(event.getOrdersList())
+                    .addAllOrder(event.getOrderList())
                     .setStatus(CREATED);
 
     }
@@ -242,7 +242,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                    .setId(cmd.getId())
                                    .setWhoCreated(cmd.getWhoCreates())
                                    .setWhenCreated(getCurrentTime())
-                                   .addAllOrders(cmd.getOrdersList())
+                                   .addAllOrder(cmd.getOrderList())
                                    .build();
     }
 
@@ -251,7 +251,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
             List<Order> invalidOrders) {
         return PurchaseOrderValidationFailed.newBuilder()
                                             .setId(cmd.getId())
-                                            .addAllFailureOrders(invalidOrders)
+                                            .addAllFailureOrder(invalidOrders)
                                             .setWhenFailed(getCurrentTime())
                                             .build();
     }

@@ -63,7 +63,7 @@ message MenuListView {
     MenuListId list_id = 1;
 
     // The collection of menus.
-    repeated MenuItem menus = 2;
+    repeated MenuItem menu = 2;
 }
 
 // The projection state of the menu calendar.
@@ -78,7 +78,7 @@ message MenuListView {
 message MenuCalendarView {
 
     // The collection of calendar items (dates).
-    repeated MenuCalendarItem calendar_items = 1;
+    repeated MenuCalendarItem calendar_item = 1;
 }
 
 // The projection state of an order list.
@@ -100,7 +100,7 @@ message OrderListView {
     OrderListId list_id = 1;
 
     // The collection of user's orders.
-    repeated OrderItem orders = 2;
+    repeated OrderItem order = 2;
 }
 
 // **** Projections for UI role Admin. ****
@@ -114,7 +114,7 @@ message OrderListView {
 message VendorListView {
 
     // The collection of all vendors.
-    repeated VendorItem vendors = 1;
+    repeated VendorItem vendor = 1;
 }
 
 // The projection state of the full menu list.
@@ -129,7 +129,7 @@ message VendorListView {
 message FullMenuListView {
 
     // The collection of all menus.
-    repeated FullMenuItem menus = 1;
+    repeated FullMenuItem menu = 1;
 }
 
 // The projection state of the purchase order list.
@@ -149,7 +149,7 @@ message FullMenuListView {
 message PurchaseOrderListView {
 
     // The collection of all purchase orders.
-    repeated PurchaseOrderItem purchase_orders = 1;
+    repeated PurchaseOrderItem purchase_order = 1;
 }
 
 // The projection state of a purchase order details view
@@ -173,7 +173,7 @@ message PurchaseOrderDetailsByDishView {
     PurchaseOrderStatus purchase_order_status = 2;
 
     // The collection of dishes.
-    repeated DishItem dishes = 3;
+    repeated DishItem dish = 3;
 }
 
 // The projection state of a purchase order details view
@@ -200,7 +200,7 @@ message PurchaseOrderDetailsByUserView {
     PurchaseOrderStatus purchase_order_status = 2;
 
     // The collection of orders.
-    repeated UserOrderDetails orders = 3;
+    repeated UserOrderDetails order = 3;
 }
 
 // The projection state of a monthly spendings report view.
@@ -222,5 +222,5 @@ message MonthlySpendingsReportView {
     MonthlySpendingsReportId report_id = 1;
 
     // The collection of users spendings for the specified month.
-    repeated UserSpendings user_spendinds = 2;
+    repeated UserSpendings user_spending = 2;
 }

@@ -59,7 +59,7 @@ public class TestPurchaseOrderCommandFactory {
         final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
                                                               .setId(PURCHASE_ORDER_ID)
                                                               .setWhoCreates(USER_ID)
-                                                              .addOrders(ORDER)
+                                                              .addOrder(ORDER)
                                                               .build();
         return result;
     }
@@ -89,9 +89,9 @@ public class TestPurchaseOrderCommandFactory {
      */
     public static CreatePurchaseOrder createPurchaseOrderWithNotActiveOrdersInstance() {
         final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
-        final Order order = validCmd.getOrders(0);
+        final Order order = validCmd.getOrder(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrders(Order.newBuilder(order)
+                                  .addOrder(Order.newBuilder(order)
                                                   .setStatus(ORDER_CANCELED))
                                   .build();
     }
@@ -104,9 +104,9 @@ public class TestPurchaseOrderCommandFactory {
      */
     public static CreatePurchaseOrder createPurchaseOrderWithEmptyOrdersInstance() {
         final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
-        final Order order = validCmd.getOrders(0);
+        final Order order = validCmd.getOrder(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrders(Order.newBuilder()
+                                  .addOrder(Order.newBuilder()
                                                   .setStatus(order.getStatus())
                                                   .setId(order.getId())
                                                   .build())
@@ -121,9 +121,9 @@ public class TestPurchaseOrderCommandFactory {
      */
     public static CreatePurchaseOrder createPurchaseOrderWithDatesMismatchOrdersInstance() {
         final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
-        final Order order = validCmd.getOrders(0);
+        final Order order = validCmd.getOrder(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrders(Order.newBuilder(order)
+                                  .addOrder(Order.newBuilder(order)
                                                   .setId(OrderId.newBuilder(order.getId())
                                                                 .setOrderDate(
                                                                         LocalDate.getDefaultInstance()))
@@ -140,15 +140,15 @@ public class TestPurchaseOrderCommandFactory {
      */
     public static CreatePurchaseOrder createPurchaseOrderWithInvalidOrdersInstance() {
         CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
-        final Order order = validCmd.getOrders(0);
-        final Dish dish = order.getDishes(0);
+        final Order order = validCmd.getOrder(0);
+        final Dish dish = order.getDish(0);
         List<Dish> dishes = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             dishes.add(dish);
         }
         return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrders(Order.newBuilder(order)
-                                                  .addAllDishes(dishes)
+                                  .addOrder(Order.newBuilder(order)
+                                                  .addAllDish(dishes)
                                                   .build())
                                   .build();
     }

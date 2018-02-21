@@ -123,7 +123,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
 
         assertEquals(ORDER_ACTIVE, order.getStatus());
         assertEquals(addDishToOrder.getOrderId(), order.getId());
-        assertEquals(0, order.getDishesCount());
+        assertEquals(0, order.getDishCount());
     }
 
     @Test

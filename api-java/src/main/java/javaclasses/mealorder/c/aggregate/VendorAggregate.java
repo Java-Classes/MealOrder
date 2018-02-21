@@ -85,7 +85,7 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
                                                    .setWhoAdded(cmd.getUserId())
                                                    .setVendorName(vendorName)
                                                    .setEmail(cmd.getEmail())
-                                                   .addAllPhoneNumbers(cmd.getPhoneNumbersList())
+                                                   .addAllPhoneNumber(cmd.getPhoneNumberList())
                                                    .setPoDailyDeadline(
                                                            cmd.getPoDailyDeadline())
                                                    .build();
@@ -111,7 +111,7 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
                                                       .setMenuId(cmd.getMenuId())
                                                       .setWhoImported(cmd.getUserId())
                                                       .setWhenImported(getCurrentTime())
-                                                      .addAllDishes(cmd.getDishesList())
+                                                      .addAllDish(cmd.getDishList())
                                                       .build();
         return menuImported;
     }
@@ -143,7 +143,7 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
                     .setVendorName(event.getVendorName())
                     .setEmail(event.getEmail())
                     .setPoDailyDeadline(event.getPoDailyDeadline())
-                    .addAllPhoneNumbers(event.getPhoneNumbersList());
+                    .addAllPhoneNumber(event.getPhoneNumberList());
     }
 
     @Apply
@@ -155,22 +155,22 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
                                    .getNewEmail())
                     .setPoDailyDeadline(event.getVendorChange()
                                              .getNewPoDailyDeadline())
-                    .addAllPhoneNumbers(event.getVendorChange()
-                                             .getNewPhoneNumbersList());
+                    .addAllPhoneNumber(event.getVendorChange()
+                                             .getNewPhoneNumberList());
     }
 
     @Apply
     void menuImported(MenuImported event) {
 
-        getBuilder().addMenus(Menu.newBuilder()
+        getBuilder().addMenu(Menu.newBuilder()
                                   .setId(event.getMenuId())
-                                  .addAllDishes(event.getDishesList())
+                                  .addAllDish(event.getDishList())
                                   .build());
     }
 
     @Apply
     void dateRangeForMenuSet(DateRangeForMenuSet event) {
-        final List<Menu> menus = getBuilder().getMenus();
+        final List<Menu> menus = getBuilder().getMenu();
         final int index = IntStream.range(0, menus.size())
                                    .filter(i -> menus.get(i)
                                                      .getId()
@@ -178,7 +178,7 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
                                    .findFirst()
                                    .getAsInt();
         final Menu menu = menus.get(index);
-        getBuilder().setMenus(index, Menu.newBuilder(menu)
+        getBuilder().setMenu(index, Menu.newBuilder(menu)
                                          .setMenuDateRange(event.getMenuDateRange())
                                          .build());
     }
