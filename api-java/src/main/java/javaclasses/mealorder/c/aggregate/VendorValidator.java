@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.c.aggregate;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.time.LocalDate;
 import io.spine.time.MonthOfYear;
 import javaclasses.mealorder.Menu;
@@ -83,6 +84,7 @@ class VendorValidator {
      * @param menuDateRange2 the date range
      * @return boolean true if the date ranges are overlapped and false otherwise
      */
+    @VisibleForTesting
     private static boolean areRangesOverlapping(MenuDateRange menuDateRange1,
                                                 MenuDateRange menuDateRange2) {
 
