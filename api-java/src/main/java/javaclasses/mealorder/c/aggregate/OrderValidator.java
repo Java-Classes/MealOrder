@@ -33,6 +33,12 @@ public class OrderValidator {
     private OrderValidator() {
     }
 
+    /**
+     *
+     * @param range
+     * @param orderDate
+     * @return
+     */
     public static boolean isMenuAvailable(MenuDateRange range, LocalDate orderDate) {
         Comparator comparator = new LocalDateComparator();
 

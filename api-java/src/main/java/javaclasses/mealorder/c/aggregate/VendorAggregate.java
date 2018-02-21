@@ -183,6 +183,3 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
                                          .build());
     }
 }
-
-
-

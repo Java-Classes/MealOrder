@@ -181,6 +181,5 @@ public class AddDishToOrderTest extends OrderCommandTest {
                                               .getVendorId();
         assertEquals(ORDER_ID, rejection.getOrderId());
         assertEquals(DISH1.getId(), rejection.getDishId());
-
     }
 }

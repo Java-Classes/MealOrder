@@ -49,4 +49,3 @@ public enum VendorRepository {
         return repository;
     }
 }
-
