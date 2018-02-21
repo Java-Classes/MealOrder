@@ -56,6 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author Vlad Kozachenko
  */
+@DisplayName("RemoveDishFromOrder command should be interpreted by OrderAggregate and ")
 public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
 
     @Override

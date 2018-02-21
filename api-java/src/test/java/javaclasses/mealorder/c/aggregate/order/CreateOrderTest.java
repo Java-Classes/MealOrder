@@ -69,7 +69,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Vlad Kozachenko
  * @author Yurii Haidamaka
  */
-@DisplayName("CreateOrder should ")
+@DisplayName("CreateOrder command should be interpreted by OrderAggregate and ")
 public class CreateOrderTest extends OrderCommandTest {
 
     @BeforeEach

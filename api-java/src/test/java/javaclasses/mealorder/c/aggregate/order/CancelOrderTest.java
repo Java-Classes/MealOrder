@@ -65,6 +65,7 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Vlad Kozachenko
  */
+@DisplayName("CancelOrder command should be interpreted by OrderAggregate and ")
 public class CancelOrderTest extends OrderCommandTest {
 
     final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);

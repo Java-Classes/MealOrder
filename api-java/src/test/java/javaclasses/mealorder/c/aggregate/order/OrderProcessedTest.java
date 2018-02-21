@@ -50,6 +50,7 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Vlad Kozachenko
  */
+@DisplayName("OrderAggregate should react on PurchaseOrderCreated command and")
 public class OrderProcessedTest extends OrderCommandTest {
 
     final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
@@ -63,7 +64,7 @@ public class OrderProcessedTest extends OrderCommandTest {
     }
 
     @Test
-    @DisplayName("create order and add it to purchase order")
+    @DisplayName("mark order as processed")
     public void testMarkOrderProcessed() {
 
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
