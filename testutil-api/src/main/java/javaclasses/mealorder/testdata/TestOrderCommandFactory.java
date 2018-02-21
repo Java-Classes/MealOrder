@@ -46,7 +46,7 @@ public class TestOrderCommandFactory {
     }
 
     public static CreateOrder createOrderInstanceWithInvalidDate() {
-        return createOrderInstance(ORDER_ID_WITH_INVALID_DATE, NONEXISTENT_MENU_ID);
+        return createOrderInstance(ORDER_ID_WITH_INVALID_DATE, MENU_ID);
     }
 
     public static CreateOrder createOrderInstanceForNonExistentVendor() {
