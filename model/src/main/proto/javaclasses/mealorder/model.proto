@@ -68,7 +68,7 @@ message Menu {
     MenuDateRange menu_date_range = 2;
 
     // The collection of dishes.
-    repeated Dish dishes = 3;
+    repeated Dish dish = 3;
 }
 
 // The model representing the `Order` aggregate.
@@ -90,7 +90,7 @@ message Order {
     OrderId id = 1;
 
     // The collection of dishes.
-    repeated Dish dishes = 2;
+    repeated Dish dish = 2;
 
     // The status of an order.
     OrderStatus status = 3;
@@ -130,7 +130,7 @@ message PurchaseOrder {
     PurchaseOrderId id = 1;
 
     // The collection of orders.
-    repeated Order orders = 2;
+    repeated Order order = 2;
 
     // The status of a purchase order.
     PurchaseOrderStatus status = 3;
@@ -150,7 +150,7 @@ message Vendor {
     spine.net.EmailAddress email = 3;
 
     // The phone numbers of a vendor.
-    repeated PhoneNumber phone_numbers = 4;
+    repeated PhoneNumber phone_number = 4;
 
     // Daily deadline time.
     //
@@ -159,5 +159,5 @@ message Vendor {
     spine.time.LocalTime po_daily_deadline = 5;
 
     // The collection of menus.
-    repeated Menu menus = 6;
+    repeated Menu menu = 6;
 }

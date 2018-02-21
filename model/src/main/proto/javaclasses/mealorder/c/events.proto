@@ -57,7 +57,7 @@ message VendorAdded {
     spine.net.EmailAddress email = 5;
 
     // Phone numbers of a vendor.
-    repeated PhoneNumber phone_numbers = 6;
+    repeated PhoneNumber phone_number = 6;
 
     // Time to which all orders to this vendor must be made.
     spine.time.LocalTime po_daily_deadline = 7;
@@ -100,7 +100,7 @@ message MenuImported {
     google.protobuf.Timestamp when_imported = 4;
 
     // The collection of menu dishes.
-    repeated Dish dishes = 5;
+    repeated Dish dish = 5;
 }
 
 // The event reflecting a menu active date range set.
@@ -206,7 +206,7 @@ message PurchaseOrderCreated {
     UserId who_created = 3;
 
     // The collection of all orders for this day.
-    repeated Order orders = 4;
+    repeated Order order = 4;
 }
 
 // The event signalizing about the successful delivering of a purchase order.
@@ -254,7 +254,7 @@ message PurchaseOrderValidationFailed {
     PurchaseOrderId id = 1;
 
     // The collection of orders that caused a failure of validation.
-    repeated Order failure_orders = 2;
+    repeated Order failure_order = 2;
 
     // Validation failed at this time.
     google.protobuf.Timestamp when_failed = 3;
