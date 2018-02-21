@@ -71,7 +71,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
 
     @Test
     @DisplayName("produce DishRemovedFromOrder event")
-    public void produceEvent() {
+    void produceEvent() {
 
         final DishRemovedFromOrderSubscriber eventSubscriber
                 = new DishRemovedFromOrderSubscriber();
@@ -98,7 +98,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
 
     @Test
     @DisplayName("removes the dish from the order")
-    public void removeDish() {
+    void removeDish() {
 
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
         final Command addDishToOrderCommand = requestFactory.command()
@@ -129,7 +129,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
 
     @Test
     @DisplayName("throw CannotRemoveMissingDish rejection")
-    public void notRemoveDish() {
+    void notRemoveDish() {
 
         final OrderTestEnv.CannotRemoveMissingDishSubscriber rejectionSubscriber
                 = new OrderTestEnv.CannotRemoveMissingDishSubscriber();
@@ -157,7 +157,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
 
     @Test
     @DisplayName("throw CannotRemoveDishFromNotActiveOrder rejection")
-    public void notRemoveDishFromNotActiveOrder() {
+    void notRemoveDishFromNotActiveOrder() {
 
         final CannotRemoveDishFromNotActiveOrderSubscriber rejectionSubscriber
                 = new CannotRemoveDishFromNotActiveOrderSubscriber();
