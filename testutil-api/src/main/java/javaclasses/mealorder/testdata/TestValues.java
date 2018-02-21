@@ -44,9 +44,9 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
 /**
  * The utility class that provides constant instances of
- * value objects and entities of the domain model. Those
- * values are used for test needs upon creation of test
- * command instances.
+ * value objects and entities of the domain model. These
+ * values are used for test needs upon creation of command
+ * instances.
  *
  * @author Yegor Udovchenko
  */
@@ -156,8 +156,8 @@ public class TestValues {
                                                       .setMenuId(MENU_ID)
                                                       .setSequentialNumber(1)
                                                       .build())
-                                         .setName("chicken Kiev")
-                                         .setCategory("main course")
+                                         .setName("dishName1")
+                                         .setCategory("category")
                                          .setPrice(Money.getDefaultInstance())
                                          .build();
 
@@ -166,8 +166,8 @@ public class TestValues {
                                                       .setMenuId(MENU_ID)
                                                       .setSequentialNumber(2)
                                                       .build())
-                                         .setName("noodles soup")
-                                         .setCategory("main course")
+                                         .setName("dishName2")
+                                         .setCategory("category")
                                          .setPrice(Money.getDefaultInstance())
                                          .build();
 

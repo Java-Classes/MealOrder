@@ -23,6 +23,8 @@ package javaclasses.mealorder.c.aggregate.po;
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.mealorder.PurchaseOrder;
+import javaclasses.mealorder.PurchaseOrderId;
+import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
@@ -56,16 +58,17 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
 
     @Test
     @DisplayName("set the purchase order status to 'DELIVERED'")
-    void markAsValid() {
+    void markAsDelivered() {
         dispatchCreatedCmd();
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
                 markPurchaseOrderAsDeliveredInstance();
         dispatchCommand(aggregate, envelopeOf(markAsDeliveredCmd));
-
         final PurchaseOrder state = aggregate.getState();
+        final PurchaseOrderId actualId = state.getId();
+        final PurchaseOrderStatus actualStatus = state.getStatus();
 
-        assertEquals(purchaseOrderId, state.getId());
-        assertEquals(DELIVERED, state.getStatus());
+        assertEquals(purchaseOrderId, actualId);
+        assertEquals(DELIVERED, actualStatus);
     }
 
     @Test
@@ -76,14 +79,14 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
                 markPurchaseOrderAsDeliveredInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(markAsDeliveredCmd));
-
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
         assertEquals(PurchaseOrderDelivered.class, messageList.get(0)
                                                               .getClass());
         final PurchaseOrderDelivered poDelivered = (PurchaseOrderDelivered) messageList.get(0);
+        final PurchaseOrderId actualId = poDelivered.getId();
 
-        assertEquals(purchaseOrderId, poDelivered.getId());
+        assertEquals(purchaseOrderId, actualId);
     }
 
     @Test
@@ -92,10 +95,9 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
     void cannotMarkPurchaseOrderAsDelivered() {
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
                 markPurchaseOrderAsDeliveredInstance();
-
-        Throwable t = assertThrows(Throwable.class,
-                                   () -> dispatchCommand(aggregate,
-                                                         envelopeOf(markAsDeliveredCmd)));
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(markAsDeliveredCmd)));
         assertThat(Throwables.getRootCause(t),
                    instanceOf(CannotMarkPurchaseOrderAsDelivered.class));
     }
