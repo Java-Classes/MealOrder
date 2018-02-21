@@ -36,4 +36,11 @@ class OrderValidatorTest {
     void havePrivateConstructor() {
         assertHasPrivateParameterlessCtor(OrderValidator.class);
     }
+
+    @Test
+    @DisplayName("return true if menu there is on the order date")
+    void returnTrueForExistingMenu(){
+
+    }
+
 }
