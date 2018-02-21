@@ -113,7 +113,7 @@ public class AddDishToOrderTest extends OrderCommandTest {
 
         assertEquals(ORDER_ACTIVE, order.getStatus());
         assertEquals(addDishToOrder.getOrderId(), order.getId());
-        assertEquals(addDishToOrder.getDish(), order.getDishes(0));
+        assertEquals(addDishToOrder.getDish(), order.getDish(0));
     }
 
     @Test

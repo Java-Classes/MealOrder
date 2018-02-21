@@ -71,7 +71,7 @@ class VendorValidator {
      * @param menuDateRange date range to check
      */
     static boolean isThereMenuForThisDateRange(Vendor vendor, MenuDateRange menuDateRange) {
-        final List<Menu> menus = vendor.getMenusList();
+        final List<Menu> menus = vendor.getMenuList();
         return menus.stream()
                     .anyMatch(m -> areRangesOverlapping(menuDateRange, m.getMenuDateRange()));
     }

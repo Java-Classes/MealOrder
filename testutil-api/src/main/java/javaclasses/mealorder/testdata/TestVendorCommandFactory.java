@@ -78,8 +78,8 @@ public class TestVendorCommandFactory {
                                           .setVendorName(vendorName)
                                           .setEmail(email)
                                           .setPoDailyDeadline(poDailyDeadline)
-                                          .addPhoneNumbers(phones[0])
-                                          .addPhoneNumbers(phones[1])
+                                          .addPhoneNumber(phones[0])
+                                          .addPhoneNumber(phones[1])
                                           .build();
         return result;
     }
@@ -139,8 +139,8 @@ public class TestVendorCommandFactory {
                                             .setVendorId(vendorId)
                                             .setUserId(userId)
                                             .setMenuId(menuId)
-                                            .addDishes(dishes[0])
-                                            .addDishes(dishes[1])
+                                            .addDish(dishes[0])
+                                            .addDish(dishes[1])
                                             .build();
         return result;
     }

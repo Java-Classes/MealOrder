@@ -70,8 +70,8 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
 
         final PurchaseOrder state = aggregate.getState();
         assertEquals(createPurchaseOrder.getId(), state.getId());
-        assertEquals(1, state.getOrdersCount());
-        assertEquals(ORDER, state.getOrdersList()
+        assertEquals(1, state.getOrderCount());
+        assertEquals(ORDER, state.getOrderList()
                                  .get(0));
         assertEquals(SENT, state.getStatus());
     }
@@ -102,8 +102,8 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
         assertEquals(purchaseOrderId, purchaseOrderSent.getPurchaseOrder()
                                                        .getId());
         assertEquals(purchaseOrderSent.getPurchaseOrder()
-                                      .getOrdersList(), aggregate.getState()
-                                                                 .getOrdersList());
+                                      .getOrderList(), aggregate.getState()
+                                                                 .getOrderList());
     }
 
     @Test
@@ -125,8 +125,7 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
 
         assertEquals(purchaseOrderId, purchaseOrderCreated.getId());
         assertEquals(purchaseOrderId, purchaseOrderValidationFailed.getId());
-        assertEquals(1, purchaseOrderValidationFailed.getFailureOrdersCount());
-        assertEquals(1, purchaseOrderValidationFailed.getFailureOrdersCount());
+        assertEquals(1, purchaseOrderValidationFailed.getFailureOrderCount());
     }
 
     @Nested

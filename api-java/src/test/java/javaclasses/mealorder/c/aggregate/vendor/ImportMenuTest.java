@@ -76,7 +76,7 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
         assertEquals(MENU_ID, menuImported.getMenuId());
         assertEquals(USER_ID, menuImported.getWhoImported());
 
-        final List<Dish> dishes = menuImported.getDishesList();
+        final List<Dish> dishes = menuImported.getDishList();
         assertEquals(DISH1, dishes.get(0));
         assertEquals(DISH2, dishes.get(1));
     }

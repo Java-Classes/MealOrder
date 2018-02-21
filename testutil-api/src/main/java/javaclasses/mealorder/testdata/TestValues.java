@@ -90,16 +90,16 @@ public class TestValues {
     public static final VendorChange VENDOR_CHANGE = VendorChange.newBuilder()
                                                                  .setPreviousVendorName(VENDOR_NAME)
                                                                  .setPreviousEmail(EMAIL)
-                                                                 .addPreviousPhoneNumbers(
+                                                                 .addPreviousPhoneNumber(
                                                                          PHONE_NUMBER1)
-                                                                 .addPreviousPhoneNumbers(
+                                                                 .addPreviousPhoneNumber(
                                                                          PHONE_NUMBER2)
                                                                  .setPreviousPoDailyDeadline(
                                                                          PO_DAILY_DEADLINE)
                                                                  .setNewVendorName(NEW_VENDOR_NAME)
                                                                  .setNewEmail(EMAIL)
-                                                                 .addNewPhoneNumbers(PHONE_NUMBER1)
-                                                                 .addNewPhoneNumbers(PHONE_NUMBER2)
+                                                                 .addNewPhoneNumber(PHONE_NUMBER1)
+                                                                 .addNewPhoneNumber(PHONE_NUMBER2)
                                                                  .setPreviousPoDailyDeadline(
                                                                          PO_DAILY_DEADLINE)
                                                                  .build();
@@ -209,7 +209,7 @@ public class TestValues {
 
     public static final Order ORDER = Order.newBuilder()
                                            .setId(ORDER_ID)
-                                           .addDishes(DISH1)
+                                           .addDish(DISH1)
                                            .setStatus(ORDER_ACTIVE)
                                            .build();
 }

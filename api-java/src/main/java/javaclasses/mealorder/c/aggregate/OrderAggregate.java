@@ -112,7 +112,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
         final List<Menu> menus = vendorAggregate
                 .getState()
-                .getMenusList();
+                .getMenuList();
 
         final java.util.Optional<Menu> menu = menus.stream()
                                                    .filter(m -> cmd.getMenuId()
@@ -172,7 +172,7 @@ public class OrderAggregate extends Aggregate<OrderId,
             throwCannotRemoveDishFromNotActiveOrder(cmd, getState().getStatus());
         }
 
-        List<Dish> dishesList = getState().getDishesList();
+        List<Dish> dishesList = getState().getDishList();
 
         java.util.Optional<Dish> dish = dishesList.stream()
                                                   .filter(d -> d.getId()
@@ -212,7 +212,7 @@ public class OrderAggregate extends Aggregate<OrderId,
     void orderCreated(OrderCreated event) {
 
         if (getBuilder().getStatus() == ORDER_CANCELED) {
-            getBuilder().clearDishes();
+            getBuilder().clearDish();
         }
 
         getBuilder().setId(event.getOrderId())
@@ -222,18 +222,18 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     void dishAddedToOrder(DishAddedToOrder event) {
-        getBuilder().addDishes(event.getDish())
+        getBuilder().addDish(event.getDish())
                     .build();
     }
 
     @Apply
     void dishRemovedFromOrder(DishRemovedFromOrder event) {
-        for (int i = 0; i < getBuilder().getDishes()
+        for (int i = 0; i < getBuilder().getDish()
                                         .size(); i++) {
             if (event.getDish()
-                     .equals(getBuilder().getDishes()
+                     .equals(getBuilder().getDish()
                                          .get(i))) {
-                getBuilder().removeDishes(i)
+                getBuilder().removeDish(i)
                             .build();
                 return;
             }
