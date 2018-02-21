@@ -48,7 +48,9 @@ import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrder
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentMenu;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentVendor;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceWithInvalidDate;
 import static javaclasses.mealorder.testdata.TestValues.DATE;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_START_DATE;
 import static javaclasses.mealorder.testdata.TestValues.INVALID_VENDOR_ID;
 import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
@@ -199,8 +201,8 @@ public class CreateOrderTest extends OrderCommandTest {
     }
 
     @Test
-    @DisplayName("throw MenuNotAvailable rejection if the order date isn't in menu date range")
-    void throwMenuNotAvailable() {
+    @DisplayName("throw MenuNotAvailable rejection if menu is absent")
+    void throwMenuNotAvailableIfMenuAbsent() {
 
         final Command createOrderCmd =
                 requestFactory.command()
@@ -222,6 +224,33 @@ public class CreateOrderTest extends OrderCommandTest {
 
         assertEquals(USER_ID, menuNotAvailable.getUserId());
         assertEquals(DATE, menuNotAvailable.getOrderDate());
+        assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
+    }
+
+    @Test
+    @DisplayName("throw MenuNotAvailable rejection if the order date isn't in menu date range")
+    void throwMenuNotAvailableIfOrderDateWrong() {
+
+        final Command createOrderCmd =
+                requestFactory.command()
+                              .create(toMessage(createOrderInstanceWithInvalidDate()));
+
+        final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
+
+        MenuNotAvailableSubscriber.clear();
+
+        rejectionBus.register(menuNotAvailableSubscriber);
+
+        assertNull(MenuNotAvailableSubscriber.getRejection());
+
+        commandBus.post(createOrderCmd, StreamObservers.noOpObserver());
+
+        assertNotNull(MenuNotAvailableSubscriber.getRejection());
+
+        Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
+
+        assertEquals(USER_ID, menuNotAvailable.getUserId());
+        assertEquals(INVALID_START_DATE, menuNotAvailable.getOrderDate());
         assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
     }
 

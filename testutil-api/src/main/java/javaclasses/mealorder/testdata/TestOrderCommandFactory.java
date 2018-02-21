@@ -33,6 +33,7 @@ import static javaclasses.mealorder.testdata.TestValues.DISH1;
 import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.NONEXISTENT_MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
+import static javaclasses.mealorder.testdata.TestValues.ORDER_ID_WITH_INVALID_DATE;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID_WITH_INVALID_VENDOR;
 
 /**
@@ -42,6 +43,10 @@ public class TestOrderCommandFactory {
 
     public static CreateOrder createOrderInstanceForNonExistentMenu() {
         return createOrderInstance(ORDER_ID, NONEXISTENT_MENU_ID);
+    }
+
+    public static CreateOrder createOrderInstanceWithInvalidDate() {
+        return createOrderInstance(ORDER_ID_WITH_INVALID_DATE, NONEXISTENT_MENU_ID);
     }
 
     public static CreateOrder createOrderInstanceForNonExistentVendor() {
