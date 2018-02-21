@@ -185,9 +185,16 @@ public class TestValues {
                                                   .setOrderDate(DATE)
                                                   .build();
 
+
     public static final VendorId INVALID_VENDOR_ID = VendorId.newBuilder()
                                                              .setValue("vendor:INVALID")
                                                              .build();
+
+    public static final OrderId ORDER_ID_WITH_INVALID_VENDOR = OrderId.newBuilder()
+                                                  .setUserId(USER_ID)
+                                                  .setVendorId(INVALID_VENDOR_ID)
+                                                  .setOrderDate(DATE)
+                                                  .build();
 
     public static final DishId INVALID_DISH_ID = DishId.newBuilder()
                                                        .setMenuId(MenuId.newBuilder()

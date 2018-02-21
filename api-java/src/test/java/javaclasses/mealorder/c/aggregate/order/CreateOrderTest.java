@@ -43,8 +43,10 @@ import org.junit.jupiter.api.Test;
 import static io.spine.grpc.StreamObservers.memoizingObserver;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
-import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistenMenu;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentMenu;
+import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentVendor;
 import static javaclasses.mealorder.testdata.TestValues.DATE;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_VENDOR_ID;
 import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestValues.USER_ID;
@@ -62,9 +64,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Vlad Kozachenko
  * @author Yurii Haidamaka
  */
-public class CreateOrderTest extends OrderCommandTest{
-
-
+@DisplayName("CreateOrder should ")
+public class CreateOrderTest extends OrderCommandTest {
 
     @BeforeEach
     public void setUp() {
@@ -155,14 +156,16 @@ public class CreateOrderTest extends OrderCommandTest{
     }
 
     @Test
-    @DisplayName("throw MenuNotAvailable rejection")
+    @DisplayName("throw MenuNotAvailable rejection if the order date isn't in menu date range")
     void throwMenuNotAvailable() {
 
         final Command createOrderCmd =
                 requestFactory.command()
-                              .create(toMessage(createOrderInstanceForNonExistenMenu()));
+                              .create(toMessage(createOrderInstanceForNonExistentMenu()));
 
         final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
+
+        MenuNotAvailableSubscriber.clear();
 
         rejectionBus.register(menuNotAvailableSubscriber);
 
@@ -177,5 +180,32 @@ public class CreateOrderTest extends OrderCommandTest{
         assertEquals(USER_ID, menuNotAvailable.getUserId());
         assertEquals(DATE, menuNotAvailable.getOrderDate());
         assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
+    }
+
+    @Test
+    @DisplayName("throw MenuNotAvailable rejection if the vendor doesn't exist ")
+    void throwMenuNotAvailableIfVendorAbsent() {
+
+        final Command createOrderCmd =
+                requestFactory.command()
+                              .create(toMessage(createOrderInstanceForNonExistentVendor()));
+
+        final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
+
+        MenuNotAvailableSubscriber.clear();
+
+        rejectionBus.register(menuNotAvailableSubscriber);
+
+        assertNull(MenuNotAvailableSubscriber.getRejection());
+
+        commandBus.post(createOrderCmd, StreamObservers.noOpObserver());
+
+        assertNotNull(MenuNotAvailableSubscriber.getRejection());
+
+        Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
+
+        assertEquals(USER_ID, menuNotAvailable.getUserId());
+        assertEquals(DATE, menuNotAvailable.getOrderDate());
+        assertEquals(INVALID_VENDOR_ID, menuNotAvailable.getVendorId());
     }
 }
