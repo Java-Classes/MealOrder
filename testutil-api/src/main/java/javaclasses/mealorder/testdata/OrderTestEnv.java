@@ -32,7 +32,11 @@ import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.Rejections;
 
 /**
+ * Represents test environment.
+ * Contains all event and rejection subscribers for using in test classes.
+ *
  * @author Yurii Haidamaka
+ * @author Vlad Kozachenko
  */
 public class OrderTestEnv {
 

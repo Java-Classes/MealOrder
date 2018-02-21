@@ -41,7 +41,7 @@ public class OrderValidator {
      * @return boolean true if there is a menu on the order date
      */
     public static boolean isMenuAvailable(MenuDateRange range, LocalDate orderDate) {
-        Comparator comparator = new LocalDateComparator();
+        Comparator<LocalDate> comparator = new LocalDateComparator();
 
         return comparator.compare(range.getRangeStart(), orderDate) <= 0 &&
                 comparator.compare(range.getRangeEnd(), orderDate) >= 0;

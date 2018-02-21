@@ -20,10 +20,18 @@
 
 package javaclasses.mealorder.c.aggregate;
 
+import javaclasses.mealorder.OrderId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static javaclasses.mealorder.c.aggregate.OrderValidator.isMenuAvailable;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_END_DATE;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_START_DATE;
+import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Vlad Kozachenko
@@ -39,8 +47,27 @@ class OrderValidatorTest {
 
     @Test
     @DisplayName("return true if menu there is on the order date")
-    void returnTrueForExistingMenu(){
+    void returnTrueForExistingMenu() {
+        assertTrue(isMenuAvailable(MENU_DATE_RANGE, ORDER_ID.getOrderDate()));
+    }
 
+    @Test
+    @DisplayName("return false order hasn't date")
+    void returnFalseForOrderWithoutDate() {
+        assertFalse(isMenuAvailable(MENU_DATE_RANGE, OrderId.getDefaultInstance()
+                                                            .getOrderDate()));
+    }
+
+    @Test
+    @DisplayName("return false if order date is after menu end date")
+    void returnFalseForOrderDateAfterMenu() {
+        assertFalse(isMenuAvailable(MENU_DATE_RANGE, INVALID_START_DATE));
+    }
+
+    @Test
+    @DisplayName("return false if order date is before menu end date")
+    void returnFalseForOrderDateBeforeMenu() {
+        assertFalse(isMenuAvailable(MENU_DATE_RANGE, INVALID_END_DATE));
     }
 
 }
