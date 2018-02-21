@@ -120,7 +120,51 @@ message DishVendorMismatch {
     UserId user_id = 3;
 
     // The mismatching vendor value.
-    spine.change.ValueMismatch vendor_mismatch = 4;
+    VendorMismatch vendor_mismatch = 4;
+
+    // Addition was rejected at this time.
+    google.protobuf.Timestamp when_rejected = 5;
+}
+
+// The rejection to add a dish to the order.
+//
+// It is thrown if the order is not available for editing.
+//
+message CannotAddDishToNotActiveOrder {
+
+    // The identifier of the order in which the user tried to add a dish.
+    OrderId order_id = 1;
+
+    // The identifier of a dish which the user tried to add to the order.
+    DishId dish_id = 2;
+
+    // The identifier of the user who tried to add a dish.
+    UserId user_id = 3;
+
+    // The status of the order.
+    OrderStatus order_status = 4;
+
+    // Addition was rejected at this time.
+    google.protobuf.Timestamp when_rejected = 5;
+}
+
+// The rejection to remove a dish from the order.
+//
+// It is thrown if the order is not available for editing.
+//
+message CannotRemoveDishFromNotActiveOrder {
+
+    // The identifier of the order in which the user tried to add a dish.
+    OrderId order_id = 1;
+
+    // The identifier of a dish which the user tried to add to the order.
+    DishId dish_id = 2;
+
+    // The identifier of the user who tried to add a dish.
+    UserId user_id = 3;
+
+    // The status of the order.
+    OrderStatus order_status = 4;
 
     // Addition was rejected at this time.
     google.protobuf.Timestamp when_rejected = 5;

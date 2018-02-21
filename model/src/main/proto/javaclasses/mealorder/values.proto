@@ -74,7 +74,7 @@ message VendorChange {
     spine.net.EmailAddress previous_email = 2;
 
     // Phone numbers that are changing.
-    repeated PhoneNumber previous_phone_numbers = 3;
+    repeated PhoneNumber previous_phone_number = 3;
 
     // Daily deadline time that's changing.
     spine.time.LocalTime previous_po_daily_deadline = 4;
@@ -86,7 +86,7 @@ message VendorChange {
     spine.net.EmailAddress new_email = 6;
 
     // New phone numbers.
-    repeated PhoneNumber new_phone_numbers = 7;
+    repeated PhoneNumber new_phone_number = 7;
 
     // The new daily deadline time.
     spine.time.LocalTime new_po_daily_deadline = 8;
@@ -128,4 +128,16 @@ enum OrderStatus {
     ORDER_PROCESSED = 2;
 
     ORDER_CANCELED = 3;
+}
+
+// Attribute for the `DishVendorMismath` rejection.
+// Contains a dish vendor id value and the mismatching value in the order.
+//
+message VendorMismatch {
+
+    // The vendor id in an order.
+    VendorId target = 1;
+
+    // The vendor id in a dish.
+    VendorId actual = 2;
 }

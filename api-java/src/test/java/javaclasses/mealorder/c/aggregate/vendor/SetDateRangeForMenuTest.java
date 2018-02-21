@@ -38,11 +38,12 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.INVALID_MENU_DATE_RANGE;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_DATE_RANGE;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.MENU_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.USER_ID;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.VENDOR_ID;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_FROM_PAST;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID;
+import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.setDateRangeForMenuInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
@@ -102,13 +103,16 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
         final Vendor state = aggregate.getState();
         assertEquals(state.getId(), setDateRangeForMenu.getVendorId());
 
-        final Menu menu = state.getMenusList()
+        final Menu menu = state.getMenuList()
                                .stream()
                                .filter(m -> m.getId()
                                              .equals(setDateRangeForMenu.getMenuId()))
                                .findFirst()
                                .get();
 
+        assertEquals(VENDOR_ID, setDateRangeForMenu.getVendorId());
+        assertEquals(MENU_ID, setDateRangeForMenu.getMenuId());
+        assertEquals(USER_ID, setDateRangeForMenu.getUserId());
         assertEquals(menu.getMenuDateRange(), setDateRangeForMenu.getMenuDateRange());
     }
 
@@ -135,6 +139,33 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
         assertEquals(setInvalidDateRangeForMenu.getVendorId(), rejection.getVendorId());
         assertEquals(setInvalidDateRangeForMenu.getMenuId(), rejection.getMenuId());
         assertEquals(setInvalidDateRangeForMenu.getMenuDateRange(), rejection.getMenuDateRange());
+    }
+
+    @Test
+    @DisplayName("produce CannotSetDateRange rejection if the order date  is from the past")
+    void produceCannotSetDateRangeRejection() {
+        final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
+        dispatchCommand(aggregate, envelopeOf(importMenu));
+
+        final SetDateRangeForMenu setInvalidDateRangeForMenuFromPast = setDateRangeForMenuInstance(
+                VENDOR_ID, MENU_ID, USER_ID, MENU_DATE_RANGE_FROM_PAST);
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(
+                                                                       setInvalidDateRangeForMenuFromPast)));
+        final Throwable cause = Throwables.getRootCause(t);
+
+        @SuppressWarnings("ConstantConditions") // Instance type checked before.
+        final Rejections.CannotSetDateRange rejection =
+                ((CannotSetDateRange) cause).getMessageThrown();
+
+        assertEquals(setInvalidDateRangeForMenuFromPast.getVendorId(),
+                     rejection.getVendorId());
+        assertEquals(setInvalidDateRangeForMenuFromPast.getMenuId(),
+                     rejection.getMenuId());
+        assertEquals(setInvalidDateRangeForMenuFromPast.getMenuDateRange(),
+                     rejection.getMenuDateRange());
     }
 
     @Test

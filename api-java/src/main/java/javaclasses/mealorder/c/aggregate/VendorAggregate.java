@@ -61,11 +61,8 @@ import static javaclasses.mealorder.c.aggregate.rejection.VendorAggregateRejecti
                                                  annotated as {@code Assign} and {@code Apply}.
                                                  In that case class has too many methods.*/
         "OverlyCoupledClass",/* As each method needs dependencies  necessary to perform execution
-                                                 that class also overly coupled.*/
-        "unused"}) /* Methods that modifies the state of the aggregate with data from the passed event is used in the internal logic. */
-public class VendorAggregate extends Aggregate<VendorId,
-        Vendor,
-        VendorVBuilder> {
+                                                 that class also overly coupled.*/})
+public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder> {
 
     /**
      * {@inheritDoc}
@@ -88,7 +85,7 @@ public class VendorAggregate extends Aggregate<VendorId,
                                                    .setWhoAdded(cmd.getUserId())
                                                    .setVendorName(vendorName)
                                                    .setEmail(cmd.getEmail())
-                                                   .addAllPhoneNumbers(cmd.getPhoneNumbersList())
+                                                   .addAllPhoneNumber(cmd.getPhoneNumberList())
                                                    .setPoDailyDeadline(
                                                            cmd.getPoDailyDeadline())
                                                    .build();
@@ -114,7 +111,7 @@ public class VendorAggregate extends Aggregate<VendorId,
                                                       .setMenuId(cmd.getMenuId())
                                                       .setWhoImported(cmd.getUserId())
                                                       .setWhenImported(getCurrentTime())
-                                                      .addAllDishes(cmd.getDishesList())
+                                                      .addAllDish(cmd.getDishList())
                                                       .build();
         return menuImported;
     }
@@ -129,33 +126,28 @@ public class VendorAggregate extends Aggregate<VendorId,
             throwCannotSetDateRange(cmd);
         }
 
-        final DateRangeForMenuSet dateRangeForMenuSet = DateRangeForMenuSet.newBuilder()
-                                                                           .setVendorId(
-                                                                                   cmd.getVendorId())
-                                                                           .setMenuId(
-                                                                                   cmd.getMenuId())
-                                                                           .setWhoSet(
-                                                                                   cmd.getUserId())
-                                                                           .setWhenSet(
-                                                                                   getCurrentTime())
-                                                                           .setMenuDateRange(
-                                                                                   cmd.getMenuDateRange())
-                                                                           .build();
+        final DateRangeForMenuSet dateRangeForMenuSet =
+                DateRangeForMenuSet.newBuilder()
+                                   .setVendorId(cmd.getVendorId())
+                                   .setMenuId(cmd.getMenuId())
+                                   .setWhoSet(cmd.getUserId())
+                                   .setWhenSet(getCurrentTime())
+                                   .setMenuDateRange(cmd.getMenuDateRange())
+                                   .build();
         return dateRangeForMenuSet;
     }
 
     @Apply
-    private void vendorAdded(VendorAdded event) {
-
+    void vendorAdded(VendorAdded event) {
         getBuilder().setId(event.getVendorId())
                     .setVendorName(event.getVendorName())
                     .setEmail(event.getEmail())
                     .setPoDailyDeadline(event.getPoDailyDeadline())
-                    .addAllPhoneNumbers(event.getPhoneNumbersList());
+                    .addAllPhoneNumber(event.getPhoneNumberList());
     }
 
     @Apply
-    private void vendorUpdated(VendorUpdated event) {
+    void vendorUpdated(VendorUpdated event) {
 
         getBuilder().setVendorName(event.getVendorChange()
                                         .getNewVendorName())
@@ -163,22 +155,22 @@ public class VendorAggregate extends Aggregate<VendorId,
                                    .getNewEmail())
                     .setPoDailyDeadline(event.getVendorChange()
                                              .getNewPoDailyDeadline())
-                    .addAllPhoneNumbers(event.getVendorChange()
-                                             .getNewPhoneNumbersList());
+                    .addAllPhoneNumber(event.getVendorChange()
+                                             .getNewPhoneNumberList());
     }
 
     @Apply
-    private void menuImported(MenuImported event) {
+    void menuImported(MenuImported event) {
 
-        getBuilder().addMenus(Menu.newBuilder()
+        getBuilder().addMenu(Menu.newBuilder()
                                   .setId(event.getMenuId())
-                                  .addAllDishes(event.getDishesList())
+                                  .addAllDish(event.getDishList())
                                   .build());
     }
 
     @Apply
-    private void dateRangeForMenuSet(DateRangeForMenuSet event) {
-        final List<Menu> menus = getState().getMenusList();
+    void dateRangeForMenuSet(DateRangeForMenuSet event) {
+        final List<Menu> menus = getBuilder().getMenu();
         final int index = IntStream.range(0, menus.size())
                                    .filter(i -> menus.get(i)
                                                      .getId()
@@ -186,14 +178,8 @@ public class VendorAggregate extends Aggregate<VendorId,
                                    .findFirst()
                                    .getAsInt();
         final Menu menu = menus.get(index);
-        getBuilder().setMenus(index, Menu.newBuilder()
+        getBuilder().setMenu(index, Menu.newBuilder(menu)
                                          .setMenuDateRange(event.getMenuDateRange())
-                                         .setId(menu.getId())
-                                         .addAllDishes(menu.getDishesList())
                                          .build());
     }
-
 }
-
-
-

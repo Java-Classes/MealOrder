@@ -40,12 +40,12 @@ import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregate
 import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
 import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
 import static javaclasses.mealorder.c.aggregate.rejection.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.PURCHASE_ORDER_ID;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.USER_ID;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.cancelPOWithCustomReasonInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithNotActiveOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsDeliveredInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsValidInstance;
+import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Yegor Udovchenko
  */
 @DisplayName("PurchaseOrderAggregateRejections should")
-class PurchaseOrderRejectionsTest {
+class PurchaseOrderAggregateRejectionsTest {
 
     @Test
     @DisplayName("have the private constructor")

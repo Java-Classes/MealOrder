@@ -20,40 +20,54 @@
 
 package javaclasses.mealorder.c.aggregate;
 
-import javaclasses.mealorder.Menu;
-import javaclasses.mealorder.Vendor;
+import javaclasses.mealorder.OrderId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static javaclasses.mealorder.c.aggregate.VendorValidator.isThereMenuForThisDateRange;
+import static javaclasses.mealorder.c.aggregate.OrderValidator.isMenuAvailable;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_END_DATE;
+import static javaclasses.mealorder.testdata.TestValues.INVALID_START_DATE;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
-import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_FROM_PAST;
+import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * @author Yurii Haidamaka
+ * @author Vlad Kozachenko
  */
-@DisplayName("VendorValidator should")
-class VendorValidatorTest {
+@DisplayName("OrderValidator should")
+class OrderValidatorTest {
 
     @Test
     @DisplayName("have the private constructor")
     void havePrivateConstructor() {
-        assertHasPrivateParameterlessCtor(VendorValidator.class);
+        assertHasPrivateParameterlessCtor(OrderValidator.class);
     }
 
     @Test
-    @DisplayName("return false if menu date ranges are not overlapping")
-    void returnFalseIfDateRangesAreNotOverlapping() {
-
-        final Vendor vendor = Vendor.newBuilder()
-                                    .addMenu(Menu.newBuilder()
-                                                 .setMenuDateRange(MENU_DATE_RANGE)
-                                                 .build())
-                                    .build();
-
-        assertFalse(isThereMenuForThisDateRange(vendor, MENU_DATE_RANGE_FROM_PAST));
-
+    @DisplayName("return 'true' if the menu is available on the ordering date")
+    void returnTrueForExistingMenu() {
+        assertTrue(isMenuAvailable(MENU_DATE_RANGE, ORDER_ID.getOrderDate()));
     }
+
+    @Test
+    @DisplayName("return false order has no date")
+    void returnFalseForOrderWithoutDate() {
+        assertFalse(isMenuAvailable(MENU_DATE_RANGE, OrderId.getDefaultInstance()
+                                                            .getOrderDate()));
+    }
+
+    @Test
+    @DisplayName("return false if order date is after menu end date")
+    void returnFalseForOrderDateAfterMenu() {
+        assertFalse(isMenuAvailable(MENU_DATE_RANGE, INVALID_START_DATE));
+    }
+
+    @Test
+    @DisplayName("return false if order date is before menu end date")
+    void returnFalseForOrderDateBeforeMenu() {
+        assertFalse(isMenuAvailable(MENU_DATE_RANGE, INVALID_END_DATE));
+    }
+
 }

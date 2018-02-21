@@ -56,7 +56,7 @@ message AddVendor {
     spine.net.EmailAddress email = 4;
 
     // Phone numbers of a vendor.
-    repeated PhoneNumber phone_numbers = 5;
+    repeated PhoneNumber phone_number = 5;
 
     // Time when orders for this vendor are closed for editing.
     // Purchase orders for a vendor will be created exactly at this time.
@@ -91,7 +91,7 @@ message ImportMenu {
     UserId user_id = 3;
 
     // The collection of dishes.
-    repeated Dish dishes = 4;
+    repeated Dish dish = 4;
 }
 
 // Sets a menu date range.
@@ -134,8 +134,8 @@ message AddDishToOrder {
     // The identifier of an order.
     OrderId order_id = 1;
 
-    // The identifier of a dish that should be added to an order.
-    DishId dish_id = 2;
+    // A dish that should be added to an order.
+    Dish dish = 2;
 }
 
 // Removes a dish from an order.
@@ -176,7 +176,7 @@ message CreatePurchaseOrder {
     PurchaseOrderId id = 1;
 
     // The collection of all orders for this day for the specified vendor.
-    repeated Order orders = 2;
+    repeated Order order = 2;
 
     // The identifier of the user who creates a purchase order.
     UserId who_creates = 3;

@@ -22,8 +22,10 @@ package javaclasses.mealorder.c.context;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.server.BoundedContext;
+import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
+import javaclasses.mealorder.c.repository.OrderRepository;
 import javaclasses.mealorder.c.repository.PurchaseOrderRepository;
 import javaclasses.mealorder.c.repository.VendorRepository;
 
@@ -66,11 +68,18 @@ public final class BoundedContexts {
      */
     public static BoundedContext create(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
-        final VendorRepository vendorRepo = new VendorRepository();
-        final PurchaseOrderRepository poRepository = new PurchaseOrderRepository();
+        final AggregateRepository vendorRepository = VendorRepository.getInstance()
+                                                         .getRepository();
+
+        final OrderRepository orderRepository = new OrderRepository();
+        final PurchaseOrderRepository purchaseOrderRepository = new PurchaseOrderRepository();
+
+
         final BoundedContext boundedContext = createBoundedContext(storageFactory);
-        boundedContext.register(vendorRepo);
-        boundedContext.register(poRepository);
+
+        boundedContext.register(vendorRepository);
+        boundedContext.register(orderRepository);
+        boundedContext.register(purchaseOrderRepository);
         return boundedContext;
     }
 

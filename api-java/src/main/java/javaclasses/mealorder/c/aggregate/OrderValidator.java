@@ -21,33 +21,29 @@
 package javaclasses.mealorder.c.aggregate;
 
 import io.spine.time.LocalDate;
+import javaclasses.mealorder.MenuDateRange;
 
 import java.util.Comparator;
 
 /**
- * @author Yurii Haidamaka
+ * @author Vlad Kozachenko
  */
-public class LocalDateComparator implements Comparator<LocalDate> {
+public class OrderValidator {
+
+    private OrderValidator() {
+    }
 
     /**
-     * Compares its two arguments for order.  Returns a negative integer,
-     * zero, or a positive integer as the first argument is less than, equal
-     * to, or greater than the second.
+     * Checks whether the menu is available on the date of the order.
      *
-     * @param o1 the first LocalDate object to be compared.
-     * @param o2 the second LocalDate object to be compared.
-     * @return a negative integer, zero, or a positive integer as the
-     * first date is less than, equal to, or greater than the
-     * second.
+     * @param range     menu date range to check
+     * @param orderDate order date to check
+     * @return boolean true if there is a menu on the order date
      */
-    @Override
-    public int compare(LocalDate o1, LocalDate o2) {
-        final String o1String = String.format("%04d%02d%02d", o1.getYear(), o1.getMonth()
-                                                                              .getNumber(),
-                                              o1.getDay());
-        final String o2String = String.format("%04d%02d%02d", o2.getYear(), o2.getMonth()
-                                                                              .getNumber(),
-                                              o2.getDay());
-        return o1String.compareTo(o2String);
+    public static boolean isMenuAvailable(MenuDateRange range, LocalDate orderDate) {
+        Comparator<LocalDate> comparator = new LocalDateComparator();
+
+        return comparator.compare(range.getRangeStart(), orderDate) <= 0 &&
+                comparator.compare(range.getRangeEnd(), orderDate) >= 0;
     }
 }

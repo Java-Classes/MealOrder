@@ -26,6 +26,7 @@ import io.spine.server.entity.Repository;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.test.Tests;
+import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.Vendor;
 import org.junit.jupiter.api.DisplayName;
@@ -79,7 +80,7 @@ class BoundedContextsTest {
     }
 
     @Test
-    @DisplayName("create BoundedContext with VendorRepository and PurchaseOrderRepository")
+    @DisplayName("create BoundedContext with VendorRepository, OrderRepository and PurchaseOrderRepository")
     void createBoundedContextWithoutVendorRepository() {
 
         final StorageFactory inMemoryFactory =
@@ -91,8 +92,10 @@ class BoundedContextsTest {
         final Optional<Repository> vendorRepository = boundedContext.findRepository(Vendor.class);
         final Optional<Repository> poRepository = boundedContext.findRepository(
                 PurchaseOrder.class);
+        final Optional<Repository> orderRepository = boundedContext.findRepository(Order.class);
 
         assertTrue(vendorRepository.isPresent());
         assertTrue(poRepository.isPresent());
+        assertTrue(orderRepository.isPresent());
     }
 }

@@ -29,5 +29,23 @@ import javaclasses.mealorder.c.aggregate.VendorAggregate;
  *
  * @author Yurii Haidamaka
  */
-public class VendorRepository extends AggregateRepository<VendorId, VendorAggregate> {
+
+public enum VendorRepository {
+    INSTANCE;
+
+    private final AggregateRepository repository;
+
+    VendorRepository() {
+        repository = new AggregateRepository<VendorId, VendorAggregate>() {
+
+        };
+    }
+
+    public static VendorRepository getInstance() {
+        return INSTANCE;
+    }
+
+    public AggregateRepository getRepository() {
+        return repository;
+    }
 }

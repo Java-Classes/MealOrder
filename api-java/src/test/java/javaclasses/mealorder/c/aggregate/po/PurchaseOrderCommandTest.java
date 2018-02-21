@@ -29,8 +29,8 @@ import javaclasses.mealorder.c.aggregate.PurchaseOrderAggregate;
 import javaclasses.mealorder.c.aggregate.PurchaseOrderSender;
 import javaclasses.mealorder.c.aggregate.ServiceFactory;
 
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.DATE;
-import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.VENDOR_ID;
+import static javaclasses.mealorder.testdata.TestValues.DATE;
+import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -43,6 +43,7 @@ abstract class PurchaseOrderCommandTest<C extends Message>
         extends AggregateCommandTest<C, PurchaseOrderAggregate> {
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
+
     PurchaseOrderAggregate aggregate;
     PurchaseOrderId purchaseOrderId;
 
@@ -60,11 +61,6 @@ abstract class PurchaseOrderCommandTest<C extends Message>
         return purchaseOrderAggregate;
     }
 
-    private void setSenderMock() {
-        PurchaseOrderSender purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
-        ServiceFactory.setPoSenderInstance(purchaseOrderSenderMock);
-    }
-
     CommandEnvelope envelopeOf(Message commandMessage) {
         return CommandEnvelope.of(requestFactory.command()
                                                 .create(commandMessage));
@@ -75,5 +71,10 @@ abstract class PurchaseOrderCommandTest<C extends Message>
                               .setVendorId(VENDOR_ID)
                               .setPoDate(DATE)
                               .build();
+    }
+
+    private void setSenderMock() {
+        final PurchaseOrderSender purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
+        ServiceFactory.setPoSenderInstance(purchaseOrderSenderMock);
     }
 }

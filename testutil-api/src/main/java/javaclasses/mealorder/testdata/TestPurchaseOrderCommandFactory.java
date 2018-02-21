@@ -20,18 +20,11 @@
 
 package javaclasses.mealorder.testdata;
 
-import io.spine.money.Currency;
-import io.spine.money.Money;
-import io.spine.net.EmailAddress;
 import io.spine.time.LocalDate;
-import io.spine.time.MonthOfYear;
 import javaclasses.mealorder.Dish;
-import javaclasses.mealorder.DishId;
-import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.PurchaseOrderId;
-import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
@@ -42,9 +35,10 @@ import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.spine.time.Time.getCurrentTime;
-import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
+import static javaclasses.mealorder.testdata.TestValues.ORDER;
+import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID;
 
 /**
  * A factory of the purchase order commands for the test needs.
@@ -52,54 +46,6 @@ import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
  * @author Yegor Udovchenko
  */
 public class TestPurchaseOrderCommandFactory {
-
-    public static final VendorId VENDOR_ID = VendorId.newBuilder()
-                                                     .setValue("vendor:vendor")
-                                                     .build();
-    public static final LocalDate DATE = LocalDate
-            .newBuilder()
-            .setYear(2018)
-            .setMonth(MonthOfYear.FEBRUARY)
-            .setDay(12)
-            .build();
-    public static final PurchaseOrderId PURCHASE_ORDER_ID = PurchaseOrderId
-            .newBuilder()
-            .setVendorId(VENDOR_ID)
-            .setPoDate(DATE)
-            .build();
-    public static final UserId USER_ID = UserId.newBuilder()
-                                               .setEmail(EmailAddress
-                                                                 .newBuilder()
-                                                                 .setValue("example@example.net")
-                                                                 .build())
-                                               .build();
-    public static final OrderId ORDER_ID = OrderId.newBuilder()
-                                                  .setVendorId(VENDOR_ID)
-                                                  .setUserId(USER_ID)
-                                                  .setOrderDate(DATE)
-                                                  .build();
-    public static final MenuId MENU_ID = MenuId.newBuilder()
-                                               .setVendorId(VENDOR_ID)
-                                               .setWhenImported(getCurrentTime())
-                                               .build();
-    public static final DishId DISH_ID = DishId.newBuilder()
-                                               .setMenuId(MENU_ID)
-                                               .setSequentialNumber(1)
-                                               .build();
-    public static final Dish DISH = Dish.newBuilder()
-                                        .setId(DISH_ID)
-                                        .setName("Dish")
-                                        .setCategory("Category")
-                                        .setPrice(Money.newBuilder()
-                                                       .setCurrency(Currency.USD)
-                                                       .setAmount(100)
-                                                       .build())
-                                        .build();
-    public static final Order ORDER = Order.newBuilder()
-                                           .setId(ORDER_ID)
-                                           .addDishes(DISH)
-                                           .setStatus(ORDER_ACTIVE)
-                                           .build();
 
     private TestPurchaseOrderCommandFactory() {
     }
@@ -113,7 +59,7 @@ public class TestPurchaseOrderCommandFactory {
         final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
                                                               .setId(PURCHASE_ORDER_ID)
                                                               .setWhoCreates(USER_ID)
-                                                              .addOrders(ORDER)
+                                                              .addOrder(ORDER)
                                                               .build();
         return result;
     }
@@ -143,10 +89,10 @@ public class TestPurchaseOrderCommandFactory {
      */
     public static CreatePurchaseOrder createPurchaseOrderWithNotActiveOrdersInstance() {
         final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
-        final Order order = validCmd.getOrders(0);
+        final Order order = validCmd.getOrder(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrders(Order.newBuilder(order)
-                                                  .setStatus(ORDER_CANCELED))
+                                  .addOrder(Order.newBuilder(order)
+                                                 .setStatus(ORDER_CANCELED))
                                   .build();
     }
 
@@ -158,12 +104,12 @@ public class TestPurchaseOrderCommandFactory {
      */
     public static CreatePurchaseOrder createPurchaseOrderWithEmptyOrdersInstance() {
         final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
-        final Order order = validCmd.getOrders(0);
+        final Order order = validCmd.getOrder(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrders(Order.newBuilder()
-                                                  .setStatus(order.getStatus())
-                                                  .setId(order.getId())
-                                                  .build())
+                                  .addOrder(Order.newBuilder()
+                                                 .setStatus(order.getStatus())
+                                                 .setId(order.getId())
+                                                 .build())
                                   .build();
     }
 
@@ -175,13 +121,13 @@ public class TestPurchaseOrderCommandFactory {
      */
     public static CreatePurchaseOrder createPurchaseOrderWithDatesMismatchOrdersInstance() {
         final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
-        final Order order = validCmd.getOrders(0);
+        final Order order = validCmd.getOrder(0);
         return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrders(Order.newBuilder(order)
-                                                  .setId(OrderId.newBuilder(order.getId())
-                                                                .setOrderDate(
-                                                                        LocalDate.getDefaultInstance()))
-                                                  .build())
+                                  .addOrder(Order.newBuilder(order)
+                                                 .setId(OrderId.newBuilder(order.getId())
+                                                               .setOrderDate(
+                                                                       LocalDate.getDefaultInstance()))
+                                                 .build())
                                   .build();
     }
 
@@ -193,17 +139,17 @@ public class TestPurchaseOrderCommandFactory {
      * @return the {@code CreatePurchaseOrder} instance with invalid orders.
      */
     public static CreatePurchaseOrder createPurchaseOrderWithInvalidOrdersInstance() {
-        CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
-        final Order order = validCmd.getOrders(0);
-        final Dish dish = order.getDishes(0);
+        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
+        final Order order = validCmd.getOrder(0);
+        final Dish dish = order.getDish(0);
         List<Dish> dishes = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             dishes.add(dish);
         }
         return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrders(Order.newBuilder(order)
-                                                  .addAllDishes(dishes)
-                                                  .build())
+                                  .addOrder(Order.newBuilder(order)
+                                                 .addAllDish(dishes)
+                                                 .build())
                                   .build();
     }
 
@@ -229,7 +175,7 @@ public class TestPurchaseOrderCommandFactory {
     public static CancelPurchaseOrder cancelPOWithCustomReasonInstance() {
         return CancelPurchaseOrder.newBuilder()
                                   .setId(PURCHASE_ORDER_ID)
-                                  .setCustomReason("Because why not")
+                                  .setCustomReason("Because why not.")
                                   .setUserId(USER_ID)
                                   .build();
     }

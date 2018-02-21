@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.c.aggregate;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.time.LocalDate;
 import io.spine.time.MonthOfYear;
 import javaclasses.mealorder.Menu;
@@ -30,7 +31,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Validates vendor commands and state transitions.
+ * Validates values for vendor's commands.
  *
  * @author Yurii Haidamaka
  */
@@ -40,7 +41,7 @@ class VendorValidator {
     }
 
     /**
-     * Checks whether the date range doesn't contain dates from the past and the start date of the range is not greater than end date.
+     * Checks whether the date range doesn't contain dates from the past and the start date range is not greater than end date.
      *
      * @param menuDateRange date range to check
      */
@@ -60,8 +61,8 @@ class VendorValidator {
 
         final Comparator<LocalDate> comparator = new LocalDateComparator();
 
-        return comparator.compare(startDateRange, currentDate) < 0
-                && comparator.compare(startDateRange, endDateRange) < 0;
+        return comparator.compare(startDateRange, currentDate) >= 0
+                && comparator.compare(startDateRange, endDateRange) <= 0;
     }
 
     /**
@@ -71,18 +72,19 @@ class VendorValidator {
      * @param menuDateRange date range to check
      */
     static boolean isThereMenuForThisDateRange(Vendor vendor, MenuDateRange menuDateRange) {
-        final List<Menu> menus = vendor.getMenusList();
+        final List<Menu> menus = vendor.getMenuList();
         return menus.stream()
                     .anyMatch(m -> areRangesOverlapping(menuDateRange, m.getMenuDateRange()));
     }
 
     /**
-     * Checks checks whether two ranges overlap.
+     * Checks whether two ranges overlap.
      *
      * @param menuDateRange1 the date range
      * @param menuDateRange2 the date range
      * @return boolean true if the date ranges are overlapped and false otherwise
      */
+    @VisibleForTesting
     private static boolean areRangesOverlapping(MenuDateRange menuDateRange1,
                                                 MenuDateRange menuDateRange2) {
 
@@ -101,5 +103,4 @@ class VendorValidator {
 
         return startResult || endResult;
     }
-
 }

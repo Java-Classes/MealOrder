@@ -39,7 +39,6 @@ public class VendorAggregateRejections {
         // Prevent instantiation of this utility class.
     }
 
-
         /**
          * Constructs and throws the {@link VendorAlreadyExists} rejection
          * according to the passed parameters.
@@ -64,5 +63,4 @@ public class VendorAggregateRejections {
             throw new CannotSetDateRange(cmd.getVendorId(), cmd.getMenuId(), cmd.getMenuDateRange(),
                                          getCurrentTime());
         }
-
 }
