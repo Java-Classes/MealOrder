@@ -56,6 +56,7 @@ import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 import javaclasses.mealorder.c.repository.VendorRepository;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
@@ -228,16 +229,16 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     void dishRemovedFromOrder(DishRemovedFromOrder event) {
-        for (int i = 0; i < getBuilder().getDish()
-                                        .size(); i++) {
-            if (event.getDish()
-                     .equals(getBuilder().getDish()
-                                         .get(i))) {
-                getBuilder().removeDish(i)
-                            .build();
-                return;
-            }
-        }
+
+        final List<Dish> dishes = getBuilder().getDish();
+
+        final int index = IntStream.range(0, dishes.size())
+                                   .filter(i -> dishes.get(i)
+                                                      .equals(event.getDish()))
+                                   .findFirst()
+                                   .getAsInt();
+
+        getBuilder().removeDish(index);
     }
 
     @Apply
