@@ -94,7 +94,7 @@ public class CancelOrderTest extends OrderCommandTest {
 
         commandBus.post(cancelOrderCommand, StreamObservers.noOpObserver());
 
-        OrderCanceled event = (OrderCanceled) orderCanceledSubscriber.getEventMessage();
+        final OrderCanceled event = (OrderCanceled) orderCanceledSubscriber.getEventMessage();
 
         assertEquals(cancelOrder.getOrderId(), event.getOrderId());
         assertEquals(cancelOrder.getWhoCancels(), event.getWhoCanceled());
@@ -171,8 +171,8 @@ public class CancelOrderTest extends OrderCommandTest {
     }
 
     @Test
-    @DisplayName("throw cannotCreateProcessedOrder")
-    void throwsCannotCreateProcessedOrder() {
+    @DisplayName("throw CannotCancelProcessedOrder rejection")
+    void throwsCannotCancelProcessedOrder() {
 
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
                                                             .setDish(DISH1)

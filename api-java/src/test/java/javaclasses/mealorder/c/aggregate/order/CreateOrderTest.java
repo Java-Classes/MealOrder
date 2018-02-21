@@ -194,7 +194,7 @@ public class CreateOrderTest extends OrderCommandTest {
 
         assertNotNull(OrderAlreadyExistsSubscriber.getRejection());
 
-        Rejections.OrderAlreadyExists orderAlreadyExists
+        final Rejections.OrderAlreadyExists orderAlreadyExists
                 = OrderAlreadyExistsSubscriber.getRejection();
 
         assertEquals(ORDER_ID, orderAlreadyExists.getOrderId());
@@ -220,7 +220,7 @@ public class CreateOrderTest extends OrderCommandTest {
 
         assertNotNull(MenuNotAvailableSubscriber.getRejection());
 
-        Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
+        final Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
 
         assertEquals(USER_ID, menuNotAvailable.getUserId());
         assertEquals(DATE, menuNotAvailable.getOrderDate());
@@ -247,7 +247,7 @@ public class CreateOrderTest extends OrderCommandTest {
 
         assertNotNull(MenuNotAvailableSubscriber.getRejection());
 
-        Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
+        final Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
 
         assertEquals(USER_ID, menuNotAvailable.getUserId());
         assertEquals(INVALID_START_DATE, menuNotAvailable.getOrderDate());
@@ -262,7 +262,8 @@ public class CreateOrderTest extends OrderCommandTest {
                 requestFactory.command()
                               .create(toMessage(createOrderInstanceForNonExistentVendor()));
 
-        final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
+        final MenuNotAvailableSubscriber menuNotAvailableSubscriber
+                = new MenuNotAvailableSubscriber();
 
         MenuNotAvailableSubscriber.clear();
 
@@ -274,7 +275,8 @@ public class CreateOrderTest extends OrderCommandTest {
 
         assertNotNull(MenuNotAvailableSubscriber.getRejection());
 
-        Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
+        final Rejections.MenuNotAvailable menuNotAvailable
+                = MenuNotAvailableSubscriber.getRejection();
 
         assertEquals(USER_ID, menuNotAvailable.getUserId());
         assertEquals(DATE, menuNotAvailable.getOrderDate());

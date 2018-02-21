@@ -37,7 +37,7 @@ import static io.spine.protobuf.TypeConverter.toMessage;
 /**
  * @author Vlad Kozachenko
  */
-public class OrderCommandTest<T extends Message> {
+public class OrderCommandTest {
 
     final ActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());

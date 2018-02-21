@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Vlad Kozachenko
  */
 @DisplayName("RemoveDishFromOrder command should be interpreted by OrderAggregate and ")
-public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
+public class RemoveDishFromOrderTest extends OrderCommandTest {
 
     @Override
     @BeforeEach
@@ -89,7 +89,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
                                                                          removeDishFromOrder));
         commandBus.post(removeDishFromOrderCommand, StreamObservers.noOpObserver());
 
-        DishRemovedFromOrder event = (DishRemovedFromOrder) eventSubscriber.getEventMessage();
+        final DishRemovedFromOrder event = (DishRemovedFromOrder) eventSubscriber.getEventMessage();
 
         assertEquals(removeDishFromOrder.getOrderId(), event.getOrderId());
         assertEquals(removeDishFromOrder.getDishId(), event.getDish()
@@ -148,7 +148,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
 
         assertNotNull(OrderTestEnv.CannotRemoveMissingDishSubscriber.getRejection());
 
-        Rejections.CannotRemoveMissingDish rejection
+        final Rejections.CannotRemoveMissingDish rejection
                 = OrderTestEnv.CannotRemoveMissingDishSubscriber.getRejection();
 
         assertEquals(ORDER_ID, rejection.getOrderId());
@@ -186,7 +186,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest<CreateOrder> {
 
         assertNotNull(OrderTestEnv.CannotRemoveDishFromNotActiveOrderSubscriber.getRejection());
 
-        Rejections.CannotRemoveDishFromNotActiveOrder rejection
+        final Rejections.CannotRemoveDishFromNotActiveOrder rejection
                 = OrderTestEnv.CannotRemoveDishFromNotActiveOrderSubscriber.getRejection();
 
         assertEquals(ORDER_ID, rejection.getOrderId());

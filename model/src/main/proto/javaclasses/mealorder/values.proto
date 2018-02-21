@@ -132,6 +132,7 @@ enum OrderStatus {
 
 // Attribute for the `DishVendorMismath` rejection.
 // Contains a dish vendor id value and the mismatching value in the order.
+//
 message VendorMismatch {
 
     // The vendor id in an order.

@@ -71,7 +71,7 @@ public class AddDishToOrderTest extends OrderCommandTest {
     }
 
     @Test
-    @DisplayName("add dish to order")
+    @DisplayName("produce DishAddedToOrder event")
     void produceEvent() {
 
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
@@ -85,7 +85,7 @@ public class AddDishToOrderTest extends OrderCommandTest {
 
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
-        DishAddedToOrder event = (DishAddedToOrder) dishAddedToOrderSubscriber.getEventMessage();
+        final DishAddedToOrder event = (DishAddedToOrder) dishAddedToOrderSubscriber.getEventMessage();
 
         assertEquals(addDishToOrder.getOrderId(), event.getOrderId());
         assertEquals(addDishToOrder.getDish(), event.getDish());
@@ -174,7 +174,7 @@ public class AddDishToOrderTest extends OrderCommandTest {
 
         assertNotNull(OrderTestEnv.CannotAddDishToNotActiveOrderSubscriber.getRejection());
 
-        Rejections.CannotAddDishToNotActiveOrder rejection
+        final Rejections.CannotAddDishToNotActiveOrder rejection
                 = OrderTestEnv.CannotAddDishToNotActiveOrderSubscriber.getRejection();
 
         final VendorId expected = INVALID_DISH.getId()

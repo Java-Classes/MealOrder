@@ -46,13 +46,13 @@ class OrderValidatorTest {
     }
 
     @Test
-    @DisplayName("return true if menu there is on the order date")
+    @DisplayName("return 'true' if the menu is available on the ordering date")
     void returnTrueForExistingMenu() {
         assertTrue(isMenuAvailable(MENU_DATE_RANGE, ORDER_ID.getOrderDate()));
     }
 
     @Test
-    @DisplayName("return false order hasn't date")
+    @DisplayName("return false order has no date")
     void returnFalseForOrderWithoutDate() {
         assertFalse(isMenuAvailable(MENU_DATE_RANGE, OrderId.getDefaultInstance()
                                                             .getOrderDate()));

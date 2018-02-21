@@ -57,6 +57,7 @@ public class OrderProcessedTest extends OrderCommandTest {
     final Command createOrderCommand = requestFactory.command()
                                                      .create(toMessage(createOrder));
 
+    @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
