@@ -20,41 +20,65 @@
 
 package javaclasses.mealorder.c.vendor;
 
+import io.spine.test.Tests;
 import javaclasses.mealorder.Menu;
+import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.Vendor;
-import javaclasses.mealorder.c.vendor.VendorValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static javaclasses.mealorder.c.vendor.VendorValidator.isThereMenuForThisDateRange;
+import static javaclasses.mealorder.c.vendor.Vendors.isThereMenuForThisDateRange;
+import static javaclasses.mealorder.c.vendor.Vendors.isValidDateRange;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_FROM_PAST;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("VendorValidator should")
-class VendorValidatorTest {
+@DisplayName("Vendors should")
+class VendorsTest {
 
     @Test
     @DisplayName("have the private constructor")
     void havePrivateConstructor() {
-        assertHasPrivateParameterlessCtor(VendorValidator.class);
+        assertHasPrivateParameterlessCtor(Vendors.class);
     }
 
     @Test
     @DisplayName("return false if menu date ranges are not overlapping")
     void returnFalseIfDateRangesAreNotOverlapping() {
-
+        final Menu menu = Menu.newBuilder()
+                              .setMenuDateRange(MENU_DATE_RANGE)
+                              .build();
         final Vendor vendor = Vendor.newBuilder()
-                                    .addMenu(Menu.newBuilder()
-                                                 .setMenuDateRange(MENU_DATE_RANGE)
-                                                 .build())
+                                    .addMenu(menu)
                                     .build();
 
         assertFalse(isThereMenuForThisDateRange(vendor, MENU_DATE_RANGE_FROM_PAST));
+    }
+
+    @Test
+    @DisplayName("don't check menu without Vendor and MenuDateRange")
+    void doNotCheckMEnuWithoutVendorAndMenuDateRange() {
+        final Vendor vendor = Vendor.getDefaultInstance();
+        final MenuDateRange menuDateRange = MenuDateRange.getDefaultInstance();
+
+        assertThrows(NullPointerException.class,
+                     () -> isThereMenuForThisDateRange(Tests.nullRef(), menuDateRange));
+        assertThrows(NullPointerException.class,
+                     () -> isThereMenuForThisDateRange(vendor, Tests.nullRef()));
+        assertThrows(NullPointerException.class,
+                     () -> isThereMenuForThisDateRange(Tests.nullRef(), Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("doesn't validate dateRange without DateRange")
+    void doNotValidateDateRangeWithoutDateRange() {
+        assertThrows(NullPointerException.class,
+                     () -> isValidDateRange(Tests.nullRef()));
 
     }
 }

@@ -1,7 +1,7 @@
 //
 // Copyright 2018, TeamDev Ltd. All rights reserved.
 //
-// Redistribution and use in source and/or binary forms, with or without
+// Redistribution and use in source and/or binary gorms, with or without
 // modification, must retain the above copyright notice and the following
 // disclaimer.
 //
@@ -18,33 +18,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package javaclasses.mealorder.c.vendor;
-
-import io.spine.server.aggregate.AggregateRepository;
-import javaclasses.mealorder.VendorId;
-
 /**
- * Enumeration with only one identifier INSTANCE that is repository for the {@link VendorAggregate}.
- *
- * @author Yurii Haidamaka
+ * This package contains implementation for classes which provides
+ * methods to process OrderAggregate.
  */
+@ParametersAreNonnullByDefault
+package javaclasses.mealorder.c.order;
 
-public enum VendorRepository {
-    INSTANCE;
-
-    private final AggregateRepository repository;
-
-    VendorRepository() {
-        repository = new AggregateRepository<VendorId, VendorAggregate>() {
-
-        };
-    }
-
-    public static VendorRepository getInstance() {
-        return INSTANCE;
-    }
-
-    public AggregateRepository getRepository() {
-        return repository;
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

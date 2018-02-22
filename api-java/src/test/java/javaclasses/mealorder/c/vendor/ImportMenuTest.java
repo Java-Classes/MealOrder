@@ -57,19 +57,18 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("produce MenuImported event")
     void produceEvent() {
-
         final AddVendor addVendorCmd = TestVendorCommandFactory.addVendorInstance();
         dispatchCommand(aggregate, envelopeOf(addVendorCmd));
 
-        final ImportMenu importMenuCmd = TestVendorCommandFactory.importMenuInstance();
+        final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(importMenuCmd));
+                                                                    envelopeOf(importMenu));
 
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
-        assertEquals(MenuImported.class, messageList.get(0)
-                                                    .getClass());
+        assertEquals(MenuImported.class, messageList.get(0).getClass());
+
         final MenuImported menuImported = (MenuImported) messageList.get(0);
 
         assertEquals(VENDOR_ID, menuImported.getVendorId());
@@ -93,5 +92,4 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
         final Vendor state = aggregate.getState();
         assertEquals(state.getId(), importMenu.getVendorId());
     }
-
 }

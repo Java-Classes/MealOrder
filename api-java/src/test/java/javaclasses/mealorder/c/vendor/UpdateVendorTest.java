@@ -54,31 +54,27 @@ public class UpdateVendorTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("produce UpdateVendor event")
     void produceEvent() {
+        final AddVendor addVendor = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendor));
 
-        final AddVendor addVendorCmd = TestVendorCommandFactory.addVendorInstance();
-        dispatchCommand(aggregate, envelopeOf(addVendorCmd));
-
-        final UpdateVendor updateVendorCmd = TestVendorCommandFactory.updateVendorInstance();
+        final UpdateVendor updateVendor = TestVendorCommandFactory.updateVendorInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(updateVendorCmd));
-
+                                                                    envelopeOf(updateVendor));
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
-        assertEquals(VendorUpdated.class, messageList.get(0)
-                                                     .getClass());
+        assertEquals(VendorUpdated.class, messageList.get(0).getClass());
+
         final VendorUpdated vendorUpdated = (VendorUpdated) messageList.get(0);
 
         assertEquals(VENDOR_ID, vendorUpdated.getVendorId());
         assertEquals(USER_ID, vendorUpdated.getWhoUploaded());
-        assertEquals(NEW_VENDOR_NAME, vendorUpdated.getVendorChange()
-                                                   .getNewVendorName());
+        assertEquals(NEW_VENDOR_NAME, vendorUpdated.getVendorChange().getNewVendorName());
     }
 
     @Test
     @DisplayName("update vendor")
     void updateVendor() {
-
         final AddVendor addVendorCmd = TestVendorCommandFactory.addVendorInstance();
         dispatchCommand(aggregate, envelopeOf(addVendorCmd));
 
