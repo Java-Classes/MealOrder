@@ -44,7 +44,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.grpc.StreamObservers.memoizingObserver;
-import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
@@ -66,9 +65,9 @@ import static org.mockito.Mockito.mock;
 @DisplayName("CancelOrder command should be interpreted by OrderAggregate and ")
 public class CancelOrderTest extends OrderCommandTest {
 
-    final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+    final CreateOrder createOrder = createOrderInstance();
     final Command createOrderCommand = requestFactory.command()
-                                                     .create(toMessage(createOrder));
+                                                     .create(createOrder);
 
     @Override
     @BeforeEach
@@ -80,11 +79,10 @@ public class CancelOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("produce OrderCanceled event")
     void produceEvent() {
-
-        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+        final CancelOrder cancelOrder = cancelOrderInstance();
 
         final Command cancelOrderCommand = requestFactory.command()
-                                                         .create(toMessage(cancelOrder));
+                                                         .create(cancelOrder);
 
         final OrderCanceledSubscriber orderCanceledSubscriber = new OrderCanceledSubscriber();
 
@@ -101,11 +99,10 @@ public class CancelOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("cancel order")
     void cancelOrder() {
-
-        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+        final CancelOrder cancelOrder = cancelOrderInstance();
 
         final Command cancelOrderCommand = requestFactory.command()
-                                                         .create(toMessage(cancelOrder));
+                                                         .create(cancelOrder);
 
         final MemoizingObserver<Ack> memoizingObserver = memoizingObserver();
 
@@ -134,13 +131,12 @@ public class CancelOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("cancel order by react on PurchaseOrderCanceled")
     void testOrderCanceledByReact() {
-
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
                                                             .setDish(DISH1)
                                                             .setOrderId(ORDER_ID)
                                                             .build();
         final Command addDishToOrderCommand = requestFactory.command()
-                                                            .create(toMessage(addDishToOrder));
+                                                            .create(addDishToOrder);
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
         final CreatePurchaseOrder createPurchaseOrder = createPurchaseOrderInstance();
@@ -171,13 +167,12 @@ public class CancelOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("throw CannotCancelProcessedOrder rejection")
     void throwsCannotCancelProcessedOrder() {
-
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
                                                             .setDish(DISH1)
                                                             .setOrderId(ORDER_ID)
                                                             .build();
         final Command addDishToOrderCommand = requestFactory.command()
-                                                            .create(toMessage(addDishToOrder));
+                                                            .create(addDishToOrder);
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
         final CreatePurchaseOrder createPurchaseOrder = createPurchaseOrderInstance();
@@ -187,12 +182,13 @@ public class CancelOrderTest extends OrderCommandTest {
 
         commandBus.post(createPOCommand, StreamObservers.noOpObserver());
 
-        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+        final CancelOrder cancelOrder = cancelOrderInstance();
 
         final Command cancelOrderCommand = requestFactory.command()
-                                                         .create(toMessage(cancelOrder));
+                                                         .create(cancelOrder);
 
-        final CannotCancelProcessedOrderSubscriber cannotCancelProcessedOrderSubscriber = new CannotCancelProcessedOrderSubscriber();
+        final CannotCancelProcessedOrderSubscriber cannotCancelProcessedOrderSubscriber =
+                new CannotCancelProcessedOrderSubscriber();
 
         rejectionBus.register(cannotCancelProcessedOrderSubscriber);
 
@@ -202,7 +198,8 @@ public class CancelOrderTest extends OrderCommandTest {
 
         assertNotNull(CannotCancelProcessedOrderSubscriber.getRejection());
 
-        Rejections.CannotCancelProcessedOrder cannotCancelProcessedOrder = CannotCancelProcessedOrderSubscriber.getRejection();
+        final Rejections.CannotCancelProcessedOrder cannotCancelProcessedOrder =
+                CannotCancelProcessedOrderSubscriber.getRejection();
 
         assertEquals(ORDER_ID, cannotCancelProcessedOrder.getOrderId());
         assertEquals(USER_ID, cannotCancelProcessedOrder.getUserId());

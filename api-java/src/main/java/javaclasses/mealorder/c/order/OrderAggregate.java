@@ -20,22 +20,19 @@
 
 package javaclasses.mealorder.c.order;
 
-import com.google.common.base.Optional;
 import io.spine.core.React;
 import io.spine.server.aggregate.Aggregate;
-import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.DishId;
-import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
+import javaclasses.mealorder.OrderStatus;
 import javaclasses.mealorder.OrderVBuilder;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.c.vendor.VendorAggregate;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
@@ -54,7 +51,6 @@ import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
-import javaclasses.mealorder.c.vendor.VendorRepository;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -63,28 +59,22 @@ import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 import static javaclasses.mealorder.OrderStatus.ORDER_PROCESSED;
-import static javaclasses.mealorder.c.order.OrderValidator.isMenuAvailable;
+import static javaclasses.mealorder.OrderStatus.ORDER_UNDEFINED;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.CancelOrderRejections.throwCannotCancelProcessedOrder;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.throwMenuNotAvailable;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.throwOrderAlreadyExists;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveDishFromNotActiveOrder;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveMissingDish;
+import static javaclasses.mealorder.c.order.Orders.checkMenuAvailability;
 
 /**
  * The aggregate managing the state of a {@link Order}.
  *
  * @author Vlad Kozachenko
  */
-@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor definition cannot be separated and should
-                                                 process all commands and events related to it
-                                                 according to the domain model.
-                                                 The {@code Aggregate} does it with methods
-                                                 annotated as {@code Assign} and {@code Apply}.
-                                                 In that case class has too many methods.*/
-        "OverlyCoupledClass"}) /* As each method needs dependencies  necessary to perform execution
-                                                 that class also overly coupled.*/
+@SuppressWarnings("OverlyCoupledClass") /* As each method needs dependencies  necessary to
+                                           perform execution that class also overly coupled.*/
 public class OrderAggregate extends Aggregate<OrderId,
         Order,
         OrderVBuilder> {
@@ -101,36 +91,11 @@ public class OrderAggregate extends Aggregate<OrderId,
         final OrderId orderId = cmd.getOrderId();
         final MenuId menuId = cmd.getMenuId();
 
-        final AggregateRepository vendorRepository = VendorRepository.getInstance()
-                                                                     .getRepository();
-
-        final Optional<VendorAggregate> vendor = vendorRepository.find(
-                orderId.getVendorId());
-        if (!vendor.isPresent()) {
-            throwMenuNotAvailable(cmd);
-        }
-
-        final VendorAggregate vendorAggregate = vendor.get();
-
-        final List<Menu> menus = vendorAggregate
-                .getState()
-                .getMenuList();
-
-        final java.util.Optional<Menu> menu = menus.stream()
-                                                   .filter(m -> cmd.getMenuId()
-                                                                   .equals(m.getId()))
-                                                   .findFirst();
-
-        if (!menu.isPresent() || !isMenuAvailable(menu.get()
-                                                      .getMenuDateRange(), cmd.getOrderId()
-                                                                              .getOrderDate())) {
-            throwMenuNotAvailable(cmd);
-        }
-
-        if (getVersion().getNumber() != 0 && ORDER_CANCELED != getState().getStatus()) {
+        checkMenuAvailability(cmd);
+        final OrderStatus orderStatus = getState().getStatus();
+        if (orderStatus != ORDER_UNDEFINED && orderStatus != ORDER_CANCELED) {
             throwOrderAlreadyExists(cmd);
         }
-
         final OrderCreated result = OrderCreated.newBuilder()
                                                 .setOrderId(orderId)
                                                 .setMenuId(menuId)
@@ -144,16 +109,16 @@ public class OrderAggregate extends Aggregate<OrderId,
         final OrderId orderId = cmd.getOrderId();
         final Dish dish = cmd.getDish();
 
+        final OrderStatus orderStatus = getState().getStatus();
+        if (orderStatus != ORDER_ACTIVE) {
+            throwCannotAddDishToNotActiveOrder(cmd, orderStatus);
+        }
+
         final VendorId dishVendorId = dish.getId()
                                           .getMenuId()
                                           .getVendorId();
-
-        if (getState().getStatus() != ORDER_ACTIVE) {
-            throwCannotAddDishToNotActiveOrder(cmd, getState().getStatus());
-        }
-
-        if (!orderId.getVendorId()
-                    .equals(dishVendorId)) {
+        final VendorId orderVendorId = orderId.getVendorId();
+        if (!orderVendorId.equals(dishVendorId)) {
             throwDishVendorMismatch(cmd);
         }
 
@@ -174,7 +139,7 @@ public class OrderAggregate extends Aggregate<OrderId,
             throwCannotRemoveDishFromNotActiveOrder(cmd, getState().getStatus());
         }
 
-        List<Dish> dishesList = getState().getDishList();
+        final List<Dish> dishesList = getState().getDishList();
 
         java.util.Optional<Dish> dish = dishesList.stream()
                                                   .filter(d -> d.getId()
@@ -208,13 +173,25 @@ public class OrderAggregate extends Aggregate<OrderId,
         return result;
     }
 
-    // Event appliers
+    /*
+     * Event appliers
+     *****************/
 
+    /**
+     * Applies the {@link OrderCreated} event.
+     *
+     * <p>
+     * Creates new order and changes order aggregate state status on {@code ORDER_ACTIVE}.
+     * Checks if the order with the same id was already created and cancelled. In this case
+     * removes all dishes that was added before cancellation.
+     * </p>
+     * @param event
+     */
     @Apply
     void orderCreated(OrderCreated event) {
-
         if (getBuilder().getStatus() == ORDER_CANCELED) {
-            getBuilder().clearDish();
+            getBuilder().clearDish()
+                        .build();
         }
 
         getBuilder().setId(event.getOrderId())
@@ -230,16 +207,16 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     void dishRemovedFromOrder(DishRemovedFromOrder event) {
-
         final List<Dish> dishes = getBuilder().getDish();
-
+        final Dish eventDish = event.getDish();
         final int index = IntStream.range(0, dishes.size())
                                    .filter(i -> dishes.get(i)
-                                                      .equals(event.getDish()))
+                                                      .equals(eventDish))
                                    .findFirst()
                                    .getAsInt();
 
-        getBuilder().removeDish(index);
+        getBuilder().removeDish(index)
+                    .build();
     }
 
     @Apply
@@ -248,18 +225,22 @@ public class OrderAggregate extends Aggregate<OrderId,
                     .build();
     }
 
+    @Apply
+    void orderProcessed(OrderProcessed event) {
+        getBuilder().setStatus(ORDER_PROCESSED)
+                    .build();
+    }
+
+    /*
+     * Reactions
+     *****************/
+
     @React
     OrderProcessed on(PurchaseOrderCreated event) {
         return OrderProcessed.newBuilder()
                              .setOrder(getState())
                              .setWhenProcessed(getCurrentTime())
                              .build();
-    }
-
-    @Apply
-    void orderProcessed(OrderProcessed event) {
-        getBuilder().setStatus(ORDER_PROCESSED)
-                    .build();
     }
 
     @React

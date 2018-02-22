@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.c.vendor;
 
+import io.spine.test.Tests;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.rejection.CannotSetDateRange;
@@ -67,5 +68,19 @@ class VendorAggregateRejectionsTest {
         assertEquals(cmd.getVendorId(), rejection.getMessageThrown().getVendorId());
         assertEquals(cmd.getMenuId(), rejection.getMessageThrown().getMenuId());
         assertEquals(cmd.getMenuDateRange(), rejection.getMessageThrown().getMenuDateRange());
+    }
+
+    @Test
+    @DisplayName("don't throw VendorAlreadyExists rejection for null command")
+    void doNotThrowVendorAlreadyExistsRejection() {
+        assertThrows(NullPointerException.class,
+                     () -> throwVendorAlreadyExists(Tests.nullRef()));
+    }
+    @Test
+    @DisplayName("don't throw CannotSetDateRange rejection for null command")
+    void doNotThrowCannotSetDateRangeRejection() {
+        assertThrows(NullPointerException.class,
+                     () -> throwCannotSetDateRange(Tests.nullRef()));
+
     }
 }

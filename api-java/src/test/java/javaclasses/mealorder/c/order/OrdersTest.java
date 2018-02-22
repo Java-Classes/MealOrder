@@ -20,55 +20,86 @@
 
 package javaclasses.mealorder.c.order;
 
+import io.spine.test.Tests;
+import io.spine.time.LocalDate;
+import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.OrderId;
-import javaclasses.mealorder.c.order.OrderValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static javaclasses.mealorder.c.order.OrderValidator.isMenuAvailable;
+import static javaclasses.mealorder.c.order.Orders.checkMenuAvailability;
+import static javaclasses.mealorder.c.order.Orders.checkRangeIncludesDate;
+import static javaclasses.mealorder.c.order.Orders.getVendorAggregateForOrder;
 import static javaclasses.mealorder.testdata.TestValues.INVALID_END_DATE;
 import static javaclasses.mealorder.testdata.TestValues.INVALID_START_DATE;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Vlad Kozachenko
  */
-@DisplayName("OrderValidator should")
-class OrderValidatorTest {
+@DisplayName("Orders should")
+class OrdersTest {
 
     @Test
     @DisplayName("have the private constructor")
     void havePrivateConstructor() {
-        assertHasPrivateParameterlessCtor(OrderValidator.class);
+        assertHasPrivateParameterlessCtor(Orders.class);
     }
 
     @Test
     @DisplayName("return 'true' if the menu is available on the ordering date")
     void returnTrueForExistingMenu() {
-        assertTrue(isMenuAvailable(MENU_DATE_RANGE, ORDER_ID.getOrderDate()));
+        assertTrue(checkRangeIncludesDate(MENU_DATE_RANGE, ORDER_ID.getOrderDate()));
     }
 
     @Test
     @DisplayName("return false order has no date")
     void returnFalseForOrderWithoutDate() {
-        assertFalse(isMenuAvailable(MENU_DATE_RANGE, OrderId.getDefaultInstance()
-                                                            .getOrderDate()));
+        assertFalse(checkRangeIncludesDate(MENU_DATE_RANGE, OrderId.getDefaultInstance()
+                                                                   .getOrderDate()));
     }
 
     @Test
     @DisplayName("return false if order date is after menu end date")
     void returnFalseForOrderDateAfterMenu() {
-        assertFalse(isMenuAvailable(MENU_DATE_RANGE, INVALID_START_DATE));
+        assertFalse(checkRangeIncludesDate(MENU_DATE_RANGE, INVALID_START_DATE));
     }
 
     @Test
     @DisplayName("return false if order date is before menu end date")
     void returnFalseForOrderDateBeforeMenu() {
-        assertFalse(isMenuAvailable(MENU_DATE_RANGE, INVALID_END_DATE));
+        assertFalse(checkRangeIncludesDate(MENU_DATE_RANGE, INVALID_END_DATE));
     }
 
+    @Test
+    @DisplayName("throw NullPointerException if checkRangeIncludesDate " +
+            "was called with null as any of arguments")
+    void throwNullPointerOnCheckRangeIncludesDate() {
+        assertThrows(NullPointerException.class,
+                     () -> checkRangeIncludesDate(Tests.nullRef(), Tests.nullRef()));
+        assertThrows(NullPointerException.class,
+                     () -> checkRangeIncludesDate(MenuDateRange.getDefaultInstance(),
+                                                  Tests.nullRef()));
+        assertThrows(NullPointerException.class,
+                     () -> checkRangeIncludesDate(Tests.nullRef(), LocalDate.getDefaultInstance()));
+    }
+
+    @Test
+    @DisplayName("throw NullPointerException if getVendorAggregateForOrder " +
+            "was called with null as argument")
+    void throwNullPointerOnGetVendorAggregateForOrder() {
+        assertThrows(NullPointerException.class, () -> getVendorAggregateForOrder(Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("throw NullPointerException if checkMenuAvailability " +
+            "was called with null as argument")
+    void throwNullPointerOnCheckMenuAvailability() {
+        assertThrows(NullPointerException.class, () -> checkMenuAvailability(Tests.nullRef()));
+    }
 }
