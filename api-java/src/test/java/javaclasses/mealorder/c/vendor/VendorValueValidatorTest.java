@@ -46,14 +46,13 @@ class VendorValueValidatorTest {
     @Test
     @DisplayName("return false if menu date ranges are not overlapping")
     void returnFalseIfDateRangesAreNotOverlapping() {
-
+        final Menu menu = Menu.newBuilder()
+                              .setMenuDateRange(MENU_DATE_RANGE)
+                              .build();
         final Vendor vendor = Vendor.newBuilder()
-                                    .addMenu(Menu.newBuilder()
-                                                 .setMenuDateRange(MENU_DATE_RANGE)
-                                                 .build())
+                                    .addMenu(menu)
                                     .build();
 
         assertFalse(isThereMenuForThisDateRange(vendor, MENU_DATE_RANGE_FROM_PAST));
-
     }
 }
