@@ -48,8 +48,8 @@ import java.util.stream.IntStream;
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwCannotSetDateRange;
 import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwVendorAlreadyExists;
-import static javaclasses.mealorder.c.vendor.VendorValidator.isThereMenuForThisDateRange;
-import static javaclasses.mealorder.c.vendor.VendorValidator.isValidDateRange;
+import static javaclasses.mealorder.c.vendor.VendorValueValidator.isThereMenuForThisDateRange;
+import static javaclasses.mealorder.c.vendor.VendorValueValidator.isValidDateRange;
 
 /**
  * The aggregate managing the state of a {@link Vendor}.
@@ -84,7 +84,6 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
 
     @Assign
     VendorUpdated handle(UpdateVendor cmd) {
-
         final VendorUpdated vendorUpdated = VendorUpdated.newBuilder()
                                                          .setVendorId(cmd.getVendorId())
                                                          .setWhoUploaded(cmd.getUserId())
@@ -108,7 +107,6 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
 
     @Assign
     DateRangeForMenuSet handle(SetDateRangeForMenu cmd) throws CannotSetDateRange {
-
         final MenuDateRange range = cmd.getMenuDateRange();
         final Vendor vendor = getState();
 

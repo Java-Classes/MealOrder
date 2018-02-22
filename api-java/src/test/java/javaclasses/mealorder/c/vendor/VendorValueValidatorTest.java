@@ -22,12 +22,11 @@ package javaclasses.mealorder.c.vendor;
 
 import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.Vendor;
-import javaclasses.mealorder.c.vendor.VendorValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static javaclasses.mealorder.c.vendor.VendorValidator.isThereMenuForThisDateRange;
+import static javaclasses.mealorder.c.vendor.VendorValueValidator.isThereMenuForThisDateRange;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_FROM_PAST;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,13 +34,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("VendorValidator should")
-class VendorValidatorTest {
+@DisplayName("VendorValueValidator should")
+class VendorValueValidatorTest {
 
     @Test
     @DisplayName("have the private constructor")
     void havePrivateConstructor() {
-        assertHasPrivateParameterlessCtor(VendorValidator.class);
+        assertHasPrivateParameterlessCtor(VendorValueValidator.class);
     }
 
     @Test

@@ -25,6 +25,7 @@ import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.rejection.CannotSetDateRange;
 import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
@@ -46,7 +47,7 @@ public class VendorAggregateRejections {
      * @throws VendorAlreadyExists the rejection to throw
      */
     public static void throwVendorAlreadyExists(AddVendor cmd) throws VendorAlreadyExists {
-
+        checkNotNull(cmd);
         final VendorAlreadyExists vendorAlreadyExists = new VendorAlreadyExists(cmd.getVendorId(),
                                                                                 cmd.getVendorName(),
                                                                                 getCurrentTime());
@@ -61,6 +62,7 @@ public class VendorAggregateRejections {
      * @throws CannotSetDateRange the rejection to throw
      */
     public static void throwCannotSetDateRange(SetDateRangeForMenu cmd) throws CannotSetDateRange {
+        checkNotNull(cmd);
         final CannotSetDateRange cannotSetDateRange = new CannotSetDateRange(cmd.getVendorId(),
                                                                              cmd.getMenuId(),
                                                                              cmd.getMenuDateRange(),
