@@ -79,7 +79,7 @@ public class CreateOrderTest extends OrderCommandTest {
     @DisplayName("produce OrderCreated event")
     void produceEvent() {
 
-        final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+        final CreateOrder createOrder = createOrderInstance();
 
         final Command createOrderCommand = requestFactory.command()
                                                          .create(createOrder);
@@ -103,7 +103,7 @@ public class CreateOrderTest extends OrderCommandTest {
     @DisplayName("create the order")
     void createOrder() {
 
-        final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+        final CreateOrder createOrder = createOrderInstance();
 
         final Command createOrderCommand = requestFactory.command()
                                                          .create(createOrder);
@@ -135,12 +135,12 @@ public class CreateOrderTest extends OrderCommandTest {
     @DisplayName("create the order after its cancellation")
     void createOrderAfterCancellation() {
 
-        final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+        final CreateOrder createOrder = createOrderInstance();
 
         final Command createOrderCommand = requestFactory.command()
                                                          .create(createOrder);
 
-        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+        final CancelOrder cancelOrder = cancelOrderInstance();
 
         final Command cancelOrderCommand = requestFactory.command()
                                                          .create(cancelOrder);
@@ -175,7 +175,7 @@ public class CreateOrderTest extends OrderCommandTest {
     @DisplayName("throw OrderAlreadyExists rejection")
     void notCreateOrder() {
 
-        final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+        final CreateOrder createOrder = createOrderInstance();
 
         final Command createOrderCommand = requestFactory.command()
                                                          .create(createOrder);

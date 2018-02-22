@@ -65,7 +65,7 @@ import static org.mockito.Mockito.mock;
 @DisplayName("CancelOrder command should be interpreted by OrderAggregate and ")
 public class CancelOrderTest extends OrderCommandTest {
 
-    final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+    final CreateOrder createOrder = createOrderInstance();
     final Command createOrderCommand = requestFactory.command()
                                                      .create(createOrder);
 
@@ -80,7 +80,7 @@ public class CancelOrderTest extends OrderCommandTest {
     @DisplayName("produce OrderCanceled event")
     void produceEvent() {
 
-        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+        final CancelOrder cancelOrder = cancelOrderInstance();
 
         final Command cancelOrderCommand = requestFactory.command()
                                                          .create(cancelOrder);
@@ -101,7 +101,7 @@ public class CancelOrderTest extends OrderCommandTest {
     @DisplayName("cancel order")
     void cancelOrder() {
 
-        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+        final CancelOrder cancelOrder = cancelOrderInstance();
 
         final Command cancelOrderCommand = requestFactory.command()
                                                          .create(cancelOrder);
@@ -186,7 +186,7 @@ public class CancelOrderTest extends OrderCommandTest {
 
         commandBus.post(createPOCommand, StreamObservers.noOpObserver());
 
-        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+        final CancelOrder cancelOrder = cancelOrderInstance();
 
         final Command cancelOrderCommand = requestFactory.command()
                                                          .create(cancelOrder);

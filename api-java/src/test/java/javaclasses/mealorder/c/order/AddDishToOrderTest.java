@@ -62,7 +62,7 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+        final CreateOrder createOrder = createOrderInstance();
         final Command createOrderCommand = requestFactory.command()
                                                          .create(createOrder);
         commandBus.post(createOrderCommand, StreamObservers.noOpObserver());
@@ -72,7 +72,7 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @DisplayName("produce DishAddedToOrder event")
     void produceEvent() {
 
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance();
 
         final Command addDishToOrderCommand = requestFactory.command()
                                                             .create(addDishToOrder);
@@ -95,7 +95,7 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @DisplayName("add dish to order")
     void addDishToOrder() {
 
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance();
 
         final Command addDishToOrderCommand = requestFactory.command()
                                                             .create(addDishToOrder);
@@ -149,8 +149,8 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @DisplayName("throw CannotAddDishToNotActiveOrder rejection")
     void notAddDishToNotActiveOrder() {
 
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
-        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance();
+        final CancelOrder cancelOrder = cancelOrderInstance();
 
         final CannotAddDishToNotActiveOrderSubscriber rejectionSubscriber
                 = new CannotAddDishToNotActiveOrderSubscriber();

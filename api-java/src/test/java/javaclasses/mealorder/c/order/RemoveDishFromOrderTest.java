@@ -61,7 +61,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+        final CreateOrder createOrder = createOrderInstance();
         final Command createOrderCommand = requestFactory.command()
                                                          .create(createOrder);
         commandBus.post(createOrderCommand, StreamObservers.noOpObserver());
@@ -75,7 +75,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest {
                 = new DishRemovedFromOrderSubscriber();
         eventBus.register(eventSubscriber);
 
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance();
         final Command addDishToOrderCommand = requestFactory.command()
                                                             .create(addDishToOrder);
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
@@ -97,7 +97,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest {
     @DisplayName("removes the dish from the order")
     void removeDish() {
 
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance();
         final Command addDishToOrderCommand = requestFactory.command()
                                                             .create(addDishToOrder);
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
@@ -159,12 +159,12 @@ public class RemoveDishFromOrderTest extends OrderCommandTest {
 
         rejectionBus.register(rejectionSubscriber);
 
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance();
         final Command addDishToOrderCommand = requestFactory.command()
                                                             .create(addDishToOrder);
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
-        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+        final CancelOrder cancelOrder = cancelOrderInstance();
         final Command cancelOrderCommand = requestFactory.command()
                                                          .create(cancelOrder);
         commandBus.post(cancelOrderCommand, StreamObservers.noOpObserver());

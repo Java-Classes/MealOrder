@@ -50,7 +50,7 @@ import static org.mockito.Mockito.mock;
 @DisplayName("OrderAggregate should react on PurchaseOrderCreated command and")
 public class OrderProcessedTest extends OrderCommandTest {
 
-    final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+    final CreateOrder createOrder = createOrderInstance();
     final Command createOrderCommand = requestFactory.command()
                                                      .create(createOrder);
 
