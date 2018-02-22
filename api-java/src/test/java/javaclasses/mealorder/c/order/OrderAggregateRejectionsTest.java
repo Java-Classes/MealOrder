@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.c.order;
 
+import io.spine.test.Tests;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
@@ -95,6 +96,13 @@ class OrderAggregateRejectionsTest {
         }
 
         @Test
+        @DisplayName("don't throw OrderAlreadyExists rejection for null command")
+        void doNotThrowOrderAlreadyExistsRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwOrderAlreadyExists(Tests.nullRef()));
+        }
+
+        @Test
         @DisplayName("throw MenuNotAvailable rejection")
         void throwMenuNotAvailableRejection() {
 
@@ -113,6 +121,14 @@ class OrderAggregateRejectionsTest {
             assertEquals(cmd.getOrderId()
                             .getOrderDate(), rejection.getMessageThrown()
                                                       .getOrderDate());
+
+        }
+
+        @Test
+        @DisplayName("don't throw MenuNotAvailable rejection for null command")
+        void doNotThrowMenuNotAvailableRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwMenuNotAvailable(Tests.nullRef()));
         }
     }
 
@@ -157,6 +173,13 @@ class OrderAggregateRejectionsTest {
         }
 
         @Test
+        @DisplayName("don't throw DishVendorMismatch rejection for null command")
+        void doNotThrowDishVendorMismatchRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwDishVendorMismatch(Tests.nullRef()));
+        }
+
+        @Test
         @DisplayName("throw CannotAddDishToNotActiveOrder rejection")
         void throwCannotAddDishToNotActiveOrderRejection() {
 
@@ -176,6 +199,13 @@ class OrderAggregateRejectionsTest {
                                                .getDishId());
             assertNotEquals(ORDER_ACTIVE, rejection.getMessageThrown()
                                                    .getOrderStatus());
+        }
+
+        @Test
+        @DisplayName("don't throw CannotAddDishToNotActiveOrder rejection for null command")
+        void doNotThrowCannotAddDishToNotActiveOrderRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwCannotAddDishToNotActiveOrder(Tests.nullRef(), Tests.nullRef()));
         }
     }
 
@@ -212,6 +242,13 @@ class OrderAggregateRejectionsTest {
         }
 
         @Test
+        @DisplayName("don't throw CannotRemoveMissingDish rejection for null command")
+        void doNotThrowCannotRemoveMissingDishRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwCannotRemoveMissingDish(Tests.nullRef()));
+        }
+
+        @Test
         @DisplayName("throw CannotRemoveDishFromNotActiveOrder rejection")
         void throwCannotRemoveDishFromNotActiveOrderRejection() {
 
@@ -233,6 +270,13 @@ class OrderAggregateRejectionsTest {
                                                    .getDishId());
             assertNotEquals(ORDER_ACTIVE, rejection.getMessageThrown()
                                                    .getOrderStatus());
+        }
+
+        @Test
+        @DisplayName("don't throw CannotRemoveDishFromNotActiveOrder rejection for null command")
+        void doNotThrowCannotRemoveDishFromNotActiveOrderRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwCannotRemoveDishFromNotActiveOrder(Tests.nullRef(), Tests.nullRef()));
         }
     }
 
@@ -264,5 +308,13 @@ class OrderAggregateRejectionsTest {
             assertEquals(expectedUserId, rejection.getMessageThrown()
                                                   .getUserId());
         }
+
+        @Test
+        @DisplayName("don't throw CannotCancelProcessedOrder rejection for null command")
+        void doNotThrowCannotCancelProcessedOrderRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwCannotCancelProcessedOrder(Tests.nullRef()));
+        }
     }
+
 }

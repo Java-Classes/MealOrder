@@ -40,6 +40,7 @@ import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
@@ -74,6 +75,7 @@ public class OrderAggregateRejections {
          * @throws OrderAlreadyExists the rejection to throw
          */
         public static void throwOrderAlreadyExists(CreateOrder cmd) throws OrderAlreadyExists {
+            checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final Timestamp timestamp = getCurrentTime();
             throw new OrderAlreadyExists(orderId, timestamp);
@@ -87,6 +89,7 @@ public class OrderAggregateRejections {
          * @throws MenuNotAvailable the rejection to throw
          */
         public static void throwMenuNotAvailable(CreateOrder cmd) throws MenuNotAvailable {
+            checkNotNull(cmd);
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final VendorId vendorId = cmd.getOrderId()
@@ -116,6 +119,7 @@ public class OrderAggregateRejections {
          * @throws DishVendorMismatch the rejection to throw
          */
         public static void throwDishVendorMismatch(AddDishToOrder cmd) throws DishVendorMismatch {
+            checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
@@ -143,6 +147,8 @@ public class OrderAggregateRejections {
         public static void throwCannotAddDishToNotActiveOrder(AddDishToOrder cmd,
                                                               OrderStatus orderStatus) throws
                                                                                        CannotAddDishToNotActiveOrder {
+            checkNotNull(cmd);
+            checkNotNull(orderStatus);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
@@ -177,6 +183,7 @@ public class OrderAggregateRejections {
          */
         public static void throwCannotRemoveMissingDish(RemoveDishFromOrder cmd) throws
                                                                                  CannotRemoveMissingDish {
+            checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
@@ -195,6 +202,7 @@ public class OrderAggregateRejections {
         public static void throwCannotRemoveDishFromNotActiveOrder(RemoveDishFromOrder cmd,
                                                                    OrderStatus orderStatus) throws
                                                                                             CannotRemoveDishFromNotActiveOrder {
+            checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
@@ -228,7 +236,7 @@ public class OrderAggregateRejections {
          */
         public static void throwCannotCancelProcessedOrder(CancelOrder cmd) throws
                                                                             CannotCancelProcessedOrder {
-
+            checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
