@@ -38,10 +38,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Yurii Haidamaka
  */
-public class VendorValuesValidator {
+public class Vendors {
 
     /** Prevents instantiation of this utility class. */
-    private VendorValuesValidator() {
+    private Vendors() {
     }
 
     /**

@@ -28,8 +28,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static javaclasses.mealorder.c.vendor.VendorValuesValidator.isThereMenuForThisDateRange;
-import static javaclasses.mealorder.c.vendor.VendorValuesValidator.isValidDateRange;
+import static javaclasses.mealorder.c.vendor.Vendors.isThereMenuForThisDateRange;
+import static javaclasses.mealorder.c.vendor.Vendors.isValidDateRange;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_FROM_PAST;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -38,13 +38,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("VendorValuesValidator should")
-class VendorValuesValidatorTest {
+@DisplayName("Vendors should")
+class VendorsTest {
 
     @Test
     @DisplayName("have the private constructor")
     void havePrivateConstructor() {
-        assertHasPrivateParameterlessCtor(VendorValuesValidator.class);
+        assertHasPrivateParameterlessCtor(Vendors.class);
     }
 
     @Test
