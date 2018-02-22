@@ -48,8 +48,8 @@ import java.util.stream.IntStream;
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwCannotSetDateRange;
 import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwVendorAlreadyExists;
-import static javaclasses.mealorder.c.vendor.VendorValueValidator.isThereMenuForThisDateRange;
-import static javaclasses.mealorder.c.vendor.VendorValueValidator.isValidDateRange;
+import static javaclasses.mealorder.c.vendor.VendorValuesValidator.isThereMenuForThisDateRange;
+import static javaclasses.mealorder.c.vendor.VendorValuesValidator.isValidDateRange;
 
 /**
  * The aggregate managing the state of a {@link Vendor}.
