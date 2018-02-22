@@ -62,17 +62,18 @@ public final class BoundedContexts {
      * Creates a new instance of the {@link BoundedContext}
      * using the specified {@link StorageFactory}.
      *
+     * Registers repository for vendor, order and purchase order aggregates.
+     *
      * @param storageFactory the storage factory to use
-     * @return the bounded context created with the storage factory
+     * @return the bounded context created with the storage factory and repositories
      */
     public static BoundedContext create(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
         final AggregateRepository vendorRepository = VendorRepository.getInstance()
-                                                         .getRepository();
+                                                                     .getRepository();
 
         final OrderRepository orderRepository = new OrderRepository();
         final PurchaseOrderRepository purchaseOrderRepository = new PurchaseOrderRepository();
-
 
         final BoundedContext boundedContext = createBoundedContext(storageFactory);
 
@@ -82,6 +83,13 @@ public final class BoundedContexts {
         return boundedContext;
     }
 
+    /**
+     * Creates a new instance of the {@link BoundedContext}
+     * using the specified {@link StorageFactory}.
+     *
+     * @param storageFactory the storage factory to use
+     * @return the bounded context created with the storage factory
+     */
     public static BoundedContext createBoundedContext(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
         return BoundedContext.newBuilder()

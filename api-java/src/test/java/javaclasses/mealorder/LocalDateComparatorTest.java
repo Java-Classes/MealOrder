@@ -39,12 +39,12 @@ class LocalDateComparatorTest {
     @Test
     @DisplayName("return a negative integer if the first argument is less than the second")
     void returnNegativeInteger() {
-
         final LocalDate leftDate = LocalDate.newBuilder()
                                             .setYear(2017)
                                             .setMonth(MonthOfYear.APRIL)
                                             .setDay(2)
                                             .build();
+
         final LocalDate rightDate = LocalDate.newBuilder()
                                              .setYear(2018)
                                              .setMonth(MonthOfYear.MARCH)
@@ -57,7 +57,6 @@ class LocalDateComparatorTest {
     @Test
     @DisplayName("return a positive integer if the first argument is greater than the second")
     void returnPositiveInteger() {
-
         final LocalDate leftDate = LocalDate.newBuilder()
                                             .setYear(2018)
                                             .setMonth(MonthOfYear.MARCH)
@@ -76,7 +75,6 @@ class LocalDateComparatorTest {
     @Test
     @DisplayName("return zero if the first argument is equal to the second")
     void returnZero() {
-
         final LocalDate leftDate = LocalDate.newBuilder()
                                             .setYear(2018)
                                             .setMonth(MonthOfYear.MARCH)
@@ -91,5 +89,4 @@ class LocalDateComparatorTest {
 
         assertEquals(0, localDateComparator.compare(leftDate, rightDate));
     }
-
 }

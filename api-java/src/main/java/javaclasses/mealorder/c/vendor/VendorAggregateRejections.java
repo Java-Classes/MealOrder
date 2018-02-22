@@ -20,12 +20,12 @@
 
 package javaclasses.mealorder.c.vendor;
 
-import javaclasses.mealorder.c.vendor.VendorAggregate;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.rejection.CannotSetDateRange;
 import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
@@ -35,32 +35,38 @@ import static io.spine.time.Time.getCurrentTime;
  */
 public class VendorAggregateRejections {
 
+    /** Prevents instantiation of this utility class. */
     private VendorAggregateRejections() {
-        // Prevent instantiation of this utility class.
     }
 
-        /**
-         * Constructs and throws the {@link VendorAlreadyExists} rejection
-         * according to the passed parameters.
-         *
-         * @param cmd the {@code AddVendor} command which thrown the rejection
-         * @throws VendorAlreadyExists the rejection to throw
-         */
-        public static void throwVendorAlreadyExists(AddVendor cmd)
-                throws VendorAlreadyExists {
-            throw new VendorAlreadyExists(cmd.getVendorId(), cmd.getVendorName(), getCurrentTime());
-        }
+    /**
+     * Constructs and throws the {@link VendorAlreadyExists} rejection
+     * according to the passed parameters.
+     *
+     * @param cmd the {@code AddVendor} command which thrown the rejection
+     * @throws VendorAlreadyExists the rejection to throw
+     */
+    public static void throwVendorAlreadyExists(AddVendor cmd) throws VendorAlreadyExists {
+        checkNotNull(cmd);
+        final VendorAlreadyExists vendorAlreadyExists = new VendorAlreadyExists(cmd.getVendorId(),
+                                                                                cmd.getVendorName(),
+                                                                                getCurrentTime());
+        throw vendorAlreadyExists;
+    }
 
-        /**
-         * Constructs and throws the {@link CannotSetDateRange} rejection
-         * according to the passed parameters.
-         *
-         * @param cmd the {@code SetDateRangeForMenu} command which thrown the rejection
-         * @throws CannotSetDateRange the rejection to throw
-         */
-        public static void throwCannotSetDateRange(SetDateRangeForMenu cmd)
-                throws CannotSetDateRange {
-            throw new CannotSetDateRange(cmd.getVendorId(), cmd.getMenuId(), cmd.getMenuDateRange(),
-                                         getCurrentTime());
-        }
+    /**
+     * Constructs and throws the {@link CannotSetDateRange} rejection
+     * according to the passed parameters.
+     *
+     * @param cmd the {@code SetDateRangeForMenu} command which thrown the rejection
+     * @throws CannotSetDateRange the rejection to throw
+     */
+    public static void throwCannotSetDateRange(SetDateRangeForMenu cmd) throws CannotSetDateRange {
+        checkNotNull(cmd);
+        final CannotSetDateRange cannotSetDateRange = new CannotSetDateRange(cmd.getVendorId(),
+                                                                             cmd.getMenuId(),
+                                                                             cmd.getMenuDateRange(),
+                                                                             getCurrentTime());
+        throw cannotSetDateRange;
+    }
 }

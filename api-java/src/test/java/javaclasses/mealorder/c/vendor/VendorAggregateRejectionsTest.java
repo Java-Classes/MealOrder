@@ -24,7 +24,6 @@ import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.rejection.CannotSetDateRange;
 import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
-import javaclasses.mealorder.c.vendor.VendorAggregateRejections;
 import javaclasses.mealorder.testdata.TestVendorCommandFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,25 +53,19 @@ class VendorAggregateRejectionsTest {
         final VendorAlreadyExists rejection = assertThrows(VendorAlreadyExists.class,
                                                            () -> throwVendorAlreadyExists(cmd));
 
-        assertEquals(cmd.getVendorId(), rejection.getMessageThrown()
-                                                 .getVendorId());
-        assertEquals(cmd.getVendorName(), rejection.getMessageThrown()
-                                                   .getVendorName());
+        assertEquals(cmd.getVendorId(), rejection.getMessageThrown().getVendorId());
+        assertEquals(cmd.getVendorName(), rejection.getMessageThrown().getVendorName());
     }
 
     @Test
     @DisplayName("throw CannotSetDateRange rejection")
     void throwCannotSetDateRangeRejection() {
         SetDateRangeForMenu cmd = TestVendorCommandFactory.setDateRangeForMenuInstance();
-        final CannotSetDateRange rejection =
-                assertThrows(CannotSetDateRange.class,
-                             () -> throwCannotSetDateRange(cmd));
+        final CannotSetDateRange rejection = assertThrows(CannotSetDateRange.class,
+                                                          () -> throwCannotSetDateRange(cmd));
 
-        assertEquals(cmd.getVendorId(), rejection.getMessageThrown()
-                                                 .getVendorId());
-        assertEquals(cmd.getMenuId(), rejection.getMessageThrown()
-                                               .getMenuId());
-        assertEquals(cmd.getMenuDateRange(), rejection.getMessageThrown()
-                                                      .getMenuDateRange());
+        assertEquals(cmd.getVendorId(), rejection.getMessageThrown().getVendorId());
+        assertEquals(cmd.getMenuId(), rejection.getMessageThrown().getMenuId());
+        assertEquals(cmd.getMenuDateRange(), rejection.getMessageThrown().getMenuDateRange());
     }
 }

@@ -96,6 +96,9 @@ public class AddVendorTest extends VendorCommandTest<AddVendor> {
 
         final Vendor state = aggregate.getState();
         assertEquals(addVendor.getVendorId(), state.getId());
+        assertEquals(addVendor.getEmail(), state.getEmail());
+        assertEquals(addVendor.getVendorName(), state.getVendorName());
+        assertEquals(addVendor.getPoDailyDeadline(), state.getPoDailyDeadline());
     }
 
     @Test
@@ -109,17 +112,14 @@ public class AddVendorTest extends VendorCommandTest<AddVendor> {
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(addVendor)));
         final Throwable cause = Throwables.getRootCause(t);
-
         assertThat(cause, instanceOf(VendorAlreadyExists.class));
 
         final VendorAlreadyExists rejection = (VendorAlreadyExists) cause;
-        final VendorId actualVendorId = rejection.getMessageThrown()
-                                                 .getVendorId();
+        final VendorId actualVendorId = rejection.getMessageThrown().getVendorId();
+
         assertEquals(addVendor.getVendorId(), actualVendorId);
-        final VendorName actualVendorName = rejection.getMessageThrown()
-                                                     .getVendorName();
+        final VendorName actualVendorName = rejection.getMessageThrown().getVendorName();
+
         assertEquals(addVendor.getVendorName(), actualVendorName);
-
     }
-
 }
