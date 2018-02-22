@@ -63,7 +63,7 @@ public class Orders {
     public static boolean checkRangeIncludesDate(MenuDateRange range, LocalDate orderDate) {
         checkNotNull(range);
         checkNotNull(orderDate);
-        Comparator<LocalDate> comparator = new LocalDateComparator();
+        final Comparator<LocalDate> comparator = new LocalDateComparator();
 
         return comparator.compare(range.getRangeStart(), orderDate) <= 0 &&
                 comparator.compare(range.getRangeEnd(), orderDate) >= 0;

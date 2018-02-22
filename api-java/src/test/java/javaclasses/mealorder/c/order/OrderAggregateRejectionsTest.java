@@ -119,7 +119,6 @@ class OrderAggregateRejectionsTest {
             assertEquals(cmd.getOrderId()
                             .getOrderDate(), rejection.getMessageThrown()
                                                       .getOrderDate());
-
         }
 
         @Test
@@ -180,7 +179,6 @@ class OrderAggregateRejectionsTest {
         @DisplayName("throw CannotAddDishToNotActiveOrder rejection")
         void throwCannotAddDishToNotActiveOrderRejection() {
             final AddDishToOrder cmd = addDishToOrderInstance();
-
             final CannotAddDishToNotActiveOrder rejection =
                     assertThrows(CannotAddDishToNotActiveOrder.class,
                                  () -> throwCannotAddDishToNotActiveOrder(cmd, ORDER_PROCESSED));
@@ -224,7 +222,6 @@ class OrderAggregateRejectionsTest {
             final CannotRemoveMissingDish rejection =
                     assertThrows(CannotRemoveMissingDish.class,
                                  () -> throwCannotRemoveMissingDish(cmd));
-
             assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
                                                     .getOrderId());
             final UserId expectedUserId = cmd.getOrderId()

@@ -108,23 +108,19 @@ public class CreateOrderTest extends OrderCommandTest {
         final MemoizingObserver<Ack> memoizingObserver = memoizingObserver();
 
         commandBus.post(createOrderCommand, memoizingObserver);
-
         assertTrue(memoizingObserver.isCompleted());
 
         final Optional<Repository> repositoryOptional = boundedContext.findRepository(
                 Order.class);
-
         assertTrue(repositoryOptional.isPresent());
 
         final Optional<OrderAggregate> orderAggregateOptional
                 = repositoryOptional.get()
                                     .find(createOrder.getOrderId());
-
         assertTrue(orderAggregateOptional.isPresent());
 
         final Order state = orderAggregateOptional.get()
                                                   .getState();
-
         assertEquals(createOrder.getOrderId(), state.getId());
         assertEquals(OrderStatus.ORDER_ACTIVE, state.getStatus());
     }
@@ -133,37 +129,29 @@ public class CreateOrderTest extends OrderCommandTest {
     @DisplayName("create the order after its cancellation")
     void createOrderAfterCancellation() {
         final CreateOrder createOrder = createOrderInstance();
-
         final Command createOrderCommand = requestFactory.command()
                                                          .create(createOrder);
-
         final CancelOrder cancelOrder = cancelOrderInstance();
-
         final Command cancelOrderCommand = requestFactory.command()
                                                          .create(cancelOrder);
-
         final MemoizingObserver<Ack> memoizingObserver = memoizingObserver();
 
         commandBus.post(createOrderCommand, noOpObserver());
         commandBus.post(cancelOrderCommand, noOpObserver());
         commandBus.post(createOrderCommand, memoizingObserver);
-
         assertTrue(memoizingObserver.isCompleted());
 
         final Optional<Repository> repositoryOptional =
                 boundedContext.findRepository(Order.class);
-
         assertTrue(repositoryOptional.isPresent());
 
         final Optional<OrderAggregate> orderAggregateOptional
                 = repositoryOptional.get()
                                     .find(createOrder.getOrderId());
-
         assertTrue(orderAggregateOptional.isPresent());
 
         final Order state = orderAggregateOptional.get()
                                                   .getState();
-
         assertEquals(createOrder.getOrderId(), state.getId());
         assertEquals(OrderStatus.ORDER_ACTIVE, state.getStatus());
     }
@@ -172,25 +160,20 @@ public class CreateOrderTest extends OrderCommandTest {
     @DisplayName("throw OrderAlreadyExists rejection")
     void notCreateOrder() {
         final CreateOrder createOrder = createOrderInstance();
-
         final Command createOrderCommand = requestFactory.command()
                                                          .create(createOrder);
-
         final OrderAlreadyExistsSubscriber orderAlreadyExistsSubscriber
                 = new OrderAlreadyExistsSubscriber();
 
         rejectionBus.register(orderAlreadyExistsSubscriber);
-
         assertNull(OrderAlreadyExistsSubscriber.getRejection());
 
         commandBus.post(createOrderCommand, StreamObservers.noOpObserver());
         commandBus.post(createOrderCommand, StreamObservers.noOpObserver());
-
         assertNotNull(OrderAlreadyExistsSubscriber.getRejection());
 
         final Rejections.OrderAlreadyExists orderAlreadyExists
                 = OrderAlreadyExistsSubscriber.getRejection();
-
         assertEquals(ORDER_ID, orderAlreadyExists.getOrderId());
     }
 
@@ -200,21 +183,16 @@ public class CreateOrderTest extends OrderCommandTest {
         final Command createOrderCmd =
                 requestFactory.command()
                               .create(createOrderInstanceForNonExistentMenu());
-
         final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
-
         MenuNotAvailableSubscriber.clear();
 
         rejectionBus.register(menuNotAvailableSubscriber);
-
         assertNull(MenuNotAvailableSubscriber.getRejection());
 
         commandBus.post(createOrderCmd, StreamObservers.noOpObserver());
-
         assertNotNull(MenuNotAvailableSubscriber.getRejection());
 
         final Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
-
         assertEquals(USER_ID, menuNotAvailable.getUserId());
         assertEquals(DATE, menuNotAvailable.getOrderDate());
         assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
@@ -226,21 +204,16 @@ public class CreateOrderTest extends OrderCommandTest {
         final Command createOrderCmd =
                 requestFactory.command()
                               .create(createOrderInstanceWithInvalidDate());
-
         final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
-
         MenuNotAvailableSubscriber.clear();
 
         rejectionBus.register(menuNotAvailableSubscriber);
-
         assertNull(MenuNotAvailableSubscriber.getRejection());
 
         commandBus.post(createOrderCmd, StreamObservers.noOpObserver());
-
         assertNotNull(MenuNotAvailableSubscriber.getRejection());
 
         final Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
-
         assertEquals(USER_ID, menuNotAvailable.getUserId());
         assertEquals(INVALID_START_DATE, menuNotAvailable.getOrderDate());
         assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
@@ -252,23 +225,18 @@ public class CreateOrderTest extends OrderCommandTest {
         final Command createOrderCmd =
                 requestFactory.command()
                               .create(createOrderInstanceForNonExistentVendor());
-
         final MenuNotAvailableSubscriber menuNotAvailableSubscriber
                 = new MenuNotAvailableSubscriber();
-
         MenuNotAvailableSubscriber.clear();
 
         rejectionBus.register(menuNotAvailableSubscriber);
-
         assertNull(MenuNotAvailableSubscriber.getRejection());
 
         commandBus.post(createOrderCmd, StreamObservers.noOpObserver());
-
         assertNotNull(MenuNotAvailableSubscriber.getRejection());
 
         final Rejections.MenuNotAvailable menuNotAvailable
                 = MenuNotAvailableSubscriber.getRejection();
-
         assertEquals(USER_ID, menuNotAvailable.getUserId());
         assertEquals(DATE, menuNotAvailable.getOrderDate());
         assertEquals(INVALID_VENDOR_ID, menuNotAvailable.getVendorId());

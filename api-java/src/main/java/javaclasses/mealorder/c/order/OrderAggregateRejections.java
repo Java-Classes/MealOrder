@@ -128,7 +128,7 @@ public class OrderAggregateRejections {
             final VendorId targetVendorId = orderId.getVendorId();
             final VendorId actualVendorId = dishId.getMenuId()
                                             .getVendorId();
-            VendorMismatch vendorMismatch = VendorMismatch.newBuilder()
+            final VendorMismatch vendorMismatch = VendorMismatch.newBuilder()
                                                           .setTarget(targetVendorId)
                                                           .setActual(actualVendorId)
                                                           .build();

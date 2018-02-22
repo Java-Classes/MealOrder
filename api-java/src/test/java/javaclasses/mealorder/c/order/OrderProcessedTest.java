@@ -89,7 +89,6 @@ public class OrderProcessedTest extends OrderCommandTest {
 
         final OrderAggregate order = orderRepository.find(ORDER_ID)
                                                     .get();
-
         assertEquals(ORDER_PROCESSED, order.getState()
                                            .getStatus());
     }
