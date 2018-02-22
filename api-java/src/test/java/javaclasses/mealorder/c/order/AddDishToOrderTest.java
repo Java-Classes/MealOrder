@@ -71,7 +71,6 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("produce DishAddedToOrder event")
     void produceEvent() {
-
         final AddDishToOrder addDishToOrder = addDishToOrderInstance();
 
         final Command addDishToOrderCommand = requestFactory.command()
@@ -94,7 +93,6 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("add dish to order")
     void addDishToOrder() {
-
         final AddDishToOrder addDishToOrder = addDishToOrderInstance();
 
         final Command addDishToOrderCommand = requestFactory.command()
@@ -120,7 +118,6 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("throw DishVendorMismatch rejection")
     void notAddDish() {
-
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, INVALID_DISH);
         final DishVendorMismatchSubscriber dishVendorMismatchSubscriber
                 = new DishVendorMismatchSubscriber();
@@ -148,7 +145,6 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("throw CannotAddDishToNotActiveOrder rejection")
     void notAddDishToNotActiveOrder() {
-
         final AddDishToOrder addDishToOrder = addDishToOrderInstance();
         final CancelOrder cancelOrder = cancelOrderInstance();
 

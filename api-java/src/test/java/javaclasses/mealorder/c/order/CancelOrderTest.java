@@ -79,7 +79,6 @@ public class CancelOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("produce OrderCanceled event")
     void produceEvent() {
-
         final CancelOrder cancelOrder = cancelOrderInstance();
 
         final Command cancelOrderCommand = requestFactory.command()
@@ -100,7 +99,6 @@ public class CancelOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("cancel order")
     void cancelOrder() {
-
         final CancelOrder cancelOrder = cancelOrderInstance();
 
         final Command cancelOrderCommand = requestFactory.command()
@@ -133,7 +131,6 @@ public class CancelOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("cancel order by react on PurchaseOrderCanceled")
     void testOrderCanceledByReact() {
-
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
                                                             .setDish(DISH1)
                                                             .setOrderId(ORDER_ID)
@@ -170,7 +167,6 @@ public class CancelOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("throw CannotCancelProcessedOrder rejection")
     void throwsCannotCancelProcessedOrder() {
-
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
                                                             .setDish(DISH1)
                                                             .setOrderId(ORDER_ID)

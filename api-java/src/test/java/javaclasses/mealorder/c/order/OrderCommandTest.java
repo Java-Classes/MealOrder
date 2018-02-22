@@ -50,7 +50,6 @@ public class OrderCommandTest {
     }
 
     private void executeVendorCommands(ActorRequestFactory requestFactory, CommandBus commandBus) {
-
         final Command addVendor =
                 requestFactory.command()
                               .create(TestVendorCommandFactory.addVendorInstance());

@@ -44,10 +44,9 @@ public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate
     }
 
     /**
-     * Sets up event routing for aggregate.
      * Route events to aggregate instances with correct ids.
      *
-     * Extract order ids from received events on which the order aggregate
+     * <p>Extract order ids from received events on which the order aggregate
      * have to react. Checks if the instances with this ids already created.
      * And routes events to correct instances.
      */
@@ -68,7 +67,8 @@ public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate
 
     /**
      * Extracts {@code OrderId} values from list of orders.
-     * Checks each order whether it is in repository.
+     *
+     * <p>Checks each order whether it is in repository.
      *
      * @param orderList list of orders where ids may be extracted.
      * @return set of found ids.

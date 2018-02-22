@@ -84,7 +84,6 @@ class OrderAggregateRejectionsTest {
         @Test
         @DisplayName("throw OrderAlreadyExists rejection")
         void throwOrderAlreadyExistsRejection() {
-
             final CreateOrder cmd = createOrderInstance();
 
             final OrderAlreadyExists rejection =
@@ -105,7 +104,6 @@ class OrderAggregateRejectionsTest {
         @Test
         @DisplayName("throw MenuNotAvailable rejection")
         void throwMenuNotAvailableRejection() {
-
             final CreateOrder cmd = createOrderInstance();
 
             final MenuNotAvailable rejection =
@@ -146,7 +144,6 @@ class OrderAggregateRejectionsTest {
         @Test
         @DisplayName("throw DishVendorMismatch rejection")
         void throwDishVendorMismatchRejection() {
-
             final AddDishToOrder cmd = addDishToOrderInstance();
 
             final DishVendorMismatch rejection =
@@ -182,7 +179,6 @@ class OrderAggregateRejectionsTest {
         @Test
         @DisplayName("throw CannotAddDishToNotActiveOrder rejection")
         void throwCannotAddDishToNotActiveOrderRejection() {
-
             final AddDishToOrder cmd = addDishToOrderInstance();
 
             final CannotAddDishToNotActiveOrder rejection =
@@ -223,7 +219,6 @@ class OrderAggregateRejectionsTest {
         @Test
         @DisplayName("throw CannotRemoveMissingDish rejection")
         void throwCannotRemoveMissingDishRejection() {
-
             final RemoveDishFromOrder cmd = removeDishFromOrderInstance();
 
             final CannotRemoveMissingDish rejection =
@@ -251,7 +246,6 @@ class OrderAggregateRejectionsTest {
         @Test
         @DisplayName("throw CannotRemoveDishFromNotActiveOrder rejection")
         void throwCannotRemoveDishFromNotActiveOrderRejection() {
-
             final RemoveDishFromOrder cmd = removeDishFromOrderInstance();
 
             final CannotRemoveDishFromNotActiveOrder rejection =
@@ -294,7 +288,6 @@ class OrderAggregateRejectionsTest {
         @Test
         @DisplayName("throw CannotCancelProcessedOrder rejection")
         void throwCannotCancelProcessedOrderRejection() {
-
             final CancelOrder cmd = cancelOrderInstance();
 
             final CannotCancelProcessedOrder rejection =

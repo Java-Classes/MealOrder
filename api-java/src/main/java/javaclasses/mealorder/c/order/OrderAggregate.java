@@ -185,7 +185,6 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     void orderCreated(OrderCreated event) {
-
         if (getBuilder().getStatus() == ORDER_CANCELED) {
             getBuilder().clearDish()
                         .build();
@@ -204,7 +203,6 @@ public class OrderAggregate extends Aggregate<OrderId,
 
     @Apply
     void dishRemovedFromOrder(DishRemovedFromOrder event) {
-
         final List<Dish> dishes = getBuilder().getDish();
         final Dish eventDish = event.getDish();
         final int index = IntStream.range(0, dishes.size())
@@ -230,7 +228,7 @@ public class OrderAggregate extends Aggregate<OrderId,
     }
 
     /*
-     * Reacts
+     * Reactions
      *****************/
 
     @React

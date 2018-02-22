@@ -78,7 +78,6 @@ public class CreateOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("produce OrderCreated event")
     void produceEvent() {
-
         final CreateOrder createOrder = createOrderInstance();
 
         final Command createOrderCommand = requestFactory.command()
@@ -102,7 +101,6 @@ public class CreateOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("create the order")
     void createOrder() {
-
         final CreateOrder createOrder = createOrderInstance();
 
         final Command createOrderCommand = requestFactory.command()
@@ -134,7 +132,6 @@ public class CreateOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("create the order after its cancellation")
     void createOrderAfterCancellation() {
-
         final CreateOrder createOrder = createOrderInstance();
 
         final Command createOrderCommand = requestFactory.command()
@@ -174,7 +171,6 @@ public class CreateOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("throw OrderAlreadyExists rejection")
     void notCreateOrder() {
-
         final CreateOrder createOrder = createOrderInstance();
 
         final Command createOrderCommand = requestFactory.command()
@@ -201,7 +197,6 @@ public class CreateOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("throw MenuNotAvailable rejection if menu is absent")
     void throwMenuNotAvailableIfMenuAbsent() {
-
         final Command createOrderCmd =
                 requestFactory.command()
                               .create(createOrderInstanceForNonExistentMenu());
@@ -228,7 +223,6 @@ public class CreateOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("throw MenuNotAvailable rejection if the order date isn't in menu date range")
     void throwMenuNotAvailableIfOrderDateWrong() {
-
         final Command createOrderCmd =
                 requestFactory.command()
                               .create(createOrderInstanceWithInvalidDate());
@@ -255,7 +249,6 @@ public class CreateOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("throw MenuNotAvailable rejection if the vendor doesn't exist ")
     void throwMenuNotAvailableIfVendorAbsent() {
-
         final Command createOrderCmd =
                 requestFactory.command()
                               .create(createOrderInstanceForNonExistentVendor());
