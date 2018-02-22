@@ -31,8 +31,6 @@ import io.spine.server.rejection.RejectionBus;
 import javaclasses.mealorder.c.BoundedContexts;
 import javaclasses.mealorder.testdata.TestVendorCommandFactory;
 
-import static io.spine.protobuf.TypeConverter.toMessage;
-
 /**
  * @author Vlad Kozachenko
  */
@@ -53,20 +51,20 @@ public class OrderCommandTest {
 
     private void executeVendorCommands(ActorRequestFactory requestFactory, CommandBus commandBus) {
 
-        final Command addVendor = requestFactory.command()
-                                                .create(toMessage(
-                                                        TestVendorCommandFactory.addVendorInstance()));
+        final Command addVendor =
+                requestFactory.command()
+                              .create(TestVendorCommandFactory.addVendorInstance());
 
         commandBus.post(addVendor, StreamObservers.noOpObserver());
 
-        final Command importMenu = requestFactory.command()
-                                                 .create(toMessage(
-                                                         TestVendorCommandFactory.importMenuInstance()));
+        final Command importMenu =
+                requestFactory.command()
+                              .create(TestVendorCommandFactory.importMenuInstance());
         commandBus.post(importMenu, StreamObservers.noOpObserver());
 
-        final Command setDateRangeForMenu = requestFactory.command()
-                                                          .create(toMessage(
-                                                                  TestVendorCommandFactory.setDateRangeForMenuInstance()));
+        final Command setDateRangeForMenu =
+                requestFactory.command()
+                              .create(TestVendorCommandFactory.setDateRangeForMenuInstance());
         commandBus.post(setDateRangeForMenu, StreamObservers.noOpObserver());
     }
 }

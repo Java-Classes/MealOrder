@@ -20,6 +20,8 @@
 
 package javaclasses.mealorder.c.order;
 
+import javaclasses.mealorder.UserId;
+import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
@@ -32,6 +34,7 @@ import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
+import javaclasses.mealorder.c.rejection.Rejections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -71,13 +74,11 @@ class OrderAggregateRejectionsTest {
     @DisplayName("CreateOrderRejections should")
     class CreateOrderRejectionsTest {
 
-
         @Test
         @DisplayName("have the private constructor")
         void havePrivateConstructor() {
             assertHasPrivateParameterlessCtor(OrderAggregateRejections.CreateOrderRejections.class);
         }
-
 
         @Test
         @DisplayName("throw OrderAlreadyExists rejection")
@@ -115,18 +116,16 @@ class OrderAggregateRejectionsTest {
         }
     }
 
-
     @Nested
     @DisplayName("AddDishToOrderRejections should")
     class AddDishToOrderRejectionsTest {
 
-
         @Test
         @DisplayName("have the private constructor")
         void havePrivateConstructor() {
-            assertHasPrivateParameterlessCtor(OrderAggregateRejections.AddDishToOrderRejections.class);
+            assertHasPrivateParameterlessCtor(
+                    OrderAggregateRejections.AddDishToOrderRejections.class);
         }
-
 
         @Test
         @DisplayName("throw DishVendorMismatch rejection")
@@ -138,21 +137,23 @@ class OrderAggregateRejectionsTest {
                     assertThrows(DishVendorMismatch.class,
                                  () -> throwDishVendorMismatch(cmd));
 
-            assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
-                                                    .getOrderId());
-            assertEquals(cmd.getOrderId()
-                            .getUserId(), rejection.getMessageThrown()
-                                                   .getUserId());
-            assertEquals(cmd.getOrderId()
-                            .getVendorId(), rejection.getMessageThrown()
-                                                     .getVendorMismatch()
-                                                     .getTarget());
-            assertEquals(cmd.getDish()
-                            .getId()
-                            .getMenuId()
-                            .getVendorId(), rejection.getMessageThrown()
-                                                     .getVendorMismatch()
-                                                     .getActual());
+            final Rejections.DishVendorMismatch mismatch = rejection.getMessageThrown();
+            assertEquals(cmd.getOrderId(), mismatch.getOrderId());
+            final UserId expectedUserId = cmd.getOrderId()
+                                             .getUserId();
+            assertEquals(expectedUserId, mismatch.getUserId());
+            final VendorId expectedVendorId = cmd.getOrderId()
+                                                 .getVendorId();
+            final VendorId target = mismatch.getVendorMismatch()
+                                            .getTarget();
+            assertEquals(expectedVendorId, target);
+            final VendorId expectedDishVendorId = cmd.getDish()
+                                                     .getId()
+                                                     .getMenuId()
+                                                     .getVendorId();
+            final VendorId actualDishVendorId = mismatch.getVendorMismatch()
+                                                        .getActual();
+            assertEquals(expectedDishVendorId, actualDishVendorId);
         }
 
         @Test
@@ -201,13 +202,14 @@ class OrderAggregateRejectionsTest {
 
             assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
                                                     .getOrderId());
-            assertEquals(cmd.getOrderId()
-                            .getUserId(), rejection.getMessageThrown()
-                                                   .getUserId());
+            final UserId expectedUserId = cmd.getOrderId()
+                                             .getUserId();
+            final UserId actualUserId = rejection.getMessageThrown()
+                                                 .getUserId();
+            assertEquals(expectedUserId, actualUserId);
             assertEquals(cmd.getDishId(), rejection.getMessageThrown()
                                                    .getDishId());
         }
-
 
         @Test
         @DisplayName("throw CannotRemoveDishFromNotActiveOrder rejection")
@@ -217,22 +219,22 @@ class OrderAggregateRejectionsTest {
 
             final CannotRemoveDishFromNotActiveOrder rejection =
                     assertThrows(CannotRemoveDishFromNotActiveOrder.class,
-                                 () -> throwCannotRemoveDishFromNotActiveOrder(cmd, ORDER_CANCELED));
+                                 () -> throwCannotRemoveDishFromNotActiveOrder(cmd,
+                                                                               ORDER_CANCELED));
 
             assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
                                                     .getOrderId());
-            assertEquals(cmd.getOrderId()
-                            .getUserId(), rejection.getMessageThrown()
-                                                   .getUserId());
+            final UserId expectedUserId = cmd.getOrderId()
+                                             .getUserId();
+            final UserId actualUserId = rejection.getMessageThrown()
+                                                 .getUserId();
+            assertEquals(expectedUserId, actualUserId);
             assertEquals(cmd.getDishId(), rejection.getMessageThrown()
                                                    .getDishId());
-
             assertNotEquals(ORDER_ACTIVE, rejection.getMessageThrown()
                                                    .getOrderStatus());
         }
     }
-
-
 
     @Nested
     @DisplayName("CancelOrderRejections should")
@@ -257,9 +259,10 @@ class OrderAggregateRejectionsTest {
 
             assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
                                                     .getOrderId());
-            assertEquals(cmd.getOrderId()
-                            .getUserId(), rejection.getMessageThrown()
-                                                   .getUserId());
+            final UserId expectedUserId = cmd.getOrderId()
+                                             .getUserId();
+            assertEquals(expectedUserId, rejection.getMessageThrown()
+                                                  .getUserId());
         }
     }
 }

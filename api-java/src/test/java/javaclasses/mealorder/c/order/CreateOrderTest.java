@@ -28,11 +28,11 @@ import io.spine.grpc.StreamObservers;
 import io.spine.server.entity.Repository;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderStatus;
-import javaclasses.mealorder.c.vendor.VendorAggregate;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.event.OrderCreated;
 import javaclasses.mealorder.c.rejection.Rejections;
+import javaclasses.mealorder.c.vendor.VendorAggregate;
 import javaclasses.mealorder.testdata.OrderTestEnv.MenuNotAvailableSubscriber;
 import javaclasses.mealorder.testdata.OrderTestEnv.OrderAlreadyExistsSubscriber;
 import javaclasses.mealorder.testdata.OrderTestEnv.OrderCreatedSubscriber;
@@ -42,7 +42,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.grpc.StreamObservers.memoizingObserver;
 import static io.spine.grpc.StreamObservers.noOpObserver;
-import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentMenu;
@@ -83,7 +82,7 @@ public class CreateOrderTest extends OrderCommandTest {
         final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
 
         final Command createOrderCommand = requestFactory.command()
-                                                         .create(toMessage(createOrder));
+                                                         .create(createOrder);
 
         final OrderCreatedSubscriber orderCreatedSubscriber = new OrderCreatedSubscriber();
 
@@ -94,7 +93,7 @@ public class CreateOrderTest extends OrderCommandTest {
 
         assertTrue(memoizingObserver.isCompleted());
 
-        OrderCreated event = (OrderCreated) orderCreatedSubscriber.getEventMessage();
+        final OrderCreated event = (OrderCreated) orderCreatedSubscriber.getEventMessage();
 
         assertEquals(createOrder.getOrderId(), event.getOrderId());
         assertEquals(createOrder.getMenuId(), event.getMenuId());
@@ -107,7 +106,7 @@ public class CreateOrderTest extends OrderCommandTest {
         final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
 
         final Command createOrderCommand = requestFactory.command()
-                                                         .create(toMessage(createOrder));
+                                                         .create(createOrder);
         final MemoizingObserver<Ack> memoizingObserver = memoizingObserver();
 
         commandBus.post(createOrderCommand, memoizingObserver);
@@ -139,12 +138,12 @@ public class CreateOrderTest extends OrderCommandTest {
         final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
 
         final Command createOrderCommand = requestFactory.command()
-                                                         .create(toMessage(createOrder));
+                                                         .create(createOrder);
 
         final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
 
         final Command cancelOrderCommand = requestFactory.command()
-                                                         .create(toMessage(cancelOrder));
+                                                         .create(cancelOrder);
 
         final MemoizingObserver<Ack> memoizingObserver = memoizingObserver();
 
@@ -154,8 +153,8 @@ public class CreateOrderTest extends OrderCommandTest {
 
         assertTrue(memoizingObserver.isCompleted());
 
-        final Optional<Repository> repositoryOptional = boundedContext.findRepository(
-                Order.class);
+        final Optional<Repository> repositoryOptional =
+                boundedContext.findRepository(Order.class);
 
         assertTrue(repositoryOptional.isPresent());
 
@@ -179,7 +178,7 @@ public class CreateOrderTest extends OrderCommandTest {
         final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
 
         final Command createOrderCommand = requestFactory.command()
-                                                         .create(toMessage(createOrder));
+                                                         .create(createOrder);
 
         final OrderAlreadyExistsSubscriber orderAlreadyExistsSubscriber
                 = new OrderAlreadyExistsSubscriber();
@@ -205,7 +204,7 @@ public class CreateOrderTest extends OrderCommandTest {
 
         final Command createOrderCmd =
                 requestFactory.command()
-                              .create(toMessage(createOrderInstanceForNonExistentMenu()));
+                              .create(createOrderInstanceForNonExistentMenu());
 
         final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
 
@@ -232,7 +231,7 @@ public class CreateOrderTest extends OrderCommandTest {
 
         final Command createOrderCmd =
                 requestFactory.command()
-                              .create(toMessage(createOrderInstanceWithInvalidDate()));
+                              .create(createOrderInstanceWithInvalidDate());
 
         final MenuNotAvailableSubscriber menuNotAvailableSubscriber = new MenuNotAvailableSubscriber();
 
@@ -259,7 +258,7 @@ public class CreateOrderTest extends OrderCommandTest {
 
         final Command createOrderCmd =
                 requestFactory.command()
-                              .create(toMessage(createOrderInstanceForNonExistentVendor()));
+                              .create(createOrderInstanceForNonExistentVendor());
 
         final MenuNotAvailableSubscriber menuNotAvailableSubscriber
                 = new MenuNotAvailableSubscriber();

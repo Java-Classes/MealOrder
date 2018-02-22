@@ -38,7 +38,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrderInstance;
@@ -64,7 +63,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest {
         super.setUp();
         final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
         final Command createOrderCommand = requestFactory.command()
-                                                         .create(toMessage(createOrder));
+                                                         .create(createOrder);
         commandBus.post(createOrderCommand, StreamObservers.noOpObserver());
     }
 
@@ -78,14 +77,13 @@ public class RemoveDishFromOrderTest extends OrderCommandTest {
 
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
         final Command addDishToOrderCommand = requestFactory.command()
-                                                            .create(toMessage(addDishToOrder));
+                                                            .create(addDishToOrder);
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
         final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
                                                                                     DISH1.getId());
         final Command removeDishFromOrderCommand = requestFactory.command()
-                                                                 .create(toMessage(
-                                                                         removeDishFromOrder));
+                                                                 .create(removeDishFromOrder);
         commandBus.post(removeDishFromOrderCommand, StreamObservers.noOpObserver());
 
         final DishRemovedFromOrder event = (DishRemovedFromOrder) eventSubscriber.getEventMessage();
@@ -101,14 +99,13 @@ public class RemoveDishFromOrderTest extends OrderCommandTest {
 
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
         final Command addDishToOrderCommand = requestFactory.command()
-                                                            .create(toMessage(addDishToOrder));
+                                                            .create(addDishToOrder);
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
         final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
                                                                                     DISH1.getId());
         final Command removeDishFromOrderCommand = requestFactory.command()
-                                                                 .create(toMessage(
-                                                                         removeDishFromOrder));
+                                                                 .create(removeDishFromOrder);
         commandBus.post(removeDishFromOrderCommand, StreamObservers.noOpObserver());
 
         final Optional<Repository> repositoryOptional = boundedContext.findRepository(Order.class);
@@ -138,8 +135,7 @@ public class RemoveDishFromOrderTest extends OrderCommandTest {
         final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
                                                                                     DISH1.getId());
         final Command removeDishFromOrderCommand = requestFactory.command()
-                                                                 .create(toMessage(
-                                                                         removeDishFromOrder));
+                                                                 .create(removeDishFromOrder);
 
         assertNull(OrderTestEnv.CannotRemoveMissingDishSubscriber.getRejection());
 
@@ -165,19 +161,18 @@ public class RemoveDishFromOrderTest extends OrderCommandTest {
 
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
         final Command addDishToOrderCommand = requestFactory.command()
-                                                            .create(toMessage(addDishToOrder));
+                                                            .create(addDishToOrder);
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
         final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
         final Command cancelOrderCommand = requestFactory.command()
-                                                         .create(toMessage(cancelOrder));
+                                                         .create(cancelOrder);
         commandBus.post(cancelOrderCommand, StreamObservers.noOpObserver());
 
         final RemoveDishFromOrder removeDishFromOrder = removeDishFromOrderInstance(ORDER_ID,
                                                                                     DISH1.getId());
         final Command removeDishFromOrderCommand = requestFactory.command()
-                                                                 .create(toMessage(
-                                                                         removeDishFromOrder));
+                                                                 .create(removeDishFromOrder);
 
         assertNull(OrderTestEnv.CannotRemoveDishFromNotActiveOrderSubscriber.getRejection());
 
