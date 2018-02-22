@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("ImportMenu command should be interpreted by VendorAggregate and")
+@DisplayName("SetDateRangeForMenu command should be interpreted by VendorAggregate and")
 public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
 
     @Override
@@ -66,20 +66,20 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("produce DateRangeForMenuSet event")
     void produceEvent() {
-
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 
-        final SetDateRangeForMenu setDateRangeForMenuCmd = TestVendorCommandFactory.setDateRangeForMenuInstance();
+        final SetDateRangeForMenu setDateRangeForMenuCmd =
+                TestVendorCommandFactory.setDateRangeForMenuInstance();
 
-        final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(
-                                                                            setDateRangeForMenuCmd));
+        final List<? extends Message> messageList =
+                dispatchCommand(aggregate, envelopeOf(setDateRangeForMenuCmd));
 
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
         assertEquals(DateRangeForMenuSet.class, messageList.get(0)
                                                            .getClass());
+
         final DateRangeForMenuSet dateRangeForMenuSet = (DateRangeForMenuSet) messageList.get(0);
 
         assertEquals(VENDOR_ID, dateRangeForMenuSet.getVendorId());
@@ -122,8 +122,8 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 
-        final SetDateRangeForMenu setInvalidDateRangeForMenu = setDateRangeForMenuInstance(
-                VENDOR_ID, MENU_ID, USER_ID, INVALID_MENU_DATE_RANGE);
+        final SetDateRangeForMenu setInvalidDateRangeForMenu =
+                setDateRangeForMenuInstance(VENDOR_ID, MENU_ID, USER_ID, INVALID_MENU_DATE_RANGE);
 
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
@@ -147,25 +147,21 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 
-        final SetDateRangeForMenu setInvalidDateRangeForMenuFromPast = setDateRangeForMenuInstance(
-                VENDOR_ID, MENU_ID, USER_ID, MENU_DATE_RANGE_FROM_PAST);
+        final SetDateRangeForMenu setRangeFromPast =
+                setDateRangeForMenuInstance(VENDOR_ID, MENU_ID, USER_ID, MENU_DATE_RANGE_FROM_PAST);
 
-        final Throwable t = assertThrows(Throwable.class,
-                                         () -> dispatchCommand(aggregate,
-                                                               envelopeOf(
-                                                                       setInvalidDateRangeForMenuFromPast)));
+        final Throwable t =
+                assertThrows(Throwable.class, () -> dispatchCommand(aggregate,
+                                                                    envelopeOf(setRangeFromPast)));
         final Throwable cause = Throwables.getRootCause(t);
 
         @SuppressWarnings("ConstantConditions") // Instance type checked before.
         final Rejections.CannotSetDateRange rejection =
                 ((CannotSetDateRange) cause).getMessageThrown();
 
-        assertEquals(setInvalidDateRangeForMenuFromPast.getVendorId(),
-                     rejection.getVendorId());
-        assertEquals(setInvalidDateRangeForMenuFromPast.getMenuId(),
-                     rejection.getMenuId());
-        assertEquals(setInvalidDateRangeForMenuFromPast.getMenuDateRange(),
-                     rejection.getMenuDateRange());
+        assertEquals(setRangeFromPast.getVendorId(), rejection.getVendorId());
+        assertEquals(setRangeFromPast.getMenuId(), rejection.getMenuId());
+        assertEquals(setRangeFromPast.getMenuDateRange(), rejection.getMenuDateRange());
     }
 
     @Test
@@ -174,13 +170,11 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 
-        final SetDateRangeForMenu setDateRangeForMenu = TestVendorCommandFactory.setDateRangeForMenuInstance();
-        dispatchCommand(aggregate, envelopeOf(setDateRangeForMenu));
+        final SetDateRangeForMenu setRange = TestVendorCommandFactory.setDateRangeForMenuInstance();
+        dispatchCommand(aggregate, envelopeOf(setRange));
 
         final Throwable t = assertThrows(Throwable.class,
-                                         () -> dispatchCommand(aggregate,
-                                                               envelopeOf(
-                                                                       setDateRangeForMenu)));
+                                         () -> dispatchCommand(aggregate, envelopeOf(setRange)));
         final Throwable cause = Throwables.getRootCause(t);
         assertThat(cause, instanceOf(CannotSetDateRange.class));
 
@@ -188,9 +182,8 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
         final Rejections.CannotSetDateRange rejection =
                 ((CannotSetDateRange) cause).getMessageThrown();
 
-        assertEquals(setDateRangeForMenu.getVendorId(), rejection.getVendorId());
-        assertEquals(setDateRangeForMenu.getMenuId(), rejection.getMenuId());
-        assertEquals(setDateRangeForMenu.getMenuDateRange(), rejection.getMenuDateRange());
+        assertEquals(setRange.getVendorId(), rejection.getVendorId());
+        assertEquals(setRange.getMenuId(), rejection.getMenuId());
+        assertEquals(setRange.getMenuDateRange(), rejection.getMenuDateRange());
     }
-
 }
