@@ -25,7 +25,9 @@ import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.MenuDateRange;
+import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Vendor;
+import javaclasses.mealorder.VendorChange;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.VendorVBuilder;
@@ -44,10 +46,10 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
-import static javaclasses.mealorder.c.vendor.VendorValidator.isThereMenuForThisDateRange;
-import static javaclasses.mealorder.c.vendor.VendorValidator.isValidDateRange;
 import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwCannotSetDateRange;
 import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwVendorAlreadyExists;
+import static javaclasses.mealorder.c.vendor.VendorValidator.isThereMenuForThisDateRange;
+import static javaclasses.mealorder.c.vendor.VendorValidator.isValidDateRange;
 
 /**
  * The aggregate managing the state of a {@link Vendor}.
@@ -63,7 +65,6 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
 
     @Assign
     VendorAdded handle(AddVendor cmd) throws VendorAlreadyExists {
-
         final VendorName vendorName = cmd.getVendorName();
 
         if (vendorName.equals(getState().getVendorName())) {
@@ -76,8 +77,7 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
                                                    .setVendorName(vendorName)
                                                    .setEmail(cmd.getEmail())
                                                    .addAllPhoneNumber(cmd.getPhoneNumberList())
-                                                   .setPoDailyDeadline(
-                                                           cmd.getPoDailyDeadline())
+                                                   .setPoDailyDeadline(cmd.getPoDailyDeadline())
                                                    .build();
         return vendorAdded;
     }
@@ -109,13 +109,12 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
     @Assign
     DateRangeForMenuSet handle(SetDateRangeForMenu cmd) throws CannotSetDateRange {
 
-        final MenuDateRange menuDateRange = cmd.getMenuDateRange();
+        final MenuDateRange range = cmd.getMenuDateRange();
+        final Vendor vendor = getState();
 
-        if (!isValidDateRange(menuDateRange) ||
-                isThereMenuForThisDateRange(getState(), menuDateRange)) {
+        if (!isValidDateRange(range) || isThereMenuForThisDateRange(vendor, range)) {
             throwCannotSetDateRange(cmd);
         }
-
         final DateRangeForMenuSet dateRangeForMenuSet =
                 DateRangeForMenuSet.newBuilder()
                                    .setVendorId(cmd.getVendorId())
@@ -138,38 +137,37 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
 
     @Apply
     void vendorUpdated(VendorUpdated event) {
+        final VendorChange vendorChange = event.getVendorChange();
 
-        getBuilder().setVendorName(event.getVendorChange()
-                                        .getNewVendorName())
-                    .setEmail(event.getVendorChange()
-                                   .getNewEmail())
-                    .setPoDailyDeadline(event.getVendorChange()
-                                             .getNewPoDailyDeadline())
-                    .addAllPhoneNumber(event.getVendorChange()
-                                             .getNewPhoneNumberList());
+        getBuilder().setVendorName(vendorChange.getNewVendorName())
+                    .setEmail(vendorChange.getNewEmail())
+                    .setPoDailyDeadline(vendorChange.getNewPoDailyDeadline())
+                    .addAllPhoneNumber(vendorChange.getNewPhoneNumberList());
     }
 
     @Apply
     void menuImported(MenuImported event) {
-
         getBuilder().addMenu(Menu.newBuilder()
-                                  .setId(event.getMenuId())
-                                  .addAllDish(event.getDishList())
-                                  .build());
+                                 .setId(event.getMenuId())
+                                 .addAllDish(event.getDishList())
+                                 .build());
     }
 
     @Apply
     void dateRangeForMenuSet(DateRangeForMenuSet event) {
         final List<Menu> menus = getBuilder().getMenu();
+        final MenuId menuId = event.getMenuId();
+
         final int index = IntStream.range(0, menus.size())
                                    .filter(i -> menus.get(i)
                                                      .getId()
-                                                     .equals(event.getMenuId()))
+                                                     .equals(menuId))
                                    .findFirst()
                                    .getAsInt();
+
         final Menu menu = menus.get(index);
         getBuilder().setMenu(index, Menu.newBuilder(menu)
-                                         .setMenuDateRange(event.getMenuDateRange())
-                                         .build());
+                                        .setMenuDateRange(event.getMenuDateRange())
+                                        .build());
     }
 }
