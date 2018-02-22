@@ -37,6 +37,7 @@ import javaclasses.mealorder.c.vendor.VendorRepository;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.throwMenuNotAvailable;
 
 /**
@@ -60,6 +61,8 @@ public class Orders {
      * @return boolean true if there is a menu on the order date
      */
     public static boolean checkRangeIncludesDate(MenuDateRange range, LocalDate orderDate) {
+        checkNotNull(range);
+        checkNotNull(orderDate);
         Comparator<LocalDate> comparator = new LocalDateComparator();
 
         return comparator.compare(range.getRangeStart(), orderDate) <= 0 &&
@@ -74,6 +77,7 @@ public class Orders {
      */
     public static Optional<VendorAggregate> getVendorAggregateForOrder(OrderId orderId) throws
                                                                                         MenuNotAvailable {
+        checkNotNull(orderId);
         final AggregateRepository<VendorId, VendorAggregate> vendorRepository =
                 VendorRepository.getInstance()
                                 .getRepository();
@@ -92,6 +96,7 @@ public class Orders {
      */
     public static void checkMenuAvailability(CreateOrder cmd) throws
                                                               MenuNotAvailable {
+        checkNotNull(cmd);
         final OrderId orderId = cmd.getOrderId();
         final MenuId menuId = cmd.getMenuId();
         final Optional<VendorAggregate> vendor = getVendorAggregateForOrder(orderId);
