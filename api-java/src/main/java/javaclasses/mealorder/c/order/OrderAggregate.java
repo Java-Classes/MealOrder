@@ -73,14 +73,8 @@ import static javaclasses.mealorder.c.order.Orders.checkMenuAvailability;
  *
  * @author Vlad Kozachenko
  */
-@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor definition cannot be separated and should
-                                                 process all commands and events related to it
-                                                 according to the domain model.
-                                                 The {@code Aggregate} does it with methods
-                                                 annotated as {@code Assign} and {@code Apply}.
-                                                 In that case class has too many methods.*/
-        "OverlyCoupledClass"}) /* As each method needs dependencies  necessary to perform execution
-                                                 that class also overly coupled.*/
+@SuppressWarnings("OverlyCoupledClass") /* As each method needs dependencies  necessary to
+                                           perform execution that class also overly coupled.*/
 public class OrderAggregate extends Aggregate<OrderId,
         Order,
         OrderVBuilder> {
@@ -183,6 +177,16 @@ public class OrderAggregate extends Aggregate<OrderId,
      * Event appliers
      *****************/
 
+    /**
+     * Applies the {@link OrderCreated} event.
+     *
+     * <p>
+     * Creates new order and changes order aggregate state status on {@code ORDER_ACTIVE}.
+     * Checks if the order with the same id was already created and cancelled. In this case
+     * removes all dishes that was added before cancellation.
+     * </p>
+     * @param event
+     */
     @Apply
     void orderCreated(OrderCreated event) {
         if (getBuilder().getStatus() == ORDER_CANCELED) {
