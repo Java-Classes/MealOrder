@@ -24,7 +24,7 @@ import io.spine.server.aggregate.AggregateRepository;
 import javaclasses.mealorder.VendorId;
 
 /**
- * Repository for the {@link VendorAggregate}.
+ * Enumeration with only one identifier INSTANCE that is repository for the {@link VendorAggregate}.
  *
  * @author Yurii Haidamaka
  */
