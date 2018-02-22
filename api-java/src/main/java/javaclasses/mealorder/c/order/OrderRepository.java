@@ -40,10 +40,23 @@ import java.util.stream.Collectors;
 public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate> {
 
     public OrderRepository() {
+        setUpEventRouting();
+    }
+
+    /**
+     * Sets up event routing for aggregate.
+     * Route events to aggregate instances with correct ids.
+     *
+     * Extract order ids from received events on which the order aggregate
+     * have to react. Checks if the instances with this ids already created.
+     * And routes events to correct instances.
+     */
+    private void setUpEventRouting() {
         getEventRouting().replaceDefault((EventRoute<OrderId, Message>) (message, context) -> {
             if (message instanceof PurchaseOrderCreated) {
                 final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) message;
-                final Set<OrderId> orderIds = filterOrderIds(purchaseOrderCreated.getOrderList());
+                final Set<OrderId> orderIds =
+                        filterOrderIds(purchaseOrderCreated.getOrderList());
                 return orderIds;
             }
             final PurchaseOrderCanceled purchaseOrderCanceled = (PurchaseOrderCanceled) message;
@@ -53,6 +66,13 @@ public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate
         });
     }
 
+    /**
+     * Extracts {@code OrderId} values from list of orders.
+     * Checks each order whether it is in repository.
+     *
+     * @param orderList list of orders where ids may be extracted.
+     * @return set of found ids.
+     */
     private Set<OrderId> filterOrderIds(List<Order> orderList) {
         final Set<OrderId> orderIdSet =
                 orderList.stream()
