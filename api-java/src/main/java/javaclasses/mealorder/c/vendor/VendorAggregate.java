@@ -54,19 +54,9 @@ import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwVend
  *
  * @author Yurii Haidamaka
  */
-@SuppressWarnings({"ClassWithTooManyMethods", /* Vendor po cannot be separated and should
-                                                 process all commands and events related to it
-                                                 according to the domain model.
-                                                 The {@code Aggregate} does it with methods
-                                                 annotated as {@code Assign} and {@code Apply}.
-                                                 In that case class has too many methods.*/
-        "OverlyCoupledClass",/* As each method needs dependencies  necessary to perform execution
-                                                 that class also overly coupled.*/})
 public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder> {
 
-    /**
-     * {@inheritDoc}
-     */
+    /** Prevents instantiation of this utility class. */
     public VendorAggregate(VendorId id) {
         super(id);
     }
