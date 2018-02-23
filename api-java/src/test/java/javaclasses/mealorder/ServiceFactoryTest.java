@@ -63,7 +63,7 @@ class ServiceFactoryTest {
                                    () -> ServiceFactory.setPoSenderInstance(
                                            mock(PurchaseOrderSender.class)));
 
-        assertThat(Throwables.getRootCause(t), instanceOf(UnsupportedOperationException.class));
+        assertThat(Throwables.getRootCause(t), instanceOf(IllegalStateException.class));
         Environment.getInstance()
                    .reset();
     }
