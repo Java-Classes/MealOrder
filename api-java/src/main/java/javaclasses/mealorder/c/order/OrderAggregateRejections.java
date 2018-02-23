@@ -68,27 +68,27 @@ public class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and throws the {@link OrderAlreadyExists} rejection
+         * Constructs and returns the {@link OrderAlreadyExists} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code CreateOrder} command which was rejected
-         * @throws OrderAlreadyExists the rejection to throw
+         * @return  OrderAlreadyExists the rejection to return
          */
-        public static void throwOrderAlreadyExists(CreateOrder cmd) throws OrderAlreadyExists {
+        public static OrderAlreadyExists orderAlreadyExists(CreateOrder cmd) {
             checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final Timestamp timestamp = getCurrentTime();
-            throw new OrderAlreadyExists(orderId, timestamp);
+            return new OrderAlreadyExists(orderId, timestamp);
         }
 
         /**
-         * Constructs and throws the {@link MenuNotAvailable} rejection
+         * Constructs and returns the {@link MenuNotAvailable} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code CreateOrder} command which was rejected
-         * @throws MenuNotAvailable the rejection to throw
+         * @return  MenuNotAvailable the rejection to return
          */
-        public static void throwMenuNotAvailable(CreateOrder cmd) throws MenuNotAvailable {
+        public static MenuNotAvailable menuNotAvailable(CreateOrder cmd) {
             checkNotNull(cmd);
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
@@ -96,7 +96,7 @@ public class OrderAggregateRejections {
                                          .getVendorId();
             final LocalDate orderDate = cmd.getOrderId()
                                            .getOrderDate();
-            throw new MenuNotAvailable(userId, vendorId, orderDate, getCurrentTime());
+            return new MenuNotAvailable(userId, vendorId, orderDate, getCurrentTime());
         }
     }
 
@@ -112,13 +112,13 @@ public class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and throws the {@link DishVendorMismatch} rejection
+         * Constructs and returns the {@link DishVendorMismatch} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code AddDishToOrder} command which was rejected
-         * @throws DishVendorMismatch the rejection to throw
+         * @return  DishVendorMismatch the rejection to return
          */
-        public static void throwDishVendorMismatch(AddDishToOrder cmd) throws DishVendorMismatch {
+        public static DishVendorMismatch dishVendorMismatch(AddDishToOrder cmd) {
             checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
@@ -127,26 +127,26 @@ public class OrderAggregateRejections {
                                      .getId();
             final VendorId targetVendorId = orderId.getVendorId();
             final VendorId actualVendorId = dishId.getMenuId()
-                                            .getVendorId();
+                                                  .getVendorId();
             final VendorMismatch vendorMismatch = VendorMismatch.newBuilder()
-                                                          .setTarget(targetVendorId)
-                                                          .setActual(actualVendorId)
-                                                          .build();
+                                                                .setTarget(targetVendorId)
+                                                                .setActual(actualVendorId)
+                                                                .build();
             final Timestamp timestamp = getCurrentTime();
 
-            throw new DishVendorMismatch(orderId, dishId, userId, vendorMismatch, timestamp);
+            return new DishVendorMismatch(orderId, dishId, userId, vendorMismatch, timestamp);
         }
 
         /**
-         * Constructs and throws the {@link CannotAddDishToNotActiveOrder} rejection
+         * Constructs and returns the {@link CannotAddDishToNotActiveOrder} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code AddDishToOrder} command which was rejected
-         * @throws CannotAddDishToNotActiveOrder the rejection to throw
+         * @return  CannotAddDishToNotActiveOrder the rejection to return
          */
-        public static void throwCannotAddDishToNotActiveOrder(AddDishToOrder cmd,
-                                                              OrderStatus orderStatus) throws
-                                                                                       CannotAddDishToNotActiveOrder {
+        public static CannotAddDishToNotActiveOrder cannotAddDishToNotActiveOrder(
+                AddDishToOrder cmd,
+                OrderStatus orderStatus) {
             checkNotNull(cmd);
             checkNotNull(orderStatus);
             final OrderId orderId = cmd.getOrderId();
@@ -155,11 +155,11 @@ public class OrderAggregateRejections {
             final DishId dishId = cmd.getDish()
                                      .getId();
             final Timestamp timestamp = getCurrentTime();
-            throw new CannotAddDishToNotActiveOrder(orderId,
-                                                    dishId,
-                                                    userId,
-                                                    orderStatus,
-                                                    timestamp);
+            return new CannotAddDishToNotActiveOrder(orderId,
+                                                     dishId,
+                                                     userId,
+                                                     orderStatus,
+                                                     timestamp);
         }
     }
 
@@ -175,44 +175,44 @@ public class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and throws the {@link CannotRemoveMissingDish} rejection
+         * Constructs and returns the {@link CannotRemoveMissingDish} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code RemoveDishFromOrder} command which was rejected
-         * @throws CannotRemoveMissingDish the rejection to throw
+         * @return  CannotRemoveMissingDish the rejection to return
          */
-        public static void throwCannotRemoveMissingDish(RemoveDishFromOrder cmd) throws
-                                                                                 CannotRemoveMissingDish {
+        public static CannotRemoveMissingDish cannotRemoveMissingDish(
+                RemoveDishFromOrder cmd) {
             checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final DishId dishId = cmd.getDishId();
             final Timestamp timestamp = getCurrentTime();
-            throw new CannotRemoveMissingDish(orderId, userId, dishId, timestamp);
+            return new CannotRemoveMissingDish(orderId, userId, dishId, timestamp);
         }
 
         /**
-         * Constructs and throws the {@link CannotRemoveDishFromNotActiveOrder} rejection
+         * Constructs and returns the {@link CannotRemoveDishFromNotActiveOrder} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code RemoveDishFromOrder} command which was rejected
-         * @throws CannotRemoveDishFromNotActiveOrder the rejection to throw
+         * @return CannotRemoveDishFromNotActiveOrder the rejection to return
          */
-        public static void throwCannotRemoveDishFromNotActiveOrder(RemoveDishFromOrder cmd,
-                                                                   OrderStatus orderStatus) throws
-                                                                                            CannotRemoveDishFromNotActiveOrder {
+        public static CannotRemoveDishFromNotActiveOrder cannotRemoveDishFromNotActiveOrder(
+                RemoveDishFromOrder cmd,
+                OrderStatus orderStatus) {
             checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final DishId dishId = cmd.getDishId();
             final Timestamp timestamp = getCurrentTime();
-            throw new CannotRemoveDishFromNotActiveOrder(orderId,
-                                                         dishId,
-                                                         userId,
-                                                         orderStatus,
-                                                         timestamp);
+            return new CannotRemoveDishFromNotActiveOrder(orderId,
+                                                          dishId,
+                                                          userId,
+                                                          orderStatus,
+                                                          timestamp);
         }
     }
 
@@ -228,20 +228,19 @@ public class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and throws the {@link CannotCancelProcessedOrder} rejection
+         * Constructs and returns the {@link CannotCancelProcessedOrder} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code CancelOrder} command which was rejected
-         * @throws CannotCancelProcessedOrder the rejection to throw
+         * @return CannotCancelProcessedOrder the rejection to return
          */
-        public static void throwCannotCancelProcessedOrder(CancelOrder cmd) throws
-                                                                            CannotCancelProcessedOrder {
+        public static CannotCancelProcessedOrder cannotCancelProcessedOrder(CancelOrder cmd) {
             checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final Timestamp timestamp = getCurrentTime();
-            throw new CannotCancelProcessedOrder(orderId, userId, timestamp);
+            return new CannotCancelProcessedOrder(orderId, userId, timestamp);
         }
     }
 }

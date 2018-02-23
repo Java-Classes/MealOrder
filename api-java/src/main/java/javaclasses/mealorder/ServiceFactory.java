@@ -66,7 +66,10 @@ public class ServiceFactory {
                        .isTests()) {
             ServiceFactory.poSenderInstance = poSenderInstance;
         } else {
-            throw newIllegalStateException("This setter method can only be called from tests");
+            throw newIllegalStateException("This setter method can only be called from tests. " +
+                                                   "Current `isTests` value is `%s`.",
+                                           Environment.getInstance()
+                                                      .isTests());
         }
     }
 }

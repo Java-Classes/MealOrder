@@ -50,7 +50,6 @@ import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrder
 import static javaclasses.mealorder.testdata.TestValues.DATE;
 import static javaclasses.mealorder.testdata.TestValues.INVALID_START_DATE;
 import static javaclasses.mealorder.testdata.TestValues.INVALID_VENDOR_ID;
-import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestValues.USER_ID;
 import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
@@ -157,7 +156,7 @@ public class CreateOrderTest extends OrderCommandTest {
     }
 
     @Test
-    @DisplayName("throw OrderAlreadyExists rejection")
+    @DisplayName("throw orderAlreadyExists rejection")
     void notCreateOrder() {
         final CreateOrder createOrder = createOrderInstance();
         final Command createOrderCommand = requestFactory.command()

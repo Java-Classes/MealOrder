@@ -38,7 +38,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.throwMenuNotAvailable;
+import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.menuNotAvailable;
 
 /**
  * Utility class that contains static methods that operate on order aggregate.
@@ -101,7 +101,7 @@ public class Orders {
         final MenuId menuId = cmd.getMenuId();
         final Optional<VendorAggregate> vendor = getVendorAggregateForOrder(orderId);
         if (!vendor.isPresent()) {
-            throwMenuNotAvailable(cmd);
+            throw menuNotAvailable(cmd);
         }
         final VendorAggregate vendorAggregateForOrder = vendor.get();
         final List<Menu> menus = vendorAggregateForOrder.getState()
@@ -114,7 +114,7 @@ public class Orders {
         final LocalDate orderDate = orderId.getOrderDate();
         if (!menu.isPresent() || !checkRangeIncludesDate(menu.get().getMenuDateRange(),
                                                          orderDate)) {
-            throwMenuNotAvailable(cmd);
+            throw menuNotAvailable(cmd);
         }
     }
 }
