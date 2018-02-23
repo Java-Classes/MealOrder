@@ -49,7 +49,7 @@ public class PurchaseOrders {
     /**
      * Performs the validation of a purchase order creation process.
      *
-     * <p></>Checks each order in the list to match purchase order date
+     * <p>Checks each order in the list to match purchase order date
      * and vendor. Also checks for empty dish list orders and orders with
      * not {@code 'ORDER_ACTIVE'} status.
      *

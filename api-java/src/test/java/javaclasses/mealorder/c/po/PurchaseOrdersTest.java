@@ -21,13 +21,18 @@
 package javaclasses.mealorder.c.po;
 
 import io.spine.test.Tests;
+import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static javaclasses.mealorder.c.po.PurchaseOrders.findInvalidOrders;
 import static javaclasses.mealorder.c.po.PurchaseOrders.hasInvalidOrders;
 import static javaclasses.mealorder.c.po.PurchaseOrders.isAllowedPurchaseOrderCreation;
+import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -40,6 +45,16 @@ class PurchaseOrdersTest {
     @DisplayName("have the private constructor")
     void havePrivateConstructor() {
         assertHasPrivateParameterlessCtor(PurchaseOrders.class);
+    }
+
+    @Test
+    @DisplayName("return false for empty list of dishes")
+    void returnFalseForEmptyList() {
+        CreatePurchaseOrder createPurchaseOrder = CreatePurchaseOrder.newBuilder()
+                                                                     .setId(PURCHASE_ORDER_ID)
+                                                                     .addAllOrder(new ArrayList<>())
+                                                                     .build();
+        assertFalse(isAllowedPurchaseOrderCreation(createPurchaseOrder));
     }
 
     @Test
