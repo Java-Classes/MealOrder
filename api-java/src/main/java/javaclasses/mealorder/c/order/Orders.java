@@ -112,8 +112,7 @@ public class Orders {
                                                    .findFirst();
 
         final LocalDate orderDate = orderId.getOrderDate();
-        if (!menu.isPresent() || !checkRangeIncludesDate(menu.get()
-                                                             .getMenuDateRange(),
+        if (!menu.isPresent() || !checkRangeIncludesDate(menu.get().getMenuDateRange(),
                                                          orderDate)) {
             throwMenuNotAvailable(cmd);
         }

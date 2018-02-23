@@ -53,6 +53,7 @@ import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -141,19 +142,25 @@ public class OrderAggregate extends Aggregate<OrderId,
 
         final List<Dish> dishesList = getState().getDishList();
 
-        java.util.Optional<Dish> dish = dishesList.stream()
-                                                  .filter(d -> d.getId()
-                                                                .equals(dishId))
-                                                  .findFirst();
+        final Dish dish = getDishFromOrder(cmd, dishId, dishesList);
+        DishRemovedFromOrder result = DishRemovedFromOrder.newBuilder()
+                                                          .setOrderId(orderId)
+                                                          .setDish(dish)
+                                                          .build();
+        return result;
+    }
+
+    private Dish getDishFromOrder(RemoveDishFromOrder cmd, DishId dishId,
+                                  List<Dish> dishesList) throws CannotRemoveMissingDish {
+        Optional<Dish> dish = dishesList.stream()
+                                        .filter(d -> d.getId()
+                                                      .equals(dishId))
+                                        .findFirst();
 
         if (!dish.isPresent()) {
             throwCannotRemoveMissingDish(cmd);
         }
-        DishRemovedFromOrder result = DishRemovedFromOrder.newBuilder()
-                                                          .setOrderId(orderId)
-                                                          .setDish(dish.get())
-                                                          .build();
-        return result;
+        return dish.get();
     }
 
     @Assign
@@ -185,6 +192,7 @@ public class OrderAggregate extends Aggregate<OrderId,
      * Checks if the order with the same id was already created and cancelled. In this case
      * removes all dishes that was added before cancellation.
      * </p>
+     *
      * @param event
      */
     @Apply
