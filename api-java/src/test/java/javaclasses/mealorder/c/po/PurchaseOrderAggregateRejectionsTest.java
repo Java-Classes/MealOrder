@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.c.po;
 
+import io.spine.test.Tests;
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.UserId;
@@ -37,6 +38,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static javaclasses.mealorder.c.BoundedContexts.createBoundedContext;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotCancelDeliveredPurchaseOrder;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
@@ -123,5 +125,29 @@ class PurchaseOrderAggregateRejectionsTest {
 
         assertEquals(PURCHASE_ORDER_ID, actualId);
         assertEquals(USER_ID, actualUser);
+    }
+
+    @Test
+    @DisplayName("don't throw CannotCreatePurchaseOrder rejection for empty command ")
+    void doNotThrowCannotCreatePurchaseOrderRejection() {
+        assertThrows(NullPointerException.class, () -> throwCannotCreatePurchaseOrder(Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("don't throw CannotMarkPurchaseOrderAsDelivered rejection for empty command ")
+    void doNotThrowCannotMarkPurchaseOrderAsDeliveredRejection() {
+        assertThrows(NullPointerException.class, () -> throwCannotMarkPurchaseOrderAsDelivered(Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("don't throw CannotCancelDeliveredPurchaseOrder rejection for empty command ")
+    void doNotThrowCannotCancelDeliveredPurchaseOrderRejection() {
+        assertThrows(NullPointerException.class, () -> throwCannotCancelDeliveredPurchaseOrder(Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("don't throw CannotOverruleValidationOfNotInvalidPO rejection for empty command ")
+    void doNotThrowCannotOverruleValidationOfNotInvalidPORejection() {
+        assertThrows(NullPointerException.class, () -> throwCannotOverruleValidationOfNotInvalidPO(Tests.nullRef()));
     }
 }
