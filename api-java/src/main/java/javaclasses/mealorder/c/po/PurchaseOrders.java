@@ -93,6 +93,13 @@ public class PurchaseOrders {
         return invalidOrders;
     }
 
+    public static boolean hasInvalidOrders(List<Order> orders) {
+        checkNotNull(orders);
+        final boolean result = orders.stream()
+                                     .anyMatch(o -> !isOrderValid(o));
+        return result;
+    }
+
     private static boolean isOrderValid(Order order) {
         final boolean result = order.getDishList()
                                     .stream()

@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static javaclasses.mealorder.c.po.PurchaseOrders.findInvalidOrders;
+import static javaclasses.mealorder.c.po.PurchaseOrders.hasInvalidOrders;
 import static javaclasses.mealorder.c.po.PurchaseOrders.isAllowedPurchaseOrderCreation;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -52,5 +53,11 @@ class PurchaseOrdersTest {
     @DisplayName("don't find invalid orders without orders")
     void doNotFindInvalidOrdersWithoutOrders() {
         assertThrows(NullPointerException.class, () -> findInvalidOrders(Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("don't check invalid orders without orders")
+    void doNotCheckInvalidOrdersWithoutOrders() {
+        assertThrows(NullPointerException.class, () -> hasInvalidOrders(Tests.nullRef()));
     }
 }

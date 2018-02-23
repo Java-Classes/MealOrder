@@ -64,6 +64,7 @@ import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwC
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
 import static javaclasses.mealorder.c.po.PurchaseOrders.findInvalidOrders;
+import static javaclasses.mealorder.c.po.PurchaseOrders.hasInvalidOrders;
 import static javaclasses.mealorder.c.po.PurchaseOrders.isAllowedPurchaseOrderCreation;
 
 /**
@@ -99,9 +100,8 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
         Triplet result;
         final PurchaseOrderCreated poCreatedEvent = createPOCreatedEvent(cmd);
-        final List<Order> invalidOrders = findInvalidOrders(cmd.getOrderList());
 
-        if (invalidOrders.isEmpty()) {
+        if (!hasInvalidOrders(cmd.getOrderList())) {
             final PurchaseOrderValidationPassed passedEvent = createPOValidationPassedEvent(cmd);
             final PurchaseOrder purchaseOrder = PurchaseOrder.newBuilder()
                                                              .setId(cmd.getId())
@@ -120,6 +120,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                                                     vendorEmail);
             result = Triplet.of(poCreatedEvent, passedEvent, poSentEvent);
         } else {
+            final List<Order> invalidOrders = findInvalidOrders(cmd.getOrderList());
             final PurchaseOrderValidationFailed validationFailedEvent =
                     createPOValidationFailedEvent(cmd, invalidOrders);
 
