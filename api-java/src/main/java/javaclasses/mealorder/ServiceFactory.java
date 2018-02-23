@@ -21,6 +21,7 @@
 package javaclasses.mealorder;
 
 import io.spine.Environment;
+import io.spine.util.Exceptions;
 
 /**
  * The utility class representing service factory.
@@ -62,7 +63,7 @@ public class ServiceFactory {
                        .isTests()) {
             ServiceFactory.poSenderInstance = poSenderInstance;
         } else {
-            throw new UnsupportedOperationException();
+            throw  Exceptions.newIllegalStateException("This setter method can only be called from tests");
         }
     }
 }
