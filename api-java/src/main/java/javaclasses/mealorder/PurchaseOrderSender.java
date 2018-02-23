@@ -33,7 +33,7 @@ public interface PurchaseOrderSender {
     /**
      * Sends purchase order to the vendor email address.
      *
-     * @param purchaseOrder purchase order to form spreadsheet and - remove
+     * @param purchaseOrder purchase order to send
      * @param senderEmail   the email of the sender
      * @param vendorEmail   the email of the vendor
      */

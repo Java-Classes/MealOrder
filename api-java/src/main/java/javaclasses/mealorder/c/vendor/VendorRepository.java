@@ -24,27 +24,24 @@ import io.spine.server.aggregate.AggregateRepository;
 import javaclasses.mealorder.VendorId;
 
 /**
- * Enumeration with only one identifier INSTANCE that is repository for the {@link VendorAggregate}.
+ * Repository for the {@link VendorAggregate}.
+ *
+ * <p>This class is singleton.
  *
  * @author Yurii Haidamaka
  */
 
-public enum VendorRepository {
-    INSTANCE;
+public class VendorRepository extends AggregateRepository<VendorId, VendorAggregate> {
 
-    private final AggregateRepository repository;
-
-    VendorRepository() {
-        repository = new AggregateRepository<VendorId, VendorAggregate>() {
-
-        };
+    /**
+     * Returns instance of the VendorRepository
+     */
+    public static VendorRepository getRepository() {
+        return VendorRepositorySingleton.INSTANCE.value;
     }
 
-    public static VendorRepository getInstance() {
-        return INSTANCE;
-    }
-
-    public AggregateRepository getRepository() {
-        return repository;
+    private enum VendorRepositorySingleton {
+        INSTANCE;
+        public final VendorRepository value = new VendorRepository();
     }
 }

@@ -21,7 +21,6 @@
 package javaclasses.mealorder.c;
 
 import io.spine.server.BoundedContext;
-import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.mealorder.c.order.OrderRepository;
@@ -43,8 +42,11 @@ public final class BoundedContexts {
     private static final StorageFactory IN_MEMORY_FACTORY =
             InMemoryStorageFactory.newInstance(BoundedContext.newName(NAME), false);
 
+    /**
+     * Disable instantiation from outside.
+     */
     private BoundedContexts() {
-        // Disable instantiation from outside.
+
     }
 
     /**
@@ -69,8 +71,7 @@ public final class BoundedContexts {
      */
     public static BoundedContext create(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
-        final AggregateRepository vendorRepository = VendorRepository.getInstance()
-                                                                     .getRepository();
+        final VendorRepository vendorRepository = VendorRepository.getRepository();
 
         final OrderRepository orderRepository = new OrderRepository();
         final PurchaseOrderRepository purchaseOrderRepository = new PurchaseOrderRepository();

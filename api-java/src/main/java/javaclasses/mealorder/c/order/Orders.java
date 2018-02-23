@@ -21,14 +21,12 @@
 package javaclasses.mealorder.c.order;
 
 import com.google.common.base.Optional;
-import io.spine.server.aggregate.AggregateRepository;
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.LocalDateComparator;
 import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
-import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.vendor.VendorAggregate;
@@ -78,9 +76,7 @@ public class Orders {
     public static Optional<VendorAggregate> getVendorAggregateForOrder(OrderId orderId) throws
                                                                                         MenuNotAvailable {
         checkNotNull(orderId);
-        final AggregateRepository<VendorId, VendorAggregate> vendorRepository =
-                VendorRepository.getInstance()
-                                .getRepository();
+        final VendorRepository vendorRepository = VendorRepository.getRepository();
 
         final Optional<VendorAggregate> vendor = vendorRepository.find(orderId.getVendorId());
 
@@ -112,7 +108,8 @@ public class Orders {
                                                    .findFirst();
 
         final LocalDate orderDate = orderId.getOrderDate();
-        if (!menu.isPresent() || !checkRangeIncludesDate(menu.get().getMenuDateRange(),
+        if (!menu.isPresent() || !checkRangeIncludesDate(menu.get()
+                                                             .getMenuDateRange(),
                                                          orderDate)) {
             throw menuNotAvailable(cmd);
         }
