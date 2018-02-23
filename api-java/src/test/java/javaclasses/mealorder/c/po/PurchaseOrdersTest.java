@@ -20,7 +20,6 @@
 
 package javaclasses.mealorder.c.po;
 
-import javaclasses.mealorder.c.po.PurchaseOrderValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,12 +28,12 @@ import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 /**
  * @author Yegor Udovchenko
  */
-@DisplayName("PurchaseOrderValidator should")
-class PurchaseOrderValidatorTest {
+@DisplayName("PurchaseOrders should")
+class PurchaseOrdersTest {
 
     @Test
     @DisplayName("have the private constructor")
     void havePrivateConstructor() {
-        assertHasPrivateParameterlessCtor(PurchaseOrderValidator.class);
+        assertHasPrivateParameterlessCtor(PurchaseOrders.class);
     }
 }
