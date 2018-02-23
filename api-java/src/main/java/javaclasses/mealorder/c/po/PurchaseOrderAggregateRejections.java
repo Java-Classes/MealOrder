@@ -34,6 +34,7 @@ import javaclasses.mealorder.c.rejection.CannotCreatePurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotMarkPurchaseOrderAsDelivered;
 import javaclasses.mealorder.c.rejection.CannotOverruleValidationOfNotInvalidPO;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
@@ -43,8 +44,8 @@ import static io.spine.time.Time.getCurrentTime;
  */
 public class PurchaseOrderAggregateRejections {
 
+    /** Prevents instantiation of this utility class. */
     private PurchaseOrderAggregateRejections() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -56,6 +57,7 @@ public class PurchaseOrderAggregateRejections {
      */
     public static void throwCannotCreatePurchaseOrder(CreatePurchaseOrder cmd)
             throws CannotCreatePurchaseOrder {
+        checkNotNull(cmd);
         final VendorId vendorId = cmd.getId()
                                      .getVendorId();
         final LocalDate poDate = cmd.getId()
@@ -72,6 +74,7 @@ public class PurchaseOrderAggregateRejections {
      */
     public static void throwCannotMarkPurchaseOrderAsDelivered(
             MarkPurchaseOrderAsDelivered cmd) throws CannotMarkPurchaseOrderAsDelivered {
+        checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoMarksAsDelivered();
         throw new CannotMarkPurchaseOrderAsDelivered(purchaseOrderId, userId,
@@ -87,6 +90,7 @@ public class PurchaseOrderAggregateRejections {
      */
     public static void throwCannotCancelDeliveredPurchaseOrder(
             CancelPurchaseOrder cmd) throws CannotCancelDeliveredPurchaseOrder {
+        checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
         throw new CannotCancelDeliveredPurchaseOrder(purchaseOrderId, userId, getCurrentTime());
@@ -101,6 +105,7 @@ public class PurchaseOrderAggregateRejections {
      */
     public static void throwCannotOverruleValidationOfNotInvalidPO(
             MarkPurchaseOrderAsValid cmd) throws CannotOverruleValidationOfNotInvalidPO {
+        checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
         throw new CannotOverruleValidationOfNotInvalidPO(purchaseOrderId, userId, getCurrentTime());

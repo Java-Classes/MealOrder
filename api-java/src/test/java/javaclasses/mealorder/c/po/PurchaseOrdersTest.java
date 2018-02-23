@@ -20,10 +20,14 @@
 
 package javaclasses.mealorder.c.po;
 
+import io.spine.test.Tests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static javaclasses.mealorder.c.po.PurchaseOrders.findInvalidOrders;
+import static javaclasses.mealorder.c.po.PurchaseOrders.isAllowedPurchaseOrderCreation;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Yegor Udovchenko
@@ -35,5 +39,18 @@ class PurchaseOrdersTest {
     @DisplayName("have the private constructor")
     void havePrivateConstructor() {
         assertHasPrivateParameterlessCtor(PurchaseOrders.class);
+    }
+
+    @Test
+    @DisplayName("don't check Purchase Order creation without a command")
+    void doNotCheckPurchaseOrderCreationWithoutCommand() {
+        assertThrows(NullPointerException.class,
+                     () -> isAllowedPurchaseOrderCreation(Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("don't find invalid orders without orders")
+    void doNotFindInvalidOrdersWithoutOrders() {
+        assertThrows(NullPointerException.class, () -> findInvalidOrders(Tests.nullRef()));
     }
 }

@@ -30,6 +30,7 @@ import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
 /**
@@ -55,7 +56,8 @@ public class PurchaseOrders {
      * @param cmd command to create a purchase order.
      * @return is allowed a purchase order creation.
      */
-    static boolean isAllowedPurchaseOrderCreation(CreatePurchaseOrder cmd) {
+    public static boolean isAllowedPurchaseOrderCreation(CreatePurchaseOrder cmd) {
+        checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         List<Order> ordersList = cmd.getOrderList();
 
@@ -83,7 +85,8 @@ public class PurchaseOrders {
      * @param orders list to check.
      * @return list of invalid orders.(Empty if all orders are valid)
      */
-    static List<Order> findInvalidOrders(List<Order> orders) {
+    public static List<Order> findInvalidOrders(List<Order> orders) {
+        checkNotNull(orders);
         final List<Order> invalidOrders = orders.stream()
                                                 .filter(o -> !isOrderValid(o))
                                                 .collect(Collectors.toList());
