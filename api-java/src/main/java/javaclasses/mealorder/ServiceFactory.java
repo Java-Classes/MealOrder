@@ -34,8 +34,8 @@ public class ServiceFactory {
     // TODO 2/20/2018[yegor.udovchenko]: Replace with implementation
     private static PurchaseOrderSender poSenderInstance = null;
 
+    /** Prevents instantiation of this utility class. */
     private ServiceFactory() {
-        // Prevent instantiation of this utility class.
     }
 
     /**

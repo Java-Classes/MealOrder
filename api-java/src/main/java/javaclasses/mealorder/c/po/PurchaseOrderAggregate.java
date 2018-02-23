@@ -111,15 +111,18 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
             final EmailAddress senderEmail = cmd.getWhoCreates()
                                                 .getEmail();
             final EmailAddress vendorEmail = cmd.getVendorEmail();
+
             ServiceFactory.getPurchaseOrderSender()
-                          .formAndSendPurchaseOrder(purchaseOrder, senderEmail, vendorEmail);
+                          .send(purchaseOrder, senderEmail, vendorEmail);
+
             final PurchaseOrderSent poSentEvent = createPOSentEvent(purchaseOrder,
                                                                     senderEmail,
                                                                     vendorEmail);
             result = Triplet.of(poCreatedEvent, passedEvent, poSentEvent);
         } else {
-            final PurchaseOrderValidationFailed validationFailedEvent = createPOValidationFailedEvent(
-                    cmd, invalidOrders);
+            final PurchaseOrderValidationFailed validationFailedEvent =
+                    createPOValidationFailedEvent(cmd, invalidOrders);
+
             result = Triplet.withNullable(poCreatedEvent, validationFailedEvent, null);
         }
         return result;
@@ -128,6 +131,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     @Assign
     Pair<PurchaseOrderValidationOverruled, PurchaseOrderSent> handle(MarkPurchaseOrderAsValid cmd)
             throws CannotOverruleValidationOfNotInvalidPO {
+
         if (!isAllowedToMarkAsValid()) {
             throwCannotOverruleValidationOfNotInvalidPO(cmd);
         }
@@ -138,10 +142,8 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                             .getEmail();
         final EmailAddress vendorEmail = cmd.getVendorEmail();
         ServiceFactory.getPurchaseOrderSender()
-                      .formAndSendPurchaseOrder(
-                              getState(),
-                              senderEmail,
-                              vendorEmail);
+                      .send(getState(), senderEmail, vendorEmail);
+
         final PurchaseOrderSent poSentEvent = createPOSentEvent(getState(),
                                                                 senderEmail,
                                                                 vendorEmail);
