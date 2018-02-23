@@ -30,8 +30,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwCannotSetDateRange;
-import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwVendorAlreadyExists;
+import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.cannotSetDateRange;
+import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.vendorAlreadyExists;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -52,7 +52,7 @@ class VendorAggregateRejectionsTest {
     void throwVendorAlreadyExistsRejection() {
         final AddVendor cmd = TestVendorCommandFactory.addVendorInstance();
         final VendorAlreadyExists rejection = assertThrows(VendorAlreadyExists.class,
-                                                           () -> throwVendorAlreadyExists(cmd));
+                                                           () -> vendorAlreadyExists(cmd));
 
         assertEquals(cmd.getVendorId(), rejection.getMessageThrown().getVendorId());
         assertEquals(cmd.getVendorName(), rejection.getMessageThrown().getVendorName());
@@ -63,7 +63,7 @@ class VendorAggregateRejectionsTest {
     void throwCannotSetDateRangeRejection() {
         SetDateRangeForMenu cmd = TestVendorCommandFactory.setDateRangeForMenuInstance();
         final CannotSetDateRange rejection = assertThrows(CannotSetDateRange.class,
-                                                          () -> throwCannotSetDateRange(cmd));
+                                                          () -> cannotSetDateRange(cmd));
 
         assertEquals(cmd.getVendorId(), rejection.getMessageThrown().getVendorId());
         assertEquals(cmd.getMenuId(), rejection.getMessageThrown().getMenuId());
@@ -74,13 +74,13 @@ class VendorAggregateRejectionsTest {
     @DisplayName("don't throw VendorAlreadyExists rejection for null command")
     void doNotThrowVendorAlreadyExistsRejection() {
         assertThrows(NullPointerException.class,
-                     () -> throwVendorAlreadyExists(Tests.nullRef()));
+                     () -> vendorAlreadyExists(Tests.nullRef()));
     }
     @Test
     @DisplayName("don't throw CannotSetDateRange rejection for null command")
     void doNotThrowCannotSetDateRangeRejection() {
         assertThrows(NullPointerException.class,
-                     () -> throwCannotSetDateRange(Tests.nullRef()));
+                     () -> cannotSetDateRange(Tests.nullRef()));
 
     }
 }

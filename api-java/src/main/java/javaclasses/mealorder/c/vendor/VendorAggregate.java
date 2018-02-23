@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
-import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwCannotSetDateRange;
-import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.throwVendorAlreadyExists;
+import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.cannotSetDateRange;
+import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.vendorAlreadyExists;
 import static javaclasses.mealorder.c.vendor.Vendors.isThereMenuForThisDateRange;
 import static javaclasses.mealorder.c.vendor.Vendors.isValidDateRange;
 
@@ -67,7 +67,7 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
         final VendorName vendorName = cmd.getVendorName();
 
         if (vendorName.equals(getState().getVendorName())) {
-            throwVendorAlreadyExists(cmd);
+            throw vendorAlreadyExists(cmd);
         }
 
         final VendorAdded vendorAdded = VendorAdded.newBuilder()
@@ -110,7 +110,7 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
         final Vendor vendor = getState();
 
         if (!isValidDateRange(range) || isThereMenuForThisDateRange(vendor, range)) {
-            throwCannotSetDateRange(cmd);
+            throw cannotSetDateRange(cmd);
         }
         final DateRangeForMenuSet dateRangeForMenuSet =
                 DateRangeForMenuSet.newBuilder()
