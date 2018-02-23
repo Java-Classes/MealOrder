@@ -22,8 +22,6 @@ package javaclasses.mealorder;
 
 import com.google.common.base.Throwables;
 import io.spine.Environment;
-import javaclasses.mealorder.PurchaseOrderSender;
-import javaclasses.mealorder.ServiceFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -54,14 +52,14 @@ class ServiceFactoryTest {
     }
 
     @Test
-    @DisplayName("throw UnsupportedOperationException upon an attempt " +
+    @DisplayName("throw `IllegalStateException` upon an attempt " +
             "to set Purchase Order instance in production")
     void setPOSenderInstanceInProduction() {
         Environment.getInstance()
                    .setToProduction();
-        Throwable t = assertThrows(Throwable.class,
-                                   () -> ServiceFactory.setPoSenderInstance(
-                                           mock(PurchaseOrderSender.class)));
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> ServiceFactory.setPoSenderInstance(
+                                                 mock(PurchaseOrderSender.class)));
 
         assertThat(Throwables.getRootCause(t), instanceOf(IllegalStateException.class));
         Environment.getInstance()

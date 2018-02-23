@@ -33,7 +33,7 @@ import io.spine.util.Exceptions;
  */
 public class ServiceFactory {
 
-    // TODO 2/20/2018[yegor.udovchenko]: Replace with implementation
+    // TODO 2/20/2018[yegor.udovchenko]: Github issue : Purchase Order Sending Service #44
     private static PurchaseOrderSender poSenderInstance = null;
 
     /** Prevents instantiation of this utility class. */
