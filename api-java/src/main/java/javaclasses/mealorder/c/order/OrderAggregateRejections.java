@@ -40,28 +40,56 @@ import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
+ * Utility class for working with {@link OrderAggregate} rejections.
+ *
  * @author Vlad Kozachenko
  */
 public class OrderAggregateRejections {
 
+    /**
+     * Prevent instantiation of this utility class.
+     */
     private OrderAggregateRejections() {
     }
 
+    /**
+     * Utility class for working with {@link CreateOrder} command rejections.
+     */
     public static class CreateOrderRejections {
 
+        /**
+         * Prevent instantiation of this utility class.
+         */
         private CreateOrderRejections() {
         }
 
+        /**
+         * Constructs and throws the {@link OrderAlreadyExists} rejection
+         * according to the passed parameters.
+         *
+         * @param cmd the {@code CreateOrder} command which was rejected
+         * @throws OrderAlreadyExists the rejection to throw
+         */
         public static void throwOrderAlreadyExists(CreateOrder cmd) throws OrderAlreadyExists {
+            checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final Timestamp timestamp = getCurrentTime();
             throw new OrderAlreadyExists(orderId, timestamp);
         }
 
+        /**
+         * Constructs and throws the {@link MenuNotAvailable} rejection
+         * according to the passed parameters.
+         *
+         * @param cmd the {@code CreateOrder} command which was rejected
+         * @throws MenuNotAvailable the rejection to throw
+         */
         public static void throwMenuNotAvailable(CreateOrder cmd) throws MenuNotAvailable {
+            checkNotNull(cmd);
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final VendorId vendorId = cmd.getOrderId()
@@ -72,47 +100,90 @@ public class OrderAggregateRejections {
         }
     }
 
+    /**
+     * Utility class for working with {@link AddDishToOrder} command rejections.
+     */
     public static class AddDishToOrderRejections {
 
+        /**
+         * Prevent instantiation of this utility class.
+         */
         private AddDishToOrderRejections() {
         }
 
+        /**
+         * Constructs and throws the {@link DishVendorMismatch} rejection
+         * according to the passed parameters.
+         *
+         * @param cmd the {@code AddDishToOrder} command which was rejected
+         * @throws DishVendorMismatch the rejection to throw
+         */
         public static void throwDishVendorMismatch(AddDishToOrder cmd) throws DishVendorMismatch {
+            checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final DishId dishId = cmd.getDish()
                                      .getId();
-            VendorMismatch vendorMismatch = VendorMismatch.newBuilder()
-                                                          .setTarget(orderId.getVendorId())
-                                                          .setActual(dishId.getMenuId().getVendorId())
+            final VendorId targetVendorId = orderId.getVendorId();
+            final VendorId actualVendorId = dishId.getMenuId()
+                                            .getVendorId();
+            final VendorMismatch vendorMismatch = VendorMismatch.newBuilder()
+                                                          .setTarget(targetVendorId)
+                                                          .setActual(actualVendorId)
                                                           .build();
             final Timestamp timestamp = getCurrentTime();
 
             throw new DishVendorMismatch(orderId, dishId, userId, vendorMismatch, timestamp);
         }
 
+        /**
+         * Constructs and throws the {@link CannotAddDishToNotActiveOrder} rejection
+         * according to the passed parameters.
+         *
+         * @param cmd the {@code AddDishToOrder} command which was rejected
+         * @throws CannotAddDishToNotActiveOrder the rejection to throw
+         */
         public static void throwCannotAddDishToNotActiveOrder(AddDishToOrder cmd,
                                                               OrderStatus orderStatus) throws
                                                                                        CannotAddDishToNotActiveOrder {
+            checkNotNull(cmd);
+            checkNotNull(orderStatus);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final DishId dishId = cmd.getDish()
                                      .getId();
             final Timestamp timestamp = getCurrentTime();
-            throw new CannotAddDishToNotActiveOrder(orderId, dishId, userId, orderStatus,
+            throw new CannotAddDishToNotActiveOrder(orderId,
+                                                    dishId,
+                                                    userId,
+                                                    orderStatus,
                                                     timestamp);
         }
     }
 
+    /**
+     * Utility class for working with {@link RemoveDishFromOrder} command rejections.
+     */
     public static class RemoveDishFromOrderRejections {
 
+        /**
+         * Prevent instantiation of this utility class.
+         */
         private RemoveDishFromOrderRejections() {
         }
 
+        /**
+         * Constructs and throws the {@link CannotRemoveMissingDish} rejection
+         * according to the passed parameters.
+         *
+         * @param cmd the {@code RemoveDishFromOrder} command which was rejected
+         * @throws CannotRemoveMissingDish the rejection to throw
+         */
         public static void throwCannotRemoveMissingDish(RemoveDishFromOrder cmd) throws
                                                                                  CannotRemoveMissingDish {
+            checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
@@ -121,26 +192,51 @@ public class OrderAggregateRejections {
             throw new CannotRemoveMissingDish(orderId, userId, dishId, timestamp);
         }
 
+        /**
+         * Constructs and throws the {@link CannotRemoveDishFromNotActiveOrder} rejection
+         * according to the passed parameters.
+         *
+         * @param cmd the {@code RemoveDishFromOrder} command which was rejected
+         * @throws CannotRemoveDishFromNotActiveOrder the rejection to throw
+         */
         public static void throwCannotRemoveDishFromNotActiveOrder(RemoveDishFromOrder cmd,
                                                                    OrderStatus orderStatus) throws
                                                                                             CannotRemoveDishFromNotActiveOrder {
+            checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
             final DishId dishId = cmd.getDishId();
             final Timestamp timestamp = getCurrentTime();
-            throw new CannotRemoveDishFromNotActiveOrder(orderId, dishId, userId, orderStatus,
+            throw new CannotRemoveDishFromNotActiveOrder(orderId,
+                                                         dishId,
+                                                         userId,
+                                                         orderStatus,
                                                          timestamp);
         }
     }
 
+    /**
+     * Utility class for working with {@link CancelOrder} command rejections.
+     */
     public static class CancelOrderRejections {
 
-        private CancelOrderRejections(){}
+        /**
+         * Prevent instantiation of this utility class.
+         */
+        private CancelOrderRejections() {
+        }
 
+        /**
+         * Constructs and throws the {@link CannotCancelProcessedOrder} rejection
+         * according to the passed parameters.
+         *
+         * @param cmd the {@code CancelOrder} command which was rejected
+         * @throws CannotCancelProcessedOrder the rejection to throw
+         */
         public static void throwCannotCancelProcessedOrder(CancelOrder cmd) throws
                                                                             CannotCancelProcessedOrder {
-
+            checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
                                      .getUserId();

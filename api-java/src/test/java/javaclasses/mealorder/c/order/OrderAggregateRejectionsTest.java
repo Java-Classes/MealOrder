@@ -20,6 +20,9 @@
 
 package javaclasses.mealorder.c.order;
 
+import io.spine.test.Tests;
+import javaclasses.mealorder.UserId;
+import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.AddDishToOrder;
 import javaclasses.mealorder.c.command.CancelOrder;
 import javaclasses.mealorder.c.command.CreateOrder;
@@ -32,6 +35,7 @@ import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.DishVendorMismatch;
 import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
+import javaclasses.mealorder.c.rejection.Rejections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -71,18 +75,15 @@ class OrderAggregateRejectionsTest {
     @DisplayName("CreateOrderRejections should")
     class CreateOrderRejectionsTest {
 
-
         @Test
         @DisplayName("have the private constructor")
         void havePrivateConstructor() {
             assertHasPrivateParameterlessCtor(OrderAggregateRejections.CreateOrderRejections.class);
         }
 
-
         @Test
         @DisplayName("throw OrderAlreadyExists rejection")
         void throwOrderAlreadyExistsRejection() {
-
             final CreateOrder cmd = createOrderInstance();
 
             final OrderAlreadyExists rejection =
@@ -94,9 +95,15 @@ class OrderAggregateRejectionsTest {
         }
 
         @Test
+        @DisplayName("don't throw OrderAlreadyExists rejection for null command")
+        void doNotThrowOrderAlreadyExistsRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwOrderAlreadyExists(Tests.nullRef()));
+        }
+
+        @Test
         @DisplayName("throw MenuNotAvailable rejection")
         void throwMenuNotAvailableRejection() {
-
             final CreateOrder cmd = createOrderInstance();
 
             final MenuNotAvailable rejection =
@@ -113,54 +120,65 @@ class OrderAggregateRejectionsTest {
                             .getOrderDate(), rejection.getMessageThrown()
                                                       .getOrderDate());
         }
-    }
 
+        @Test
+        @DisplayName("don't throw MenuNotAvailable rejection for null command")
+        void doNotThrowMenuNotAvailableRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwMenuNotAvailable(Tests.nullRef()));
+        }
+    }
 
     @Nested
     @DisplayName("AddDishToOrderRejections should")
     class AddDishToOrderRejectionsTest {
 
-
         @Test
         @DisplayName("have the private constructor")
         void havePrivateConstructor() {
-            assertHasPrivateParameterlessCtor(OrderAggregateRejections.AddDishToOrderRejections.class);
+            assertHasPrivateParameterlessCtor(
+                    OrderAggregateRejections.AddDishToOrderRejections.class);
         }
-
 
         @Test
         @DisplayName("throw DishVendorMismatch rejection")
         void throwDishVendorMismatchRejection() {
-
             final AddDishToOrder cmd = addDishToOrderInstance();
 
             final DishVendorMismatch rejection =
                     assertThrows(DishVendorMismatch.class,
                                  () -> throwDishVendorMismatch(cmd));
 
-            assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
-                                                    .getOrderId());
-            assertEquals(cmd.getOrderId()
-                            .getUserId(), rejection.getMessageThrown()
-                                                   .getUserId());
-            assertEquals(cmd.getOrderId()
-                            .getVendorId(), rejection.getMessageThrown()
-                                                     .getVendorMismatch()
-                                                     .getTarget());
-            assertEquals(cmd.getDish()
-                            .getId()
-                            .getMenuId()
-                            .getVendorId(), rejection.getMessageThrown()
-                                                     .getVendorMismatch()
-                                                     .getActual());
+            final Rejections.DishVendorMismatch mismatch = rejection.getMessageThrown();
+            assertEquals(cmd.getOrderId(), mismatch.getOrderId());
+            final UserId expectedUserId = cmd.getOrderId()
+                                             .getUserId();
+            assertEquals(expectedUserId, mismatch.getUserId());
+            final VendorId expectedVendorId = cmd.getOrderId()
+                                                 .getVendorId();
+            final VendorId target = mismatch.getVendorMismatch()
+                                            .getTarget();
+            assertEquals(expectedVendorId, target);
+            final VendorId expectedDishVendorId = cmd.getDish()
+                                                     .getId()
+                                                     .getMenuId()
+                                                     .getVendorId();
+            final VendorId actualDishVendorId = mismatch.getVendorMismatch()
+                                                        .getActual();
+            assertEquals(expectedDishVendorId, actualDishVendorId);
+        }
+
+        @Test
+        @DisplayName("don't throw DishVendorMismatch rejection for null command")
+        void doNotThrowDishVendorMismatchRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwDishVendorMismatch(Tests.nullRef()));
         }
 
         @Test
         @DisplayName("throw CannotAddDishToNotActiveOrder rejection")
         void throwCannotAddDishToNotActiveOrderRejection() {
-
             final AddDishToOrder cmd = addDishToOrderInstance();
-
             final CannotAddDishToNotActiveOrder rejection =
                     assertThrows(CannotAddDishToNotActiveOrder.class,
                                  () -> throwCannotAddDishToNotActiveOrder(cmd, ORDER_PROCESSED));
@@ -175,6 +193,13 @@ class OrderAggregateRejectionsTest {
                                                .getDishId());
             assertNotEquals(ORDER_ACTIVE, rejection.getMessageThrown()
                                                    .getOrderStatus());
+        }
+
+        @Test
+        @DisplayName("don't throw CannotAddDishToNotActiveOrder rejection for null command")
+        void doNotThrowCannotAddDishToNotActiveOrderRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwCannotAddDishToNotActiveOrder(Tests.nullRef(), Tests.nullRef()));
         }
     }
 
@@ -192,47 +217,59 @@ class OrderAggregateRejectionsTest {
         @Test
         @DisplayName("throw CannotRemoveMissingDish rejection")
         void throwCannotRemoveMissingDishRejection() {
-
             final RemoveDishFromOrder cmd = removeDishFromOrderInstance();
 
             final CannotRemoveMissingDish rejection =
                     assertThrows(CannotRemoveMissingDish.class,
                                  () -> throwCannotRemoveMissingDish(cmd));
-
             assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
                                                     .getOrderId());
-            assertEquals(cmd.getOrderId()
-                            .getUserId(), rejection.getMessageThrown()
-                                                   .getUserId());
+            final UserId expectedUserId = cmd.getOrderId()
+                                             .getUserId();
+            final UserId actualUserId = rejection.getMessageThrown()
+                                                 .getUserId();
+            assertEquals(expectedUserId, actualUserId);
             assertEquals(cmd.getDishId(), rejection.getMessageThrown()
                                                    .getDishId());
         }
 
+        @Test
+        @DisplayName("don't throw CannotRemoveMissingDish rejection for null command")
+        void doNotThrowCannotRemoveMissingDishRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwCannotRemoveMissingDish(Tests.nullRef()));
+        }
 
         @Test
         @DisplayName("throw CannotRemoveDishFromNotActiveOrder rejection")
         void throwCannotRemoveDishFromNotActiveOrderRejection() {
-
             final RemoveDishFromOrder cmd = removeDishFromOrderInstance();
 
             final CannotRemoveDishFromNotActiveOrder rejection =
                     assertThrows(CannotRemoveDishFromNotActiveOrder.class,
-                                 () -> throwCannotRemoveDishFromNotActiveOrder(cmd, ORDER_CANCELED));
+                                 () -> throwCannotRemoveDishFromNotActiveOrder(cmd,
+                                                                               ORDER_CANCELED));
 
             assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
                                                     .getOrderId());
-            assertEquals(cmd.getOrderId()
-                            .getUserId(), rejection.getMessageThrown()
-                                                   .getUserId());
+            final UserId expectedUserId = cmd.getOrderId()
+                                             .getUserId();
+            final UserId actualUserId = rejection.getMessageThrown()
+                                                 .getUserId();
+            assertEquals(expectedUserId, actualUserId);
             assertEquals(cmd.getDishId(), rejection.getMessageThrown()
                                                    .getDishId());
-
             assertNotEquals(ORDER_ACTIVE, rejection.getMessageThrown()
                                                    .getOrderStatus());
         }
+
+        @Test
+        @DisplayName("don't throw CannotRemoveDishFromNotActiveOrder rejection for null command")
+        void doNotThrowCannotRemoveDishFromNotActiveOrderRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwCannotRemoveDishFromNotActiveOrder(Tests.nullRef(), Tests.nullRef()));
+        }
     }
-
-
 
     @Nested
     @DisplayName("CancelOrderRejections should")
@@ -248,7 +285,6 @@ class OrderAggregateRejectionsTest {
         @Test
         @DisplayName("throw CannotCancelProcessedOrder rejection")
         void throwCannotCancelProcessedOrderRejection() {
-
             final CancelOrder cmd = cancelOrderInstance();
 
             final CannotCancelProcessedOrder rejection =
@@ -257,9 +293,18 @@ class OrderAggregateRejectionsTest {
 
             assertEquals(cmd.getOrderId(), rejection.getMessageThrown()
                                                     .getOrderId());
-            assertEquals(cmd.getOrderId()
-                            .getUserId(), rejection.getMessageThrown()
-                                                   .getUserId());
+            final UserId expectedUserId = cmd.getOrderId()
+                                             .getUserId();
+            assertEquals(expectedUserId, rejection.getMessageThrown()
+                                                  .getUserId());
+        }
+
+        @Test
+        @DisplayName("don't throw CannotCancelProcessedOrder rejection for null command")
+        void doNotThrowCannotCancelProcessedOrderRejection() {
+            assertThrows(NullPointerException.class,
+                         () -> throwCannotCancelProcessedOrder(Tests.nullRef()));
         }
     }
+
 }

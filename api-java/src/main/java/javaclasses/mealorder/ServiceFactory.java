@@ -25,7 +25,8 @@ import io.spine.util.Exceptions;
 
 /**
  * The utility class representing service factory.
- * Used by {@code PurchaseOrderAggregate} upon creation of
+ *
+ * <p>Used by {@code PurchaseOrderAggregate} upon creation of
  * a purchase order.
  *
  * @author Yegor Udovchenko
@@ -50,12 +51,13 @@ public class ServiceFactory {
 
     /**
      * Setter method is used to substitute {@code PurchaseOrderSender}
-     * with a mock instance for tests. Applicable only in test runtime
-     * environment.
-     * Throws {@code UnsupportedOperationException} if called in
-     * production runtime environment.
+     * with a mock instance for tests.
      *
-     * @param poSenderInstance
+     * <p>Applicable only in test runtime
+     * environment.
+     *
+     * @param poSenderInstance purchase order sender
+     * @throws IllegalStateException if this method is called not from test
      */
     public static void setPoSenderInstance(
             PurchaseOrderSender poSenderInstance) {
@@ -63,7 +65,8 @@ public class ServiceFactory {
                        .isTests()) {
             ServiceFactory.poSenderInstance = poSenderInstance;
         } else {
-            throw  Exceptions.newIllegalStateException("This setter method can only be called from tests");
+            throw Exceptions.newIllegalStateException(
+                    "This setter method can only be called from tests");
         }
     }
 }

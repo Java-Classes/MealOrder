@@ -25,10 +25,10 @@ import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.route.EventRoute;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
-import javaclasses.mealorder.c.order.OrderAggregate;
 import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,27 +40,45 @@ import java.util.stream.Collectors;
 public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate> {
 
     public OrderRepository() {
-        super();
+        setUpEventRouting();
+    }
+
+    /**
+     * Route events to aggregate instances with correct ids.
+     *
+     * <p>Extract order ids from received events on which the order aggregate
+     * have to react. Checks if the instances with this ids already created.
+     * And routes events to correct instances.
+     */
+    private void setUpEventRouting() {
         getEventRouting().replaceDefault((EventRoute<OrderId, Message>) (message, context) -> {
             if (message instanceof PurchaseOrderCreated) {
                 final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) message;
-                Set<OrderId> orderIds = purchaseOrderCreated.getOrderList()
-                                                            .stream()
-                                                            .filter(d -> find(
-                                                                    d.getId()).isPresent())
-                                                            .map(Order::getId)
-                                                            .collect(Collectors.toSet());
-                return orderIds;
-            } else {
-                final PurchaseOrderCanceled purchaseOrderCanceled = (PurchaseOrderCanceled) message;
-                Set<OrderId> orderIds = purchaseOrderCanceled.getOrderList()
-                                                             .stream()
-                                                             .filter(d -> find(
-                                                                     d.getId()).isPresent())
-                                                             .map(Order::getId)
-                                                             .collect(Collectors.toSet());
+                final Set<OrderId> orderIds =
+                        filterOrderIds(purchaseOrderCreated.getOrderList());
                 return orderIds;
             }
+            final PurchaseOrderCanceled purchaseOrderCanceled = (PurchaseOrderCanceled) message;
+            final Set<OrderId> orderIds =
+                    filterOrderIds(purchaseOrderCanceled.getOrderList());
+            return orderIds;
         });
+    }
+
+    /**
+     * Extracts {@code OrderId} values from list of orders.
+     *
+     * <p>Checks each order whether it is in repository.
+     *
+     * @param orderList list of orders where ids may be extracted.
+     * @return set of found ids.
+     */
+    private Set<OrderId> filterOrderIds(List<Order> orderList) {
+        final Set<OrderId> orderIdSet =
+                orderList.stream()
+                         .filter(d -> find(d.getId()).isPresent())
+                         .map(Order::getId)
+                         .collect(Collectors.toSet());
+        return orderIdSet;
     }
 }

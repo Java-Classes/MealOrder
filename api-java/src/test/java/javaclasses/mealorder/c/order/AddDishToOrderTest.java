@@ -39,7 +39,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrderInstance;
@@ -63,28 +62,29 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+        final CreateOrder createOrder = createOrderInstance();
         final Command createOrderCommand = requestFactory.command()
-                                                         .create(toMessage(createOrder));
+                                                         .create(createOrder);
         commandBus.post(createOrderCommand, StreamObservers.noOpObserver());
     }
 
     @Test
     @DisplayName("produce DishAddedToOrder event")
     void produceEvent() {
-
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance();
 
         final Command addDishToOrderCommand = requestFactory.command()
-                                                            .create(toMessage(addDishToOrder));
+                                                            .create(addDishToOrder);
 
-        final DishAddedToOrderSubscriber dishAddedToOrderSubscriber = new DishAddedToOrderSubscriber();
+        final DishAddedToOrderSubscriber dishAddedToOrderSubscriber =
+                new DishAddedToOrderSubscriber();
 
         eventBus.register(dishAddedToOrderSubscriber);
 
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
-        final DishAddedToOrder event = (DishAddedToOrder) dishAddedToOrderSubscriber.getEventMessage();
+        final DishAddedToOrder event =
+                (DishAddedToOrder) dishAddedToOrderSubscriber.getEventMessage();
 
         assertEquals(addDishToOrder.getOrderId(), event.getOrderId());
         assertEquals(addDishToOrder.getDish(), event.getDish());
@@ -93,11 +93,10 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("add dish to order")
     void addDishToOrder() {
-
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance();
 
         final Command addDishToOrderCommand = requestFactory.command()
-                                                            .create(toMessage(addDishToOrder));
+                                                            .create(addDishToOrder);
 
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
@@ -119,24 +118,19 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("throw DishVendorMismatch rejection")
     void notAddDish() {
-
         final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, INVALID_DISH);
-
         final DishVendorMismatchSubscriber dishVendorMismatchSubscriber
                 = new DishVendorMismatchSubscriber();
-
         final Command addDishToOrderCommand = requestFactory.command()
-                                                            .create(toMessage(addDishToOrder));
+                                                            .create(addDishToOrder);
 
         rejectionBus.register(dishVendorMismatchSubscriber);
-
         assertNull(OrderTestEnv.DishVendorMismatchSubscriber.getRejection());
 
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
-
         assertNotNull(OrderTestEnv.DishVendorMismatchSubscriber.getRejection());
 
-        Rejections.DishVendorMismatch dishVendorMismatch
+        final Rejections.DishVendorMismatch dishVendorMismatch
                 = OrderTestEnv.DishVendorMismatchSubscriber.getRejection();
 
         final VendorId expected = INVALID_DISH.getId()
@@ -144,7 +138,6 @@ public class AddDishToOrderTest extends OrderCommandTest {
                                               .getVendorId();
         assertEquals(expected, dishVendorMismatch.getVendorMismatch()
                                                  .getActual());
-
         assertEquals(ORDER_ID.getVendorId(), dishVendorMismatch.getVendorMismatch()
                                                                .getTarget());
     }
@@ -152,33 +145,26 @@ public class AddDishToOrderTest extends OrderCommandTest {
     @Test
     @DisplayName("throw CannotAddDishToNotActiveOrder rejection")
     void notAddDishToNotActiveOrder() {
-
-        final AddDishToOrder addDishToOrder = addDishToOrderInstance(ORDER_ID, DISH1);
-        final CancelOrder cancelOrder = cancelOrderInstance(ORDER_ID);
+        final AddDishToOrder addDishToOrder = addDishToOrderInstance();
+        final CancelOrder cancelOrder = cancelOrderInstance();
 
         final CannotAddDishToNotActiveOrderSubscriber rejectionSubscriber
                 = new CannotAddDishToNotActiveOrderSubscriber();
 
         final Command cancelOrderCommand = requestFactory.command()
-                                                         .create(toMessage(cancelOrder));
+                                                         .create(cancelOrder);
         final Command addDishToOrderCommand = requestFactory.command()
-                                                            .create(toMessage(addDishToOrder));
+                                                            .create(addDishToOrder);
 
         rejectionBus.register(rejectionSubscriber);
-
         assertNull(OrderTestEnv.CannotAddDishToNotActiveOrderSubscriber.getRejection());
 
         commandBus.post(cancelOrderCommand, StreamObservers.noOpObserver());
         commandBus.post(addDishToOrderCommand, StreamObservers.noOpObserver());
-
         assertNotNull(OrderTestEnv.CannotAddDishToNotActiveOrderSubscriber.getRejection());
 
         final Rejections.CannotAddDishToNotActiveOrder rejection
                 = OrderTestEnv.CannotAddDishToNotActiveOrderSubscriber.getRejection();
-
-        final VendorId expected = INVALID_DISH.getId()
-                                              .getMenuId()
-                                              .getVendorId();
         assertEquals(ORDER_ID, rejection.getOrderId());
         assertEquals(DISH1.getId(), rejection.getDishId());
     }

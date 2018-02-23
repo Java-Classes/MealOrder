@@ -34,7 +34,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.OrderStatus.ORDER_PROCESSED;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
@@ -51,9 +50,9 @@ import static org.mockito.Mockito.mock;
 @DisplayName("OrderAggregate should react on PurchaseOrderCreated command and")
 public class OrderProcessedTest extends OrderCommandTest {
 
-    final CreateOrder createOrder = createOrderInstance(ORDER_ID, MENU_ID);
+    final CreateOrder createOrder = createOrderInstance();
     final Command createOrderCommand = requestFactory.command()
-                                                     .create(toMessage(createOrder));
+                                                     .create(createOrder);
 
     @Override
     @BeforeEach
@@ -65,13 +64,12 @@ public class OrderProcessedTest extends OrderCommandTest {
     @Test
     @DisplayName("mark order as processed")
     void testMarkOrderProcessed() {
-
         final AddDishToOrder addDishToOrder = AddDishToOrder.newBuilder()
                                                             .setDish(DISH1)
                                                             .setOrderId(ORDER_ID)
                                                             .build();
         final Command addDishToOrderCommand = requestFactory.command()
-                                                            .create(toMessage(addDishToOrder));
+                                                            .create(addDishToOrder);
         boundedContext.getCommandBus()
                       .post(addDishToOrderCommand, StreamObservers.noOpObserver());
 
@@ -91,7 +89,6 @@ public class OrderProcessedTest extends OrderCommandTest {
 
         final OrderAggregate order = orderRepository.find(ORDER_ID)
                                                     .get();
-
         assertEquals(ORDER_PROCESSED, order.getState()
                                            .getStatus());
     }
