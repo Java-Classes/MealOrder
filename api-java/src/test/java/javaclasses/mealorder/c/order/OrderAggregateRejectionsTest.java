@@ -146,5 +146,4 @@ class OrderAggregateRejectionsTest {
                          () -> cannotCancelProcessedOrder(Tests.nullRef()));
         }
     }
-
 }

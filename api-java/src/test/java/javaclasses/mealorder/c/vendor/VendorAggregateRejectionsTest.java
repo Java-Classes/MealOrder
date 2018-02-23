@@ -48,36 +48,13 @@ class VendorAggregateRejectionsTest {
     }
 
     @Test
-    @DisplayName("throw VendorAlreadyExists rejection")
-    void throwVendorAlreadyExistsRejection() {
-        final AddVendor cmd = TestVendorCommandFactory.addVendorInstance();
-        final VendorAlreadyExists rejection = assertThrows(VendorAlreadyExists.class,
-                                                           () -> vendorAlreadyExists(cmd));
-
-        assertEquals(cmd.getVendorId(), rejection.getMessageThrown().getVendorId());
-        assertEquals(cmd.getVendorName(), rejection.getMessageThrown().getVendorName());
-    }
-
-    @Test
-    @DisplayName("throw CannotSetDateRange rejection")
-    void throwCannotSetDateRangeRejection() {
-        SetDateRangeForMenu cmd = TestVendorCommandFactory.setDateRangeForMenuInstance();
-        final CannotSetDateRange rejection = assertThrows(CannotSetDateRange.class,
-                                                          () -> cannotSetDateRange(cmd));
-
-        assertEquals(cmd.getVendorId(), rejection.getMessageThrown().getVendorId());
-        assertEquals(cmd.getMenuId(), rejection.getMessageThrown().getMenuId());
-        assertEquals(cmd.getMenuDateRange(), rejection.getMessageThrown().getMenuDateRange());
-    }
-
-    @Test
-    @DisplayName("don't throw VendorAlreadyExists rejection for null command")
+    @DisplayName("don't return VendorAlreadyExists rejection for null command")
     void doNotThrowVendorAlreadyExistsRejection() {
         assertThrows(NullPointerException.class,
                      () -> vendorAlreadyExists(Tests.nullRef()));
     }
     @Test
-    @DisplayName("don't throw CannotSetDateRange rejection for null command")
+    @DisplayName("don't return CannotSetDateRange rejection for null command")
     void doNotThrowCannotSetDateRangeRejection() {
         assertThrows(NullPointerException.class,
                      () -> cannotSetDateRange(Tests.nullRef()));
