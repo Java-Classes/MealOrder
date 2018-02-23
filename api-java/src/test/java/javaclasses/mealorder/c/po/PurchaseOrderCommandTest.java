@@ -57,7 +57,7 @@ abstract class PurchaseOrderCommandTest<C extends Message>
     @Override
     protected PurchaseOrderAggregate createAggregate() {
         purchaseOrderId = createPurchaseOrderId();
-        PurchaseOrderAggregate purchaseOrderAggregate = new PurchaseOrderAggregate(purchaseOrderId);
+        final PurchaseOrderAggregate purchaseOrderAggregate = new PurchaseOrderAggregate(purchaseOrderId);
         return purchaseOrderAggregate;
     }
 
