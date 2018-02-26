@@ -38,6 +38,7 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
  *
  * @author Yegor Udovchenko
  */
+@SuppressWarnings({"TypeMayBeWeakened", "SimplifiableIfStatement"})
 class PurchaseOrders {
     /**
      * {@code MAX_SINGLE_DISH_COUNT} is the max number of equal dishes in
