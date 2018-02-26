@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("SetDateRangeForMenu command should be interpreted by VendorAggregate and")
+@DisplayName("`SetDateRangeForMenu` command should be interpreted by `VendorAggregate` and")
 public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
 
     @Override
@@ -64,7 +64,7 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
     }
 
     @Test
-    @DisplayName("produce DateRangeForMenuSet event")
+    @DisplayName("produce `DateRangeForMenuSet` event")
     void produceEvent() {
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
@@ -117,7 +117,7 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
     }
 
     @Test
-    @DisplayName("produce CannotSetDateRange rejection if date range is not valid")
+    @DisplayName("produce `CannotSetDateRange` rejection if date range is not valid")
     void produceRejection() {
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
@@ -142,7 +142,7 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
     }
 
     @Test
-    @DisplayName("produce CannotSetDateRange rejection if the order date  is from the past")
+    @DisplayName("produce `CannotSetDateRange` rejection if the order date is from the past")
     void produceCannotSetDateRangeRejection() {
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
@@ -165,7 +165,7 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
     }
 
     @Test
-    @DisplayName("produce CannotSetDateRange rejection if vendor already has menu on this date range")
+    @DisplayName("produce `CannotSetDateRange` rejection if vendor already has menu on this date range")
     void produceRejectionIfMenuExists() {
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));

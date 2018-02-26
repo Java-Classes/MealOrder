@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("ImportMenu command should be interpreted by VendorAggregate and")
+@DisplayName("`ImportMenu` command should be interpreted by `VendorAggregate` and")
 public class ImportMenuTest extends VendorCommandTest<AddVendor> {
 
     @Override
@@ -55,7 +55,7 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
     }
 
     @Test
-    @DisplayName("produce MenuImported event")
+    @DisplayName("produce `MenuImported` event")
     void produceEvent() {
         final AddVendor addVendorCmd = TestVendorCommandFactory.addVendorInstance();
         dispatchCommand(aggregate, envelopeOf(addVendorCmd));

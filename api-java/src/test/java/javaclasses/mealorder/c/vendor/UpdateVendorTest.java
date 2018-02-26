@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("UpdateVendor command should be interpreted by VendorAggregate and")
+@DisplayName("`UpdateVendor` command should be interpreted by `VendorAggregate` and")
 public class UpdateVendorTest extends VendorCommandTest<AddVendor> {
 
     @Override
@@ -52,7 +52,7 @@ public class UpdateVendorTest extends VendorCommandTest<AddVendor> {
     }
 
     @Test
-    @DisplayName("produce UpdateVendor event")
+    @DisplayName("produce `UpdateVendor` event")
     void produceEvent() {
         final AddVendor addVendor = TestVendorCommandFactory.addVendorInstance();
         dispatchCommand(aggregate, envelopeOf(addVendor));

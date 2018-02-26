@@ -20,7 +20,7 @@
 
 /**
  * This package contains implementation for classes which provides
- * methods to process aggregates and projection.
+ * methods to process aggregates and projections.
  */
 @ParametersAreNonnullByDefault
 package javaclasses.mealorder.c;
