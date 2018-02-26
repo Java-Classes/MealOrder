@@ -48,7 +48,7 @@ import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishF
  *
  * @author Vlad Kozachenko
  */
-public class Orders {
+class Orders {
 
     /**
      * Prevent instantiation of this utility class.
