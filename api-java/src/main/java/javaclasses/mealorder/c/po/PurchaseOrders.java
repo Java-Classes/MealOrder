@@ -52,7 +52,12 @@ import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
 import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
 
 /**
- * The utility class to manage the process of creation of a {@link PurchaseOrder} instance.
+ * The utility class to manage the process of creation and modification
+ * of a {@link PurchaseOrder} instance.
+ *
+ * <p> Contains methods for {@code CreatePurchaseOrder} command validation,
+ * methods for creation event instances for {@code PurchaseOrderAggregate},
+ * methods for validation of purchase order status transitions.
  *
  * @author Yegor Udovchenko
  */
@@ -147,7 +152,7 @@ class PurchaseOrders {
     /**
      * Creates {@code PurchaseOrderValidationFailed} instance.
      *
-     * @param cmd the command which fired an event
+     * @param cmd           the command which fired an event
      * @param invalidOrders list of orders which validation has failed
      * @return {@code PurchaseOrderValidationFailed} event instance
      */
@@ -225,10 +230,11 @@ class PurchaseOrders {
     /**
      * Creates {@code PurchaseOrderCanceled} instance.
      *
-     * @param cmd the command which fired an event
+     * @param cmd    the command which fired an event
      * @param orders list of orders which were canceled
      * @return {@code PurchaseOrderCanceled} event instance
      */
+    @SuppressWarnings("all") /* To not use `default` switch branch*/
     static PurchaseOrderCanceled createPOCanceledEvent(CancelPurchaseOrder cmd,
                                                        List<Order> orders) {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
@@ -260,8 +266,8 @@ class PurchaseOrders {
      * Creates {@code PurchaseOrderSent} instance.
      *
      * @param purchaseOrder the purchase order to send
-     * @param senderEmail the sender email address
-     * @param vendorEmail the vendor email address
+     * @param senderEmail   the sender email address
+     * @param vendorEmail   the vendor email address
      * @return {@code PurchaseOrderSent} event instance
      */
     static PurchaseOrderSent createPOSentEvent(PurchaseOrder purchaseOrder,
