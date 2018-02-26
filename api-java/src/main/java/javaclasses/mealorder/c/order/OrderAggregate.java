@@ -177,7 +177,7 @@ public class OrderAggregate extends Aggregate<OrderId,
      * Checks if the order with the same ID was already created and cancelled. In this case
      * removes all dishes that was added before cancellation.
      *
-     * @param event
+     * @param event is {@code OrderCreated} event that was occurred
      */
     @Apply
     void orderCreated(OrderCreated event) {
