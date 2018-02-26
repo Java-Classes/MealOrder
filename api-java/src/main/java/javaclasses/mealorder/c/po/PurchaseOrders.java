@@ -234,7 +234,7 @@ class PurchaseOrders {
      * @param orders list of orders which were canceled
      * @return {@code PurchaseOrderCanceled} event instance
      */
-    @SuppressWarnings("all") /* To not use `default` switch branch*/
+    @SuppressWarnings("incomplete-switch") /* To not use `default` switch branch*/
     static PurchaseOrderCanceled createPOCanceledEvent(CancelPurchaseOrder cmd,
                                                        List<Order> orders) {
         final PurchaseOrderId purchaseOrderId = cmd.getId();
