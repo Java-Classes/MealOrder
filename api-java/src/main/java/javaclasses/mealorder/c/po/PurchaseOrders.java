@@ -34,12 +34,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
 /**
- * Validates command {@link CreatePurchaseOrder} to
- * creation {@link PurchaseOrder} instance.
+ * The utility class to manage the process of creation of a {@link PurchaseOrder} instance.
  *
  * @author Yegor Udovchenko
  */
-public class PurchaseOrders {
+class PurchaseOrders {
+    /**
+     * {@code MAX_SINGLE_DISH_COUNT} is the max number of equal dishes in
+     * the order.
+     */
     private static final int MAX_SINGLE_DISH_COUNT = 20;
 
     /** Prevents instantiation of this utility class. */
@@ -49,43 +52,36 @@ public class PurchaseOrders {
     /**
      * Performs the validation of a purchase order creation process.
      *
-     * <p>Checks each order in the list to match purchase order date
-     * and vendor. Also checks for empty dish list orders and orders with
+     * <p> Takes order list and purchase order identifier from {@code cmd}.
+     * Checks each order in the order list to match the purchase order date
+     * and vendor. Also checks for orders with an empty dish list and orders with
      * not {@code 'ORDER_ACTIVE'} status.
      *
-     * @param cmd command to create a purchase order.
-     * @return is allowed a purchase order creation.
+     * @param cmd command to create a purchase order
+     * @return {@code true} if a purchase order creation is allowed
      */
-    public static boolean isAllowedPurchaseOrderCreation(CreatePurchaseOrder cmd) {
+    static boolean isAllowedPurchaseOrderCreation(CreatePurchaseOrder cmd) {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
-        List<Order> ordersList = cmd.getOrderList();
+        final List<Order> ordersList = cmd.getOrderList();
 
-        final boolean result = ordersList.stream()
-                                         .allMatch(o -> doesOrderBelongToPO(purchaseOrderId, o));
-        return !ordersList.isEmpty() && result;
-    }
-
-    private static boolean doesOrderBelongToPO(PurchaseOrderId purchaseOrderId, Order order) {
-        final VendorId purchaseOrderVendorId = purchaseOrderId.getVendorId();
-        final LocalDate purchaseOrderDate = purchaseOrderId.getPoDate();
-
-        if (!(checkOrderIsActive(order) && checkOrderingDatesMatch(order, purchaseOrderDate))) {
-            return false;
-        }
-        return checkOrderNotEmpty(order) && checkVendorsMatch(order, purchaseOrderVendorId);
+        final boolean orderListNotEmpty = !ordersList.isEmpty();
+        final boolean ordersFitToPO = ordersList.stream()
+                                                .allMatch(
+                                                        o -> doesOrderFitToPO(purchaseOrderId, o));
+        return orderListNotEmpty && ordersFitToPO;
     }
 
     /**
      * Finds orders which contain more than {@code MAX_SINGLE_DISH_COUNT}
      * equal dishes.
      *
-     * <p>Those orders are considered invalid.
+     * <p> Those orders are considered invalid and returned as result.
      *
-     * @param orders list to check.
-     * @return list of invalid orders.(Empty if all orders are valid)
+     * @param orders the list to check
+     * @return list of invalid orders, empty if all orders are valid
      */
-    public static List<Order> findInvalidOrders(List<Order> orders) {
+    static List<Order> findInvalidOrders(List<Order> orders) {
         checkNotNull(orders);
         final List<Order> invalidOrders = orders.stream()
                                                 .filter(o -> !isOrderValid(o))
@@ -93,11 +89,28 @@ public class PurchaseOrders {
         return invalidOrders;
     }
 
-    public static boolean hasInvalidOrders(List<Order> orders) {
+    /**
+     * Searches for orders which contain more than {@code MAX_SINGLE_DISH_COUNT}
+     * equal dishes.
+     *
+     * @param orders the list to check
+     * @return {@code true} if any invalid order was found.
+     */
+    static boolean hasInvalidOrders(List<Order> orders) {
         checkNotNull(orders);
         final boolean result = orders.stream()
                                      .anyMatch(o -> !isOrderValid(o));
         return result;
+    }
+
+    private static boolean doesOrderFitToPO(PurchaseOrderId purchaseOrderId, Order order) {
+        final VendorId purchaseOrderVendorId = purchaseOrderId.getVendorId();
+        final LocalDate purchaseOrderDate = purchaseOrderId.getPoDate();
+
+        if (!(checkOrderIsActive(order) && checkOrderingDatesMatch(order, purchaseOrderDate))) {
+            return false;
+        }
+        return checkOrderNotEmpty(order) && checkVendorsMatch(order, purchaseOrderVendorId);
     }
 
     private static boolean isOrderValid(Order order) {
@@ -112,19 +125,20 @@ public class PurchaseOrders {
     }
 
     private static boolean checkOrderingDatesMatch(Order order, LocalDate poDate) {
-        return order.getId()
-                    .getOrderDate()
-                    .equals(poDate);
+        final LocalDate orderDate = order.getId()
+                                         .getOrderDate();
+        return orderDate.equals(poDate);
     }
 
     private static boolean checkOrderNotEmpty(Order order) {
-        return order.getDishCount() != 0;
+        final int dishCount = order.getDishCount();
+        return dishCount != 0;
     }
 
     private static boolean checkVendorsMatch(Order order, VendorId vendorId) {
-        return order.getId()
-                    .getVendorId()
-                    .equals(vendorId);
+        final VendorId orderVendorId = order.getId()
+                                            .getVendorId();
+        return orderVendorId.equals(vendorId);
     }
 
     private static boolean checkOrderIsActive(Order order) {
