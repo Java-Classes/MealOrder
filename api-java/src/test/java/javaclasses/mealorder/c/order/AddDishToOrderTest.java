@@ -135,10 +135,13 @@ public class AddDishToOrderTest extends OrderCommandTest {
         final VendorId expected = INVALID_DISH.getId()
                                               .getMenuId()
                                               .getVendorId();
-        assertEquals(expected, dishVendorMismatch.getVendorMismatch()
-                                                 .getActual());
-        assertEquals(ORDER_ID.getVendorId(), dishVendorMismatch.getVendorMismatch()
-                                                               .getTarget());
+        final VendorId actualVendorId = dishVendorMismatch.getVendorMismatch()
+                                                  .getActual();
+        final VendorId targetVendorId = dishVendorMismatch.getVendorMismatch()
+                                                  .getTarget();
+
+        assertEquals(expected, actualVendorId);
+        assertEquals(ORDER_ID.getVendorId(), targetVendorId);
     }
 
     @Test
