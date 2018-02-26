@@ -53,7 +53,6 @@ import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -66,7 +65,6 @@ import static javaclasses.mealorder.c.order.OrderAggregateRejections.AddDishToOr
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.CancelOrderRejections.cannotCancelProcessedOrder;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.orderAlreadyExists;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.cannotRemoveDishFromNotActiveOrder;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.cannotRemoveMissingDish;
 import static javaclasses.mealorder.c.order.Orders.checkMenuAvailability;
 import static javaclasses.mealorder.c.order.Orders.getDishFromOrder;
 

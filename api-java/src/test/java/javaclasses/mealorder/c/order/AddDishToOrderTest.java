@@ -22,7 +22,6 @@ package javaclasses.mealorder.c.order;
 
 import com.google.common.base.Optional;
 import io.spine.core.Command;
-import io.spine.grpc.StreamObservers;
 import io.spine.server.entity.Repository;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.VendorId;
@@ -46,7 +45,6 @@ import static javaclasses.mealorder.testdata.TestOrderCommandFactory.cancelOrder
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestValues.DISH1;
 import static javaclasses.mealorder.testdata.TestValues.INVALID_DISH;
-import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
