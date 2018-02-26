@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Vlad Kozachenko
  */
-@DisplayName("OrderAggregateRejections should")
+@DisplayName("`OrderAggregateRejections` should")
 class OrderAggregateRejectionsTest {
 
     @Test
@@ -48,7 +48,7 @@ class OrderAggregateRejectionsTest {
     }
 
     @Nested
-    @DisplayName("CreateOrderRejections should")
+    @DisplayName("`CreateOrderRejections` should")
     class CreateOrderRejectionsTest {
 
         @Test
@@ -58,14 +58,14 @@ class OrderAggregateRejectionsTest {
         }
 
         @Test
-        @DisplayName("don't return orderAlreadyExists rejection for null command")
+        @DisplayName("don't return `OrderAlreadyExists` rejection for null command")
         void doNotThrowOrderAlreadyExistsRejection() {
             assertThrows(NullPointerException.class,
                          () -> orderAlreadyExists(Tests.nullRef()));
         }
 
         @Test
-        @DisplayName("don't return MenuNotAvailable rejection for null command")
+        @DisplayName("don't return `MenuNotAvailable` rejection for null command")
         void doNotThrowMenuNotAvailableRejection() {
             assertThrows(NullPointerException.class,
                          () -> menuNotAvailable(Tests.nullRef()));
@@ -73,7 +73,7 @@ class OrderAggregateRejectionsTest {
     }
 
     @Nested
-    @DisplayName("AddDishToOrderRejections should")
+    @DisplayName("`AddDishToOrderRejections` should")
     class AddDishToOrderRejectionsTest {
 
         @Test
@@ -85,7 +85,7 @@ class OrderAggregateRejectionsTest {
 
 
         @Test
-        @DisplayName("don't return DishVendorMismatch rejection for null command")
+        @DisplayName("don't return `DishVendorMismatch` rejection for null command")
         void doNotThrowDishVendorMismatchRejection() {
             assertThrows(NullPointerException.class,
                          () -> dishVendorMismatch(Tests.nullRef()));
@@ -93,7 +93,7 @@ class OrderAggregateRejectionsTest {
 
 
         @Test
-        @DisplayName("don't return CannotAddDishToNotActiveOrder rejection for null command")
+        @DisplayName("don't return `CannotAddDishToNotActiveOrder` rejection for null command")
         void doNotThrowCannotAddDishToNotActiveOrderRejection() {
             assertThrows(NullPointerException.class,
                          () -> cannotAddDishToNotActiveOrder(Tests.nullRef(), Tests.nullRef()));
@@ -101,7 +101,7 @@ class OrderAggregateRejectionsTest {
     }
 
     @Nested
-    @DisplayName("RemoveDishFromOrderRejections should")
+    @DisplayName("`RemoveDishFromOrderRejections` should")
     class RemoveDishFromOrderRejectionsTest {
 
         @Test
@@ -113,14 +113,14 @@ class OrderAggregateRejectionsTest {
 
 
         @Test
-        @DisplayName("don't return CannotRemoveMissingDish rejection for null command")
+        @DisplayName("don't return `CannotRemoveMissingDish` rejection for null command")
         void doNotThrowCannotRemoveMissingDishRejection() {
             assertThrows(NullPointerException.class,
                          () -> cannotRemoveMissingDish(Tests.nullRef()));
         }
 
         @Test
-        @DisplayName("don't return CannotRemoveDishFromNotActiveOrder rejection for null command")
+        @DisplayName("don't return `CannotRemoveDishFromNotActiveOrder` rejection for null command")
         void doNotThrowCannotRemoveDishFromNotActiveOrderRejection() {
             assertThrows(NullPointerException.class,
                          () -> cannotRemoveDishFromNotActiveOrder(Tests.nullRef(), Tests.nullRef()));
@@ -128,7 +128,7 @@ class OrderAggregateRejectionsTest {
     }
 
     @Nested
-    @DisplayName("CancelOrderRejections should")
+    @DisplayName("`CancelOrderRejections` should")
     class CancelOrderRejectionsTest {
 
         @Test
@@ -140,7 +140,7 @@ class OrderAggregateRejectionsTest {
 
 
         @Test
-        @DisplayName("don't return CannotCancelProcessedOrder rejection for null command")
+        @DisplayName("don't return `CannotCancelProcessedOrder` rejection for null command")
         void doNotThrowCannotCancelProcessedOrderRejection() {
             assertThrows(NullPointerException.class,
                          () -> cannotCancelProcessedOrder(Tests.nullRef()));
