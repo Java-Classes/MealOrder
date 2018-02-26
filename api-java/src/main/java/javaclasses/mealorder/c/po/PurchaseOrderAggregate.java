@@ -99,7 +99,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                                                          CannotCreatePurchaseOrder {
 
         if (!isAllowedPurchaseOrderCreation(cmd)) {
-            cannotCreatePurchaseOrder(cmd);
+            throw cannotCreatePurchaseOrder(cmd);
         }
 
         Triplet result;
@@ -135,7 +135,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
             throws CannotOverruleValidationOfNotInvalidPO {
 
         if (!isAllowedToMarkAsValid()) {
-            cannotOverruleValidationOfNotInvalidPO(cmd);
+            throw cannotOverruleValidationOfNotInvalidPO(cmd);
         }
 
         final PurchaseOrderValidationOverruled overruledEvent =
@@ -157,7 +157,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     PurchaseOrderDelivered handle(MarkPurchaseOrderAsDelivered cmd) throws
                                                                     CannotMarkPurchaseOrderAsDelivered {
         if (!isAllowedToMarkAsDelivered()) {
-            cannotMarkPurchaseOrderAsDelivered(cmd);
+            throw cannotMarkPurchaseOrderAsDelivered(cmd);
         }
         final PurchaseOrderDelivered poMarkedAsDeliveredEvent = createPOMarkedAsDeliveredEvent(cmd);
         return poMarkedAsDeliveredEvent;
@@ -167,7 +167,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     PurchaseOrderCanceled handle(CancelPurchaseOrder cmd) throws
                                                           CannotCancelDeliveredPurchaseOrder {
         if (!isAllowedToCancel()) {
-            cannotCancelDeliveredPurchaseOrder(cmd);
+            throw cannotCancelDeliveredPurchaseOrder(cmd);
         }
         final List<Order> orderList = getState().getOrderList();
         final PurchaseOrderCanceled poCanceledEvent = createPOCanceledEvent(cmd, orderList);

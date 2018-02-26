@@ -54,7 +54,7 @@ class PurchaseOrderAggregateRejections {
      * @param cmd the {@code CreatePurchaseOrder} command which thrown the rejection
      * @throws CannotCreatePurchaseOrder if the {@code CreatePurchaseOrder} command is invalid
      */
-    static void cannotCreatePurchaseOrder(CreatePurchaseOrder cmd)
+    static CannotCreatePurchaseOrder cannotCreatePurchaseOrder(CreatePurchaseOrder cmd)
             throws CannotCreatePurchaseOrder {
         checkNotNull(cmd);
         final VendorId vendorId = cmd.getId()
@@ -74,8 +74,8 @@ class PurchaseOrderAggregateRejections {
      * @throws CannotMarkPurchaseOrderAsDelivered if the purchase order is not allowed to
      *                                            mark as delivered
      */
-    static void cannotMarkPurchaseOrderAsDelivered(MarkPurchaseOrderAsDelivered cmd)
-            throws CannotMarkPurchaseOrderAsDelivered {
+    static CannotMarkPurchaseOrderAsDelivered cannotMarkPurchaseOrderAsDelivered(
+            MarkPurchaseOrderAsDelivered cmd) throws CannotMarkPurchaseOrderAsDelivered {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoMarksAsDelivered();
@@ -92,8 +92,8 @@ class PurchaseOrderAggregateRejections {
      * @throws CannotCancelDeliveredPurchaseOrder upon an attempt to mark delivered purchase
      *                                            order as canceled
      */
-    static void cannotCancelDeliveredPurchaseOrder(CancelPurchaseOrder cmd)
-            throws CannotCancelDeliveredPurchaseOrder {
+    static CannotCancelDeliveredPurchaseOrder cannotCancelDeliveredPurchaseOrder(
+            CancelPurchaseOrder cmd) throws CannotCancelDeliveredPurchaseOrder {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
@@ -110,8 +110,8 @@ class PurchaseOrderAggregateRejections {
      * @throws CannotOverruleValidationOfNotInvalidPO upon an attempt to overrule validation of
      *                                                not invalid purchase order
      */
-    static void cannotOverruleValidationOfNotInvalidPO(MarkPurchaseOrderAsValid cmd)
-            throws CannotOverruleValidationOfNotInvalidPO {
+    static CannotOverruleValidationOfNotInvalidPO cannotOverruleValidationOfNotInvalidPO(
+            MarkPurchaseOrderAsValid cmd) throws CannotOverruleValidationOfNotInvalidPO {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
