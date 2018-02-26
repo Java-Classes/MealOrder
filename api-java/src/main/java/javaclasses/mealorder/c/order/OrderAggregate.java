@@ -68,6 +68,7 @@ import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrder
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.cannotRemoveDishFromNotActiveOrder;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.cannotRemoveMissingDish;
 import static javaclasses.mealorder.c.order.Orders.checkMenuAvailability;
+import static javaclasses.mealorder.c.order.Orders.getDishFromOrder;
 
 /**
  * The aggregate managing the state of a {@link Order}.
@@ -148,19 +149,6 @@ public class OrderAggregate extends Aggregate<OrderId,
                                                           .setDish(dish)
                                                           .build();
         return result;
-    }
-
-    private Dish getDishFromOrder(RemoveDishFromOrder cmd, DishId dishId,
-                                  List<Dish> dishesList) throws CannotRemoveMissingDish {
-        Optional<Dish> dish = dishesList.stream()
-                                        .filter(d -> d.getId()
-                                                      .equals(dishId))
-                                        .findFirst();
-
-        if (!dish.isPresent()) {
-            throw cannotRemoveMissingDish(cmd);
-        }
-        return dish.get();
     }
 
     @Assign

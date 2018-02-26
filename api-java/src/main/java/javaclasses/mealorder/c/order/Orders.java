@@ -22,12 +22,16 @@ package javaclasses.mealorder.c.order;
 
 import com.google.common.base.Optional;
 import io.spine.time.LocalDate;
+import javaclasses.mealorder.Dish;
+import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.LocalDateComparator;
 import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.c.command.CreateOrder;
+import javaclasses.mealorder.c.command.RemoveDishFromOrder;
+import javaclasses.mealorder.c.rejection.CannotRemoveMissingDish;
 import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.vendor.VendorAggregate;
 import javaclasses.mealorder.c.vendor.VendorRepository;
@@ -37,6 +41,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.menuNotAvailable;
+import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.cannotRemoveMissingDish;
 
 /**
  * Utility class that contains static methods that operate on order aggregate.
@@ -74,7 +79,7 @@ public class Orders {
      * @return Optional of vendor.
      */
     static Optional<VendorAggregate> getVendorAggregateForOrder(OrderId orderId) throws
-                                                                                        MenuNotAvailable {
+                                                                                 MenuNotAvailable {
         checkNotNull(orderId);
         final VendorRepository vendorRepository = VendorRepository.getRepository();
 
@@ -90,8 +95,7 @@ public class Orders {
      * @throws MenuNotAvailable if vendor or menu doesn't exist or
      *                          if the menu date range doesn't include order date.
      */
-    static void checkMenuAvailability(CreateOrder cmd) throws
-                                                              MenuNotAvailable {
+    static void checkMenuAvailability(CreateOrder cmd) throws MenuNotAvailable {
         checkNotNull(cmd);
         final OrderId orderId = cmd.getOrderId();
         final MenuId menuId = cmd.getMenuId();
@@ -113,5 +117,18 @@ public class Orders {
                                                          orderDate)) {
             throw menuNotAvailable(cmd);
         }
+    }
+
+    static Dish getDishFromOrder(RemoveDishFromOrder cmd, DishId dishId,
+                                 List<Dish> dishesList) throws CannotRemoveMissingDish {
+        java.util.Optional<Dish> dish = dishesList.stream()
+                                                  .filter(d -> d.getId()
+                                                                .equals(dishId))
+                                                  .findFirst();
+
+        if (!dish.isPresent()) {
+            throw cannotRemoveMissingDish(cmd);
+        }
+        return dish.get();
     }
 }
