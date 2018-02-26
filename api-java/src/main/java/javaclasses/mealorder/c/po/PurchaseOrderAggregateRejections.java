@@ -79,9 +79,9 @@ class PurchaseOrderAggregateRejections {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoMarksAsDelivered();
-        final CannotMarkPurchaseOrderAsDelivered cannotMarkPurchaseOrderAsDelivered =
+        final CannotMarkPurchaseOrderAsDelivered cannotMarkPOAsDelivered =
                 new CannotMarkPurchaseOrderAsDelivered(purchaseOrderId, userId, getCurrentTime());
-        throw cannotMarkPurchaseOrderAsDelivered;
+        throw cannotMarkPOAsDelivered;
     }
 
     /**
@@ -97,9 +97,9 @@ class PurchaseOrderAggregateRejections {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
-        final CannotCancelDeliveredPurchaseOrder cannotCancelDeliveredPurchaseOrder =
+        final CannotCancelDeliveredPurchaseOrder cannotCancelDeliveredPO =
                 new CannotCancelDeliveredPurchaseOrder(purchaseOrderId, userId, getCurrentTime());
-        throw cannotCancelDeliveredPurchaseOrder;
+        throw cannotCancelDeliveredPO;
     }
 
     /**
@@ -115,10 +115,10 @@ class PurchaseOrderAggregateRejections {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
-        final CannotOverruleValidationOfNotInvalidPO cannotOverruleValidationOfNotInvalidPO =
+        final CannotOverruleValidationOfNotInvalidPO cannotOverruleValidation =
                 new CannotOverruleValidationOfNotInvalidPO(purchaseOrderId,
                                                            userId,
                                                            getCurrentTime());
-        throw cannotOverruleValidationOfNotInvalidPO;
+        throw cannotOverruleValidation;
     }
 }

@@ -22,7 +22,6 @@ package javaclasses.mealorder.c.po;
 
 import io.spine.server.aggregate.AggregateRepository;
 import javaclasses.mealorder.PurchaseOrderId;
-import javaclasses.mealorder.c.po.PurchaseOrderAggregate;
 
 /**
  * Repository for the {@link PurchaseOrderAggregate}.

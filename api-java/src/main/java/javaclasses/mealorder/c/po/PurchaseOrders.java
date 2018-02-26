@@ -38,7 +38,10 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
  *
  * @author Yegor Udovchenko
  */
-@SuppressWarnings({"TypeMayBeWeakened", "SimplifiableIfStatement"})
+@SuppressWarnings("TypeMayBeWeakened" /* Private methods of this class should
+                                           not use parameters weakened to `ObjectOrBuilder` classes.
+                                           Those methods are used for validation and not for
+                                           construction.*/)
 class PurchaseOrders {
     /**
      * {@code MAX_SINGLE_DISH_COUNT} is the max number of equal dishes in
@@ -104,14 +107,13 @@ class PurchaseOrders {
         return result;
     }
 
+    @SuppressWarnings("OverlyComplexBooleanExpression")
     private static boolean doesOrderFitToPO(PurchaseOrderId purchaseOrderId, Order order) {
         final VendorId purchaseOrderVendorId = purchaseOrderId.getVendorId();
         final LocalDate purchaseOrderDate = purchaseOrderId.getPoDate();
 
-        if (!(checkOrderIsActive(order) && checkOrderingDatesMatch(order, purchaseOrderDate))) {
-            return false;
-        }
-        return checkOrderNotEmpty(order) && checkVendorsMatch(order, purchaseOrderVendorId);
+        return (checkOrderIsActive(order) && checkOrderingDatesMatch(order, purchaseOrderDate)) &&
+                checkOrderNotEmpty(order) && checkVendorsMatch(order, purchaseOrderVendorId);
     }
 
     private static boolean isOrderValid(Order order) {
