@@ -25,7 +25,6 @@ import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.c.vendor.VendorAggregate;
 
 /**
  * The parent class for the {@link VendorAggregate} test classes.
@@ -38,7 +37,7 @@ abstract class VendorCommandTest<C extends Message> extends AggregateCommandTest
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
     VendorAggregate aggregate;
-    VendorId vendorId;
+    private VendorId vendorId;
 
     @Override
     protected void setUp() {
@@ -48,8 +47,8 @@ abstract class VendorCommandTest<C extends Message> extends AggregateCommandTest
 
     @Override
     protected VendorAggregate createAggregate() {
-        vendorId = createVendorId();
-        return new VendorAggregate(vendorId);
+        setVendorId(createVendorId());
+        return new VendorAggregate(getVendorId());
     }
 
     CommandEnvelope envelopeOf(Message commandMessage) {
@@ -61,5 +60,13 @@ abstract class VendorCommandTest<C extends Message> extends AggregateCommandTest
         return VendorId.newBuilder()
                        .setValue("vendor:" + "testVendorNAme")
                        .build();
+    }
+
+    private VendorId getVendorId() {
+        return vendorId;
+    }
+
+    private void setVendorId(VendorId vendorId) {
+        this.vendorId = vendorId;
     }
 }

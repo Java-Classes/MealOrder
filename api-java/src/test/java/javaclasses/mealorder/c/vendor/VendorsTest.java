@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("Vendors should")
+@DisplayName("`Vendors` should")
 class VendorsTest {
 
     @Test
@@ -61,7 +61,7 @@ class VendorsTest {
     }
 
     @Test
-    @DisplayName("don't check menu without Vendor and MenuDateRange")
+    @DisplayName("don't check menu without `Vendor` and `MenuDateRange`")
     void doNotCheckMEnuWithoutVendorAndMenuDateRange() {
         final Vendor vendor = Vendor.getDefaultInstance();
         final MenuDateRange menuDateRange = MenuDateRange.getDefaultInstance();
@@ -75,7 +75,7 @@ class VendorsTest {
     }
 
     @Test
-    @DisplayName("doesn't validate dateRange without DateRange")
+    @DisplayName("doesn't validate dateRange without `DateRange`")
     void doNotValidateDateRangeWithoutDateRange() {
         assertThrows(NullPointerException.class,
                      () -> isValidDateRange(Tests.nullRef()));
