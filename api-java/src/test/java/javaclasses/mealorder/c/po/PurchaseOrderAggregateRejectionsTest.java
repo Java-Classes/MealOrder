@@ -29,7 +29,6 @@ import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
-import javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections;
 import javaclasses.mealorder.c.rejection.CannotCancelDeliveredPurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotCreatePurchaseOrder;
 import javaclasses.mealorder.c.rejection.CannotMarkPurchaseOrderAsDelivered;
@@ -38,11 +37,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static javaclasses.mealorder.c.BoundedContexts.createBoundedContext;
-import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotCancelDeliveredPurchaseOrder;
-import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
-import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
-import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
+import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.cannotCancelDeliveredPurchaseOrder;
+import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.cannotCreatePurchaseOrder;
+import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.cannotMarkPurchaseOrderAsDelivered;
+import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.cannotOverruleValidationOfNotInvalidPO;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.cancelPOWithCustomReasonInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithNotActiveOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsDeliveredInstance;
@@ -69,7 +67,7 @@ class PurchaseOrderAggregateRejectionsTest {
     void throwCannotCreatePurchaseOrderRejection() {
         final CreatePurchaseOrder cmd = createPurchaseOrderWithNotActiveOrdersInstance();
         final CannotCreatePurchaseOrder rejection = assertThrows(CannotCreatePurchaseOrder.class,
-                                                                 () -> throwCannotCreatePurchaseOrder(
+                                                                 () -> cannotCreatePurchaseOrder(
                                                                          cmd));
         final VendorId actualVendorId = rejection.getMessageThrown()
                                            .getVendorId();
@@ -85,7 +83,7 @@ class PurchaseOrderAggregateRejectionsTest {
         final MarkPurchaseOrderAsDelivered cmd = markPurchaseOrderAsDeliveredInstance();
         final CannotMarkPurchaseOrderAsDelivered rejection =
                 assertThrows(CannotMarkPurchaseOrderAsDelivered.class,
-                             () -> throwCannotMarkPurchaseOrderAsDelivered(cmd));
+                             () -> cannotMarkPurchaseOrderAsDelivered(cmd));
         final PurchaseOrderId actual = rejection.getMessageThrown()
                                           .getPoId();
         final UserId actualUser = rejection.getMessageThrown()
@@ -101,7 +99,7 @@ class PurchaseOrderAggregateRejectionsTest {
         final CancelPurchaseOrder cmd = cancelPOWithCustomReasonInstance();
         final CannotCancelDeliveredPurchaseOrder rejection =
                 assertThrows(CannotCancelDeliveredPurchaseOrder.class,
-                             () -> throwCannotCancelDeliveredPurchaseOrder(cmd));
+                             () -> cannotCancelDeliveredPurchaseOrder(cmd));
         final PurchaseOrderId actualId = rejection.getMessageThrown()
                                             .getPoId();
         final UserId actualUser = rejection.getMessageThrown()
@@ -117,7 +115,7 @@ class PurchaseOrderAggregateRejectionsTest {
         final MarkPurchaseOrderAsValid cmd = markPurchaseOrderAsValidInstance();
         final CannotOverruleValidationOfNotInvalidPO rejection =
                 assertThrows(CannotOverruleValidationOfNotInvalidPO.class,
-                             () -> throwCannotOverruleValidationOfNotInvalidPO(cmd));
+                             () -> cannotOverruleValidationOfNotInvalidPO(cmd));
         final PurchaseOrderId actualId = rejection.getMessageThrown()
                                             .getPoId();
         final UserId actualUser = rejection.getMessageThrown()
@@ -130,24 +128,24 @@ class PurchaseOrderAggregateRejectionsTest {
     @Test
     @DisplayName("don't throw CannotCreatePurchaseOrder rejection for empty command ")
     void doNotThrowCannotCreatePurchaseOrderRejection() {
-        assertThrows(NullPointerException.class, () -> throwCannotCreatePurchaseOrder(Tests.nullRef()));
+        assertThrows(NullPointerException.class, () -> cannotCreatePurchaseOrder(Tests.nullRef()));
     }
 
     @Test
     @DisplayName("don't throw CannotMarkPurchaseOrderAsDelivered rejection for empty command ")
     void doNotThrowCannotMarkPurchaseOrderAsDeliveredRejection() {
-        assertThrows(NullPointerException.class, () -> throwCannotMarkPurchaseOrderAsDelivered(Tests.nullRef()));
+        assertThrows(NullPointerException.class, () -> cannotMarkPurchaseOrderAsDelivered(Tests.nullRef()));
     }
 
     @Test
     @DisplayName("don't throw CannotCancelDeliveredPurchaseOrder rejection for empty command ")
     void doNotThrowCannotCancelDeliveredPurchaseOrderRejection() {
-        assertThrows(NullPointerException.class, () -> throwCannotCancelDeliveredPurchaseOrder(Tests.nullRef()));
+        assertThrows(NullPointerException.class, () -> cannotCancelDeliveredPurchaseOrder(Tests.nullRef()));
     }
 
     @Test
     @DisplayName("don't throw CannotOverruleValidationOfNotInvalidPO rejection for empty command ")
     void doNotThrowCannotOverruleValidationOfNotInvalidPORejection() {
-        assertThrows(NullPointerException.class, () -> throwCannotOverruleValidationOfNotInvalidPO(Tests.nullRef()));
+        assertThrows(NullPointerException.class, () -> cannotOverruleValidationOfNotInvalidPO(Tests.nullRef()));
     }
 }

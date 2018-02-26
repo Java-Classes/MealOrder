@@ -59,10 +59,10 @@ import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
 import static javaclasses.mealorder.PurchaseOrderStatus.INVALID;
 import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
 import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
-import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotCancelDeliveredPurchaseOrder;
-import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
-import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
-import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
+import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.cannotCancelDeliveredPurchaseOrder;
+import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.cannotCreatePurchaseOrder;
+import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.cannotMarkPurchaseOrderAsDelivered;
+import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.cannotOverruleValidationOfNotInvalidPO;
 import static javaclasses.mealorder.c.po.PurchaseOrders.findInvalidOrders;
 import static javaclasses.mealorder.c.po.PurchaseOrders.hasInvalidOrders;
 import static javaclasses.mealorder.c.po.PurchaseOrders.isAllowedPurchaseOrderCreation;
@@ -95,7 +95,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
             throws CannotCreatePurchaseOrder {
 
         if (!isAllowedPurchaseOrderCreation(cmd)) {
-            throwCannotCreatePurchaseOrder(cmd);
+            cannotCreatePurchaseOrder(cmd);
         }
 
         Triplet result;
@@ -134,7 +134,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
             throws CannotOverruleValidationOfNotInvalidPO {
 
         if (!isAllowedToMarkAsValid()) {
-            throwCannotOverruleValidationOfNotInvalidPO(cmd);
+            cannotOverruleValidationOfNotInvalidPO(cmd);
         }
 
         final PurchaseOrderValidationOverruled overruledEvent =
@@ -156,7 +156,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     PurchaseOrderDelivered handle(MarkPurchaseOrderAsDelivered cmd)
             throws CannotMarkPurchaseOrderAsDelivered {
         if (!isAllowedToMarkAsDelivered()) {
-            throwCannotMarkPurchaseOrderAsDelivered(cmd);
+            cannotMarkPurchaseOrderAsDelivered(cmd);
         }
         return createPOMarkedAsDeliveredEvent(cmd);
     }
@@ -165,7 +165,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     PurchaseOrderCanceled handle(CancelPurchaseOrder cmd)
             throws CannotCancelDeliveredPurchaseOrder {
         if (!isAllowedToCancel()) {
-            throwCannotCancelDeliveredPurchaseOrder(cmd);
+            cannotCancelDeliveredPurchaseOrder(cmd);
         }
         return createPOCanceledEvent(cmd, getState().getOrderList());
     }
