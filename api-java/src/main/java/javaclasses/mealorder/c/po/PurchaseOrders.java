@@ -39,9 +39,9 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
  * @author Yegor Udovchenko
  */
 @SuppressWarnings("TypeMayBeWeakened" /* Private methods of this class should
-                                           not use parameters weakened to `ObjectOrBuilder` classes.
-                                           Those methods are used for validation and not for
-                                           construction.*/)
+                                         not use parameters weakened to `ObjectOrBuilder` classes.
+                                         Those methods are used for validation and not for
+                                         construction.*/)
 class PurchaseOrders {
     /**
      * {@code MAX_SINGLE_DISH_COUNT} is the max number of equal dishes in
