@@ -21,24 +21,19 @@
 package javaclasses.mealorder.c.po;
 
 import io.spine.test.Tests;
-import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static javaclasses.mealorder.c.po.PurchaseOrders.findInvalidOrders;
 import static javaclasses.mealorder.c.po.PurchaseOrders.hasInvalidOrders;
 import static javaclasses.mealorder.c.po.PurchaseOrders.isAllowedPurchaseOrderCreation;
-import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Yegor Udovchenko
  */
-@DisplayName("PurchaseOrders should")
+@DisplayName("`PurchaseOrders` should")
 class PurchaseOrdersTest {
 
     @Test
@@ -48,30 +43,20 @@ class PurchaseOrdersTest {
     }
 
     @Test
-    @DisplayName("return false for empty list of dishes")
-    void returnFalseForEmptyList() {
-        CreatePurchaseOrder createPurchaseOrder = CreatePurchaseOrder.newBuilder()
-                                                                     .setId(PURCHASE_ORDER_ID)
-                                                                     .addAllOrder(new ArrayList<>())
-                                                                     .build();
-        assertFalse(isAllowedPurchaseOrderCreation(createPurchaseOrder));
-    }
-
-    @Test
-    @DisplayName("don't check Purchase Order creation without a command")
+    @DisplayName("throw `NPE` when null command passed to check")
     void doNotCheckPurchaseOrderCreationWithoutCommand() {
         assertThrows(NullPointerException.class,
                      () -> isAllowedPurchaseOrderCreation(Tests.nullRef()));
     }
 
     @Test
-    @DisplayName("don't find invalid orders without orders")
+    @DisplayName("throw `NPE` for null order list passed to find invalid orders")
     void doNotFindInvalidOrdersWithoutOrders() {
         assertThrows(NullPointerException.class, () -> findInvalidOrders(Tests.nullRef()));
     }
 
     @Test
-    @DisplayName("don't check invalid orders without orders")
+    @DisplayName("throw `NPE` for null order list passed to check has invalid orders")
     void doNotCheckInvalidOrdersWithoutOrders() {
         assertThrows(NullPointerException.class, () -> hasInvalidOrders(Tests.nullRef()));
     }

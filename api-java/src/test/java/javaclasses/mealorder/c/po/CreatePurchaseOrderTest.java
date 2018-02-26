@@ -43,6 +43,7 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithDatesMismatchOrdersInstance;
+import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithEmptyListInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithEmptyOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithInvalidOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithNotActiveOrdersInstance;
@@ -193,6 +194,17 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
         @DisplayName("upon an attempt to add an order from another date")
         void cannotCreatePurchaseOrderForOrdersFromAnotherDate() {
             final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithDatesMismatchOrdersInstance();
+
+            final Throwable t = assertThrows(Throwable.class,
+                                             () -> dispatchCommand(aggregate,
+                                                                   envelopeOf(invalidCmd)));
+            assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
+        }
+
+        @Test
+        @DisplayName("upon an attempt to add an empty order list")
+        void cannotCreatePurchaseOrderForEmptyOrderList() {
+            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithEmptyListInstance();
 
             final Throwable t = assertThrows(Throwable.class,
                                              () -> dispatchCommand(aggregate,

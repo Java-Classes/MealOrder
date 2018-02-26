@@ -24,6 +24,7 @@ import io.spine.time.LocalDate;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
+import javaclasses.mealorder.OrderStatus;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
@@ -72,13 +73,18 @@ public class TestPurchaseOrderCommandFactory {
      * @return the invalid {@code CreatePurchaseOrder} instance.
      */
     public static CreatePurchaseOrder createPurchaseOrderWithVendorMismatchInstance() {
-        return CreatePurchaseOrder.newBuilder(createPurchaseOrderInstance())
-                                  .setId(PurchaseOrderId.newBuilder(PURCHASE_ORDER_ID)
-                                                        .setVendorId(VendorId.newBuilder()
-                                                                             .setValue(
-                                                                                     "vendor:other")
-                                                                             .build()))
-                                  .build();
+        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
+
+        final VendorId invalidVendorId = VendorId.newBuilder()
+                                                 .setValue("vendor:other")
+                                                 .build();
+        final PurchaseOrderId invalidId = PurchaseOrderId.newBuilder(PURCHASE_ORDER_ID)
+                                                         .setVendorId(invalidVendorId)
+                                                         .build();
+        final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder(validCmd)
+                                                              .setId(invalidId)
+                                                              .build();
+        return result;
     }
 
     /**
@@ -90,10 +96,13 @@ public class TestPurchaseOrderCommandFactory {
     public static CreatePurchaseOrder createPurchaseOrderWithNotActiveOrdersInstance() {
         final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
         final Order order = validCmd.getOrder(0);
-        return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrder(Order.newBuilder(order)
-                                                 .setStatus(ORDER_CANCELED))
-                                  .build();
+        final Order invalidOrder = Order.newBuilder(order)
+                                        .setStatus(ORDER_CANCELED)
+                                        .build();
+        final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder(validCmd)
+                                                              .addOrder(invalidOrder)
+                                                              .build();
+        return result;
     }
 
     /**
@@ -105,12 +114,16 @@ public class TestPurchaseOrderCommandFactory {
     public static CreatePurchaseOrder createPurchaseOrderWithEmptyOrdersInstance() {
         final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
         final Order order = validCmd.getOrder(0);
-        return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrder(Order.newBuilder()
-                                                 .setStatus(order.getStatus())
-                                                 .setId(order.getId())
-                                                 .build())
-                                  .build();
+        final OrderStatus status = order.getStatus();
+        final OrderId id = order.getId();
+        final Order invalidOrder = Order.newBuilder()
+                                        .setStatus(status)
+                                        .setId(id)
+                                        .build();
+        final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder(validCmd)
+                                                              .addOrder(invalidOrder)
+                                                              .build();
+        return result;
     }
 
     /**
@@ -122,13 +135,31 @@ public class TestPurchaseOrderCommandFactory {
     public static CreatePurchaseOrder createPurchaseOrderWithDatesMismatchOrdersInstance() {
         final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
         final Order order = validCmd.getOrder(0);
-        return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrder(Order.newBuilder(order)
-                                                 .setId(OrderId.newBuilder(order.getId())
-                                                               .setOrderDate(
-                                                                       LocalDate.getDefaultInstance()))
-                                                 .build())
-                                  .build();
+        final OrderId id = order.getId();
+        final OrderId.Builder invalidOrderId = OrderId.newBuilder(id)
+                                                      .setOrderDate(LocalDate.getDefaultInstance());
+        final Order invalidOrder = Order.newBuilder(order)
+                                        .setId(invalidOrderId)
+                                        .build();
+        final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder(validCmd)
+                                                              .addOrder(invalidOrder)
+                                                              .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link CreatePurchaseOrder} instance
+     * with an order in the list which date is not consistent with PO date.
+     *
+     * @return the invalid {@code CreatePurchaseOrder} instance.
+     */
+    public static CreatePurchaseOrder createPurchaseOrderWithEmptyListInstance() {
+        final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
+        final PurchaseOrderId id = validCmd.getId();
+        final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
+                                                              .setId(id)
+                                                              .build();
+        return result;
     }
 
     /**
@@ -142,15 +173,18 @@ public class TestPurchaseOrderCommandFactory {
         final CreatePurchaseOrder validCmd = createPurchaseOrderInstance();
         final Order order = validCmd.getOrder(0);
         final Dish dish = order.getDish(0);
+
         List<Dish> dishes = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             dishes.add(dish);
         }
-        return CreatePurchaseOrder.newBuilder(validCmd)
-                                  .addOrder(Order.newBuilder(order)
-                                                 .addAllDish(dishes)
-                                                 .build())
-                                  .build();
+        final Order invalidOrder = Order.newBuilder(order)
+                                        .addAllDish(dishes)
+                                        .build();
+        final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder(validCmd)
+                                                              .addOrder(invalidOrder)
+                                                              .build();
+        return result;
     }
 
     /**
@@ -159,11 +193,12 @@ public class TestPurchaseOrderCommandFactory {
      * @return the {@code MarkPurchaseOrderAsValid} instance.
      */
     public static MarkPurchaseOrderAsValid markPurchaseOrderAsValidInstance() {
-        return MarkPurchaseOrderAsValid.newBuilder()
-                                       .setId(PURCHASE_ORDER_ID)
-                                       .setReason("Because I can.")
-                                       .setUserId(USER_ID)
-                                       .build();
+        final MarkPurchaseOrderAsValid result = MarkPurchaseOrderAsValid.newBuilder()
+                                                                        .setId(PURCHASE_ORDER_ID)
+                                                                        .setReason("Because I can.")
+                                                                        .setUserId(USER_ID)
+                                                                        .build();
+        return result;
     }
 
     /**
@@ -173,11 +208,12 @@ public class TestPurchaseOrderCommandFactory {
      * @return the {@code CancelPurchaseOrder} instance.
      */
     public static CancelPurchaseOrder cancelPOWithCustomReasonInstance() {
-        return CancelPurchaseOrder.newBuilder()
-                                  .setId(PURCHASE_ORDER_ID)
-                                  .setCustomReason("Because why not.")
-                                  .setUserId(USER_ID)
-                                  .build();
+        final CancelPurchaseOrder result = CancelPurchaseOrder.newBuilder()
+                                                              .setId(PURCHASE_ORDER_ID)
+                                                              .setCustomReason("Because why not.")
+                                                              .setUserId(USER_ID)
+                                                              .build();
+        return result;
     }
 
     /**
@@ -187,10 +223,11 @@ public class TestPurchaseOrderCommandFactory {
      * @return the {@code CancelPurchaseOrder} instance.
      */
     public static CancelPurchaseOrder cancelPOWithEmptyReasonInstance() {
-        return CancelPurchaseOrder.newBuilder()
-                                  .setId(PURCHASE_ORDER_ID)
-                                  .setUserId(USER_ID)
-                                  .build();
+        final CancelPurchaseOrder result = CancelPurchaseOrder.newBuilder()
+                                                              .setId(PURCHASE_ORDER_ID)
+                                                              .setUserId(USER_ID)
+                                                              .build();
+        return result;
     }
 
     /**
@@ -200,11 +237,12 @@ public class TestPurchaseOrderCommandFactory {
      * @return the {@code CancelPurchaseOrder} instance.
      */
     public static CancelPurchaseOrder cancelPOWithInvalidReasonInstance() {
-        return CancelPurchaseOrder.newBuilder()
-                                  .setId(PURCHASE_ORDER_ID)
-                                  .setInvalid(true)
-                                  .setUserId(USER_ID)
-                                  .build();
+        final CancelPurchaseOrder result = CancelPurchaseOrder.newBuilder()
+                                                              .setId(PURCHASE_ORDER_ID)
+                                                              .setInvalid(true)
+                                                              .setUserId(USER_ID)
+                                                              .build();
+        return result;
     }
 
     /**
@@ -213,9 +251,11 @@ public class TestPurchaseOrderCommandFactory {
      * @return the {@code MarkPurchaseOrderAsDelivered} instance.
      */
     public static MarkPurchaseOrderAsDelivered markPurchaseOrderAsDeliveredInstance() {
-        return MarkPurchaseOrderAsDelivered.newBuilder()
-                                           .setId(PURCHASE_ORDER_ID)
-                                           .setWhoMarksAsDelivered(USER_ID)
-                                           .build();
+        final MarkPurchaseOrderAsDelivered result = MarkPurchaseOrderAsDelivered
+                .newBuilder()
+                .setId(PURCHASE_ORDER_ID)
+                .setWhoMarksAsDelivered(USER_ID)
+                .build();
+        return result;
     }
 }
