@@ -43,6 +43,7 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithDatesMismatchOrdersInstance;
+import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithEmptyListInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithEmptyOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithInvalidOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithNotActiveOrdersInstance;
@@ -58,7 +59,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Yegor Udovchenko
  */
-@DisplayName("CreatePurchaseOrder command should be interpreted by PurchaseOrderAggregate and")
+@DisplayName("`CreatePurchaseOrder` command should be interpreted by `PurchaseOrderAggregate` and")
 public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurchaseOrder> {
     @Override
     @BeforeEach
@@ -85,61 +86,75 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
     }
 
     @Test
-    @DisplayName("produce PurchaseOrderCreated, PurchaseOrderValidationPassed, " +
-            "PurchaseOrderSent events")
+    @DisplayName("produce `PurchaseOrderCreated`, `PurchaseOrderValidationPassed`, " +
+            "`PurchaseOrderSent` events")
     void produceCreatedValidationPassedAndSentEvent() {
         final CreatePurchaseOrder createPOcmd = createPurchaseOrderInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(createPOcmd));
         final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) messageList.get(0);
-        final PurchaseOrderValidationPassed purchaseOrderValidationPassed =
+        final PurchaseOrderValidationPassed poValidationPassed =
                 (PurchaseOrderValidationPassed) messageList.get(1);
         final PurchaseOrderSent purchaseOrderSent = (PurchaseOrderSent) messageList.get(2);
+        final PurchaseOrderId aggregateId = aggregate.getId();
+        final int messageListSize = messageList.size();
+        final Class<? extends Message> messageClassAtZero = messageList.get(0)
+                                                                       .getClass();
+        final Class<? extends Message> messageClassAtOne = messageList.get(1)
+                                                                      .getClass();
+        final Class<? extends Message> messageClassAtTwo = messageList.get(2)
+                                                                      .getClass();
+        final PurchaseOrderId purchaseOrderCreatedId = purchaseOrderCreated.getId();
+        final PurchaseOrderId poValidationPassedId = poValidationPassed.getId();
+        final PurchaseOrderId sentId = purchaseOrderSent.getPurchaseOrder()
+                                                        .getId();
+        final List<Order> sentOrders = purchaseOrderSent.getPurchaseOrder()
+                                                        .getOrderList();
+        final List<Order> storedOrders = aggregate.getState()
+                                                  .getOrderList();
 
-        assertNotNull(aggregate.getId());
-        assertEquals(3, messageList.size());
-        assertEquals(PurchaseOrderCreated.class, messageList.get(0)
-                                                            .getClass());
-        assertEquals(PurchaseOrderValidationPassed.class, messageList.get(1)
-                                                                     .getClass());
-        assertEquals(PurchaseOrderSent.class, messageList.get(2)
-                                                         .getClass());
-        assertEquals(purchaseOrderId, purchaseOrderCreated.getId());
-        assertEquals(purchaseOrderId, purchaseOrderValidationPassed.getId());
-        assertEquals(purchaseOrderId, purchaseOrderSent.getPurchaseOrder()
-                                                       .getId());
-        assertEquals(purchaseOrderSent.getPurchaseOrder()
-                                      .getOrderList(), aggregate.getState()
-                                                                .getOrderList());
+        assertNotNull(aggregateId);
+        assertEquals(3, messageListSize);
+        assertEquals(PurchaseOrderCreated.class, messageClassAtZero);
+        assertEquals(PurchaseOrderValidationPassed.class, messageClassAtOne);
+        assertEquals(PurchaseOrderSent.class, messageClassAtTwo);
+        assertEquals(purchaseOrderId, purchaseOrderCreatedId);
+        assertEquals(purchaseOrderId, poValidationPassedId);
+        assertEquals(purchaseOrderId, sentId);
+        assertEquals(sentOrders, storedOrders);
     }
 
     @Test
-    @DisplayName("produce PurchaseOrderCreated and PurchaseOrderValidationFailed events")
+    @DisplayName("produce `PurchaseOrderCreated` and `PurchaseOrderValidationFailed` events")
     void produceCreatedAndValidationFailedEvent() {
         final CreatePurchaseOrder createPOcmd = createPurchaseOrderWithInvalidOrdersInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(createPOcmd));
 
-        assertNotNull(aggregate.getId());
-        assertEquals(3, messageList.size());
-        assertEquals(PurchaseOrderCreated.class, messageList.get(0)
-                                                            .getClass());
-        assertEquals(PurchaseOrderValidationFailed.class, messageList.get(1)
-                                                                     .getClass());
+        final PurchaseOrderId aggregateId = aggregate.getId();
+        final int messageListSize = messageList.size();
+        final Class<? extends Message> messageClassAtZero = messageList.get(0)
+                                                                       .getClass();
+        final Class<? extends Message> messageClassAtOne = messageList.get(1)
+                                                                      .getClass();
         final PurchaseOrderCreated purchaseOrderCreated = (PurchaseOrderCreated) messageList.get(0);
-        final PurchaseOrderValidationFailed purchaseOrderValidationFailed =
+        final PurchaseOrderValidationFailed poValidationFailed =
                 (PurchaseOrderValidationFailed) messageList.get(1);
         final PurchaseOrderId actualCreatedId = purchaseOrderCreated.getId();
-        final PurchaseOrderId actualFailedId = purchaseOrderValidationFailed.getId();
-        final int actualFailureOrderCount = purchaseOrderValidationFailed.getFailureOrderCount();
+        final PurchaseOrderId actualFailedId = poValidationFailed.getId();
+        final int actualFailureOrderCount = poValidationFailed.getFailureOrderCount();
 
+        assertNotNull(aggregateId);
+        assertEquals(3, messageListSize);
+        assertEquals(PurchaseOrderCreated.class, messageClassAtZero);
+        assertEquals(PurchaseOrderValidationFailed.class, messageClassAtOne);
         assertEquals(purchaseOrderId, actualCreatedId);
         assertEquals(purchaseOrderId, actualFailedId);
         assertEquals(1, actualFailureOrderCount);
     }
 
     @Nested
-    @DisplayName("throw CannotCreatePurchaseOrder rejection ")
+    @DisplayName("throw `CannotCreatePurchaseOrder` rejection ")
     class CannotCreatePurchaseOrderTests {
 
         @Test
@@ -179,6 +194,17 @@ public class CreatePurchaseOrderTest extends PurchaseOrderCommandTest<CreatePurc
         @DisplayName("upon an attempt to add an order from another date")
         void cannotCreatePurchaseOrderForOrdersFromAnotherDate() {
             final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithDatesMismatchOrdersInstance();
+
+            final Throwable t = assertThrows(Throwable.class,
+                                             () -> dispatchCommand(aggregate,
+                                                                   envelopeOf(invalidCmd)));
+            assertThat(Throwables.getRootCause(t), instanceOf(CannotCreatePurchaseOrder.class));
+        }
+
+        @Test
+        @DisplayName("upon an attempt to add an empty order list")
+        void cannotCreatePurchaseOrderForEmptyOrderList() {
+            final CreatePurchaseOrder invalidCmd = createPurchaseOrderWithEmptyListInstance();
 
             final Throwable t = assertThrows(Throwable.class,
                                              () -> dispatchCommand(aggregate,

@@ -35,7 +35,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 public class ServiceFactory {
 
     // TODO 2/20/2018[yegor.udovchenko]: Github issue : Purchase Order Sending Service #44
-    private static PurchaseOrderSender poSenderInstance = null;
+    private static PurchaseOrderSender poSenderInstance =
+            (purchaseOrder, senderEmail, vendorEmail) -> {
+            };
 
     /** Prevents instantiation of this utility class. */
     private ServiceFactory() {
@@ -54,10 +56,9 @@ public class ServiceFactory {
      * Setter method is used to substitute {@code PurchaseOrderSender}
      * with a mock instance for tests.
      *
-     * <p>Applicable only in test runtime
-     * environment.
+     * <p>Applicable only in test runtime environment.
      *
-     * @param poSenderInstance purchase order sender
+     * @param poSenderInstance purchase order sender mock
      * @throws IllegalStateException if this method is called not from test
      */
     public static void setPoSenderInstance(

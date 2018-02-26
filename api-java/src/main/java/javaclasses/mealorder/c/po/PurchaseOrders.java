@@ -20,26 +20,56 @@
 
 package javaclasses.mealorder.c.po;
 
+import io.spine.net.EmailAddress;
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
+import javaclasses.mealorder.PurchaseOrderStatus;
+import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
+import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;
+import javaclasses.mealorder.c.command.MarkPurchaseOrderAsValid;
+import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
+import javaclasses.mealorder.c.event.PurchaseOrderCreated;
+import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
+import javaclasses.mealorder.c.event.PurchaseOrderSent;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationPassed;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
+import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
+import static javaclasses.mealorder.PurchaseOrderStatus.INVALID;
+import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
+import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
 
 /**
- * Validates command {@link CreatePurchaseOrder} to
- * creation {@link PurchaseOrder} instance.
+ * The utility class to manage the process of creation and modification
+ * of a {@link PurchaseOrder} instance.
+ *
+ * <p> Contains methods for {@code CreatePurchaseOrder} command validation,
+ * methods for creation event instances for {@code PurchaseOrderAggregate},
+ * methods for validation of purchase order status transitions.
  *
  * @author Yegor Udovchenko
  */
-public class PurchaseOrders {
+@SuppressWarnings("TypeMayBeWeakened" /* Private methods of this class should
+                                         not use parameters weakened to `ObjectOrBuilder` classes.
+                                         Those methods are used for validation and not for
+                                         construction.*/)
+class PurchaseOrders {
+    /**
+     * {@code MAX_SINGLE_DISH_COUNT} is the max number of equal dishes in
+     * the order.
+     */
     private static final int MAX_SINGLE_DISH_COUNT = 20;
 
     /** Prevents instantiation of this utility class. */
@@ -49,43 +79,36 @@ public class PurchaseOrders {
     /**
      * Performs the validation of a purchase order creation process.
      *
-     * <p>Checks each order in the list to match purchase order date
-     * and vendor. Also checks for empty dish list orders and orders with
+     * <p> Takes order list and purchase order identifier from {@code cmd}.
+     * Checks each order in the order list to match the purchase order date
+     * and vendor. Also checks for orders with an empty dish list and orders with
      * not {@code 'ORDER_ACTIVE'} status.
      *
-     * @param cmd command to create a purchase order.
-     * @return is allowed a purchase order creation.
+     * @param cmd command to create a purchase order
+     * @return {@code true} if a purchase order creation is allowed
      */
-    public static boolean isAllowedPurchaseOrderCreation(CreatePurchaseOrder cmd) {
+    static boolean isAllowedPurchaseOrderCreation(CreatePurchaseOrder cmd) {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
-        List<Order> ordersList = cmd.getOrderList();
+        final List<Order> ordersList = cmd.getOrderList();
 
-        final boolean result = ordersList.stream()
-                                         .allMatch(o -> doesOrderBelongToPO(purchaseOrderId, o));
-        return !ordersList.isEmpty() && result;
-    }
-
-    private static boolean doesOrderBelongToPO(PurchaseOrderId purchaseOrderId, Order order) {
-        final VendorId purchaseOrderVendorId = purchaseOrderId.getVendorId();
-        final LocalDate purchaseOrderDate = purchaseOrderId.getPoDate();
-
-        if (!(checkOrderIsActive(order) && checkOrderingDatesMatch(order, purchaseOrderDate))) {
-            return false;
-        }
-        return checkOrderNotEmpty(order) && checkVendorsMatch(order, purchaseOrderVendorId);
+        final boolean orderListNotEmpty = !ordersList.isEmpty();
+        final boolean ordersFitToPO = ordersList.stream()
+                                                .allMatch(
+                                                        o -> doesOrderFitToPO(purchaseOrderId, o));
+        return orderListNotEmpty && ordersFitToPO;
     }
 
     /**
      * Finds orders which contain more than {@code MAX_SINGLE_DISH_COUNT}
      * equal dishes.
      *
-     * <p>Those orders are considered invalid.
+     * <p> Those orders are considered invalid and returned as result.
      *
-     * @param orders list to check.
-     * @return list of invalid orders.(Empty if all orders are valid)
+     * @param orders the list to check
+     * @return list of invalid orders, empty if all orders are valid
      */
-    public static List<Order> findInvalidOrders(List<Order> orders) {
+    static List<Order> findInvalidOrders(List<Order> orders) {
         checkNotNull(orders);
         final List<Order> invalidOrders = orders.stream()
                                                 .filter(o -> !isOrderValid(o))
@@ -93,11 +116,228 @@ public class PurchaseOrders {
         return invalidOrders;
     }
 
-    public static boolean hasInvalidOrders(List<Order> orders) {
+    /**
+     * Checks order list for those which contain more than {@code MAX_SINGLE_DISH_COUNT}
+     * equal dishes.
+     *
+     * @param orders the list to check
+     * @return {@code true} if any invalid order was found.
+     */
+    static boolean hasInvalidOrders(List<Order> orders) {
         checkNotNull(orders);
         final boolean result = orders.stream()
                                      .anyMatch(o -> !isOrderValid(o));
         return result;
+    }
+
+    /**
+     * Creates {@code PurchaseOrderCreated} instance.
+     *
+     * @param cmd the command which fired an event
+     * @return {@code PurchaseOrderCreated} event instance
+     */
+    static PurchaseOrderCreated createPOCreatedEvent(CreatePurchaseOrder cmd) {
+        final PurchaseOrderId id = cmd.getId();
+        final UserId whoCreates = cmd.getWhoCreates();
+        final List<Order> orderList = cmd.getOrderList();
+        final PurchaseOrderCreated result = PurchaseOrderCreated.newBuilder()
+                                                                .setId(id)
+                                                                .setWhoCreated(whoCreates)
+                                                                .setWhenCreated(getCurrentTime())
+                                                                .addAllOrder(orderList)
+                                                                .build();
+        return result;
+    }
+
+    /**
+     * Creates {@code PurchaseOrderValidationFailed} instance.
+     *
+     * @param cmd           the command which fired an event
+     * @param invalidOrders list of orders which validation has failed
+     * @return {@code PurchaseOrderValidationFailed} event instance
+     */
+    static PurchaseOrderValidationFailed createPOValidationFailedEvent(CreatePurchaseOrder cmd,
+                                                                       List<Order> invalidOrders) {
+        final PurchaseOrderId id = cmd.getId();
+        final PurchaseOrderValidationFailed result = PurchaseOrderValidationFailed
+                .newBuilder()
+                .setId(id)
+                .addAllFailureOrder(invalidOrders)
+                .setWhenFailed(getCurrentTime())
+                .build();
+
+        return result;
+    }
+
+    /**
+     * Creates {@code PurchaseOrderValidationPassed} instance.
+     *
+     * @param cmd the command which fired an event
+     * @return {@code PurchaseOrderValidationPassed} event instance
+     */
+    static PurchaseOrderValidationPassed createPOValidationPassedEvent(CreatePurchaseOrder cmd) {
+        final PurchaseOrderId id = cmd.getId();
+        final PurchaseOrderValidationPassed result = PurchaseOrderValidationPassed
+                .newBuilder()
+                .setId(id)
+                .setWhenPassed(getCurrentTime())
+                .build();
+
+        return result;
+    }
+
+    /**
+     * Creates {@code PurchaseOrderValidationOverruled} instance.
+     *
+     * @param cmd the command which fired an event
+     * @return {@code PurchaseOrderValidationOverruled} event instance
+     */
+    static PurchaseOrderValidationOverruled createPOValidationOverruledEvent(
+            MarkPurchaseOrderAsValid cmd) {
+        final PurchaseOrderId id = cmd.getId();
+        final UserId userId = cmd.getUserId();
+        final String reason = cmd.getReason();
+        final PurchaseOrderValidationOverruled result = PurchaseOrderValidationOverruled
+                .newBuilder()
+                .setId(id)
+                .setWhoOverruled(userId)
+                .setWhenOverruled(getCurrentTime())
+                .setReason(reason)
+                .build();
+
+        return result;
+    }
+
+    /**
+     * Creates {@code PurchaseOrderDelivered} instance.
+     *
+     * @param cmd the command which fired an event
+     * @return {@code PurchaseOrderDelivered} event instance
+     */
+    static PurchaseOrderDelivered createPOMarkedAsDeliveredEvent(MarkPurchaseOrderAsDelivered cmd) {
+        final PurchaseOrderId id = cmd.getId();
+        final UserId whoMarksAsDelivered = cmd.getWhoMarksAsDelivered();
+        final PurchaseOrderDelivered result = PurchaseOrderDelivered
+                .newBuilder()
+                .setId(id)
+                .setWhoMarkedAsDelivered(whoMarksAsDelivered)
+                .setWhenDelievered(getCurrentTime())
+                .build();
+
+        return result;
+    }
+
+    /**
+     * Creates {@code PurchaseOrderCanceled} instance.
+     *
+     * @param cmd    the command which fired an event
+     * @param orders list of orders which were canceled
+     * @return {@code PurchaseOrderCanceled} event instance
+     */
+    @SuppressWarnings("all") /* To not use `default` switch branch*/
+    static PurchaseOrderCanceled createPOCanceledEvent(CancelPurchaseOrder cmd,
+                                                       List<Order> orders) {
+        final PurchaseOrderId purchaseOrderId = cmd.getId();
+        final UserId userId = cmd.getUserId();
+        final PurchaseOrderCanceled.Builder builder = PurchaseOrderCanceled
+                .newBuilder()
+                .setId(purchaseOrderId)
+                .setUserId(userId)
+                .addAllOrder(orders)
+                .setWhenCanceled(getCurrentTime());
+
+        switch (cmd.getReasonCase()) {
+            case INVALID:
+                final boolean value = cmd.getInvalid();
+                builder.setInvalid(value);
+                break;
+            case CUSTOM_REASON:
+                final String customReason = cmd.getCustomReason();
+                builder.setCustomReason(customReason);
+                break;
+            case REASON_NOT_SET:
+                builder.setCustomReason("Reason not set.");
+                break;
+        }
+        return builder.build();
+    }
+
+    /**
+     * Creates {@code PurchaseOrderSent} instance.
+     *
+     * @param purchaseOrder the purchase order to send
+     * @param senderEmail   the sender email address
+     * @param vendorEmail   the vendor email address
+     * @return {@code PurchaseOrderSent} event instance
+     */
+    static PurchaseOrderSent createPOSentEvent(PurchaseOrder purchaseOrder,
+                                               EmailAddress senderEmail,
+                                               EmailAddress vendorEmail) {
+        final PurchaseOrderSent result = PurchaseOrderSent.newBuilder()
+                                                          .setPurchaseOrder(purchaseOrder)
+                                                          .setSenderEmail(senderEmail)
+                                                          .setVendorEmail(vendorEmail)
+                                                          .build();
+        return result;
+    }
+
+    /**
+     * Creates {@code PurchaseOrder} instance.
+     *
+     * @param cmd the command to get {@code PurchaseOrder} state from
+     * @return {@code PurchaseOrder} the created instance
+     */
+    static PurchaseOrder createPurchaseOrderInstance(CreatePurchaseOrder cmd) {
+        final PurchaseOrderId id = cmd.getId();
+        final List<Order> orderList = cmd.getOrderList();
+        final PurchaseOrder result = PurchaseOrder.newBuilder()
+                                                  .setId(id)
+                                                  .setStatus(VALID)
+                                                  .addAllOrder(orderList)
+                                                  .build();
+        return result;
+    }
+
+    /**
+     * Check {@code status} value for availability to transit to
+     * {@code VALID} state.
+     *
+     * @param status value to check
+     * @return {@code true} if transition is allowed
+     */
+    static boolean isAllowedToMarkAsValid(PurchaseOrderStatus status) {
+        return status == INVALID;
+    }
+
+    /**
+     * Check {@code status} value for availability to transit to
+     * {@code DELIVERED} state.
+     *
+     * @param status value to check
+     * @return {@code true} if transition is allowed
+     */
+    static boolean isAllowedToMarkAsDelivered(PurchaseOrderStatus status) {
+        return status == SENT;
+    }
+
+    /**
+     * Check {@code status} value for availability to transit to
+     * {@code CANCEL} state.
+     *
+     * @param status value to check
+     * @return {@code true} if transition is allowed
+     */
+    static boolean isAllowedToCancel(PurchaseOrderStatus status) {
+        return status != DELIVERED;
+    }
+
+    @SuppressWarnings("OverlyComplexBooleanExpression")
+    private static boolean doesOrderFitToPO(PurchaseOrderId purchaseOrderId, Order order) {
+        final VendorId purchaseOrderVendorId = purchaseOrderId.getVendorId();
+        final LocalDate purchaseOrderDate = purchaseOrderId.getPoDate();
+
+        return checkOrderIsActive(order) && checkOrderingDatesMatch(order, purchaseOrderDate) &&
+                checkOrderNotEmpty(order) && checkVendorsMatch(order, purchaseOrderVendorId);
     }
 
     private static boolean isOrderValid(Order order) {
@@ -112,19 +352,20 @@ public class PurchaseOrders {
     }
 
     private static boolean checkOrderingDatesMatch(Order order, LocalDate poDate) {
-        return order.getId()
-                    .getOrderDate()
-                    .equals(poDate);
+        final LocalDate orderDate = order.getId()
+                                         .getOrderDate();
+        return orderDate.equals(poDate);
     }
 
     private static boolean checkOrderNotEmpty(Order order) {
-        return order.getDishCount() != 0;
+        final int dishCount = order.getDishCount();
+        return dishCount != 0;
     }
 
     private static boolean checkVendorsMatch(Order order, VendorId vendorId) {
-        return order.getId()
-                    .getVendorId()
-                    .equals(vendorId);
+        final VendorId orderVendorId = order.getId()
+                                            .getVendorId();
+        return orderVendorId.equals(vendorId);
     }
 
     private static boolean checkOrderIsActive(Order order) {

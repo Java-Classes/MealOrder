@@ -23,7 +23,7 @@ package javaclasses.mealorder;
 import io.spine.net.EmailAddress;
 
 /**
- * Utility interface managing the sending process of a purchase order
+ * Interface for service managing the sending process of a purchase order
  * to the vendor.
  *
  * @author Yegor Udovchenko
@@ -34,10 +34,8 @@ public interface PurchaseOrderSender {
      * Sends purchase order to the vendor email address.
      *
      * @param purchaseOrder purchase order to send
-     * @param senderEmail   the email of the sender
-     * @param vendorEmail   the email of the vendor
+     * @param senderEmail   the sender email address
+     * @param vendorEmail   the vendor email address
      */
-    void send(PurchaseOrder purchaseOrder,
-              EmailAddress senderEmail,
-              EmailAddress vendorEmail);
+    void send(PurchaseOrder purchaseOrder, EmailAddress senderEmail, EmailAddress vendorEmail);
 }

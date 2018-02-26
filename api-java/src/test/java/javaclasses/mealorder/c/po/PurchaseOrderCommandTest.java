@@ -25,7 +25,6 @@ import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.mealorder.PurchaseOrderId;
-import javaclasses.mealorder.c.po.PurchaseOrderAggregate;
 import javaclasses.mealorder.PurchaseOrderSender;
 import javaclasses.mealorder.ServiceFactory;
 
@@ -57,7 +56,8 @@ abstract class PurchaseOrderCommandTest<C extends Message>
     @Override
     protected PurchaseOrderAggregate createAggregate() {
         purchaseOrderId = createPurchaseOrderId();
-        final PurchaseOrderAggregate purchaseOrderAggregate = new PurchaseOrderAggregate(purchaseOrderId);
+        final PurchaseOrderAggregate purchaseOrderAggregate = new PurchaseOrderAggregate(
+                purchaseOrderId);
         return purchaseOrderAggregate;
     }
 
@@ -73,7 +73,7 @@ abstract class PurchaseOrderCommandTest<C extends Message>
                               .build();
     }
 
-    private void setSenderMock() {
+    private static void setSenderMock() {
         final PurchaseOrderSender purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
         ServiceFactory.setPoSenderInstance(purchaseOrderSenderMock);
     }

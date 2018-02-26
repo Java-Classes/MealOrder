@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Yegor Udovchenko
  */
-@DisplayName("MarkPurchaseOrderAsValid command should be interpreted by PurchaseOrderAggregate and")
+@DisplayName("`MarkPurchaseOrderAsValid` command should be interpreted by `PurchaseOrderAggregate` and")
 public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrderAsValid> {
     @Override
     @BeforeEach
@@ -58,7 +58,7 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
     }
 
     @Test
-    @DisplayName("set the purchase order status to 'SENT'")
+    @DisplayName("set the purchase order status to `SENT`")
     void markAsValid() {
         dispatchCreatedWithInvalidStateCmd();
         final MarkPurchaseOrderAsValid markAsValidCmd = markPurchaseOrderAsValidInstance();
@@ -72,19 +72,18 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
     }
 
     @Test
-    @DisplayName("produce PurchaseOrderValidationOverruled and event")
+    @DisplayName("produce `PurchaseOrderValidationOverruled` event")
     void producePairOFEvent() {
         dispatchCreatedWithInvalidStateCmd();
         final MarkPurchaseOrderAsValid markAsValidCmd = markPurchaseOrderAsValidInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(markAsValidCmd));
-
-        assertNotNull(aggregate.getId());
-        assertEquals(2, messageList.size());
-        assertEquals(PurchaseOrderValidationOverruled.class, messageList.get(0)
-                                                                        .getClass());
-        assertEquals(PurchaseOrderSent.class, messageList.get(1)
-                                                         .getClass());
+        final PurchaseOrderId aggregateId = aggregate.getId();
+        final int messageListSize = messageList.size();
+        final Class<? extends Message> messageClassAtZero = messageList.get(0)
+                                                                       .getClass();
+        final Class<? extends Message> messageClassAtOne = messageList.get(1)
+                                                                      .getClass();
         final PurchaseOrderValidationOverruled poValidationOverruled =
                 (PurchaseOrderValidationOverruled) messageList.get(0);
         final PurchaseOrderSent purchaseOrderSent = (PurchaseOrderSent) messageList.get(1);
@@ -92,13 +91,17 @@ public class MarkPOAsValidTest extends PurchaseOrderCommandTest<MarkPurchaseOrde
         final PurchaseOrderId sentActualId = purchaseOrderSent.getPurchaseOrder()
                                                               .getId();
 
+        assertNotNull(aggregateId);
+        assertEquals(2, messageListSize);
+        assertEquals(PurchaseOrderValidationOverruled.class, messageClassAtZero);
+        assertEquals(PurchaseOrderSent.class, messageClassAtOne);
         assertEquals(purchaseOrderId, overruledActualId);
         assertEquals(purchaseOrderId, sentActualId);
     }
 
     @Test
-    @DisplayName("throw CannotOverruleValidationOfNotInvalidPO rejection " +
-            "upon an attempt to mark PO with not invalid state")
+    @DisplayName("throw `CannotOverruleValidationOfNotInvalidPO` rejection " +
+            "upon an attempt to mark purchase order with not `INVALID` state")
     void cannotOverrulePurchaseOrderValidation() {
         final MarkPurchaseOrderAsValid markAsValidCmd = markPurchaseOrderAsValidInstance();
 

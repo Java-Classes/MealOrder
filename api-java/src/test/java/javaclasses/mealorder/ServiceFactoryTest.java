@@ -45,7 +45,7 @@ class ServiceFactoryTest {
 
     @Test
     @DisplayName("return mock instance in test mode")
-    void returnsInTest() {
+    void returnsInstanceInTest() {
         ServiceFactory.setPoSenderInstance(mock(PurchaseOrderSender.class));
         assertThat(ServiceFactory.getPurchaseOrderSender()
                                  .getClass(), instanceOf(Class.class));
@@ -53,7 +53,7 @@ class ServiceFactoryTest {
 
     @Test
     @DisplayName("throw `IllegalStateException` upon an attempt " +
-            "to set Purchase Order instance in production")
+            "to set `PurchaseOrderSender` instance in production")
     void setPOSenderInstanceInProduction() {
         Environment.getInstance()
                    .setToProduction();

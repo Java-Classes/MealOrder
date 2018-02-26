@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Yegor Udovchenko
  */
-@DisplayName("MarkPurchaseOrderAsDelivered command should be interpreted by PurchaseOrderAggregate and")
+@DisplayName("`MarkPurchaseOrderAsDelivered` command should be interpreted by `PurchaseOrderAggregate` and")
 public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchaseOrderAsDelivered> {
     @Override
     @BeforeEach
@@ -57,7 +57,7 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
     }
 
     @Test
-    @DisplayName("set the purchase order status to 'DELIVERED'")
+    @DisplayName("set the purchase order status to `DELIVERED`")
     void markAsDelivered() {
         dispatchCreatedCmd();
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
@@ -72,26 +72,29 @@ public class MarkPOAsDeliveredTest extends PurchaseOrderCommandTest<MarkPurchase
     }
 
     @Test
-    @DisplayName("produce PurchaseOrderDelivered event")
+    @DisplayName("produce `PurchaseOrderDelivered` event")
     void producePurchaseOrderDeliveredEvent() {
         dispatchCreatedCmd();
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
                 markPurchaseOrderAsDeliveredInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(markAsDeliveredCmd));
-        assertNotNull(aggregate.getId());
-        assertEquals(1, messageList.size());
-        assertEquals(PurchaseOrderDelivered.class, messageList.get(0)
-                                                              .getClass());
         final PurchaseOrderDelivered poDelivered = (PurchaseOrderDelivered) messageList.get(0);
+        final PurchaseOrderId aggregateId = aggregate.getId();
+        final int messageListSize = messageList.size();
+        final Class<? extends Message> messageAtZeroClass = messageList.get(0)
+                                                                       .getClass();
         final PurchaseOrderId actualId = poDelivered.getId();
 
+        assertNotNull(aggregateId);
+        assertEquals(1, messageListSize);
+        assertEquals(PurchaseOrderDelivered.class, messageAtZeroClass);
         assertEquals(purchaseOrderId, actualId);
     }
 
     @Test
-    @DisplayName("throw CannotMarkPurchaseOrderAsDelivered rejection " +
-            "upon an attempt to mark PO with not sent state as delivered")
+    @DisplayName("throw `CannotMarkPurchaseOrderAsDelivered` rejection " +
+            "upon an attempt to mark purchase order with not `SENT` state as delivered")
     void cannotMarkPurchaseOrderAsDelivered() {
         final MarkPurchaseOrderAsDelivered markAsDeliveredCmd =
                 markPurchaseOrderAsDeliveredInstance();

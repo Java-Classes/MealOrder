@@ -24,7 +24,6 @@ import io.spine.time.LocalDate;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.c.po.PurchaseOrderAggregate;
 import javaclasses.mealorder.c.command.CancelPurchaseOrder;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 import javaclasses.mealorder.c.command.MarkPurchaseOrderAsDelivered;
@@ -38,11 +37,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
- * Utility class for working with {@link PurchaseOrderAggregate} rejection.
+ * Utility class for working with {@link PurchaseOrderAggregateRejections}.
  *
  * @author Yegor Udovchenko
  */
-public class PurchaseOrderAggregateRejections {
+class PurchaseOrderAggregateRejections {
 
     /** Prevents instantiation of this utility class. */
     private PurchaseOrderAggregateRejections() {
@@ -53,16 +52,18 @@ public class PurchaseOrderAggregateRejections {
      * according to the passed parameters.
      *
      * @param cmd the {@code CreatePurchaseOrder} command which thrown the rejection
-     * @throws CannotCreatePurchaseOrder the rejection to throw
+     * @throws CannotCreatePurchaseOrder if the {@code CreatePurchaseOrder} command is invalid
      */
-    public static void throwCannotCreatePurchaseOrder(CreatePurchaseOrder cmd)
+    static CannotCreatePurchaseOrder cannotCreatePurchaseOrder(CreatePurchaseOrder cmd)
             throws CannotCreatePurchaseOrder {
         checkNotNull(cmd);
         final VendorId vendorId = cmd.getId()
                                      .getVendorId();
         final LocalDate poDate = cmd.getId()
                                     .getPoDate();
-        throw new CannotCreatePurchaseOrder(vendorId, poDate, getCurrentTime());
+        final CannotCreatePurchaseOrder cannotCreatePurchaseOrder =
+                new CannotCreatePurchaseOrder(vendorId, poDate, getCurrentTime());
+        throw cannotCreatePurchaseOrder;
     }
 
     /**
@@ -70,15 +71,17 @@ public class PurchaseOrderAggregateRejections {
      * according to the passed parameters.
      *
      * @param cmd the {@code MarkPurchaseOrderAsDelivered} command which thrown the rejection
-     * @throws CannotMarkPurchaseOrderAsDelivered the rejection to throw
+     * @throws CannotMarkPurchaseOrderAsDelivered if the purchase order is not allowed to
+     *                                            mark as delivered
      */
-    public static void throwCannotMarkPurchaseOrderAsDelivered(
+    static CannotMarkPurchaseOrderAsDelivered cannotMarkPurchaseOrderAsDelivered(
             MarkPurchaseOrderAsDelivered cmd) throws CannotMarkPurchaseOrderAsDelivered {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getWhoMarksAsDelivered();
-        throw new CannotMarkPurchaseOrderAsDelivered(purchaseOrderId, userId,
-                                                     getCurrentTime());
+        final CannotMarkPurchaseOrderAsDelivered cannotMarkPOAsDelivered =
+                new CannotMarkPurchaseOrderAsDelivered(purchaseOrderId, userId, getCurrentTime());
+        throw cannotMarkPOAsDelivered;
     }
 
     /**
@@ -86,14 +89,17 @@ public class PurchaseOrderAggregateRejections {
      * according to the passed parameters.
      *
      * @param cmd the {@code CancelPurchaseOrder} command which thrown the rejection
-     * @throws CannotCancelDeliveredPurchaseOrder the rejection to throw
+     * @throws CannotCancelDeliveredPurchaseOrder upon an attempt to mark delivered purchase
+     *                                            order as canceled
      */
-    public static void throwCannotCancelDeliveredPurchaseOrder(
+    static CannotCancelDeliveredPurchaseOrder cannotCancelDeliveredPurchaseOrder(
             CancelPurchaseOrder cmd) throws CannotCancelDeliveredPurchaseOrder {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
-        throw new CannotCancelDeliveredPurchaseOrder(purchaseOrderId, userId, getCurrentTime());
+        final CannotCancelDeliveredPurchaseOrder cannotCancelDeliveredPO =
+                new CannotCancelDeliveredPurchaseOrder(purchaseOrderId, userId, getCurrentTime());
+        throw cannotCancelDeliveredPO;
     }
 
     /**
@@ -101,13 +107,18 @@ public class PurchaseOrderAggregateRejections {
      * according to the passed parameters.
      *
      * @param cmd the {@code CancelPurchaseOrder} command which thrown the rejection
-     * @throws CannotOverruleValidationOfNotInvalidPO the rejection to throw
+     * @throws CannotOverruleValidationOfNotInvalidPO upon an attempt to overrule validation of
+     *                                                not invalid purchase order
      */
-    public static void throwCannotOverruleValidationOfNotInvalidPO(
+    static CannotOverruleValidationOfNotInvalidPO cannotOverruleValidationOfNotInvalidPO(
             MarkPurchaseOrderAsValid cmd) throws CannotOverruleValidationOfNotInvalidPO {
         checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
         final UserId userId = cmd.getUserId();
-        throw new CannotOverruleValidationOfNotInvalidPO(purchaseOrderId, userId, getCurrentTime());
+        final CannotOverruleValidationOfNotInvalidPO cannotOverruleValidation =
+                new CannotOverruleValidationOfNotInvalidPO(purchaseOrderId,
+                                                           userId,
+                                                           getCurrentTime());
+        throw cannotOverruleValidation;
     }
 }
