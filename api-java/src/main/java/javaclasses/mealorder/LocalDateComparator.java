@@ -24,18 +24,22 @@ import io.spine.time.LocalDate;
 
 import java.util.Comparator;
 
+import static java.lang.String.format;
+
 /**
  * @author Yurii Haidamaka
  */
 public class LocalDateComparator implements Comparator<LocalDate> {
 
     /**
-     * Compares its two arguments for order.  Returns a negative integer,
-     * zero, or a positive integer as the first argument is less than, equal
-     * to, or greater than the second.
+     * Compares its two arguments for order.
      *
-     * @param o1 the first LocalDate object to be compared.
-     * @param o2 the second LocalDate object to be compared.
+     * <p>Returns a negative integer,zero, or a positive integer
+     * as the first argument is less than, equal to, or greater
+     * than the second.
+     *
+     * @param o1 the first LocalDate object to be compared
+     * @param o2 the second LocalDate object to be compared
      * @return a negative integer, zero, or a positive integer as the
      * first date is less than, equal to, or greater than the
      * second.
@@ -43,9 +47,9 @@ public class LocalDateComparator implements Comparator<LocalDate> {
     @Override
     public int compare(LocalDate o1, LocalDate o2) {
         final String o1String =
-                String.format("%04d%02d%02d", o1.getYear(), o1.getMonth().getNumber(), o1.getDay());
+                format("%04d%02d%02d", o1.getYear(), o1.getMonth().getNumber(), o1.getDay());
         final String o2String =
-                String.format("%04d%02d%02d", o2.getYear(), o2.getMonth().getNumber(), o2.getDay());
+                format("%04d%02d%02d", o2.getYear(), o2.getMonth().getNumber(), o2.getDay());
 
         return o1String.compareTo(o2String);
     }
