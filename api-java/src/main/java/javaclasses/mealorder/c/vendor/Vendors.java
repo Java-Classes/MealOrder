@@ -65,10 +65,10 @@ class Vendors {
 
     private static LocalDate getCurrentDate() {
         final java.time.LocalDate currentDateJava = java.time.LocalDate.now();
+        final MonthOfYear currentMonthOfYear = MonthOfYear.valueOf(currentDateJava.getMonthValue());
         final LocalDate currentDate = LocalDate.newBuilder()
                                                .setYear(currentDateJava.getYear())
-                                               .setMonth(MonthOfYear.valueOf(
-                                                       currentDateJava.getMonthValue()))
+                                               .setMonth(currentMonthOfYear)
                                                .setDay(currentDateJava.getDayOfMonth())
                                                .build();
         return currentDate;
