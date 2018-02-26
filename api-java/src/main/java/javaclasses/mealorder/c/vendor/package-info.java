@@ -20,9 +20,9 @@
 
 /**
  * This package contains implementation for classes which provides
- * methods to process OrderAggregate.
+ * methods to process {@code VendorAggregate}.
  */
 @ParametersAreNonnullByDefault
-package javaclasses.mealorder.c.order;
+package javaclasses.mealorder.c.vendor;
 
 import javax.annotation.ParametersAreNonnullByDefault;
