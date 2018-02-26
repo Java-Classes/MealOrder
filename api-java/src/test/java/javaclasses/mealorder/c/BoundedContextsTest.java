@@ -29,7 +29,6 @@ import io.spine.test.Tests;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.Vendor;
-import javaclasses.mealorder.c.BoundedContexts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -88,7 +87,7 @@ class BoundedContextsTest {
                 InMemoryStorageFactory.newInstance(
                         BoundedContext.newName("MealOrderBoundedContext"), false);
 
-        BoundedContext boundedContext = BoundedContexts.create(inMemoryFactory);
+        final BoundedContext boundedContext = BoundedContexts.create(inMemoryFactory);
 
         final Optional<Repository> vendorRepository = boundedContext.findRepository(Vendor.class);
         final Optional<Repository> poRepository = boundedContext.findRepository(

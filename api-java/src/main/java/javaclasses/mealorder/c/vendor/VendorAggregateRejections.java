@@ -40,33 +40,33 @@ public class VendorAggregateRejections {
     }
 
     /**
-     * Constructs and throws the {@link VendorAlreadyExists} rejection
+     * Constructs and returns the {@link VendorAlreadyExists} rejection
      * according to the passed parameters.
      *
      * @param cmd the {@code AddVendor} command which thrown the rejection
-     * @throws VendorAlreadyExists the rejection to throw
+     * @return VendorAlreadyExists the rejection to return
      */
-    public static void throwVendorAlreadyExists(AddVendor cmd) throws VendorAlreadyExists {
+    public static VendorAlreadyExists vendorAlreadyExists(AddVendor cmd) {
         checkNotNull(cmd);
         final VendorAlreadyExists vendorAlreadyExists = new VendorAlreadyExists(cmd.getVendorId(),
                                                                                 cmd.getVendorName(),
                                                                                 getCurrentTime());
-        throw vendorAlreadyExists;
+        return vendorAlreadyExists;
     }
 
     /**
-     * Constructs and throws the {@link CannotSetDateRange} rejection
+     * Constructs and returns the {@link CannotSetDateRange} rejection
      * according to the passed parameters.
      *
      * @param cmd the {@code SetDateRangeForMenu} command which thrown the rejection
-     * @throws CannotSetDateRange the rejection to throw
+     * @return CannotSetDateRange the rejection to return
      */
-    public static void throwCannotSetDateRange(SetDateRangeForMenu cmd) throws CannotSetDateRange {
+    public static CannotSetDateRange cannotSetDateRange(SetDateRangeForMenu cmd) {
         checkNotNull(cmd);
         final CannotSetDateRange cannotSetDateRange = new CannotSetDateRange(cmd.getVendorId(),
                                                                              cmd.getMenuId(),
                                                                              cmd.getMenuDateRange(),
                                                                              getCurrentTime());
-        throw cannotSetDateRange;
+        return cannotSetDateRange;
     }
 }

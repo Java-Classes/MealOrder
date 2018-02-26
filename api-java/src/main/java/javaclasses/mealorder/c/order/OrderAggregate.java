@@ -53,6 +53,7 @@ import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -60,12 +61,12 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
 import static javaclasses.mealorder.OrderStatus.ORDER_PROCESSED;
 import static javaclasses.mealorder.OrderStatus.ORDER_UNDEFINED;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.AddDishToOrderRejections.throwCannotAddDishToNotActiveOrder;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.AddDishToOrderRejections.throwDishVendorMismatch;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.CancelOrderRejections.throwCannotCancelProcessedOrder;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.throwOrderAlreadyExists;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveDishFromNotActiveOrder;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.throwCannotRemoveMissingDish;
+import static javaclasses.mealorder.c.order.OrderAggregateRejections.AddDishToOrderRejections.cannotAddDishToNotActiveOrder;
+import static javaclasses.mealorder.c.order.OrderAggregateRejections.AddDishToOrderRejections.dishVendorMismatch;
+import static javaclasses.mealorder.c.order.OrderAggregateRejections.CancelOrderRejections.cannotCancelProcessedOrder;
+import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.orderAlreadyExists;
+import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.cannotRemoveDishFromNotActiveOrder;
+import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.cannotRemoveMissingDish;
 import static javaclasses.mealorder.c.order.Orders.checkMenuAvailability;
 
 /**
@@ -94,7 +95,7 @@ public class OrderAggregate extends Aggregate<OrderId,
         checkMenuAvailability(cmd);
         final OrderStatus orderStatus = getState().getStatus();
         if (orderStatus != ORDER_UNDEFINED && orderStatus != ORDER_CANCELED) {
-            throwOrderAlreadyExists(cmd);
+            throw orderAlreadyExists(cmd);
         }
         final OrderCreated result = OrderCreated.newBuilder()
                                                 .setOrderId(orderId)
@@ -111,7 +112,7 @@ public class OrderAggregate extends Aggregate<OrderId,
 
         final OrderStatus orderStatus = getState().getStatus();
         if (orderStatus != ORDER_ACTIVE) {
-            throwCannotAddDishToNotActiveOrder(cmd, orderStatus);
+            throw cannotAddDishToNotActiveOrder(cmd, orderStatus);
         }
 
         final VendorId dishVendorId = dish.getId()
@@ -119,7 +120,7 @@ public class OrderAggregate extends Aggregate<OrderId,
                                           .getVendorId();
         final VendorId orderVendorId = orderId.getVendorId();
         if (!orderVendorId.equals(dishVendorId)) {
-            throwDishVendorMismatch(cmd);
+            throw dishVendorMismatch(cmd);
         }
 
         final DishAddedToOrder result = DishAddedToOrder.newBuilder()
@@ -136,24 +137,30 @@ public class OrderAggregate extends Aggregate<OrderId,
         final DishId dishId = cmd.getDishId();
 
         if (getState().getStatus() != ORDER_ACTIVE) {
-            throwCannotRemoveDishFromNotActiveOrder(cmd, getState().getStatus());
+            throw cannotRemoveDishFromNotActiveOrder(cmd, getState().getStatus());
         }
 
         final List<Dish> dishesList = getState().getDishList();
 
-        java.util.Optional<Dish> dish = dishesList.stream()
-                                                  .filter(d -> d.getId()
-                                                                .equals(dishId))
-                                                  .findFirst();
-
-        if (!dish.isPresent()) {
-            throwCannotRemoveMissingDish(cmd);
-        }
+        final Dish dish = getDishFromOrder(cmd, dishId, dishesList);
         DishRemovedFromOrder result = DishRemovedFromOrder.newBuilder()
                                                           .setOrderId(orderId)
-                                                          .setDish(dish.get())
+                                                          .setDish(dish)
                                                           .build();
         return result;
+    }
+
+    private Dish getDishFromOrder(RemoveDishFromOrder cmd, DishId dishId,
+                                  List<Dish> dishesList) throws CannotRemoveMissingDish {
+        Optional<Dish> dish = dishesList.stream()
+                                        .filter(d -> d.getId()
+                                                      .equals(dishId))
+                                        .findFirst();
+
+        if (!dish.isPresent()) {
+            throw cannotRemoveMissingDish(cmd);
+        }
+        return dish.get();
     }
 
     @Assign
@@ -162,7 +169,7 @@ public class OrderAggregate extends Aggregate<OrderId,
         final UserId userId = cmd.getWhoCancels();
 
         if (getState().getStatus() == ORDER_PROCESSED) {
-            throwCannotCancelProcessedOrder(cmd);
+            throw cannotCancelProcessedOrder(cmd);
         }
 
         final OrderCanceled result = OrderCanceled.newBuilder()
@@ -185,6 +192,7 @@ public class OrderAggregate extends Aggregate<OrderId,
      * Checks if the order with the same id was already created and cancelled. In this case
      * removes all dishes that was added before cancellation.
      * </p>
+     *
      * @param event
      */
     @Apply

@@ -21,14 +21,12 @@
 package javaclasses.mealorder.c.order;
 
 import com.google.common.base.Optional;
-import io.spine.server.aggregate.AggregateRepository;
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.LocalDateComparator;
 import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.OrderId;
-import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CreateOrder;
 import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.vendor.VendorAggregate;
@@ -38,7 +36,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.throwMenuNotAvailable;
+import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.menuNotAvailable;
 
 /**
  * Utility class that contains static methods that operate on order aggregate.
@@ -78,9 +76,7 @@ public class Orders {
     public static Optional<VendorAggregate> getVendorAggregateForOrder(OrderId orderId) throws
                                                                                         MenuNotAvailable {
         checkNotNull(orderId);
-        final AggregateRepository<VendorId, VendorAggregate> vendorRepository =
-                VendorRepository.getInstance()
-                                .getRepository();
+        final VendorRepository vendorRepository = VendorRepository.getRepository();
 
         final Optional<VendorAggregate> vendor = vendorRepository.find(orderId.getVendorId());
 
@@ -101,7 +97,7 @@ public class Orders {
         final MenuId menuId = cmd.getMenuId();
         final Optional<VendorAggregate> vendor = getVendorAggregateForOrder(orderId);
         if (!vendor.isPresent()) {
-            throwMenuNotAvailable(cmd);
+            throw menuNotAvailable(cmd);
         }
         final VendorAggregate vendorAggregateForOrder = vendor.get();
         final List<Menu> menus = vendorAggregateForOrder.getState()
@@ -115,7 +111,7 @@ public class Orders {
         if (!menu.isPresent() || !checkRangeIncludesDate(menu.get()
                                                              .getMenuDateRange(),
                                                          orderDate)) {
-            throwMenuNotAvailable(cmd);
+            throw menuNotAvailable(cmd);
         }
     }
 }

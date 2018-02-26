@@ -22,20 +22,23 @@ package javaclasses.mealorder;
 
 import io.spine.Environment;
 
+import static io.spine.util.Exceptions.newIllegalStateException;
+
 /**
  * The utility class representing service factory.
- * Used by {@code PurchaseOrderAggregate} upon creation of
+ *
+ * <p>Used by {@code PurchaseOrderAggregate} upon creation of
  * a purchase order.
  *
  * @author Yegor Udovchenko
  */
 public class ServiceFactory {
 
-    // TODO 2/20/2018[yegor.udovchenko]: Replace with implementation
+    // TODO 2/20/2018[yegor.udovchenko]: Github issue : Purchase Order Sending Service #44
     private static PurchaseOrderSender poSenderInstance = null;
 
+    /** Prevents instantiation of this utility class. */
     private ServiceFactory() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -49,12 +52,13 @@ public class ServiceFactory {
 
     /**
      * Setter method is used to substitute {@code PurchaseOrderSender}
-     * with a mock instance for tests. Applicable only in test runtime
-     * environment.
-     * Throws {@code UnsupportedOperationException} if called in
-     * production runtime environment.
+     * with a mock instance for tests.
      *
-     * @param poSenderInstance
+     * <p>Applicable only in test runtime
+     * environment.
+     *
+     * @param poSenderInstance purchase order sender
+     * @throws IllegalStateException if this method is called not from test
      */
     public static void setPoSenderInstance(
             PurchaseOrderSender poSenderInstance) {
@@ -62,7 +66,10 @@ public class ServiceFactory {
                        .isTests()) {
             ServiceFactory.poSenderInstance = poSenderInstance;
         } else {
-            throw new UnsupportedOperationException();
+            throw newIllegalStateException("This setter method can only be called from tests. " +
+                                                   "Current `isTests` value is `%s`.",
+                                           Environment.getInstance()
+                                                      .isTests());
         }
     }
 }

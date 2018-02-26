@@ -59,12 +59,13 @@ import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
 import static javaclasses.mealorder.PurchaseOrderStatus.INVALID;
 import static javaclasses.mealorder.PurchaseOrderStatus.SENT;
 import static javaclasses.mealorder.PurchaseOrderStatus.VALID;
-import static javaclasses.mealorder.c.po.PurchaseOrderValidator.findInvalidOrders;
-import static javaclasses.mealorder.c.po.PurchaseOrderValidator.isAllowedPurchaseOrderCreation;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotCancelDeliveredPurchaseOrder;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotOverruleValidationOfNotInvalidPO;
+import static javaclasses.mealorder.c.po.PurchaseOrders.findInvalidOrders;
+import static javaclasses.mealorder.c.po.PurchaseOrders.hasInvalidOrders;
+import static javaclasses.mealorder.c.po.PurchaseOrders.isAllowedPurchaseOrderCreation;
 
 /**
  * The aggregate managing the state of a {@link PurchaseOrder}.
@@ -77,15 +78,11 @@ import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwC
                                                  The {@code Aggregate} does it with methods
                                                  annotated as {@code Assign} and {@code Apply}.
                                                  In that case class has too many methods.*/
-        "OverlyCoupledClass",/* As each method needs dependencies  necessary to perform execution
+        "OverlyCoupledClass"}) /* As each method needs dependencies  necessary to perform execution
                                                  that class also overly coupled.*/
-        "unused"}) /* Methods that modifies the state of the aggregate with data from the passed event is used in the internal logic. */
 public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
         PurchaseOrder, PurchaseOrderVBuilder> {
 
-    /**
-     * {@inheritDoc}
-     */
     public PurchaseOrderAggregate(PurchaseOrderId id) {
         super(id);
     }
@@ -103,9 +100,8 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
 
         Triplet result;
         final PurchaseOrderCreated poCreatedEvent = createPOCreatedEvent(cmd);
-        final List<Order> invalidOrders = findInvalidOrders(cmd.getOrderList());
 
-        if (invalidOrders.isEmpty()) {
+        if (!hasInvalidOrders(cmd.getOrderList())) {
             final PurchaseOrderValidationPassed passedEvent = createPOValidationPassedEvent(cmd);
             final PurchaseOrder purchaseOrder = PurchaseOrder.newBuilder()
                                                              .setId(cmd.getId())
@@ -115,15 +111,19 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
             final EmailAddress senderEmail = cmd.getWhoCreates()
                                                 .getEmail();
             final EmailAddress vendorEmail = cmd.getVendorEmail();
+
             ServiceFactory.getPurchaseOrderSender()
-                          .formAndSendPurchaseOrder(purchaseOrder, senderEmail, vendorEmail);
+                          .send(purchaseOrder, senderEmail, vendorEmail);
+
             final PurchaseOrderSent poSentEvent = createPOSentEvent(purchaseOrder,
                                                                     senderEmail,
                                                                     vendorEmail);
             result = Triplet.of(poCreatedEvent, passedEvent, poSentEvent);
         } else {
-            final PurchaseOrderValidationFailed validationFailedEvent = createPOValidationFailedEvent(
-                    cmd, invalidOrders);
+            final List<Order> invalidOrders = findInvalidOrders(cmd.getOrderList());
+            final PurchaseOrderValidationFailed validationFailedEvent =
+                    createPOValidationFailedEvent(cmd, invalidOrders);
+
             result = Triplet.withNullable(poCreatedEvent, validationFailedEvent, null);
         }
         return result;
@@ -132,6 +132,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     @Assign
     Pair<PurchaseOrderValidationOverruled, PurchaseOrderSent> handle(MarkPurchaseOrderAsValid cmd)
             throws CannotOverruleValidationOfNotInvalidPO {
+
         if (!isAllowedToMarkAsValid()) {
             throwCannotOverruleValidationOfNotInvalidPO(cmd);
         }
@@ -142,10 +143,8 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
                                             .getEmail();
         final EmailAddress vendorEmail = cmd.getVendorEmail();
         ServiceFactory.getPurchaseOrderSender()
-                      .formAndSendPurchaseOrder(
-                              getState(),
-                              senderEmail,
-                              vendorEmail);
+                      .send(getState(), senderEmail, vendorEmail);
+
         final PurchaseOrderSent poSentEvent = createPOSentEvent(getState(),
                                                                 senderEmail,
                                                                 vendorEmail);

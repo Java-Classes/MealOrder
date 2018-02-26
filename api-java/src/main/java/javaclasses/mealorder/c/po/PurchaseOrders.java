@@ -20,11 +20,7 @@
 
 package javaclasses.mealorder.c.po;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multiset;
 import io.spine.time.LocalDate;
-import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
@@ -32,7 +28,9 @@ import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.command.CreatePurchaseOrder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
 /**
@@ -41,65 +39,76 @@ import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
  *
  * @author Yegor Udovchenko
  */
-public class PurchaseOrderValidator {
-
+public class PurchaseOrders {
     private static final int MAX_SINGLE_DISH_COUNT = 20;
 
-    private PurchaseOrderValidator() {
-        // Prevent instantiation of this utility class.
+    /** Prevents instantiation of this utility class. */
+    private PurchaseOrders() {
     }
 
     /**
      * Performs the validation of a purchase order creation process.
-     * Checks each order in the list to match purchase order date
+     *
+     * <p>Checks each order in the list to match purchase order date
      * and vendor. Also checks for empty dish list orders and orders with
      * not {@code 'ORDER_ACTIVE'} status.
      *
      * @param cmd command to create a purchase order.
      * @return is allowed a purchase order creation.
      */
-    static boolean isAllowedPurchaseOrderCreation(CreatePurchaseOrder cmd) {
+    public static boolean isAllowedPurchaseOrderCreation(CreatePurchaseOrder cmd) {
+        checkNotNull(cmd);
         final PurchaseOrderId purchaseOrderId = cmd.getId();
+        List<Order> ordersList = cmd.getOrderList();
+
+        final boolean result = ordersList.stream()
+                                         .allMatch(o -> doesOrderBelongToPO(purchaseOrderId, o));
+        return !ordersList.isEmpty() && result;
+    }
+
+    private static boolean doesOrderBelongToPO(PurchaseOrderId purchaseOrderId, Order order) {
         final VendorId purchaseOrderVendorId = purchaseOrderId.getVendorId();
         final LocalDate purchaseOrderDate = purchaseOrderId.getPoDate();
-        final List<Order> ordersList = cmd.getOrderList();
 
-        for (final Order order : ordersList) {
-            if (!(checkOrderIsActive(order) && checkOrderingDatesMatch(order, purchaseOrderDate))) {
-                return false;
-            }
-            if (!(checkOrderNotEmpty(order) && checkVendorsMatch(order, purchaseOrderVendorId))) {
-                return false;
-            }
+        if (!(checkOrderIsActive(order) && checkOrderingDatesMatch(order, purchaseOrderDate))) {
+            return false;
         }
-        return true;
+        return checkOrderNotEmpty(order) && checkVendorsMatch(order, purchaseOrderVendorId);
     }
 
     /**
      * Finds orders which contain more than {@code MAX_SINGLE_DISH_COUNT}
-     * equal dishes. Those orders are considered invalid.
+     * equal dishes.
+     *
+     * <p>Those orders are considered invalid.
      *
      * @param orders list to check.
      * @return list of invalid orders.(Empty if all orders are valid)
      */
-    static List<Order> findInvalidOrders(List<Order> orders) {
-        ImmutableList.Builder<Order> invalidOrdersBuilder = ImmutableList.builder();
-        for (final Order order : orders) {
-            if (!isOrderValid(order)) {
-                invalidOrdersBuilder.add(order);
-            }
-        }
-        return invalidOrdersBuilder.build();
+    public static List<Order> findInvalidOrders(List<Order> orders) {
+        checkNotNull(orders);
+        final List<Order> invalidOrders = orders.stream()
+                                                .filter(o -> !isOrderValid(o))
+                                                .collect(Collectors.toList());
+        return invalidOrders;
+    }
+
+    public static boolean hasInvalidOrders(List<Order> orders) {
+        checkNotNull(orders);
+        final boolean result = orders.stream()
+                                     .anyMatch(o -> !isOrderValid(o));
+        return result;
     }
 
     private static boolean isOrderValid(Order order) {
-        final HashMultiset<Dish> dishes = HashMultiset.create(order.getDishList());
-        for (final Multiset.Entry<Dish> entry : dishes.entrySet()) {
-            if (entry.getCount() > MAX_SINGLE_DISH_COUNT) {
-                return false;
-            }
-        }
-        return true;
+        final boolean result = order.getDishList()
+                                    .stream()
+                                    .collect(Collectors.groupingBy(d -> d,
+                                                                   Collectors.counting()))
+                                    .entrySet()
+                                    .stream()
+                                    .noneMatch(p -> p.getValue() > MAX_SINGLE_DISH_COUNT);
+        return result;
     }
 
     private static boolean checkOrderingDatesMatch(Order order, LocalDate poDate) {

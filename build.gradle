@@ -244,7 +244,7 @@ subprojects {
 
         selectors {
             directory "${sourcesRootDir}/test/java"
-            packages 'javaclasses.mealorder', 'io.spine.cli', 'io.spine.server'
+            packages 'javaclasses.mealorder'
         }
 
         filters {
@@ -273,24 +273,31 @@ subprojects {
     }
 
     // This is a workaround to make JUnit 5 work with Jacoco library.
-    // There is an open issue here:
-    // <link>https://discuss.gradle.org/t/jacocotestreport-task-fails-if-jacoco-plugin-is-applied-in-afterevaluate/835</link>
-    // todo:13-12-16:illia.shepilov: revisit the workaround once the issue is resolved.
+    // As per https://github.com/junit-team/junit5/issues/1024.
+    // TODO 2/23/2018 yurii.haidamaka: monitor the solution to this problem and change after the decision.
     project.afterEvaluate {
-        def junitPlatformTestTask = project.tasks.getByName('junitPlatformTest')
+        def junitPlatformTestTask = (JavaExec) project.tasks.getByName('junitPlatformTest')
 
-        // configure jacoco to analyze the junitPlatformTest task
         jacoco {
-            // this tool version is known to be compatible with JUnit 5.
-            toolVersion = "0.7.6.201602180812"
-            applyTo junitPlatformTestTask
+            applyTo(junitPlatformTestTask)
         }
 
-        codeCoverageReport.dependsOn {
-            subprojects*.test
+        project.task(type: JacocoReport, "jacocoJupTestReport") {
+            executionData(junitPlatformTestTask)
+            sourceSets(sourceSets.main)
+            sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+            classDirectories = files(sourceSets.main.output)
+
+            reports {
+                xml.enabled true
+                xml.destination file("${buildDir}/jacoco/report.xml")
+                html.enabled true
+                html.destination file("${buildDir}/jacoco/html")
+            }
         }
+
+        check.dependsOn jacocoJupTestReport
     }
-
 }
 
 idea.project.ipr {
@@ -305,6 +312,8 @@ idea.project.ipr {
 }
 
 task codeCoverageReport(type: JacocoReport) {
+    println " -- Performing code coverage processing... ---"
+
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
     subprojects.each {
@@ -314,7 +323,7 @@ task codeCoverageReport(type: JacocoReport) {
     reports {
         xml.enabled = true
         xml.destination = "${buildDir}/reports/jacoco/report.xml"
-        html.enabled = false
+        html.enabled = true
         csv.enabled = false
     }
 }

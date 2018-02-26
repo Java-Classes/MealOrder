@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.c.po;
 
+import io.spine.test.Tests;
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.UserId;
@@ -37,6 +38,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static javaclasses.mealorder.c.BoundedContexts.createBoundedContext;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotCancelDeliveredPurchaseOrder;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotCreatePurchaseOrder;
 import static javaclasses.mealorder.c.po.PurchaseOrderAggregateRejections.throwCannotMarkPurchaseOrderAsDelivered;
@@ -65,13 +67,13 @@ class PurchaseOrderAggregateRejectionsTest {
     @Test
     @DisplayName("throw CannotCreatePurchaseOrder rejection")
     void throwCannotCreatePurchaseOrderRejection() {
-        CreatePurchaseOrder cmd = createPurchaseOrderWithNotActiveOrdersInstance();
+        final CreatePurchaseOrder cmd = createPurchaseOrderWithNotActiveOrdersInstance();
         final CannotCreatePurchaseOrder rejection = assertThrows(CannotCreatePurchaseOrder.class,
                                                                  () -> throwCannotCreatePurchaseOrder(
                                                                          cmd));
-        VendorId actualVendorId = rejection.getMessageThrown()
+        final VendorId actualVendorId = rejection.getMessageThrown()
                                            .getVendorId();
-        LocalDate actualDate = rejection.getMessageThrown()
+        final LocalDate actualDate = rejection.getMessageThrown()
                                         .getPurchaseOrderDate();
         assertEquals(PURCHASE_ORDER_ID.getPoDate(), actualDate);
         assertEquals(PURCHASE_ORDER_ID.getVendorId(), actualVendorId);
@@ -80,13 +82,13 @@ class PurchaseOrderAggregateRejectionsTest {
     @Test
     @DisplayName("throw CannotMarkPurchaseOrderAsDelivered rejection")
     void throwCannotMarkPurchaseOrderAsDeliveredRejection() {
-        MarkPurchaseOrderAsDelivered cmd = markPurchaseOrderAsDeliveredInstance();
+        final MarkPurchaseOrderAsDelivered cmd = markPurchaseOrderAsDeliveredInstance();
         final CannotMarkPurchaseOrderAsDelivered rejection =
                 assertThrows(CannotMarkPurchaseOrderAsDelivered.class,
                              () -> throwCannotMarkPurchaseOrderAsDelivered(cmd));
-        PurchaseOrderId actual = rejection.getMessageThrown()
+        final PurchaseOrderId actual = rejection.getMessageThrown()
                                           .getPoId();
-        UserId actualUser = rejection.getMessageThrown()
+        final UserId actualUser = rejection.getMessageThrown()
                                      .getUserId();
 
         assertEquals(PURCHASE_ORDER_ID, actual);
@@ -96,13 +98,13 @@ class PurchaseOrderAggregateRejectionsTest {
     @Test
     @DisplayName("throw CannotCancelDeliveredPurchaseOrder rejection")
     void throwCannotCancelDeliveredPurchaseOrderRejection() {
-        CancelPurchaseOrder cmd = cancelPOWithCustomReasonInstance();
+        final CancelPurchaseOrder cmd = cancelPOWithCustomReasonInstance();
         final CannotCancelDeliveredPurchaseOrder rejection =
                 assertThrows(CannotCancelDeliveredPurchaseOrder.class,
                              () -> throwCannotCancelDeliveredPurchaseOrder(cmd));
-        PurchaseOrderId actualId = rejection.getMessageThrown()
+        final PurchaseOrderId actualId = rejection.getMessageThrown()
                                             .getPoId();
-        UserId actualUser = rejection.getMessageThrown()
+        final UserId actualUser = rejection.getMessageThrown()
                                      .getUserId();
 
         assertEquals(PURCHASE_ORDER_ID, actualId);
@@ -112,16 +114,40 @@ class PurchaseOrderAggregateRejectionsTest {
     @Test
     @DisplayName("throw CannotOverruleValidationOfNotInvalidPO rejection")
     void throwCannotOverruleValidationOfNotInvalidPORejection() {
-        MarkPurchaseOrderAsValid cmd = markPurchaseOrderAsValidInstance();
+        final MarkPurchaseOrderAsValid cmd = markPurchaseOrderAsValidInstance();
         final CannotOverruleValidationOfNotInvalidPO rejection =
                 assertThrows(CannotOverruleValidationOfNotInvalidPO.class,
                              () -> throwCannotOverruleValidationOfNotInvalidPO(cmd));
-        PurchaseOrderId actualId = rejection.getMessageThrown()
+        final PurchaseOrderId actualId = rejection.getMessageThrown()
                                             .getPoId();
-        UserId actualUser = rejection.getMessageThrown()
+        final UserId actualUser = rejection.getMessageThrown()
                                      .getUserId();
 
         assertEquals(PURCHASE_ORDER_ID, actualId);
         assertEquals(USER_ID, actualUser);
+    }
+
+    @Test
+    @DisplayName("don't throw CannotCreatePurchaseOrder rejection for empty command ")
+    void doNotThrowCannotCreatePurchaseOrderRejection() {
+        assertThrows(NullPointerException.class, () -> throwCannotCreatePurchaseOrder(Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("don't throw CannotMarkPurchaseOrderAsDelivered rejection for empty command ")
+    void doNotThrowCannotMarkPurchaseOrderAsDeliveredRejection() {
+        assertThrows(NullPointerException.class, () -> throwCannotMarkPurchaseOrderAsDelivered(Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("don't throw CannotCancelDeliveredPurchaseOrder rejection for empty command ")
+    void doNotThrowCannotCancelDeliveredPurchaseOrderRejection() {
+        assertThrows(NullPointerException.class, () -> throwCannotCancelDeliveredPurchaseOrder(Tests.nullRef()));
+    }
+
+    @Test
+    @DisplayName("don't throw CannotOverruleValidationOfNotInvalidPO rejection for empty command ")
+    void doNotThrowCannotOverruleValidationOfNotInvalidPORejection() {
+        assertThrows(NullPointerException.class, () -> throwCannotOverruleValidationOfNotInvalidPO(Tests.nullRef()));
     }
 }
