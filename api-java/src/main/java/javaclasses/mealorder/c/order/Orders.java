@@ -70,7 +70,7 @@ public class Orders {
     /**
      * Finds vendor for order.
      *
-     * @param orderId id of the order for which vendor have to be found.
+     * @param orderId ID of the order for which vendor have to be found.
      * @return Optional of vendor.
      */
     public static Optional<VendorAggregate> getVendorAggregateForOrder(OrderId orderId) throws
@@ -86,7 +86,7 @@ public class Orders {
     /**
      * Checks whether the menu is available on the date of the order.
      *
-     * @param cmd command that contains order id and menu id that may be checked.
+     * @param cmd command that contains order ID and menu ID that may be checked.
      * @throws MenuNotAvailable if vendor or menu doesn't exist or
      *                          if the menu date range doesn't include order date.
      */

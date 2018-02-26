@@ -187,11 +187,9 @@ public class OrderAggregate extends Aggregate<OrderId,
     /**
      * Applies the {@link OrderCreated} event.
      *
-     * <p>
-     * Creates new order and changes order aggregate state status on {@code ORDER_ACTIVE}.
-     * Checks if the order with the same id was already created and cancelled. In this case
+     * <p> Creates new order and changes order aggregate state status on {@code ORDER_ACTIVE}.
+     * Checks if the order with the same ID was already created and cancelled. In this case
      * removes all dishes that was added before cancellation.
-     * </p>
      *
      * @param event
      */
