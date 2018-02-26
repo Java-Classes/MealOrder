@@ -68,7 +68,7 @@ class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and returns the {@link OrderAlreadyExists} rejection
+         * Constructs and throws the {@link OrderAlreadyExists} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code CreateOrder} command which was rejected
@@ -82,7 +82,7 @@ class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and returns the {@link MenuNotAvailable} rejection
+         * Constructs and throws the {@link MenuNotAvailable} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code CreateOrder} command which was rejected
@@ -112,7 +112,7 @@ class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and returns the {@link DishVendorMismatch} rejection
+         * Constructs and throws the {@link DishVendorMismatch} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code AddDishToOrder} command which was rejected
@@ -138,7 +138,7 @@ class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and returns the {@link CannotAddDishToNotActiveOrder} rejection
+         * Constructs and throws the {@link CannotAddDishToNotActiveOrder} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code AddDishToOrder} command which was rejected
@@ -175,7 +175,7 @@ class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and returns the {@link CannotRemoveMissingDish} rejection
+         * Constructs and throws the {@link CannotRemoveMissingDish} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code RemoveDishFromOrder} command which was rejected
@@ -193,7 +193,7 @@ class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and returns the {@link CannotRemoveDishFromNotActiveOrder} rejection
+         * Constructs and throws the {@link CannotRemoveDishFromNotActiveOrder} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code RemoveDishFromOrder} command which was rejected
@@ -228,7 +228,7 @@ class OrderAggregateRejections {
         }
 
         /**
-         * Constructs and returns the {@link CannotCancelProcessedOrder} rejection
+         * Constructs and throws the {@link CannotCancelProcessedOrder} rejection
          * according to the passed parameters.
          *
          * @param cmd the {@code CancelOrder} command which was rejected

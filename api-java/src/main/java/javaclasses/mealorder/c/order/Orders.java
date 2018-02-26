@@ -76,7 +76,7 @@ class Orders {
      * Finds vendor for order.
      *
      * @param orderId ID of the order for which vendor have to be found.
-     * @return Optional of vendor.
+     * @return Optional of {@code Vendor}.
      */
     static Optional<VendorAggregate> getVendorAggregateForOrder(OrderId orderId) throws
                                                                                  MenuNotAvailable {
