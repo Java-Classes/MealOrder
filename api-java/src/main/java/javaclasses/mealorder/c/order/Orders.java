@@ -58,7 +58,7 @@ public class Orders {
      * @param orderDate order date to check
      * @return boolean true if there is a menu on the order date
      */
-    public static boolean checkRangeIncludesDate(MenuDateRange range, LocalDate orderDate) {
+    static boolean checkRangeIncludesDate(MenuDateRange range, LocalDate orderDate) {
         checkNotNull(range);
         checkNotNull(orderDate);
         final Comparator<LocalDate> comparator = new LocalDateComparator();
@@ -73,7 +73,7 @@ public class Orders {
      * @param orderId ID of the order for which vendor have to be found.
      * @return Optional of vendor.
      */
-    public static Optional<VendorAggregate> getVendorAggregateForOrder(OrderId orderId) throws
+    static Optional<VendorAggregate> getVendorAggregateForOrder(OrderId orderId) throws
                                                                                         MenuNotAvailable {
         checkNotNull(orderId);
         final VendorRepository vendorRepository = VendorRepository.getRepository();
@@ -90,7 +90,7 @@ public class Orders {
      * @throws MenuNotAvailable if vendor or menu doesn't exist or
      *                          if the menu date range doesn't include order date.
      */
-    public static void checkMenuAvailability(CreateOrder cmd) throws
+    static void checkMenuAvailability(CreateOrder cmd) throws
                                                               MenuNotAvailable {
         checkNotNull(cmd);
         final OrderId orderId = cmd.getOrderId();

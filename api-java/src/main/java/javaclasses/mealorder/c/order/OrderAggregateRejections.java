@@ -48,7 +48,7 @@ import static io.spine.time.Time.getCurrentTime;
  *
  * @author Vlad Kozachenko
  */
-public class OrderAggregateRejections {
+class OrderAggregateRejections {
 
     /**
      * Prevent instantiation of this utility class.
@@ -59,7 +59,7 @@ public class OrderAggregateRejections {
     /**
      * Utility class for working with {@link CreateOrder} command rejections.
      */
-    public static class CreateOrderRejections {
+    static class CreateOrderRejections {
 
         /**
          * Prevent instantiation of this utility class.
@@ -74,7 +74,7 @@ public class OrderAggregateRejections {
          * @param cmd the {@code CreateOrder} command which was rejected
          * @return  OrderAlreadyExists the rejection to return
          */
-        public static OrderAlreadyExists orderAlreadyExists(CreateOrder cmd) {
+        static OrderAlreadyExists orderAlreadyExists(CreateOrder cmd) {
             checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final Timestamp timestamp = getCurrentTime();
@@ -88,7 +88,7 @@ public class OrderAggregateRejections {
          * @param cmd the {@code CreateOrder} command which was rejected
          * @return  MenuNotAvailable the rejection to return
          */
-        public static MenuNotAvailable menuNotAvailable(CreateOrder cmd) {
+        static MenuNotAvailable menuNotAvailable(CreateOrder cmd) {
             checkNotNull(cmd);
             final UserId userId = cmd.getOrderId()
                                      .getUserId();
@@ -103,7 +103,7 @@ public class OrderAggregateRejections {
     /**
      * Utility class for working with {@link AddDishToOrder} command rejections.
      */
-    public static class AddDishToOrderRejections {
+    static class AddDishToOrderRejections {
 
         /**
          * Prevent instantiation of this utility class.
@@ -118,7 +118,7 @@ public class OrderAggregateRejections {
          * @param cmd the {@code AddDishToOrder} command which was rejected
          * @return  DishVendorMismatch the rejection to return
          */
-        public static DishVendorMismatch dishVendorMismatch(AddDishToOrder cmd) {
+        static DishVendorMismatch dishVendorMismatch(AddDishToOrder cmd) {
             checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
@@ -144,7 +144,7 @@ public class OrderAggregateRejections {
          * @param cmd the {@code AddDishToOrder} command which was rejected
          * @return  CannotAddDishToNotActiveOrder the rejection to return
          */
-        public static CannotAddDishToNotActiveOrder cannotAddDishToNotActiveOrder(
+        static CannotAddDishToNotActiveOrder cannotAddDishToNotActiveOrder(
                 AddDishToOrder cmd,
                 OrderStatus orderStatus) {
             checkNotNull(cmd);
@@ -166,7 +166,7 @@ public class OrderAggregateRejections {
     /**
      * Utility class for working with {@link RemoveDishFromOrder} command rejections.
      */
-    public static class RemoveDishFromOrderRejections {
+    static class RemoveDishFromOrderRejections {
 
         /**
          * Prevent instantiation of this utility class.
@@ -181,7 +181,7 @@ public class OrderAggregateRejections {
          * @param cmd the {@code RemoveDishFromOrder} command which was rejected
          * @return  CannotRemoveMissingDish the rejection to return
          */
-        public static CannotRemoveMissingDish cannotRemoveMissingDish(
+        static CannotRemoveMissingDish cannotRemoveMissingDish(
                 RemoveDishFromOrder cmd) {
             checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
@@ -199,7 +199,7 @@ public class OrderAggregateRejections {
          * @param cmd the {@code RemoveDishFromOrder} command which was rejected
          * @return CannotRemoveDishFromNotActiveOrder the rejection to return
          */
-        public static CannotRemoveDishFromNotActiveOrder cannotRemoveDishFromNotActiveOrder(
+        static CannotRemoveDishFromNotActiveOrder cannotRemoveDishFromNotActiveOrder(
                 RemoveDishFromOrder cmd,
                 OrderStatus orderStatus) {
             checkNotNull(cmd);
@@ -219,7 +219,7 @@ public class OrderAggregateRejections {
     /**
      * Utility class for working with {@link CancelOrder} command rejections.
      */
-    public static class CancelOrderRejections {
+    static class CancelOrderRejections {
 
         /**
          * Prevent instantiation of this utility class.
@@ -234,7 +234,7 @@ public class OrderAggregateRejections {
          * @param cmd the {@code CancelOrder} command which was rejected
          * @return CannotCancelProcessedOrder the rejection to return
          */
-        public static CannotCancelProcessedOrder cannotCancelProcessedOrder(CancelOrder cmd) {
+        static CannotCancelProcessedOrder cannotCancelProcessedOrder(CancelOrder cmd) {
             checkNotNull(cmd);
             final OrderId orderId = cmd.getOrderId();
             final UserId userId = cmd.getOrderId()
