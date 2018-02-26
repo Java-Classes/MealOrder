@@ -44,10 +44,10 @@ public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate
     }
 
     /**
-     * Route events to aggregate instances with correct ids.
+     * Route events to aggregate instances with correct IDs.
      *
-     * <p>Extract order ids from received events on which the order aggregate
-     * have to react. Checks if the instances with this ids already created.
+     * <p>Extract order IDs from received events on which the order aggregate
+     * have to react. Checks if the instances with this IDs already created.
      * And routes events to correct instances.
      */
     private void setUpEventRouting() {
@@ -70,8 +70,8 @@ public class OrderRepository extends AggregateRepository<OrderId, OrderAggregate
      *
      * <p>Checks each order whether it is in repository.
      *
-     * @param orderList list of orders where ids may be extracted.
-     * @return set of found ids.
+     * @param orderList list of orders where IDs may be extracted.
+     * @return set of found IDs.
      */
     private Set<OrderId> filterOrderIds(List<Order> orderList) {
         final Set<OrderId> orderIdSet =

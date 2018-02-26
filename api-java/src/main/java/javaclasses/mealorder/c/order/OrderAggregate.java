@@ -53,7 +53,6 @@ import javaclasses.mealorder.c.rejection.MenuNotAvailable;
 import javaclasses.mealorder.c.rejection.OrderAlreadyExists;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -66,8 +65,8 @@ import static javaclasses.mealorder.c.order.OrderAggregateRejections.AddDishToOr
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.CancelOrderRejections.cannotCancelProcessedOrder;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.CreateOrderRejections.orderAlreadyExists;
 import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.cannotRemoveDishFromNotActiveOrder;
-import static javaclasses.mealorder.c.order.OrderAggregateRejections.RemoveDishFromOrderRejections.cannotRemoveMissingDish;
 import static javaclasses.mealorder.c.order.Orders.checkMenuAvailability;
+import static javaclasses.mealorder.c.order.Orders.getDishFromOrder;
 
 /**
  * The aggregate managing the state of a {@link Order}.
@@ -150,19 +149,6 @@ public class OrderAggregate extends Aggregate<OrderId,
         return result;
     }
 
-    private Dish getDishFromOrder(RemoveDishFromOrder cmd, DishId dishId,
-                                  List<Dish> dishesList) throws CannotRemoveMissingDish {
-        Optional<Dish> dish = dishesList.stream()
-                                        .filter(d -> d.getId()
-                                                      .equals(dishId))
-                                        .findFirst();
-
-        if (!dish.isPresent()) {
-            throw cannotRemoveMissingDish(cmd);
-        }
-        return dish.get();
-    }
-
     @Assign
     OrderCanceled handle(CancelOrder cmd) throws CannotCancelProcessedOrder {
         final OrderId orderId = cmd.getOrderId();
@@ -187,13 +173,11 @@ public class OrderAggregate extends Aggregate<OrderId,
     /**
      * Applies the {@link OrderCreated} event.
      *
-     * <p>
-     * Creates new order and changes order aggregate state status on {@code ORDER_ACTIVE}.
-     * Checks if the order with the same id was already created and cancelled. In this case
+     * <p> Creates new order and changes order aggregate state status on {@code ORDER_ACTIVE}.
+     * Checks if the order with the same ID was already created and cancelled. In this case
      * removes all dishes that was added before cancellation.
-     * </p>
      *
-     * @param event
+     * @param event is {@code OrderCreated} event that was occurred
      */
     @Apply
     void orderCreated(OrderCreated event) {

@@ -38,7 +38,6 @@ import static javaclasses.mealorder.OrderStatus.ORDER_PROCESSED;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
 import static javaclasses.mealorder.testdata.TestValues.DISH1;
-import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,7 +46,7 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Vlad Kozachenko
  */
-@DisplayName("OrderAggregate should react on PurchaseOrderCreated command and")
+@DisplayName("`OrderAggregate` should react on `PurchaseOrderCreated` command and")
 public class OrderProcessedTest extends OrderCommandTest {
 
     final CreateOrder createOrder = createOrderInstance();

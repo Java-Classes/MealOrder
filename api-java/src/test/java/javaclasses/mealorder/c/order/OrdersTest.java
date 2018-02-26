@@ -52,32 +52,32 @@ class OrdersTest {
     }
 
     @Test
-    @DisplayName("return 'true' if the menu is available on the ordering date")
+    @DisplayName("return `true` if the menu is available on the ordering date")
     void returnTrueForExistingMenu() {
         assertTrue(checkRangeIncludesDate(MENU_DATE_RANGE, ORDER_ID.getOrderDate()));
     }
 
     @Test
-    @DisplayName("return false order has no date")
+    @DisplayName("return `false` order has no date")
     void returnFalseForOrderWithoutDate() {
         assertFalse(checkRangeIncludesDate(MENU_DATE_RANGE, OrderId.getDefaultInstance()
                                                                    .getOrderDate()));
     }
 
     @Test
-    @DisplayName("return false if order date is after menu end date")
+    @DisplayName("return `false` if order date is after menu end date")
     void returnFalseForOrderDateAfterMenu() {
         assertFalse(checkRangeIncludesDate(MENU_DATE_RANGE, INVALID_START_DATE));
     }
 
     @Test
-    @DisplayName("return false if order date is before menu end date")
+    @DisplayName("return `false` if order date is before menu end date")
     void returnFalseForOrderDateBeforeMenu() {
         assertFalse(checkRangeIncludesDate(MENU_DATE_RANGE, INVALID_END_DATE));
     }
 
     @Test
-    @DisplayName("throw NullPointerException if checkRangeIncludesDate " +
+    @DisplayName("throw `NullPointerException` if `checkRangeIncludesDate` " +
             "was called with null as any of arguments")
     void throwNullPointerOnCheckRangeIncludesDate() {
         assertThrows(NullPointerException.class,
@@ -90,14 +90,14 @@ class OrdersTest {
     }
 
     @Test
-    @DisplayName("throw NullPointerException if getVendorAggregateForOrder " +
+    @DisplayName("throw `NullPointerException` if `getVendorAggregateForOrder` " +
             "was called with null as argument")
     void throwNullPointerOnGetVendorAggregateForOrder() {
         assertThrows(NullPointerException.class, () -> getVendorAggregateForOrder(Tests.nullRef()));
     }
 
     @Test
-    @DisplayName("throw NullPointerException if checkMenuAvailability " +
+    @DisplayName("throw `NullPointerException` if `checkMenuAvailability` " +
             "was called with null as argument")
     void throwNullPointerOnCheckMenuAvailability() {
         assertThrows(NullPointerException.class, () -> checkMenuAvailability(Tests.nullRef()));
