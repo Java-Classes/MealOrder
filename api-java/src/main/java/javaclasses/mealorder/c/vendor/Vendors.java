@@ -20,7 +20,6 @@
 
 package javaclasses.mealorder.c.vendor;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.spine.time.LocalDate;
 import io.spine.time.MonthOfYear;
 import javaclasses.mealorder.LocalDateComparator;
@@ -38,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Yurii Haidamaka
  */
-public class Vendors {
+class Vendors {
 
     /** Prevents instantiation of this utility class. */
     private Vendors() {
@@ -50,7 +49,7 @@ public class Vendors {
      *
      * @param menuDateRange date range to check
      */
-    public static boolean isValidDateRange(MenuDateRange menuDateRange) {
+    static boolean isValidDateRange(MenuDateRange menuDateRange) {
         checkNotNull(menuDateRange);
 
         final LocalDate startDateRange = menuDateRange.getRangeStart();
@@ -66,10 +65,10 @@ public class Vendors {
 
     private static LocalDate getCurrentDate() {
         final java.time.LocalDate currentDateJava = java.time.LocalDate.now();
+        final MonthOfYear currentMonthOfYear = MonthOfYear.valueOf(currentDateJava.getMonthValue());
         final LocalDate currentDate = LocalDate.newBuilder()
                                                .setYear(currentDateJava.getYear())
-                                               .setMonth(MonthOfYear.valueOf(
-                                                       currentDateJava.getMonthValue()))
+                                               .setMonth(currentMonthOfYear)
                                                .setDay(currentDateJava.getDayOfMonth())
                                                .build();
         return currentDate;
@@ -80,11 +79,11 @@ public class Vendors {
      *
      * @param vendor aggregate vendor
      * @param range  date range to check
+     * @return boolean true if there is menu for this date range and false if not
      */
-    public static boolean isThereMenuForThisDateRange(Vendor vendor, MenuDateRange range) {
+    static boolean isThereMenuForThisDateRange(Vendor vendor, MenuDateRange range) {
         checkNotNull(vendor);
         checkNotNull(range);
-
         final List<Menu> menus = vendor.getMenuList();
         return menus.stream()
                     .anyMatch(m -> areRangesOverlapping(range, m.getMenuDateRange()));
@@ -97,7 +96,6 @@ public class Vendors {
      * @param range2 the date range
      * @return boolean true if the date ranges are overlapped and false otherwise
      */
-    @VisibleForTesting
     private static boolean areRangesOverlapping(MenuDateRange range1, MenuDateRange range2) {
         final LocalDate start = range1.getRangeStart();
         final LocalDate end = range1.getRangeEnd();

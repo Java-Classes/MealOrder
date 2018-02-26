@@ -56,6 +56,8 @@ import static javaclasses.mealorder.c.vendor.Vendors.isValidDateRange;
  *
  * @author Yurii Haidamaka
  */
+@SuppressWarnings("OverlyCoupledClass") /* As each method needs dependencies  necessary to perform
+                                           execution that class also overly coupled.*/
 public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder> {
 
     public VendorAggregate(VendorId id) {

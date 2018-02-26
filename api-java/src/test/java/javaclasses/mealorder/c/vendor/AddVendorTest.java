@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("AddVendor command should be interpreted by VendorAggregate and")
+@DisplayName("`AddVendor` command should be interpreted by `VendorAggregate` and")
 public class AddVendorTest extends VendorCommandTest<AddVendor> {
 
     @Override
@@ -63,7 +63,7 @@ public class AddVendorTest extends VendorCommandTest<AddVendor> {
     }
 
     @Test
-    @DisplayName("produce VendorAdded event")
+    @DisplayName("produce `VendorAdded` event")
     void produceEvent() {
         final AddVendor addVendorCmd = TestVendorCommandFactory.addVendorInstance();
 
@@ -102,7 +102,7 @@ public class AddVendorTest extends VendorCommandTest<AddVendor> {
     }
 
     @Test
-    @DisplayName("throw VendorAlreadyExists rejection upon " +
+    @DisplayName("throw `VendorAlreadyExists` rejection upon " +
             "an attempt to add a vendor with the same name")
     void notAddVendor() {
         final AddVendor addVendor = TestVendorCommandFactory.addVendorInstance();

@@ -33,40 +33,42 @@ import static io.spine.time.Time.getCurrentTime;
  *
  * @author Yurii Haidamaka
  */
-public class VendorAggregateRejections {
+class VendorAggregateRejections {
 
     /** Prevents instantiation of this utility class. */
     private VendorAggregateRejections() {
     }
 
     /**
-     * Constructs and returns the {@link VendorAlreadyExists} rejection
+     * Constructs and throws the {@link VendorAlreadyExists} rejection
      * according to the passed parameters.
      *
      * @param cmd the {@code AddVendor} command which thrown the rejection
-     * @return VendorAlreadyExists the rejection to return
+     * @throws VendorAlreadyExists the rejection to throw
      */
-    public static VendorAlreadyExists vendorAlreadyExists(AddVendor cmd) {
+    static VendorAlreadyExists vendorAlreadyExists(AddVendor cmd) throws
+                                                                  VendorAlreadyExists {
         checkNotNull(cmd);
         final VendorAlreadyExists vendorAlreadyExists = new VendorAlreadyExists(cmd.getVendorId(),
                                                                                 cmd.getVendorName(),
                                                                                 getCurrentTime());
-        return vendorAlreadyExists;
+        throw vendorAlreadyExists;
     }
 
     /**
-     * Constructs and returns the {@link CannotSetDateRange} rejection
+     * Constructs and throws the {@link CannotSetDateRange} rejection
      * according to the passed parameters.
      *
      * @param cmd the {@code SetDateRangeForMenu} command which thrown the rejection
-     * @return CannotSetDateRange the rejection to return
+     * @throws CannotSetDateRange the rejection to throw
      */
-    public static CannotSetDateRange cannotSetDateRange(SetDateRangeForMenu cmd) {
+    static CannotSetDateRange cannotSetDateRange(SetDateRangeForMenu cmd) throws
+                                                                          CannotSetDateRange {
         checkNotNull(cmd);
         final CannotSetDateRange cannotSetDateRange = new CannotSetDateRange(cmd.getVendorId(),
                                                                              cmd.getMenuId(),
                                                                              cmd.getMenuDateRange(),
                                                                              getCurrentTime());
-        return cannotSetDateRange;
+        throw cannotSetDateRange;
     }
 }

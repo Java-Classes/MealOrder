@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("BoundedContexts should")
+@DisplayName("`BoundedContexts` should")
 class BoundedContextsTest {
 
     @Test
@@ -51,15 +51,14 @@ class BoundedContextsTest {
     }
 
     @Test
-    @DisplayName("not create BoundedContext without a StorageFactory")
+    @DisplayName("not create `BoundedContext` without a `StorageFactory`")
     void notCreateBoundedContextWithoutStorageFactory() {
         assertThrows(NullPointerException.class, () -> createBoundedContext(Tests.nullRef()));
     }
 
     @Test
-    @DisplayName("create BoundedContext with the InMemoryStorageFactory")
+    @DisplayName("create `BoundedContext` with the `InMemoryStorageFactory`")
     void createBoundedContextWithInMemoryStorageFactory() {
-
         BoundedContext boundedContext = BoundedContexts.create();
 
         assertEquals(InMemoryStorageFactory.class, boundedContext.getStorageFactory()
@@ -67,9 +66,8 @@ class BoundedContextsTest {
     }
 
     @Test
-    @DisplayName("create BoundedContext with a given StorageFactory ")
+    @DisplayName("create `BoundedContext` with a given `StorageFactory` ")
     void createBoundedContextWithStorageFactory() {
-
         final StorageFactory inMemoryFactory =
                 InMemoryStorageFactory.newInstance(
                         BoundedContext.newName("MealOrderBoundedContext"), false);
@@ -80,9 +78,8 @@ class BoundedContextsTest {
     }
 
     @Test
-    @DisplayName("create BoundedContext with VendorRepository, OrderRepository and PurchaseOrderRepository")
+    @DisplayName("create `BoundedContext` with `VendorRepository`, `OrderRepository` and `PurchaseOrderRepository`")
     void createBoundedContextWithoutVendorRepository() {
-
         final StorageFactory inMemoryFactory =
                 InMemoryStorageFactory.newInstance(
                         BoundedContext.newName("MealOrderBoundedContext"), false);

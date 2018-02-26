@@ -21,24 +21,18 @@
 package javaclasses.mealorder.c.vendor;
 
 import io.spine.test.Tests;
-import javaclasses.mealorder.c.command.AddVendor;
-import javaclasses.mealorder.c.command.SetDateRangeForMenu;
-import javaclasses.mealorder.c.rejection.CannotSetDateRange;
-import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
-import javaclasses.mealorder.testdata.TestVendorCommandFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.cannotSetDateRange;
 import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.vendorAlreadyExists;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Yurii Haidamaka
  */
-@DisplayName("VendorAggregateRejections should")
+@DisplayName("`VendorAggregateRejections` should")
 class VendorAggregateRejectionsTest {
 
     @Test
@@ -48,13 +42,13 @@ class VendorAggregateRejectionsTest {
     }
 
     @Test
-    @DisplayName("don't return VendorAlreadyExists rejection for null command")
+    @DisplayName("don't return `VendorAlreadyExists` rejection for null command")
     void doNotThrowVendorAlreadyExistsRejection() {
         assertThrows(NullPointerException.class,
                      () -> vendorAlreadyExists(Tests.nullRef()));
     }
     @Test
-    @DisplayName("don't return CannotSetDateRange rejection for null command")
+    @DisplayName("don't return `CannotSetDateRange` rejection for null command")
     void doNotThrowCannotSetDateRangeRejection() {
         assertThrows(NullPointerException.class,
                      () -> cannotSetDateRange(Tests.nullRef()));
