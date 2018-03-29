@@ -37,7 +37,26 @@
                 pattern="/:page"
                 data="{{routeData}}"></app-route>
 
+        <app-drawer-layout fullbleed>
 
+            <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
+                <app-toolbar style="background-color: white">
+
+                </app-toolbar>
+
+            </app-drawer>
+
+            <app-header-layout>
+                <app-header slot="header" reveals effects="waterfall">
+
+                    <app-toolbar>
+
+                    </app-toolbar>
+                </app-header>
+
+            </app-header-layout>
+
+        </app-drawer-layout>
     </template>
 
     <script>
