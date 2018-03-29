@@ -58,6 +58,17 @@
         </iron-pages>
     </template>
     <script>
+        /**
+         * menu-order is container for vendors' menus and navigation.
+         *
+         * <p>Is adopted for both desktop and mobile.
+         * Contains a menu for the current date and tabs for quick date navigation.
+         *
+         * Fires redux `menuForDay` event
+         * @customElement
+         * @polymer
+         * @ReduxMixin
+         */
         class MenuOrder extends ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'menu-order';
