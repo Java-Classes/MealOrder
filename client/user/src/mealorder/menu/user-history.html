@@ -57,6 +57,20 @@
             .dish {
                 padding-left: 5%;
             }
+
+            @media only screen and (max-width: 600px) {
+                .vendor {
+                    margin-left: 5%;
+                }
+
+                vaadin-grid {
+                    width: 90%;
+                    display: block;
+                    margin-left: 5%;
+                    margin-right: 5%;
+                    padding-right: 0;
+                }
+            }
         </style>
         <div class="history">
             <dom-repeat items="[[cart]]" as="vendor">
