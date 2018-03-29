@@ -46,6 +46,16 @@
                 </paper-tab>
             </template>
         </paper-tabs>
+
+        <iron-pages
+                selected="[[routeData.menu]]"
+                attr-for-selected="name"
+                fallback-selection="view404"
+                role="main">
+
+            <vendor-menus name="[[routeData.menu]]"
+                          items="[[menu]]" route="[[subroute]]" on-dish-added="addDishToOrder"></vendor-menus>
+        </iron-pages>
     </template>
     <script>
         class MenuOrder extends ReduxMixin(Polymer.Element) {
