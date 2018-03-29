@@ -17,17 +17,12 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
-
 
 <dom-module id="meal-order">
     <template>
         <style>
-
-
         </style>
         <app-location route="{{route}}"
                       use-hash-as-path></app-location>
@@ -41,26 +36,20 @@
 
             <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
                 <app-toolbar style="background-color: white">
-
                 </app-toolbar>
-
             </app-drawer>
 
             <app-header-layout>
                 <app-header slot="header" reveals effects="waterfall">
-
                     <app-toolbar>
-
                     </app-toolbar>
                 </app-header>
-
             </app-header-layout>
 
         </app-drawer-layout>
     </template>
 
     <script>
-
         class MealOrder extends ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order';
@@ -69,8 +58,15 @@
             static get properties() {
                 return {}
             }
-        }
 
+            _changehistoryUrl() {
+                if (this.routeData.page.startsWith('history')) {
+                    const newRouteData = {};
+                    newRouteData.page = 'history/' + '#/' + this.currentDate;
+                    this.set('routeData', newRouteData);
+                }
+            }
+        }
         window.customElements.define(MealOrder.is, MealOrder);
     </script>
 </dom-module>
