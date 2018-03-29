@@ -33,6 +33,9 @@
 <dom-module id="meal-order">
     <template>
         <style>
+            .app-toolbar {
+                background-color: white
+            }
         </style>
 
         <app-location route="{{route}}"
@@ -43,10 +46,9 @@
                 pattern="/:page"
                 data="{{routeData}}"></app-route>
 
-        <app-drawer-layout fullbleed>
-
+        <app-drawer-layout fullbleed narrow="{{narrow}}">
             <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
-                <app-toolbar style="background-color: white">
+                <app-toolbar class="app-toolbar">
                 </app-toolbar>
             </app-drawer>
 
