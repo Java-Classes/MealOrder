@@ -69,6 +69,17 @@
                 ];
             }
 
+            static get actions() {
+                return {
+                    menuForDay(date) {
+                        return {
+                            type: ArrayAction.MENU_FOR_DAY,
+                            date: date
+                        }
+                    },
+                }
+            }
+
             static get properties() {
                 return {
                     /**
