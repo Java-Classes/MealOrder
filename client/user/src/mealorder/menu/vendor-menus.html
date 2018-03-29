@@ -306,6 +306,30 @@
 
                 }
             };
+
+            getClassForItem(selected) {
+                return selected ? 'item expand' : 'item';
+            };
+
+            getIcon(selected) {
+                if (selected) {
+                    return 'expand-less';
+                }
+                else {
+                    return 'expand-more';
+
+                }
+            }
+
+            _reSelect(e) {
+                const div = this.shadowRoot.querySelector("#list");
+                if (!e.model.selected) {
+                    div.selectIndex(e.model.index);
+                }
+                else {
+                    div.deselectIndex(e.model.index);
+                }
+            }
         }
 
         window.customElements.define(VendorMenus.is, VendorMenus);
