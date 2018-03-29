@@ -28,5 +28,5 @@ class Utils {
             }
         }
         return true;
-    };
+    }
 }
