@@ -33,6 +33,10 @@
         <style>
 
         </style>
+
+        <paper-search-bar query="{{filter}}" hide-filter-button="true"
+                          placeholder="Поиск"></paper-search-bar>
+
         <iron-list scroll-target="document" id="list" items="[[filtered]]" as="item"
                    selection-enabled
                    multi-selection>
