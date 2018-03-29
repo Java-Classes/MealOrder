@@ -37,6 +37,25 @@
                 padding: 0;
             }
 
+            @media only screen and (max-width: 600px) {
+                paper-search-bar {
+                    margin: 0 auto;
+                    width: 100%;
+                }
+
+                iron-list {
+                    --iron-list-items-container: {
+                        margin: 4% auto;
+                        width: 100%;
+                    }
+                }
+
+                .dish-price {
+                    padding-left: 30px;
+                }
+
+            }
+
             body {
                 height: 100vh;
                 margin: 0;
@@ -175,25 +194,6 @@
                 /* Non-prefixed version, currently supported by Chrome and Opera */
             }
 
-            @media only screen and (max-width: 600px) {
-
-                paper-search-bar {
-                    margin: 0 auto;
-                    width: 100%;
-                }
-
-                iron-list {
-                    --iron-list-items-container: {
-                        margin: 4% auto;
-                        width: 100%;
-                    }
-                }
-
-                .dish-price {
-                    padding-left: 30px;
-                }
-
-            }
         </style>
 
         <paper-search-bar query="{{filter}}" hide-filter-button="true"
