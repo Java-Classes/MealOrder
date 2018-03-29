@@ -20,6 +20,65 @@
 <dom-module id="user-cart">
     <template>
         <style>
+            :host {
+                color: #4f4f4f;
+            }
+
+            .order-details {
+                display: flex;
+                font-size: 15px;
+                align-items: center;
+                border-bottom: 2px solid #fcfcfc;
+            }
+
+            .vendor {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-left: 4%;
+                background-color: #fcfcfc;
+            }
+
+            .cart {
+                overflow-x: hidden;
+                overflow-y: auto;
+                max-height: 93vh;
+            }
+
+            .order-title {
+                width: 50%;
+                text-align: left;
+                padding-left: 4%;
+            }
+
+            .order-price {
+                width: 20%;
+                text-align: right;
+            }
+
+            .order-quantity {
+                width: 15%;
+            }
+
+            .amount-title {
+                width: 50%;
+                text-align: left;
+                padding-left: 4%;
+                font-weight: bolder;
+            }
+
+            .amount-order-price {
+                width: 20%;
+                text-align: right;
+
+            }
+
+            .total {
+                display: flex;
+                justify-content: space-between;
+                margin: 6% 4% 10% 4%;
+                font-weight: bolder;
+            }
         </style>
         <div class="cart">
 
@@ -94,7 +153,6 @@
                 this.dispatchEvent(new CustomEvent('dish-removed', {detail: dish}));
             }
         }
-
         window.customElements.define(UserCart.is, UserCart);
     </script>
 </dom-module>
