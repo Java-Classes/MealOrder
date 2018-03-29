@@ -21,6 +21,40 @@
     <template>
         <style>
         </style>
+        <div class="cart">
+
+            <dom-repeat items="[[order]]" as="dish">
+                <template>
+                    <div class="vendor">
+                        <div>[[dish.vendor]]</div>
+                        <paper-icon-button icon="delete" class="icon-delete"></paper-icon-button>
+                    </div>
+                    <dom-repeat items="[[dish.dishes]]" as="d">
+                        <template>
+                            <div class="order-details">
+                                <div class="order-title">[[d.title]]</div>
+                                <div class="order-price">[[d.price]] ₴</div>
+                                <div class="order-quantity">[[d.quantity]]</div>
+                                <paper-icon-button icon="remove" on-click="_removeDish"></paper-icon-button>
+                            </div>
+                        </template>
+                    </dom-repeat>
+
+                    <div class="order-details">
+                        <div class="amount-title">Сумма:</div>
+                        <div class="amount-order-price">500 ₴</div>
+                        <div class="order-quantity"></div>
+                        <paper-icon-button></paper-icon-button>
+                    </div>
+                </template>
+            </dom-repeat>
+
+            <div class="total">
+                <div class="amount">Общая сумма:</div>
+                <div class="price">1400 ₴</div>
+            </div>
+
+        </div>
     </template>
     <script>
         class UserCart extends Polymer.Element {
