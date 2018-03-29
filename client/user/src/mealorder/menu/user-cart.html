@@ -61,6 +61,31 @@
             static get is() {
                 return 'user-cart';
             }
+
+            static get properties() {
+                return {
+                    /**
+                     * Fired on dish remove button tap.
+                     *
+                     * @event `dish-removed`
+                     * @param {dish} contains vendor, title.
+                     */
+
+                    /**
+                     * Fired when a dish add button is tapped.
+                     *
+                     * @event `order-removed`
+                     * @param {order} contains vendor.
+                     */
+
+                    /**
+                     * Array to be displayed in a user cart.
+                     */
+                    order: {
+                        type: Array,
+                    }
+                }
+            };
         }
 
         window.customElements.define(UserCart.is, UserCart);
