@@ -62,6 +62,16 @@
             static get is() {
                 return 'menu-order';
             }
+            static get observers() {
+                return [
+                    '_pageChanged(routeData.menu)'
+                ];
+            }
+            _pageChanged() {
+                if (!this.route.path) {
+                    this.set('route.path', '/menu/#/2018/03/21');
+                }
+            }
         }
         window.customElements.define(MenuOrder.is, MenuOrder);
     </script>
