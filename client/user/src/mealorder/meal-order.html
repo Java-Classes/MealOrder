@@ -149,6 +149,13 @@
                 return 'meal-order';
             }
 
+            static get observers() {
+                return [
+                    '_updateDate(currentDate)',
+                    '_changehistoryUrl(currentDate)'
+                ];
+            }
+
             static get actions() {
                 return {
                     addDish(dish) {
