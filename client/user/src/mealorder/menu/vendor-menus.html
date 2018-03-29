@@ -321,6 +321,75 @@
                 }
             }
 
+            static get observers() {
+                return [
+                    '_handleInput(filter)'
+                ];
+            }
+
+            categoryExists(item) {
+                return item.dishes.length > 0;
+            }
+
+            addDish(e) {
+                const dish = {};
+                //dish.category = e.model.parentModel.__data.category.categoryName;
+                dish.vendor = e.model.parentModel.parentModel.__data.item.name;
+                dish.name = e.model.__data.dish.title;
+                dish.price = e.model.__data.dish.price;
+                this.dispatchEvent(new CustomEvent('dish-added', {detail: dish}));
+            }
+
+
+            _handleInput() {
+                const div = this.shadowRoot.querySelector("#list");
+                for (let i = 0; i < this.items.length; i++) {
+                    if (this.filter !== '') {
+                        div.selectIndex(i);
+                        div.selectIndex(i);
+                    }
+                }
+            }
+
+            filteredItems() {
+                const predicate = this.filter;
+                const filtered = [];
+                for (let i = 0; i < this.items.length; i++) {
+                    const vendorCategories = this.items[i].categories;
+                    let newVendorCategories = [];
+                    for (let j = 0; j < vendorCategories.length; j++) {
+                        let vendorDishes = vendorCategories[j].dishes;
+                        let newVendorDishes = [];
+                        for (let k = 0; k < vendorDishes.length; k++) {
+                            if (vendorDishes[k].title.toLowerCase().includes(predicate.toLowerCase())) {
+                                newVendorDishes.push(vendorDishes[k]);
+                            }
+                        }
+                        newVendorCategories.push({
+                            categoryName: vendorCategories[j].categoryName,
+                            dishes: newVendorDishes
+                        });
+                    }
+                    filtered.push({name: this.items[i].name, categories: newVendorCategories});
+                }
+                return filtered;
+            }
+
+
+            getClassForItem(selected) {
+                return selected ? 'item expand' : 'item';
+            };
+
+            getIcon(selected) {
+                if (selected) {
+                    return 'expand-less';
+                }
+                else {
+                    return 'expand-more';
+
+                }
+            }
+
             _reSelect(e) {
                 const div = this.shadowRoot.querySelector("#list");
                 if (!e.model.selected) {
