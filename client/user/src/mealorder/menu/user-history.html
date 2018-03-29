@@ -122,6 +122,15 @@
                     cart: {type: Array}
                 }
             };
+
+            _getTotal(vendor) {
+                const dishes = vendor.dishes;
+                let sum = 0;
+                for (let i = 0; i < dishes.length; i++) {
+                    sum += (dishes[i].price) * dishes[i].quantity;
+                }
+                return sum;
+            }
         }
 
         window.customElements.define(UserHistory.is, UserHistory);
