@@ -85,6 +85,48 @@
             <app-header-layout>
                 <app-header slot="header" reveals effects="waterfall">
                     <app-toolbar>
+                        <div class="container">
+                            <div class="order-container">
+                                <div class="main-title">Заказ обедов</div>
+                                <div class="date-container">
+                                    <div class="calendar">Март&nbsp;2018</div>
+                                </div>
+                            </div>
+                            <iron-pages
+                                    selected="[[routeData.page]]"
+                                    attr-for-selected="name"
+                                    fallback-selection="view404"
+                                    role="main">
+
+                                <div name="menu">
+                                    <div class="history-of-orders"><a href="/#/history/">История заказов</a></div>
+                                    <div class="icon-container">
+                                        <a href="/#/history/">
+                                            <iron-icon class="history-icon" icon="maps:icons:history"></iron-icon>
+                                        </a>
+                                        <div>
+                                            <iron-icon class="order" icon="icons:shopping-cart"
+                                                       drawer-toggle></iron-icon>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div name="history">
+                                    <div class="history-of-orders menu-history"><a href="/#/menu/">Сделать заказ</a>
+                                    </div>
+                                    <div class="icon-container">
+                                        <a href="/#/menu/">
+                                            <iron-icon class="history-icon" icon="maps:icons:create"></iron-icon>
+                                        </a>
+                                        <div>
+                                            <iron-icon class="order" icon="icons:date-range"
+                                                       drawer-toggle></iron-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                            </iron-pages>
+
+                        </div>
                     </app-toolbar>
                 </app-header>
             </app-header-layout>
