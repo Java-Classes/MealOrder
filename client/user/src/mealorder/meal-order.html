@@ -217,6 +217,23 @@
                 }
             }
 
+            _updateDate() {
+                const arr = this.currentDate.split('/');
+                const date = {};
+                date.year = arr[0];
+                date.month = arr[1];
+                date.day = arr[2];
+                this.dispatch('changeHistoryDate', date);
+            }
+
+            _addDishToOrder(e) {
+                this.dispatch('addDish', e.detail);
+            }
+
+            _removeDishFromOrder(e) {
+                this.dispatch('removeDish', e.detail);
+            }
+
             _getClassForDrawer(page) {
                 return page;
             }
