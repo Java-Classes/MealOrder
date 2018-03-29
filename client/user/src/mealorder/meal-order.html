@@ -48,8 +48,38 @@
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
-                <app-toolbar class="app-toolbar">
-                </app-toolbar>
+
+                <iron-pages selected="[[routeData.page]]"
+                            attr-for-selected="name"
+                            fallback-selection="view404"
+                            role="main">
+                    <app-toolbar name="menu">
+                        <div class="order-date">
+                            <div class="order">Заказ</div>
+                            <div>
+                                <div class="day">Пн</div>
+                                <div class="day-of-the-week">21</div>
+                            </div>
+                        </div>
+                    </app-toolbar>
+
+                    <app-toolbar name="history">
+                        <div class="order-date">
+                            <div class="order">История заказов</div>
+                        </div>
+                    </app-toolbar>
+                </iron-pages>
+
+                <iron-pages
+                        selected="[[routeData.page]]"
+                        attr-for-selected="name"
+                        fallback-selection="view404"
+                        role="main">
+                    <user-cart name="menu" order="[[order]]" on-dish-removed="_removeDishFromOrder"></user-cart>
+                    <app-datepicker id="date-picker" name="history" view="vertical"
+                                    date="{{currentDate}}" auto-update-date="true"></app-datepicker>
+
+                </iron-pages>
             </app-drawer>
 
             <app-header-layout>
