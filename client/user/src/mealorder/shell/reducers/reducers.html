@@ -23,6 +23,41 @@
                 return initialState;
             }
             switch (action.type) {
+                case ArrayAction.MENU_FOR_DAY: {
+                    let arr = [];
+                    let k = 0;
+
+                    for (let i = 0; i < initialState.menu.length; i++) {
+                        if (initialState.menu[i].date.day === action.date.date.day) {
+                            arr[k] = initialState.menu[i];
+                            k++;
+                        }
+                    }
+                    return Object.assign({}, state, {
+                            dateForMenu: initialState.dateForMenu,
+                            menuForDay: arr
+                        }
+                    );
+                }
+                case ArrayAction.CHANGE_HISTORY_DAY: {
+                    let newHistory = [];
+                    for (let i = 0; i < initialState.history.length; i++) {
+                        if (Utils.compareObjects(action.date, initialState.history[i].date)) {
+                            newHistory = initialState.history[i].order;
+                            break;
+                        }
+                    }
+                    return Object.assign({}, state, {
+                            currentHistory: newHistory
+                        }
+                    );
+                }
+                case ArrayAction.ADD_DISH: {
+                    return state;
+                }
+                case ArrayAction.REMOVE_DISH: {
+                    return state;
+                }
                 default :
                     return state;
             }
