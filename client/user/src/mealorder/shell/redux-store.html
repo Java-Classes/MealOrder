@@ -22,7 +22,70 @@
 <link rel="import" href="reducers/reducers.html">
 <link rel="import" href="actions/array-actions.html">
 <script>
-
+    const arrayOfDates = [{
+        date: {
+            year: '2018',
+            month: '03',
+            day: '21',
+        },
+        hasMenu: true
+    },
+        {
+            date: {
+                year: '2018',
+                month: '03',
+                day: '22',
+            },
+            hasMenu: true
+        },
+        {
+            date: {
+                year: '2018',
+                month: '03',
+                day: '23',
+            },
+            hasMenu: true
+        },
+        {
+            date: {
+                year: '2018',
+                month: '03',
+                day: '24',
+            },
+            hasMenu: false
+        },
+        {
+            date: {
+                year: '2018',
+                month: '03',
+                day: '25',
+            },
+            hasMenu: false
+        }
+        , {
+            date: {
+                year: '2018',
+                month: '03',
+                day: '26',
+            },
+            hasMenu: true
+        }
+        , {
+            date: {
+                year: '2018',
+                month: '03',
+                day: '27',
+            },
+            hasMenu: true
+        }
+        , {
+            date: {
+                year: '2018',
+                month: '03',
+                day: '28',
+            },
+            hasMenu: true
+        }];
     const initialState = {};
 
     const store = Redux.createStore(reducer);
