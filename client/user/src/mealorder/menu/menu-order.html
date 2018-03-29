@@ -22,6 +22,15 @@
     <template>
         <style>
         </style>
+        <app-location route="{{route}}"
+                      use-hash-as-path></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:menu"
+                data="{{routeData}}"
+                tail="{{subroute}}">
+        </app-route>
     </template>
     <script>
         class MenuOrder extends ReduxMixin(Polymer.Element) {
