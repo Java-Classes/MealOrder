@@ -31,6 +31,58 @@
 <dom-module id="menu-order">
     <template>
         <style>
+            body {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                margin: 0;
+                display: flex;
+                align-items: flex-end;
+                height: 80px;
+                background: #009688;
+                color: white;
+            }
+
+            paper-tabs {
+                -webkit-font-smoothing: antialiased;
+                width: 100%;
+                margin-bottom: 1px;
+                --paper-tabs-selection-bar-color: #179EFF;
+                --paper-tab-ink: #179EFF;
+            }
+
+            paper-tabs {
+                margin: 3% auto;
+                width: 70%;
+            }
+
+            paper-tab.iron-selected .day-of-the-week {
+                color: #179EFF;
+            }
+
+            paper-tab.iron-selected .day {
+                color: #179EFF;
+            }
+
+            .link {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                text-decoration: none;
+                color: #4f4f4f;
+                font-size: 1.5em;
+            }
+
+            .day-of-the-week {
+                font-size: 0.7em;
+                font-weight: lighter;
+            }
+
+            @media only screen and (max-width: 600px) {
+
+                paper-tabs {
+                    margin-top: 3%;
+                    width: 100%;
+                }
+
+            }
         </style>
         <app-location route="{{route}}"
                       use-hash-as-path></app-location>
