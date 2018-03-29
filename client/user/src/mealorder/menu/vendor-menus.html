@@ -332,7 +332,6 @@
                 this.dispatchEvent(new CustomEvent('dish-added', {detail: dish}));
             }
 
-
             _handleInput() {
                 const div = this.shadowRoot.querySelector("#list");
                 for (let i = 0; i < this.items.length; i++) {
@@ -367,7 +366,6 @@
                 return filtered;
             }
 
-
             getClassForItem(selected) {
                 return selected ? 'item expand' : 'item';
             };
@@ -378,7 +376,6 @@
                 }
                 else {
                     return 'expand-more';
-
                 }
             }
 
