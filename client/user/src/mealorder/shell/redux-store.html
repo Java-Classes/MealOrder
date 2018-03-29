@@ -86,7 +86,172 @@
             },
             hasMenu: true
         }];
-    const initialState = {};
+    const initialState = {
+        menuForDates: arrayOfDates,
+        menuForDay: [],
+
+        menu: [
+            {
+                name: 'Пюре',
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '21',
+                },
+                categories: [{
+                    categoryName: 'Первое блюдо', dishes: [
+                        {title: 'Борщ украинский', price: 35},
+                        {title: 'Солянка', price: 40},
+                        {title: 'Суп гороховый', price: 140},
+                        {title: 'Уха', price: 35},
+                        {title: 'Суп-пюре грибной', price: 40}]
+                }
+                    , {
+                        categoryName: 'Второе блюдо', dishes: [
+                            {title: 'Утиные крылышки', price: 40},
+                            {title: 'Куриные крылышки', price: 45}]
+                    }
+                ]
+            },
+            {
+                name: 'Позитив',
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '21',
+                },
+                categories: [{
+                    categoryName: 'Первое блюдо', dishes: [
+                        {title: 'Борщ украинский', price: 35},
+                        {title: 'Суп с лапшой', price: 40},
+                        {title: 'Борщ красный', price: 40},
+                        {title: 'Борщ зеленый', price: 35}]
+                }
+                    , {
+                        categoryName: 'Второе блюдо', dishes: [
+                            {title: 'Стейк из лосося', price: 40},
+                            {title: 'Стейк из говядины', price: 45}]
+                    },
+                    {
+                        categoryName: 'Напитки', dishes: [
+                            {title: 'Лимонад', price: 40}]
+                    }
+                ]
+            },
+            {
+                name: 'Пюре',
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '22',
+                },
+                categories: [{
+                    categoryName: 'Первое блюдо', dishes: [
+                        {title: 'Суп гречневый', price: 35},
+                        {title: 'Солянка', price: 40},
+                        {title: 'Суп гороховый', price: 140},
+                        {title: 'Уха', price: 35},
+                        {title: 'Суп-пюре грибной', price: 40}]
+                }
+                    , {
+                        categoryName: 'Второе блюдо', dishes: [
+                            {title: 'Утиные крылышки', price: 40},
+                            {title: 'Куриные крылышки', price: 45}]
+                    }
+                ]
+            },
+            {
+                name: 'Позитив',
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '22',
+                },
+                categories: [{
+                    categoryName: 'Первое блюдо', dishes: [
+                        {title: 'Суп сырный', price: 35},
+                        {title: 'Суп с лапшой', price: 40},
+                        {title: 'Борщ красный', price: 40},
+                        {title: 'Борщ зеленый', price: 35}]
+                }
+                    , {
+                        categoryName: 'Второе блюдо', dishes: [
+                            {title: 'Стейк из лосося', price: 40},
+                            {title: 'Стейк из говядины', price: 45}]
+                    },
+                    {
+                        categoryName: 'Напитки', dishes: [
+                            {title: 'Лимонад', price: 40}]
+                    }
+                ]
+            }],
+
+
+        history: [{
+            date: {
+                year: '2018',
+                month: '03',
+                day: '29',
+            }, order: [{
+                vendor: "Пюре",
+                dishes: [
+                    {title: 'Борщ украинский', price: 35, quantity: 1},
+                    {title: 'Солянка', price: 40, quantity: 1},
+                    {title: 'Суп гороховый', price: 40, quantity: 1},
+                    {title: 'Уха', price: 35, quantity: 1},
+                    {title: 'Суп-пюре грибной', price: 40, quantity: 1},
+                    {title: 'Суп куриный', price: 40, quantity: 1},]
+            }, {
+                vendor: 'Позитив',
+                dishes: [{title: 'Суп куриный', price: 35, quantity: 1}, {
+                    title: 'Стейк из лосося',
+                    price: 35,
+                    quantity: 1
+                }]
+            }]
+        }, {
+            date: {
+                year: '2018',
+                month: '03',
+                day: '28',
+            }, order: [{
+                vendor: "Пюре",
+                dishes: [
+                    {title: 'Грибное пюре', price: 45, quantity: 1},
+                    {title: 'Солянка', price: 40, quantity: 1},
+                    {title: 'Суп гороховый', price: 40, quantity: 1},
+                    {title: 'Уха', price: 35, quantity: 1},
+                    {title: 'Суп-пюре грибной', price: 40, quantity: 1},
+                    {title: 'Суп куриный', price: 40, quantity: 1},]
+            }, {
+                vendor: 'Позитив',
+                dishes: [{title: 'Каша манная', price: 15, quantity: 5}, {
+                    title: 'Стейк из лосося',
+                    price: 35,
+                    quantity: 1
+                }]
+            }]
+        }],
+
+        currentHistory: [],
+        currentOrder: [{
+            vendor: "Пюре",
+            dishes: [
+                {title: 'Борщ украинский', price: 35, quantity: 1},
+                {title: 'Солянка', price: 40, quantity: 1},
+                {title: 'Суп гороховый', price: 40, quantity: 1},
+                {title: 'Уха', price: 35, quantity: 1},
+                {title: 'Суп-пюре грибной', price: 40, quantity: 1},
+                {title: 'Суп куриный', price: 40, quantity: 1},]
+        }, {
+            vendor: 'Позитив',
+            dishes: [{title: 'Суп куриный', price: 35, quantity: 1}, {
+                title: 'Стейк из лосося',
+                price: 35,
+                quantity: 1
+            }]
+        }]
+    };
 
     const store = Redux.createStore(reducer);
     const ReduxMixin = PolymerRedux(store);
