@@ -62,11 +62,40 @@
             static get is() {
                 return 'menu-order';
             }
+
             static get observers() {
                 return [
                     '_pageChanged(routeData.menu)'
                 ];
             }
+
+            static get properties() {
+                return {
+                    /**
+                     * Fired when a dish add button is tapped.
+                     *
+                     * @event `dish-added`
+                     * @param {dish} contains vendor, category, title.
+                     */
+
+                    /**
+                     * Array of dates with existing menu.
+                     */
+                    menuForDates: {
+                        type: Array,
+                        statePath: 'menuForDates'
+                    },
+
+                    /**
+                     * Menu for a current day.
+                     */
+                    menu: {
+                        type: Array,
+                        statePath: 'menuForDay'
+                    }
+                };
+            }
+
             _pageChanged() {
                 if (!this.route.path) {
                     this.set('route.path', '/menu/#/2018/03/21');
