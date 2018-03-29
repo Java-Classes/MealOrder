@@ -150,8 +150,34 @@
             }
 
             static get properties() {
-                return {}
-            }
+                return {
+                    /**
+                     * Used for routing.
+                     */
+                    routeData: {},
+
+                    /**
+                     * Chosen date.
+                     */
+                    currentDate: {},
+
+                    /**
+                     * Current user's meal order.
+                     */
+                    order: {
+                        type: Array,
+                        statePath: 'currentOrder'
+                    },
+
+                    /**
+                     * User's history for the chosen day.
+                     */
+                    history: {
+                        type: Array,
+                        statePath: 'currentHistory'
+                    }
+                }
+            };
 
             _changehistoryUrl() {
                 if (this.routeData.page.startsWith('history')) {
