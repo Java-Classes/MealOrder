@@ -149,6 +149,29 @@
                 return 'meal-order';
             }
 
+            static get actions() {
+                return {
+                    addDish(dish) {
+                        return {
+                            type: ArrayAction.ADD_DISH,
+                            dish: dish
+                        }
+                    },
+                    removeDish(dish) {
+                        return {
+                            type: ArrayAction.REMOVE_DISH,
+                            dish: dish
+                        }
+                    },
+                    changeHistoryDate(date) {
+                        return {
+                            type: ArrayAction.CHANGE_HISTORY_DAY,
+                            date: date
+                        }
+                    }
+                }
+            }
+
             static get properties() {
                 return {
                     /**
