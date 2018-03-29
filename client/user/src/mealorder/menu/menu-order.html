@@ -124,6 +124,10 @@
                 this.dispatch('menuForDay', this.menuForDates[e.model.index]);
             }
 
+            addDishToOrder(e) {
+                this.dispatchEvent(new CustomEvent('dish-added', {detail: e.detail}));
+            }
+
         }
         window.customElements.define(MenuOrder.is, MenuOrder);
     </script>
