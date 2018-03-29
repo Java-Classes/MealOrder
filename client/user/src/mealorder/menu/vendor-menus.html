@@ -20,14 +20,81 @@
 
 <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-
+<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
 
 <dom-module id="vendor-menus">
     <template>
         <style>
 
         </style>
+        <iron-list scroll-target="document" id="list" items="[[filtered]]" as="item"
+                   selection-enabled
+                   multi-selection>
+            <template>
+                <div class="non-select">
+                    <div class$="[[getClassForItem(selected)]]" tabindex$="[[tabIndex]]">
+                        <div class="pad">
+                            <div class="primary">
+                                [[item.name]]
+                                <paper-icon-button id="expand-button" icon="[[getIcon(selected)]]"
+                                                   on-click="_reSelect"></paper-icon-button>
+                            </div>
 
+                            <dom-repeat items="[[item.categories]]" as="category">
+                                <template>
+                                    <dom-if if="[[categoryExists(category)]]">
+                                        <template>
+                                            <div class="vendor">
+
+                                                <div class="category">
+                                                    <paper-item>
+                                                        <div class="dish-title bolder">
+                                                            [[category.categoryName]]
+                                                        </div>
+                                                        <div class="dish-price bolder">
+                                                            Цена
+                                                        </div>
+                                                        <div class="add-dish-icon">
+                                                            <paper-icon-button
+                                                                    icon=""></paper-icon-button>
+                                                        </div>
+                                                    </paper-item>
+                                                </div>
+
+                                                <dom-repeat items="[[category.dishes]]" as="dish">
+                                                    <template>
+                                                        <div class="menu-dashboard">
+                                                            <paper-item>
+                                                                <div class="dish-title">
+                                                                    [[dish.title]]
+                                                                </div>
+                                                                <div class="dish-price">
+                                                                    [[dish.price]]₴
+                                                                </div>
+                                                                <div class="add-dish-icon">
+                                                                    <paper-icon-button icon="add"
+                                                                                       on-click="addDish"></paper-icon-button>
+                                                                </div>
+                                                            </paper-item>
+                                                        </div>
+                                                    </template>
+                                                </dom-repeat>
+                                            </div>
+                                        </template>
+                                    </dom-if>
+                                </template>
+                            </dom-repeat>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </iron-list>
     </template>
     <script>
 
