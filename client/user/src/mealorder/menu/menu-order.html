@@ -119,6 +119,11 @@
                     this.set('route.path', '/menu/#/2018/03/21');
                 }
             }
+
+            _handleClick(e) {
+                this.dispatch('menuForDay', this.menuForDates[e.model.index]);
+            }
+
         }
         window.customElements.define(MenuOrder.is, MenuOrder);
     </script>
