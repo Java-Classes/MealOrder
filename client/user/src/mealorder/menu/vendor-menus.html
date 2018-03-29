@@ -270,7 +270,41 @@
             }
 
             static get properties() {
-                return {}
+                return {
+                    /**
+                     * Fired when a dish add button is tapped.
+                     *
+                     * @event `dish-added`
+                     * @param {dish} contains vendor, category, title.
+                     */
+
+                    /**
+                     * Full menu for day.
+                     * For structure details see {@code redux-store.html} or inner template.
+                     */
+                    items: {
+                        type: Array,
+                    },
+
+                    /**
+                     * Menu with filter applied.
+                     */
+                    filtered: {
+                        type: Array,
+                        computed: 'filteredItems(items,filter)',
+                        reflectToAttribute: true
+                    },
+
+                    /**
+                     * Inputted key word or word part to search in menu.
+                     */
+                    filter: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    }
+
+                }
             };
         }
 
