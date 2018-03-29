@@ -31,7 +31,169 @@
 <dom-module id="vendor-menus">
     <template>
         <style>
+            :host {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                display: block;
+                padding: 0;
+            }
 
+            body {
+                height: 100vh;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+            }
+
+            app-toolbar {
+                background-color: var(--google-green-700);
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+                font-weight: bold;
+                color: white;
+                font-size: 18px;
+                z-index: 1;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+            }
+
+            app-toolbar paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+            iron-list {
+                --iron-list-items-container: {
+                    width: 70%;
+                    margin: 2% auto;
+                    border-bottom: 1px solid #ddd;
+                };
+            }
+
+            div[role="listbox"] {
+                border: 1px solid #e5e5e5;
+            }
+
+            paper-search-bar {
+                margin: 0 auto;
+                width: 70%;
+                border-radius: 5px;
+                background-color: #ffffff;
+            }
+
+            paper-item {
+                width: 100%;
+            }
+
+            .item {
+                @apply --layout-horizontal;
+                /*padding: 20px;*/
+                background-color: white;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                margin-bottom: 10px;
+            }
+
+            .pad {
+                padding: 15px;
+                @apply --layout-flex;
+                @apply --layout-vertical;
+                font-size: 15px;
+            }
+
+            paper-item {
+                font-size: 15px;
+                padding: 0;
+            }
+
+            .vendor {
+                color: #4f4f4f;
+                display: none;
+            }
+
+            .item.expand .vendor {
+                display: block;
+            }
+
+            @media (max-width: 460px) {
+                paper-toolbar .bottom.title {
+                    font-size: 14px;
+                }
+            }
+
+            #expand-button {
+                position: absolute;
+                right: 0;
+                top: 7px;
+            }
+
+            .primary {
+                font-size: 16px;
+            }
+
+            .menu-dashboard {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-top: 1px solid #fcfcfc;
+                border-bottom: 1px solid #fcfcfc;
+            }
+
+            .category {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .bolder {
+                font-weight: bolder;
+            }
+
+            .dish-title {
+                width: 55%;
+                padding-left: 10px;
+                text-align: left;
+            }
+
+            .dish-price {
+                width: 50px;
+                text-align: right;
+            }
+
+            .add-dish-icon {
+                margin-bottom: 2px;
+                width: 45%;
+                text-align: right;
+            }
+
+            .non-select {
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;
+                /* Non-prefixed version, currently supported by Chrome and Opera */
+            }
+
+            @media only screen and (max-width: 600px) {
+
+                paper-search-bar {
+                    margin: 0 auto;
+                    width: 100%;
+                }
+
+                iron-list {
+                    --iron-list-items-container: {
+                        margin: 4% auto;
+                        width: 100%;
+                    }
+                }
+
+                .dish-price {
+                    padding-left: 30px;
+                }
+
+            }
         </style>
 
         <paper-search-bar query="{{filter}}" hide-filter-button="true"
