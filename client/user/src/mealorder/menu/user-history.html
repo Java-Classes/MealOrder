@@ -25,39 +25,40 @@
         <style>
 
         </style>
-        <dom-repeat items="[[cart]]" as="vendor">
-            <template>
-                <div class="vendor">[[vendor.vendor]]</div>
-                <vaadin-grid title="vendor" aria-label="Basic Binding Example"
-                             items="[[vendor.dishes]]"
-                             as="vendor">
-                    <vaadin-grid-column>
-                        <template class="header">
-                            <p class="dish">Наименование</p>
-                        </template>
-                        <template>
-                            <p class="dish">[[item.title]]</p>
-                        </template>
-                    </vaadin-grid-column>
+        <div class="history">
+            <dom-repeat items="[[cart]]" as="vendor">
+                <template>
+                    <div class="vendor">[[vendor.vendor]]</div>
+                    <vaadin-grid title="vendor" aria-label="Basic Binding Example"
+                                 items="[[vendor.dishes]]"
+                                 as="vendor">
+                        <vaadin-grid-column>
+                            <template class="header">
+                                <p class="dish">Наименование</p>
+                            </template>
+                            <template>
+                                <p class="dish">[[item.title]]</p>
+                            </template>
+                        </vaadin-grid-column>
 
-                    <vaadin-grid-column width="15px">
-                        <template class="header"><p class="price">Цена</p></template>
-                        <template>
-                            <p class="price">[[item.price]]</p>
-                        </template>
-                    </vaadin-grid-column>
+                        <vaadin-grid-column width="15px">
+                            <template class="header"><p class="price">Цена</p></template>
+                            <template>
+                                <p class="price">[[item.price]]</p>
+                            </template>
+                        </vaadin-grid-column>
 
-                    <vaadin-grid-column width="50px">
-                        <template class="header"><p class="quantity">Количество</p></template>
-                        <template>
-                            <p class="quantity">[[item.quantity]]</p>
-                        </template>
-                        <template class="footer">Итого: [[_getTotal(vendor)]]</template>
-                    </vaadin-grid-column>
-                </vaadin-grid>
-            </template>
-        </dom-repeat>
-
+                        <vaadin-grid-column width="50px">
+                            <template class="header"><p class="quantity">Количество</p></template>
+                            <template>
+                                <p class="quantity">[[item.quantity]]</p>
+                            </template>
+                            <template class="footer">Итого: [[_getTotal(vendor)]]</template>
+                        </vaadin-grid-column>
+                    </vaadin-grid>
+                </template>
+            </dom-repeat>
+        </div>
     </template>
     <script>
 
