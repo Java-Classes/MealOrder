@@ -142,8 +142,25 @@
 
         </app-drawer-layout>
     </template>
-
     <script>
+        /**
+         * Main user meal order component.
+         *
+         * <p>Is adopted for both desktop and mobile.
+         * Consists of 2 page:
+         * 1. A page with vendor menus, and user's shopping cart.
+         * 2. A page with user's history.
+         *
+         * The redux mixin provides its own data system and data flow.
+         * Fires following redux events:
+         * <li>addDish</li>
+         * <li>removeDish</li>
+         * <li>changeHistoryDate</li>
+         *
+         * @customElement
+         * @polymer
+         * @ReduxMixin
+         */
         class MealOrder extends ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order';
@@ -238,7 +255,6 @@
                 return page;
             }
         }
-
         window.customElements.define(MealOrder.is, MealOrder);
     </script>
 </dom-module>
