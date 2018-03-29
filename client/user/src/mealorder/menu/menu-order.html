@@ -63,6 +63,13 @@
                 return 'menu-order';
             }
 
+            connectedCallback() {
+                super.connectedCallback();
+                if (this.menuForDates[0].hasMenu) {
+                    this.dispatch('menuForDay', this.menuForDates[0]);
+                }
+            }
+
             static get observers() {
                 return [
                     '_pageChanged(routeData.menu)'
