@@ -263,7 +263,15 @@
         </iron-list>
     </template>
     <script>
-
+        /**
+         * vendor-menus represents an expanding list of menus for current date and filter.
+         *
+         * <p>Is adopted for both desktop and mobile.
+         * Contains search by dish keywords.
+         *
+         * @customElement
+         * @polymer
+         */
         class VendorMenus extends Polymer.Element {
             static get is() {
                 return 'vendor-menus';
@@ -306,20 +314,6 @@
 
                 }
             };
-
-            getClassForItem(selected) {
-                return selected ? 'item expand' : 'item';
-            };
-
-            getIcon(selected) {
-                if (selected) {
-                    return 'expand-less';
-                }
-                else {
-                    return 'expand-more';
-
-                }
-            }
 
             static get observers() {
                 return [
