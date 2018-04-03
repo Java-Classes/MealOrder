@@ -23,6 +23,19 @@
                 return initialState;
             }
             switch (action.type) {
+                case UserAction.CHANGE_HISTORY_DAY: {
+                    let newHistory = [];
+                    for (let i = 0; i < initialState.history.length; i++) {
+                        if (Utils.compareObjects(action.date, initialState.history[i].date)) {
+                            newHistory = initialState.history[i].order;
+                            break;
+                        }
+                    }
+                    return Object.assign({}, state, {
+                            currentHistory: newHistory
+                        }
+                    );
+                }
                 default :
                     return state;
             }
