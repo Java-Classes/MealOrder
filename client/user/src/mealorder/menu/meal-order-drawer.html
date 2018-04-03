@@ -59,6 +59,7 @@
             static get is() {
                 return 'meal-order-drawer';
             }
+
             static get properties() {
                 return {
                     /**
@@ -75,6 +76,7 @@
                     currentDate: {},
                 }
             };
+
             static get observers() {
                 return [
                     '_updateDate(currentDate)',
@@ -102,5 +104,4 @@
 
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
-
 </dom-module>
