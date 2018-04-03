@@ -70,14 +70,6 @@
                 return {}
             }
 
-            _changehistoryUrl() {
-                if (this.routeData.page.startsWith('history')) {
-                    const newRouteData = {};
-                    newRouteData.page = 'history/' + '#/' + this.currentDate;
-                    this.set('routeData', newRouteData);
-                }
-            }
-
             _getClassForDrawer(page) {
                 return page;
             }
