@@ -19,13 +19,26 @@
   -->
 <script>
     const reducer = (state, action) => {
-            if (!state) {
-                return initialState;
-            }
-            switch (action.type) {
-                default :
-                    return state;
+        if (!state) {
+            return initialState;
+        }
+        switch (action.type) {
+            case UserAction.MENU_FOR_DAY: {
+                let arr = [];
+                let k = 0;
+
+                for (let i = 0; i < initialState.menu.length; i++) {
+                    if (initialState.menu[i].date.day === action.date.date.day) {
+                        arr[k] = initialState.menu[i];
+                        k++;
+                    }
+                }
+                return Object.assign({}, state, {
+                        dateForMenu: initialState.dateForMenu,
+                        menuForDay: arr
+                    }
+                );
             }
         }
-    ;
+    };
 </script>
