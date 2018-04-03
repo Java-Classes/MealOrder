@@ -46,7 +46,7 @@
 
         <app-drawer-layout fullbleed>
 
-            <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
+            <app-drawer slot="drawer" align="right">
                 <app-toolbar style="background-color: white">
                 </app-toolbar>
             </app-drawer>
@@ -69,10 +69,6 @@
 
             static get properties() {
                 return {}
-            }
-
-            _getClassForDrawer(page) {
-                return page;
             }
         }
 
