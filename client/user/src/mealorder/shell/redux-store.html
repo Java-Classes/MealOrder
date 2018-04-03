@@ -25,5 +25,8 @@
 
     const initialState = {};
     const store = Redux.createStore(reducer);
-    const ReduxMixin = PolymerRedux(store);
+
+    window.MealOrderApp = {};
+    MealOrderApp.store = store;
+    window.ReduxMixin = PolymerRedux(MealOrderApp.store);
 </script>
