@@ -29,7 +29,6 @@
 <link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
 
 <link rel="import" href="meal-order-vendor-menu.html">
-
 <dom-module id="meal-order-vendor-menus">
     <template>
         <style>
@@ -37,31 +36,6 @@
                 font-family: 'Roboto', 'Noto', sans-serif;
                 display: block;
                 padding: 0;
-            }
-
-            @media only screen and (max-width: 600px) {
-                paper-search-bar {
-                    margin: 0 auto;
-                    width: 100%;
-                }
-
-                iron-list {
-                    --iron-list-items-container: {
-                        margin: 4% auto;
-                        width: 100%;
-                    }
-                }
-
-                .dish-price {
-                    padding-left: 30px;
-                }
-
-            }
-
-            @media (max-width: 460px) {
-                paper-toolbar .bottom.title {
-                    font-size: 14px;
-                }
             }
 
             body {
@@ -107,11 +81,13 @@
                 background-color: #ffffff;
             }
 
-            paper-item {
-                font-size: 15px;
-                padding: 0;
-                width: 100%;
-
+            .item {
+                @apply --layout-horizontal;
+                /*padding: 20px;*/
+                background-color: white;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                margin-bottom: 10px;
             }
 
             .pad {
@@ -121,9 +97,19 @@
                 font-size: 15px;
             }
 
+            .vendor {
+                color: #4f4f4f;
+                display: none;
+            }
 
             .item.expand .vendor {
                 display: block;
+            }
+
+            @media (max-width: 460px) {
+                paper-toolbar .bottom.title {
+                    font-size: 14px;
+                }
             }
 
             #expand-button {
@@ -146,6 +132,20 @@
                 /* Non-prefixed version, currently supported by Chrome and Opera */
             }
 
+            @media only screen and (max-width: 600px) {
+
+                paper-search-bar {
+                    margin: 0 auto;
+                    width: 100%;
+                }
+
+                iron-list {
+                    --iron-list-items-container: {
+                        margin: 4% auto;
+                        width: 100%;
+                    }
+                }
+            }
         </style>
 
         <paper-search-bar query="{{filter}}" hide-filter-button="true"
@@ -163,8 +163,11 @@
                                 <paper-icon-button id="expand-button" icon="[[getIcon(selected)]]"
                                                    on-click="_reSelect"></paper-icon-button>
                             </div>
-                            <meal-order-vendor-menu
-                                    items="[[item.categories]]"></meal-order-vendor-menu>
+                            <div class="expand vendor">
+                                <meal-order-vendor-menu
+                                        items="[[item.categories]]"></meal-order-vendor-menu>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -260,12 +263,7 @@
                     let newVendorCategories = [];
                     for (let j = 0; j < vendorCategories.length; j++) {
                         let vendorDishes = vendorCategories[j].dishes;
-                        let newVendorDishes = [];
-                        for (let k = 0; k < vendorDishes.length; k++) {
-                            if (vendorDishes[k].title.toLowerCase().includes(predicate.toLowerCase())) {
-                                newVendorDishes.push(vendorDishes[k]);
-                            }
-                        }
+                        let newVendorDishes = vendorDishes.filter(dish => dish.title.toLowerCase().includes(predicate.toLowerCase()));
                         newVendorCategories.push({
                             categoryName: vendorCategories[j].categoryName,
                             dishes: newVendorDishes
@@ -286,6 +284,7 @@
                 }
                 else {
                     return 'expand-more';
+
                 }
             }
 
