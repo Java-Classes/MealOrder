@@ -34,9 +34,9 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
-<link rel="import" href="menu/menu-order.html">
 <link rel="import" href="shell/redux-store.html">
 
+<link rel="import" href="menu/meal-order-menu-order.html">
 <link rel="import" href="menu/meal-order-drawer.html">
 <dom-module id="meal-order-main-app">
     <template>
@@ -170,7 +170,7 @@
                 align-items: center;
             }
         </style>
-s
+
         <app-location route="{{route}}"
                       use-hash-as-path></app-location>
 
@@ -251,6 +251,7 @@ s
                         </div>
                     </app-toolbar>
                 </app-header>
+
                 <iron-pages
                         selected="[[routeData.page]]"
                         attr-for-selected="name"
