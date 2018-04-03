@@ -202,7 +202,7 @@
                         </div>
                     </app-toolbar>
                 </iron-pages>
-                <meal-order-drawer order="[[order]]" currentDate="[[currentDate]]"></meal-order-drawer>
+                <meal-order-drawer order="[[order]]" currentDate="[[currentDate]]" on-changed-history-date="_changeHistoryDate"></meal-order-drawer>
             </app-drawer>
 
             <app-header-layout>
@@ -301,11 +301,6 @@
                     routeData: {},
 
                     /**
-                     * Chosen date.
-                     */
-                    currentDate: {},
-
-                    /**
                      * Current user's meal order.
                      */
                     order: {
@@ -351,6 +346,10 @@
 
             _removeDishFromOrder(e) {
                 this.dispatch('removeDish', e.detail);
+            }
+
+            _changeHistoryDate(e) {
+                this.dispatch('changeHistoryDate', e.detail);
             }
 
             _getClassForDrawer(page) {
