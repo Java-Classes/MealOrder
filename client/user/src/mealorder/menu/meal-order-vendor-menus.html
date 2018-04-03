@@ -28,7 +28,9 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
 
-<dom-module id="vendor-menus">
+<link rel="import" href="meal-order-vendor-menu.html">
+
+<dom-module id="meal-order-vendor-menus">
     <template>
         <style>
             :host {
@@ -112,14 +114,6 @@
 
             }
 
-            .item {
-                @apply --layout-horizontal;
-                background-color: white;
-                border: 1px solid #ddd;
-                cursor: pointer;
-                margin-bottom: 10px;
-            }
-
             .pad {
                 padding: 15px;
                 @apply --layout-flex;
@@ -127,10 +121,6 @@
                 font-size: 15px;
             }
 
-            .vendor {
-                color: #4f4f4f;
-                display: none;
-            }
 
             .item.expand .vendor {
                 display: block;
@@ -144,41 +134,6 @@
 
             .primary {
                 font-size: 16px;
-            }
-
-            .menu-dashboard {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border-top: 1px solid #fcfcfc;
-                border-bottom: 1px solid #fcfcfc;
-            }
-
-            .category {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .bolder {
-                font-weight: bolder;
-            }
-
-            .dish-title {
-                width: 55%;
-                padding-left: 10px;
-                text-align: left;
-            }
-
-            .dish-price {
-                width: 50px;
-                text-align: right;
-            }
-
-            .add-dish-icon {
-                margin-bottom: 2px;
-                width: 45%;
-                text-align: right;
             }
 
             .non-select {
@@ -208,51 +163,8 @@
                                 <paper-icon-button id="expand-button" icon="[[getIcon(selected)]]"
                                                    on-click="_reSelect"></paper-icon-button>
                             </div>
-
-                            <dom-repeat items="[[item.categories]]" as="category">
-                                <template>
-                                    <dom-if if="[[categoryExists(category)]]">
-                                        <template>
-                                            <div class="vendor">
-
-                                                <div class="category">
-                                                    <paper-item>
-                                                        <div class="dish-title bolder">
-                                                            [[category.categoryName]]
-                                                        </div>
-                                                        <div class="dish-price bolder">
-                                                            Цена
-                                                        </div>
-                                                        <div class="add-dish-icon">
-                                                            <paper-icon-button
-                                                                    icon=""></paper-icon-button>
-                                                        </div>
-                                                    </paper-item>
-                                                </div>
-
-                                                <dom-repeat items="[[category.dishes]]" as="dish">
-                                                    <template>
-                                                        <div class="menu-dashboard">
-                                                            <paper-item>
-                                                                <div class="dish-title">
-                                                                    [[dish.title]]
-                                                                </div>
-                                                                <div class="dish-price">
-                                                                    [[dish.price]]₴
-                                                                </div>
-                                                                <div class="add-dish-icon">
-                                                                    <paper-icon-button icon="add"
-                                                                                       on-click="addDish"></paper-icon-button>
-                                                                </div>
-                                                            </paper-item>
-                                                        </div>
-                                                    </template>
-                                                </dom-repeat>
-                                            </div>
-                                        </template>
-                                    </dom-if>
-                                </template>
-                            </dom-repeat>
+                            <meal-order-vendor-menu
+                                    items="[[item.categories]]"></meal-order-vendor-menu>
                         </div>
                     </div>
                 </div>
@@ -269,9 +181,9 @@
          * @customElement
          * @polymer
          */
-        class VendorMenus extends Polymer.Element {
+        class MealOrderVendorMenus extends Polymer.Element {
             static get is() {
-                return 'vendor-menus';
+                return 'meal-order-vendor-menus';
             }
 
             static get properties() {
@@ -388,6 +300,6 @@
             }
         }
 
-        window.customElements.define(VendorMenus.is, VendorMenus);
+        window.customElements.define(MealOrderVendorMenus.is, MealOrderVendorMenus);
     </script>
 </dom-module>
