@@ -34,11 +34,8 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
-<link rel="import" href="../../bower_components/app-datepicker/app-datepicker.html">
 
 <link rel="import" href="shell/redux-store.html">
-<link rel="import" href="menu/user-cart.html">
-<link rel="import" href="menu/menu-order.html">
 <dom-module id="meal-order-main-app">
     <template>
         <style>
@@ -153,14 +150,6 @@
                 --app-drawer-width: 300px;
             }
 
-            #date-picker {
-                --app-datepicker-selection-bg: #fafafa;
-                --app-datepicker-selection-color: #616161;
-                --app-datepicker-iron-selected: #616161;
-                --app-datepicker-selected-day-bg: #179EFF;
-                --app-datepicker-today-color: #179EFF;
-                --app-datepicker-date-hover-background-color: #179EFF;
-            }
 
             app-drawer {
                 --app-drawer-content-container: {
@@ -212,16 +201,8 @@
                     </app-toolbar>
                 </iron-pages>
 
-                <iron-pages
-                        selected="[[routeData.page]]"
-                        attr-for-selected="name"
-                        fallback-selection="view404"
-                        role="main">
-                    <user-cart name="menu" order="[[order]]"
-                               on-dish-removed="_removeDishFromOrder"></user-cart>
-                    <app-datepicker id="date-picker" name="history" view="vertical"
-                                    date="{{currentDate}}" auto-update-date="true"></app-datepicker>
-                </iron-pages>
+
+
             </app-drawer>
 
             <app-header-layout>
@@ -276,8 +257,8 @@
                         attr-for-selected="name"
                         fallback-selection="view404"
                         role="main">
-                    <menu-order name="menu" on-dish-added="_addDishToOrder"></menu-order>
-                    <user-history name="history" cart="[[history]]" narrow="[[narrow]]"></user-history>
+                    <menu-order></menu-order>
+                    <user-history></user-history>
                 </iron-pages>
 
             </app-header-layout>
@@ -306,36 +287,6 @@
         class MealOrderMainApp extends ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-main-app';
-            }
-
-            static get observers() {
-                return [
-                    '_updateDate(currentDate)',
-                    '_changehistoryUrl(currentDate)'
-                ];
-            }
-
-            static get actions() {
-                return {
-                    addDish(dish) {
-                        return {
-                            type: ArrayAction.ADD_DISH,
-                            dish: dish
-                        }
-                    },
-                    removeDish(dish) {
-                        return {
-                            type: ArrayAction.REMOVE_DISH,
-                            dish: dish
-                        }
-                    },
-                    changeHistoryDate(date) {
-                        return {
-                            type: ArrayAction.CHANGE_HISTORY_DAY,
-                            date: date
-                        }
-                    }
-                }
             }
 
             static get properties() {
@@ -368,23 +319,28 @@
                 }
             };
 
-            _changehistoryUrl() {
-                if (this.routeData.page.startsWith('history')) {
-                    const newRouteData = {};
-                    newRouteData.page = 'history/' + '#/' + this.currentDate;
-                    this.set('routeData', newRouteData);
+            static get actions() {
+                return {
+                    addDish(dish) {
+                        return {
+                            type: UserAction.ADD_DISH,
+                            dish: dish
+                        }
+                    },
+                    removeDish(dish) {
+                        return {
+                            type: UserAction.REMOVE_DISH,
+                            dish: dish
+                        }
+                    },
+                    changeHistoryDate(date) {
+                        return {
+                            type: UserAction.CHANGE_HISTORY_DAY,
+                            date: date
+                        }
+                    }
                 }
             }
-
-            _updateDate() {
-                const arr = this.currentDate.split('/');
-                const date = {};
-                date.year = arr[0];
-                date.month = arr[1];
-                date.day = arr[2];
-                this.dispatch('changeHistoryDate', date);
-            }
-
             _addDishToOrder(e) {
                 this.dispatch('addDish', e.detail);
             }
