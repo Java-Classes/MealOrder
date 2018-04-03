@@ -28,6 +28,8 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
 
+<link rel="import" href="meal-order-vendor-menu.html">
+
 <dom-module id="meal-order-vendor-menus">
     <template>
         <style>
@@ -208,51 +210,8 @@
                                 <paper-icon-button id="expand-button" icon="[[getIcon(selected)]]"
                                                    on-click="_reSelect"></paper-icon-button>
                             </div>
-
-                            <dom-repeat items="[[item.categories]]" as="category">
-                                <template>
-                                    <dom-if if="[[categoryExists(category)]]">
-                                        <template>
-                                            <div class="vendor">
-
-                                                <div class="category">
-                                                    <paper-item>
-                                                        <div class="dish-title bolder">
-                                                            [[category.categoryName]]
-                                                        </div>
-                                                        <div class="dish-price bolder">
-                                                            Цена
-                                                        </div>
-                                                        <div class="add-dish-icon">
-                                                            <paper-icon-button
-                                                                    icon=""></paper-icon-button>
-                                                        </div>
-                                                    </paper-item>
-                                                </div>
-
-                                                <dom-repeat items="[[category.dishes]]" as="dish">
-                                                    <template>
-                                                        <div class="menu-dashboard">
-                                                            <paper-item>
-                                                                <div class="dish-title">
-                                                                    [[dish.title]]
-                                                                </div>
-                                                                <div class="dish-price">
-                                                                    [[dish.price]]₴
-                                                                </div>
-                                                                <div class="add-dish-icon">
-                                                                    <paper-icon-button icon="add"
-                                                                                       on-click="addDish"></paper-icon-button>
-                                                                </div>
-                                                            </paper-item>
-                                                        </div>
-                                                    </template>
-                                                </dom-repeat>
-                                            </div>
-                                        </template>
-                                    </dom-if>
-                                </template>
-                            </dom-repeat>
+                            <meal-order-vendor-menu
+                                    items="[[item.categories]]"></meal-order-vendor-menu>
                         </div>
                     </div>
                 </div>
