@@ -35,7 +35,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="shell/redux-store.html">
-
+<link rel="import" href="menu/meal-order-user-history.html">
 <link rel="import" href="menu/meal-order-menu-order.html">
 <link rel="import" href="menu/meal-order-drawer.html">
 <dom-module id="meal-order-main-app">
@@ -251,14 +251,13 @@
                         </div>
                     </app-toolbar>
                 </app-header>
-
                 <iron-pages
                         selected="[[routeData.page]]"
                         attr-for-selected="name"
                         fallback-selection="view404"
                         role="main">
-                    <menu-order name="menu" on-dish-added="_addDishToOrder"></menu-order>
-                    <user-history name="history" cart="[[history]]" narrow="[[narrow]]"></user-history>
+                    <meal-order-menu-order name="menu" on-dish-added="_addDishToOrder"></meal-order-menu-order>
+                    <meal-order-user-history name="history" cart="[[history]]" narrow="[[narrow]]"></meal-order-user-history>
                 </iron-pages>
 
             </app-header-layout>
