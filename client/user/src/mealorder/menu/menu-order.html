@@ -25,9 +25,7 @@
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
-
-<link rel="import" href="vendor-menus.html">
-<link rel="import" href="user-history.html">
+<link rel="import" href="../menu/meal-order-vendor-menus.html">
 <dom-module id="menu-order">
     <template>
         <style>
@@ -136,30 +134,6 @@
                 return 'menu-order';
             }
 
-            connectedCallback() {
-                super.connectedCallback();
-                if (this.menuForDates[0].hasMenu) {
-                    this.dispatch('menuForDay', this.menuForDates[0]);
-                }
-            }
-
-            static get observers() {
-                return [
-                    '_pageChanged(routeData.menu)'
-                ];
-            }
-
-            static get actions() {
-                return {
-                    menuForDay(date) {
-                        return {
-                            type: ArrayAction.MENU_FOR_DAY,
-                            date: date
-                        }
-                    },
-                }
-            }
-
             static get properties() {
                 return {
                     /**
@@ -185,6 +159,30 @@
                         statePath: 'menuForDay'
                     }
                 };
+            }
+
+            static get actions() {
+                return {
+                    menuForDay(date) {
+                        return {
+                            type: UserAction.MENU_FOR_DAY,
+                            date: date
+                        }
+                    },
+                }
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                if (this.menuForDates[0].hasMenu) {
+                    this.dispatch('menuForDay', this.menuForDates[0]);
+                }
+            }
+
+            static get observers() {
+                return [
+                    '_pageChanged(routeData.menu)'
+                ];
             }
 
             _pageChanged() {
