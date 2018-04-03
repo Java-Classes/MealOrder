@@ -23,6 +23,11 @@
             return initialState;
         }
         switch (action.type) {
+
+            case UserAction.REMOVE_DISH: {
+                return state;
+            }
+
             case UserAction.MENU_FOR_DAY: {
                 let arr = [];
                 let k = 0;
@@ -38,6 +43,9 @@
                         menuForDay: arr
                     }
                 );
+            }
+            default : {
+                return state;
             }
         }
     };
