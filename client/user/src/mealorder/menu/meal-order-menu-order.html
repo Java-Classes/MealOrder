@@ -88,14 +88,13 @@
         <app-route
                 route="{{route}}"
                 pattern="/:menu"
-                data="{{routeData}}"
-                tail="{{subroute}}">
+                data="{{routeData}}">
         </app-route>
 
-        <paper-tabs class="tabs" selected="[[routeData.menu]]" attr-for-selected='key'>
+        <paper-tabs class="tabs" selected="0">
             <template is="dom-repeat" items="{{menuForDates}}" as="calendar">
-                <paper-tab key="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]" link>
-                    <a class="link" name="[[calendar.date.year]]/[[calendar.date.month]]/[[calendar.date.day]]"
+                <paper-tab link>
+                    <a class="link"
                        href="/#/menu/#/[[calendar.date.year]]/[[calendar.date.month]]/[[calendar.date.day]]"
                        on-click="_handleClick">
                         <div>
@@ -107,15 +106,8 @@
             </template>
         </paper-tabs>
 
-        <iron-pages
-                selected="[[routeData.menu]]"
-                attr-for-selected="name"
-                fallback-selection="view404"
-                role="main">
+        <meal-order-vendor-menus items="[[menu]]" on-dish-added="addDishToOrder"></meal-order-vendor-menus>
 
-            <meal-order-vendor-menus name="[[routeData.menu]]"
-                          items="[[menu]]" route="[[subroute]]" on-dish-added="addDishToOrder"></meal-order-vendor-menus>
-        </iron-pages>
     </template>
     <script>
         /**
@@ -144,7 +136,7 @@
                      */
 
                     /**
-                     * Array of dates with existing menu.
+                     * Array of dates with menu which may not exist.
                      */
                     menuForDates: {
                         type: Array,
@@ -157,7 +149,7 @@
                     menu: {
                         type: Array,
                         statePath: 'menuForDay'
-                    }
+                    },
                 };
             }
 
@@ -187,7 +179,8 @@
 
             _pageChanged() {
                 if (!this.route.path) {
-                    this.set('route.path', '/menu/#/2018/03/21');
+                    this.set('route.path', '/menu/#/' + this.menuForDates[0].date.year + "/" +
+                        this.menuForDates[0].date.month + "/" + this.menuForDates[0].date.day);
                 }
             }
 
@@ -200,6 +193,7 @@
             }
 
         }
+
         window.customElements.define(MealOrderMenuOrder.is, MealOrderMenuOrder);
     </script>
 </dom-module>
