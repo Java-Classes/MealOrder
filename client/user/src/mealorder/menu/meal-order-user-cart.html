@@ -31,7 +31,7 @@
 <link rel="import" href="../../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<dom-module id="user-cart">
+<dom-module id="meal-order-user-cart">
     <template>
         <style>
             :host {
@@ -138,9 +138,9 @@
          * @customElement
          * @polymer
          */
-        class UserCart extends Polymer.Element {
+        class MealOrderUserCart extends Polymer.Element {
             static get is() {
-                return 'user-cart';
+                return 'meal-order-user-cart';
             }
 
             static get properties() {
@@ -174,6 +174,6 @@
                 this.dispatchEvent(new CustomEvent('dish-removed', {detail: dish}));
             }
         }
-        window.customElements.define(UserCart.is, UserCart);
+        window.customElements.define(MealOrderUserCart.is, MealOrderUserCart);
     </script>
 </dom-module>
