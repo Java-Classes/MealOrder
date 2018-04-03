@@ -39,7 +39,7 @@
 <link rel="import" href="shell/redux-store.html">
 <link rel="import" href="menu/user-cart.html">
 <link rel="import" href="menu/menu-order.html">
-<dom-module id="meal-order">
+<dom-module id="meal-order-main-app">
     <template>
         <style>
             :host {
@@ -303,9 +303,9 @@
          * @polymer
          * @ReduxMixin
          */
-        class MealOrder extends ReduxMixin(Polymer.Element) {
+        class MealOrderMainApp extends ReduxMixin(Polymer.Element) {
             static get is() {
-                return 'meal-order';
+                return 'meal-order-main-app';
             }
 
             static get observers() {
@@ -397,6 +397,7 @@
                 return page;
             }
         }
-        window.customElements.define(MealOrder.is, MealOrder);
+
+        window.customElements.define(MealOrderMainApp.is, MealOrderMainApp);
     </script>
 </dom-module>
