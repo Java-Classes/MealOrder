@@ -152,6 +152,14 @@
                     }
                 }
             };
+
+            addDish(e) {
+                const dish = {};
+                dish.vendor = this.vendor;
+                dish.name = e.model.__data.dish.title;
+                dish.price = e.model.__data.dish.price;
+                this.dispatchEvent(new CustomEvent('dish-added', {detail: dish}));
+            }
         }
 
         window.customElements.define(MealOrderVendorMenu.is, MealOrderVendorMenu);

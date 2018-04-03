@@ -165,7 +165,8 @@
                             </div>
                             <div class="expand vendor">
                                 <meal-order-vendor-menu
-                                        items="[[item.categories]]"></meal-order-vendor-menu>
+                                        items="[[item.categories]]" vendor="[[item.name]]"
+                                        on-dish-added="addDish"></meal-order-vendor-menu>
                             </div>
 
                         </div>
@@ -238,11 +239,7 @@
             }
 
             addDish(e) {
-                const dish = {};
-                dish.vendor = e.model.parentModel.parentModel.__data.item.name;
-                dish.name = e.model.__data.dish.title;
-                dish.price = e.model.__data.dish.price;
-                this.dispatchEvent(new CustomEvent('dish-added', {detail: dish}));
+                this.dispatchEvent(new CustomEvent('dish-added', {detail: e.detail}));
             }
 
             _handleInput() {
