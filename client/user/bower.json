@@ -13,7 +13,9 @@
     "app-layout": "PolymerElements/app-layout#^2.0.0",
     "app-route": "PolymerElements/app-route#^2.0.0",
     "iron-form": "PolymerElements/iron-form#^2.0.0",
-    "polymer-redux": "^1.0.5"
+    "polymer-redux": "^1.0.5",
+    "paper-card": "PolymerElements/paper-card#^2.1.0",
+    "vaadin-grid": "vaadin/vaadin-grid#^4.1.7"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
