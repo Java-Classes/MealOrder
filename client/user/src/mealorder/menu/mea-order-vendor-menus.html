@@ -28,7 +28,7 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
 
-<dom-module id="vendor-menus">
+<dom-module id="meal-order-vendor-menus">
     <template>
         <style>
             :host {
@@ -269,9 +269,9 @@
          * @customElement
          * @polymer
          */
-        class VendorMenus extends Polymer.Element {
+        class MealOrderVendorMenus extends Polymer.Element {
             static get is() {
-                return 'vendor-menus';
+                return 'meal-order-vendor-menus';
             }
 
             static get properties() {
@@ -388,6 +388,6 @@
             }
         }
 
-        window.customElements.define(VendorMenus.is, VendorMenus);
+        window.customElements.define(MealOrderVendorMenus.is, MealOrderVendorMenus);
     </script>
 </dom-module>
