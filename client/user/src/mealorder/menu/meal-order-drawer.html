@@ -101,7 +101,7 @@
                 date.year = arr[0];
                 date.month = arr[1];
                 date.day = arr[2];
-                this.dispatch('changeHistoryDate', date);
+                this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
             }
         }
 
