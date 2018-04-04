@@ -44,6 +44,19 @@
                     }
                 );
             }
+            case UserAction.CART_FOR_DAY: {
+                let newOrder = [];
+                for (let i = 0; i < initialState.orders.length; i++) {
+                    if (Utils.compareObjects(action.date, initialState.orders[i].date)) {
+                        newOrder = initialState.orders[i].cart;
+                        break;
+                    }
+                }
+                return Object.assign({}, state, {
+                        currentOrder: newOrder
+                    }
+                );
+            }
             default : {
                 return state;
             }

@@ -161,6 +161,12 @@
                             date: date
                         }
                     },
+                    cartForDay(date) {
+                        return {
+                            type: ArrayAction.CART_FOR_DAY,
+                            date: date
+                        }
+                    },
                 }
             }
 
@@ -168,6 +174,7 @@
                 super.connectedCallback();
                 if (this.menuForDates[0].hasMenu) {
                     this.dispatch('menuForDay', this.menuForDates[0]);
+                    this.dispatch('cartForDay', this.menuForDates[0].date);
                 }
             }
 
@@ -186,6 +193,7 @@
 
             _handleClick(e) {
                 this.dispatch('menuForDay', this.menuForDates[e.model.index]);
+                this.dispatch('cartForDay', this.menuForDates[e.model.index].date);
             }
 
             addDishToOrder(e) {
