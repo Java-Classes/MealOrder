@@ -19,94 +19,132 @@
   -->
 <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-
+<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
 <dom-module id="meal-order-user-history">
     <template>
         <style>
             :host {
+                font-family: 'Roboto', 'Noto', sans-serif;
                 color: #4f4f4f;
             }
 
-            paper-card {
-                display: block;
-            }
-
-            vaadin-grid {
-                height: max-content;
-
+            .history {
                 width: 70%;
-                display: block;
-                margin-left: 15%;
+                margin: 3% auto;
             }
 
-            .vendor {
-                margin-left: 15%;
-                font: bold 24px/1.5 Times, 'New Century Schoolbook', serif;
+            .history-title {
+                width: 35%;
+                text-align: left;
+                margin-left: 2%;
             }
 
-            .quantity {
+            .history-price {
+                width: 20%;
                 text-align: right;
-                padding-right: 10%;
             }
 
-            .price {
+            .history-quantity {
                 text-align: right;
-                padding-right: 10%;
+                width: 45%;
+                margin-right: 2%;
             }
 
-            .dish {
-                padding-left: 5%;
+            .header {
+                display: flex;
+                justify-content: space-between;
+                background-color: #e2e2e2;
+                height: 40px;
+                align-items: center;
+            }
+
+            .dishes {
+                display: flex;
+                justify-content: space-between;
+                background-color: white;
+                height: 40px;
+                margin-bottom: 2px;
+                align-items: center;
+            }
+
+            .total-sum {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                background-color: white;
+                font-weight: bolder;
+                height: 40px;
+                padding-right: 2%;
+            }
+
+            .title-for-mobile {
+                display: none;
             }
 
             @media only screen and (max-width: 600px) {
-                .vendor {
-                    margin-left: 5%;
+
+                .history-title {
+                    width: 40%;
                 }
 
-                vaadin-grid {
-                    width: 90%;
-                    display: block;
-                    margin-left: 5%;
-                    margin-right: 5%;
-                    padding-right: 0;
+                .history-quantity {
+                    width: 40%;
+
                 }
+
+                .history {
+                    width: 100%;
+                }
+
+                .title-for-mobile {
+                    color: #969696;
+
+                    display: flex;
+                    justify-content: flex-end;
+                    margin-right: 2%;
+                }
+
             }
+
+
+            .vendor-title {
+                font-size: 22px;
+                font-weight: bolder;
+                margin-top: 2%;
+                margin-bottom: 2px;
+            }
+
         </style>
         <div class="history">
-            <dom-repeat items="[[cart]]" as="vendor">
+
+            <div class="title-for-mobile">История заказов</div>
+
+            <iron-list items="[[cart]]" as="item">
                 <template>
-                    <div class="vendor">[[vendor.vendor]]</div>
-                    <vaadin-grid title="vendor" aria-label="Basic Binding Example"
-                                 items="[[vendor.dishes]]"
-                                 as="vendor">
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <p class="dish">Наименование</p>
-                            </template>
-                            <template>
-                                <p class="dish">[[item.title]]</p>
-                            </template>
-                        </vaadin-grid-column>
+                    <div>
+                        <div class="vendor-title">[[item.vendor]]</div>
 
-                        <vaadin-grid-column width="15px">
-                            <template class="header"><p class="price">Цена</p></template>
-                            <template>
-                                <p class="price">[[item.price]]</p>
-                            </template>
-                        </vaadin-grid-column>
+                        <div class="header">
+                            <div class="history-title">Наименование</div>
+                            <div class="history-price">Цена</div>
+                            <div class="history-quantity">Количество</div>
+                        </div>
 
-                        <vaadin-grid-column width="50px">
-                            <template class="header"><p class="quantity">Количество</p></template>
+                        <dom-repeat items="[[item.dishes]]" as="dish">
                             <template>
-                                <p class="quantity">[[item.quantity]]</p>
+                                <div class="dishes">
+                                    <div class="history-title">[[dish.title]]</div>
+                                    <div class="history-price">[[dish.price]]</div>
+                                    <div class="history-quantity">[[dish.quantity]]</div>
+                                </div>
                             </template>
-                            <template class="footer">Итого: [[_getTotal(vendor)]]</template>
-                        </vaadin-grid-column>
-                    </vaadin-grid>
+                        </dom-repeat>
+                    </div>
                 </template>
-            </dom-repeat>
+            </iron-list>
+            <div class="total-sum">Общая сумма: [[totalSum]]</div>
         </div>
     </template>
     <script>
@@ -128,17 +166,25 @@
                     /**
                      * An array containing items to be displayed.
                      */
-                    cart: {type: Array}
+                    cart: {type: Array},
+                    totalSum: {
+                        type: Number,
+                        computed: 'getTotalSum(cart)',
+                    }
                 }
             };
 
-            _getTotal(vendor) {
-                const dishes = vendor.dishes;
-                let sum = 0;
-                for (let i = 0; i < dishes.length; i++) {
-                    sum += (dishes[i].price) * dishes[i].quantity;
+            getTotalSum(cart) {
+                let total_sum = 0;
+                for (let i = 0; i < cart.length; i++) {
+                    const dishes = cart[i].dishes;
+                    let sum = 0;
+                    for (let i = 0; i < dishes.length; i++) {
+                        sum += (dishes[i].price) * dishes[i].quantity;
+                    }
+                    total_sum += sum;
                 }
-                return sum;
+                return total_sum;
             }
         }
 
