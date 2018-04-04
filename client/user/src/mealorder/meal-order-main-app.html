@@ -202,7 +202,7 @@
                         </div>
                     </app-toolbar>
                 </iron-pages>
-                <meal-order-drawer order="[[order]]" currentDate="[[currentDate]]" on-changed-history-date="_changeHistoryDate"></meal-order-drawer>
+                <meal-order-drawer order="[[order]]" on-changed-history-date="_changeHistoryDate"></meal-order-drawer>
             </app-drawer>
 
             <app-header-layout>
@@ -284,11 +284,6 @@
          * @ReduxMixin
          */
         class MealOrderMainApp extends ReduxMixin(Polymer.Element) {
-
-            test() {
-                console.log("DS");
-            }
-
             static get is() {
                 return 'meal-order-main-app';
             }
