@@ -112,19 +112,12 @@
                             </div>
                         </template>
                     </dom-repeat>
-
-                    <div class="order-details">
-                        <div class="amount-title">Сумма:</div>
-                        <div class="amount-order-price">500 ₴</div>
-                        <div class="order-quantity"></div>
-                        <paper-icon-button></paper-icon-button>
-                    </div>
                 </template>
             </dom-repeat>
 
             <div class="total">
                 <div class="amount">Общая сумма:</div>
-                <div class="price">1400 ₴</div>
+                <div class="price">[[total]]</div>
             </div>
 
         </div>
@@ -164,6 +157,13 @@
                      */
                     order: {
                         type: Array,
+                    },
+                    /**
+                     * Total cost of an order for current day.
+                     */
+                    total: {
+                        type: Number,
+                        computed: '_getTotalAmount(order)'
                     }
                 }
             };
@@ -172,6 +172,16 @@
                 dish.vendor = e.model.parentModel.__data.dish.vendor;
                 dish.name = e.model.__data.d.title;
                 this.dispatchEvent(new CustomEvent('dish-removed', {detail: dish}));
+            }
+
+            _getTotalAmount() {
+                let sum = 0;
+                for (let i = 0; i < this.order.length; i++) {
+                    for (let j = 0; j < this.order[i].dishes.length; j++) {
+                        sum += this.order[i].dishes[j].price * this.order[i].dishes[j].quantity;
+                    }
+                }
+                return sum;
             }
         }
         window.customElements.define(MealOrderUserCart.is, MealOrderUserCart);
