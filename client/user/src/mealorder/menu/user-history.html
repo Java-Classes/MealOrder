@@ -1,0 +1,147 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<dom-module id="user-history">
+    <template>
+        <style>
+            :host {
+                color: #4f4f4f;
+            }
+
+            paper-card {
+                display: block;
+            }
+
+            vaadin-grid {
+                height: max-content;
+
+                width: 70%;
+                display: block;
+                margin-left: 15%;
+            }
+
+            .vendor {
+                margin-left: 15%;
+                font: bold 24px/1.5 Times, 'New Century Schoolbook', serif;
+            }
+
+            .quantity {
+                text-align: right;
+                padding-right: 10%;
+            }
+
+            .price {
+                text-align: right;
+                padding-right: 10%;
+            }
+
+            .dish {
+                padding-left: 5%;
+            }
+
+            @media only screen and (max-width: 600px) {
+                .vendor {
+                    margin-left: 5%;
+                }
+
+                vaadin-grid {
+                    width: 90%;
+                    display: block;
+                    margin-left: 5%;
+                    margin-right: 5%;
+                    padding-right: 0;
+                }
+            }
+        </style>
+        <div class="history">
+            <dom-repeat items="[[cart]]" as="vendor">
+                <template>
+                    <div class="vendor">[[vendor.vendor]]</div>
+                    <vaadin-grid title="vendor" aria-label="Basic Binding Example"
+                                 items="[[vendor.dishes]]"
+                                 as="vendor">
+                        <vaadin-grid-column>
+                            <template class="header">
+                                <p class="dish">Наименование</p>
+                            </template>
+                            <template>
+                                <p class="dish">[[item.title]]</p>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column width="15px">
+                            <template class="header"><p class="price">Цена</p></template>
+                            <template>
+                                <p class="price">[[item.price]]</p>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column width="50px">
+                            <template class="header"><p class="quantity">Количество</p></template>
+                            <template>
+                                <p class="quantity">[[item.quantity]]</p>
+                            </template>
+                            <template class="footer">Итого: [[_getTotal(vendor)]]</template>
+                        </vaadin-grid-column>
+                    </vaadin-grid>
+                </template>
+            </dom-repeat>
+        </div>
+    </template>
+    <script>
+        /**
+         * User's history for individual day.
+         *
+         * <p>Is adopted for both desktop and mobile.
+         *
+         * @customElement
+         * @polymer
+         */
+        class UserHistory extends Polymer.Element {
+            static get is() {
+                return 'user-history';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * An array containing items to be displayed.
+                     */
+                    cart: {type: Array}
+                }
+            };
+
+            _getTotal(vendor) {
+                const dishes = vendor.dishes;
+                let sum = 0;
+                for (let i = 0; i < dishes.length; i++) {
+                    sum += (dishes[i].price) * dishes[i].quantity;
+                }
+                return sum;
+            }
+        }
+
+        window.customElements.define(UserHistory.is, UserHistory);
+    </script>
+</dom-module>
