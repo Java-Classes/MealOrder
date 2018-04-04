@@ -26,9 +26,9 @@
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
 
-<link rel="import" href="vendor-menus.html">
 <link rel="import" href="meal-order-user-history.html">
-<dom-module id="menu-order">
+<link rel="import" href="../menu/meal-order-vendor-menus.html">
+<dom-module id="meal-order-menu-order">
     <template>
         <style>
             body {
@@ -90,14 +90,13 @@
         <app-route
                 route="{{route}}"
                 pattern="/:menu"
-                data="{{routeData}}"
-                tail="{{subroute}}">
+                data="{{routeData}}">
         </app-route>
 
-        <paper-tabs class="tabs" selected="[[routeData.menu]]" attr-for-selected='key'>
+        <paper-tabs class="tabs" selected="0">
             <template is="dom-repeat" items="{{menuForDates}}" as="calendar">
-                <paper-tab key="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]" link>
-                    <a class="link" name="[[calendar.date.year]]/[[calendar.date.month]]/[[calendar.date.day]]"
+                <paper-tab link>
+                    <a class="link"
                        href="/#/menu/#/[[calendar.date.year]]/[[calendar.date.month]]/[[calendar.date.day]]"
                        on-click="_handleClick">
                         <div>
@@ -109,15 +108,8 @@
             </template>
         </paper-tabs>
 
-        <iron-pages
-                selected="[[routeData.menu]]"
-                attr-for-selected="name"
-                fallback-selection="view404"
-                role="main">
+        <meal-order-vendor-menus items="[[menu]]" on-dish-added="addDishToOrder"></meal-order-vendor-menus>
 
-            <vendor-menus name="[[routeData.menu]]"
-                          items="[[menu]]" route="[[subroute]]" on-dish-added="addDishToOrder"></vendor-menus>
-        </iron-pages>
     </template>
     <script>
         /**
@@ -131,33 +123,9 @@
          * @polymer
          * @ReduxMixin
          */
-        class MenuOrder extends ReduxMixin(Polymer.Element) {
+        class MealOrderMenuOrder extends ReduxMixin(Polymer.Element) {
             static get is() {
-                return 'menu-order';
-            }
-
-            connectedCallback() {
-                super.connectedCallback();
-                if (this.menuForDates[0].hasMenu) {
-                    this.dispatch('menuForDay', this.menuForDates[0]);
-                }
-            }
-
-            static get observers() {
-                return [
-                    '_pageChanged(routeData.menu)'
-                ];
-            }
-
-            static get actions() {
-                return {
-                    menuForDay(date) {
-                        return {
-                            type: ArrayAction.MENU_FOR_DAY,
-                            date: date
-                        }
-                    },
-                }
+                return 'meal-order-menu-order';
             }
 
             static get properties() {
@@ -170,7 +138,7 @@
                      */
 
                     /**
-                     * Array of dates with existing menu.
+                     * Array of dates with menu which may not exist.
                      */
                     menuForDates: {
                         type: Array,
@@ -183,18 +151,51 @@
                     menu: {
                         type: Array,
                         statePath: 'menuForDay'
-                    }
+                    },
                 };
+            }
+
+            static get actions() {
+                return {
+                    menuForDay(date) {
+                        return {
+                            type: UserAction.MENU_FOR_DAY,
+                            date: date
+                        }
+                    },
+                    cartForDay(date) {
+                        return {
+                            type: UserAction.CART_FOR_DAY,
+                            date: date
+                        }
+                    },
+                }
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                if (this.menuForDates[0].hasMenu) {
+                    this.dispatch('menuForDay', this.menuForDates[0]);
+                    this.dispatch('cartForDay', this.menuForDates[0].date);
+                }
+            }
+
+            static get observers() {
+                return [
+                    '_pageChanged(routeData.menu)'
+                ];
             }
 
             _pageChanged() {
                 if (!this.route.path) {
-                    this.set('route.path', '/menu/#/2018/03/21');
+                    this.set('route.path', '/menu/#/' + this.menuForDates[0].date.year + "/" +
+                        this.menuForDates[0].date.month + "/" + this.menuForDates[0].date.day);
                 }
             }
 
             _handleClick(e) {
                 this.dispatch('menuForDay', this.menuForDates[e.model.index]);
+                this.dispatch('cartForDay', this.menuForDates[e.model.index].date);
             }
 
             addDishToOrder(e) {
@@ -202,6 +203,7 @@
             }
 
         }
-        window.customElements.define(MenuOrder.is, MenuOrder);
+
+        window.customElements.define(MealOrderMenuOrder.is, MealOrderMenuOrder);
     </script>
 </dom-module>

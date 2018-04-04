@@ -27,6 +27,7 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 
 <dom-module id="meal-order-vendor-menu">
     <template>
@@ -53,15 +54,6 @@
                 padding: 0;
                 width: 100%;
 
-            }
-
-            .vendor {
-                color: #4f4f4f;
-                display: none;
-            }
-
-            .item.expand .vendor {
-                display: block;
             }
 
             .menu-dashboard {
@@ -100,17 +92,17 @@
             }
         </style>
 
-
-        <dom-repeat items="[[items]]" as="category">
+        <dom-repeat items="[[items]]" as="item">
+            [[item.categoryName]]
             <template>
-                <dom-if if="[[categoryExists(category)]]">
+                <dom-if if="[[item.dishes.length]]">
                     <template>
                         <div class="vendor">
 
                             <div class="category">
                                 <paper-item>
                                     <div class="dish-title bolder">
-                                        [[category.categoryName]]
+                                        [[item.categoryName]]
                                     </div>
                                     <div class="dish-price bolder">
                                         Цена
@@ -122,7 +114,7 @@
                                 </paper-item>
                             </div>
 
-                            <dom-repeat items="[[category.dishes]]" as="dish">
+                            <dom-repeat items="[[item.dishes]]" as="dish">
                                 <template>
                                     <div class="menu-dashboard">
                                         <paper-item>
@@ -134,7 +126,7 @@
                                             </div>
                                             <div class="add-dish-icon">
                                                 <paper-icon-button icon="add"
-                                                                   on-click="addDish"></paper-icon-button>
+                                                                   on-click="_addDish"></paper-icon-button>
                                             </div>
                                         </paper-item>
                                     </div>
@@ -145,20 +137,41 @@
                 </dom-if>
             </template>
         </dom-repeat>
-
     </template>
     <script>
-
+        /**
+         * vendor-menu represents a menu of a vendor for current date
+         *
+         * <p>Is adopted for both desktop and mobile.
+         */
         class MealOrderVendorMenu extends Polymer.Element {
             static get is() {
                 return 'meal-order-vendor-menu';
             }
 
             static get properties() {
-                return {}
+                return {
+                    /**
+                     * Menu of a vendor.
+                     *
+                     * Initial state represents its structure.
+                     */
+                    items: {
+                        type: Array,
+                        value: [{categoryName: '', dishes: [{title: '', price: ''}, {}]}, {}]
+                    }
+                }
             };
+
+            _addDish(e) {
+                const dish = {};
+                dish.vendor = this.vendor;
+                dish.name = e.model.__data.dish.title;
+                dish.price = e.model.__data.dish.price;
+                this.dispatchEvent(new CustomEvent('dish-added', {detail: dish}));
+            }
         }
 
-        window.customElements.define(MealOrderVendorMenus.is, MealOrderVendorMenus);
+        window.customElements.define(MealOrderVendorMenu.is, MealOrderVendorMenu);
     </script>
 </dom-module>
