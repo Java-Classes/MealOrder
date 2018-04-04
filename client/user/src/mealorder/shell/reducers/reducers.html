@@ -18,14 +18,17 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <script>
-    window.reducer = (state, action) => {
-        if (!state) {
-            return initialState;
+    {
+        window.reducer = (state, action) => {
+            if (!state) {
+                return initialState;
+            }
+            switch (action.type) {
+                default :
+                    return state;
+            }
         }
-        switch (action.type) {
-            default :
-                return state;
-        }
+        ;
     }
-    ;
+
 </script>
