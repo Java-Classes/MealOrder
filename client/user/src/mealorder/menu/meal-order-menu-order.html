@@ -24,8 +24,6 @@
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../shell/redux-store.html">
-<link rel="import" href="../shell/actions/user-actions.html">
-
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
 <dom-module id="meal-order-menu-order">
     <template>
@@ -120,7 +118,7 @@
          * @polymer
          * @ReduxMixin
          */
-        class MealOrderMenuOrder extends  MealOrderApp.ReduxMixin(Polymer.Element) {
+        class MealOrderMenuOrder extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-menu-order';
             }

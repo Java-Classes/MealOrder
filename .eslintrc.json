@@ -45,6 +45,8 @@
     "Polymer": false,
     "MealOrderApp": true,
     "UserAction": true,
-    "initialState": true
+    "initialState": true,
+    "Redux": true,
+    "PolymerRedux": true,
   }
 }
