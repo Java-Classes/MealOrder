@@ -161,7 +161,7 @@
                             <div class="primary">
                                 [[item.name]]
                                 <paper-icon-button id="expand-button" icon="[[getIcon(selected)]]"
-                                                   on-click="_reSelect"></paper-icon-button>
+                                                   on-click="_toggle"></paper-icon-button>
                             </div>
                             <div class="expand vendor">
                                 <meal-order-vendor-menu
@@ -285,7 +285,7 @@
                 }
             }
 
-            _reSelect(e) {
+            _toggle(e) {
                 const div = this.shadowRoot.querySelector("#list");
                 if (!e.model.selected) {
                     div.selectIndex(e.model.index);
