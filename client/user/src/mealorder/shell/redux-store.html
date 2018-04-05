@@ -87,7 +87,7 @@
             hasMenu: true
         }];
 
-    const initialState = {
+    MealOrderApp.initialState = {
         menuForDates: arrayOfDates,
         menuForDay: [],
 
@@ -228,7 +228,8 @@
 
     const store = Redux.createStore(reducer);
 
-    window.MealOrderApp = {};
-    MealOrderApp.store = store;
-    window.ReduxMixin = PolymerRedux(MealOrderApp.store);
+        window.MealOrderApp = {};
+        MealOrderApp.store = store;
+        MealOrderApp.ReduxMixin = PolymerRedux(MealOrderApp.store);
+
 </script>

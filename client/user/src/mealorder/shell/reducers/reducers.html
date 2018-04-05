@@ -18,19 +18,20 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <script>
-    const reducer = (state, action) => {
-        if (!state) {
-            return initialState;
-        }
-        switch (action.type) {
-
-            case UserAction.REMOVE_DISH: {
-                return state;
+    {
+        MealOrderApp.reducer = (state, action) => {
+            if (!state) {
+                return initialState;
             }
+            switch (action.type) {
 
-            case UserAction.MENU_FOR_DAY: {
-                let arr = [];
-                let k = 0;
+                case UserAction.REMOVE_DISH: {
+                    return state;
+                }
+
+                case UserAction.MENU_FOR_DAY: {
+                    let arr = [];
+                    let k = 0;
 
                 for (let i = 0; i < initialState.menu.length; i++) {
                     if (initialState.menu[i].date.day === action.date.date.day) {
@@ -61,5 +62,5 @@
                 return state;
             }
         }
-    };
+    }
 </script>
