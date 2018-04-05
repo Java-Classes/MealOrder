@@ -17,6 +17,8 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
+<link rel="import" href="../redux-store.html">
+<link rel="import" href="../actions/user-actions.html">
 <script src="../utils/Utils.js"></script>
 <script>
         MealOrderApp.reducer = (state, action) => {
@@ -24,6 +26,10 @@
                 return initialState;
             }
             switch (action.type) {
+
+                case UserAction.ADD_DISH: {
+                    return state;
+                }
 
                 case UserAction.MENU_FOR_DAY: {
                     let arr = [];

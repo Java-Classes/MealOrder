@@ -36,6 +36,7 @@
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../mealorder/meal-order-main-app.html">
 <link rel="import" href="shell/redux-store.html">
+<link rel="import" href="shell/actions/user-actions.html">
 <dom-module id="meal-order-main-app">
     <template>
         <style>
@@ -277,7 +278,7 @@
          * @polymer
          * @ReduxMixin
          */
-        class MealOrderMainApp extends ReduxMixin(Polymer.Element) {
+        class MealOrderMainApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-main-app';
             }
@@ -314,9 +315,9 @@
 
             static get actions() {
                 return {
-                    removeDish(dish) {
+                    addDish(dish) {
                         return {
-                            type: UserAction.REMOVE_DISH,
+                            type: UserAction.ADD_DISH,
                             dish: dish
                         }
                     },
@@ -324,10 +325,6 @@
             }
             _addDishToOrder(e) {
                 this.dispatch('addDish', e.detail);
-            }
-
-            _removeDishFromOrder(e) {
-                this.dispatch('removeDish', e.detail);
             }
 
             _getClassForDrawer(page) {
