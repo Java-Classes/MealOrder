@@ -25,7 +25,6 @@
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
-<link rel="import" href="../menu/meal-order-vendor-menus.html">
 <dom-module id="meal-order-menu-order">
     <template>
         <style>
@@ -105,8 +104,6 @@
                 </paper-tab>
             </template>
         </paper-tabs>
-
-        <meal-order-vendor-menus items="[[menu]]" on-dish-added="addDishToOrder"></meal-order-vendor-menus>
 
     </template>
     <script>

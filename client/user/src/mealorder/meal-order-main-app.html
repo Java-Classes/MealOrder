@@ -34,7 +34,7 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
-
+<link rel="import" href="../mealorder/meal-order-main-app.html">
 <link rel="import" href="shell/redux-store.html">
 <dom-module id="meal-order-main-app">
     <template>
@@ -187,10 +187,6 @@
                     <app-toolbar name="menu">
                         <div class="order-date">
                             <div class="order">Заказ</div>
-                            <div>
-                                <div class="day">Пн</div>
-                                <div class="day-of-the-week">21</div>
-                            </div>
                         </div>
                     </app-toolbar>
 
@@ -255,8 +251,7 @@
                         attr-for-selected="name"
                         fallback-selection="view404"
                         role="main">
-                    <menu-order></menu-order>
-                    <user-history></user-history>
+                    <meal-order-menu-order></meal-order-menu-order>
                 </iron-pages>
 
             </app-header-layout>
@@ -319,24 +314,12 @@
 
             static get actions() {
                 return {
-                    addDish(dish) {
-                        return {
-                            type: UserAction.ADD_DISH,
-                            dish: dish
-                        }
-                    },
                     removeDish(dish) {
                         return {
                             type: UserAction.REMOVE_DISH,
                             dish: dish
                         }
                     },
-                    changeHistoryDate(date) {
-                        return {
-                            type: UserAction.CHANGE_HISTORY_DAY,
-                            date: date
-                        }
-                    }
                 }
             }
             _addDishToOrder(e) {

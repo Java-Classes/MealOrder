@@ -17,50 +17,46 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
+<script src="../utils/Utils.js"></script>
 <script>
-    {
         MealOrderApp.reducer = (state, action) => {
             if (!state) {
                 return initialState;
             }
             switch (action.type) {
 
-                case UserAction.REMOVE_DISH: {
-                    return state;
-                }
-
                 case UserAction.MENU_FOR_DAY: {
                     let arr = [];
                     let k = 0;
 
-                for (let i = 0; i < initialState.menu.length; i++) {
-                    if (initialState.menu[i].date.day === action.date.date.day) {
-                        arr[k] = initialState.menu[i];
-                        k++;
+                    for (let i = 0; i < initialState.menu.length; i++) {
+                        if (initialState.menu[i].date.day === action.date.date.day) {
+                            arr[k] = initialState.menu[i];
+                            k++;
+                        }
                     }
+                    return Object.assign({}, state, {
+                            dateForMenu: initialState.dateForMenu,
+                            menuForDay: arr
+                        }
+                    );
                 }
-                return Object.assign({}, state, {
-                        dateForMenu: initialState.dateForMenu,
-                        menuForDay: arr
+                case UserAction.CART_FOR_DAY: {
+                    let newOrder = [];
+                    for (let i = 0; i < initialState.orders.length; i++) {
+                        if (Utils.compareObjects(action.date, initialState.orders[i].date)) {
+                            newOrder = initialState.orders[i].cart;
+                            break;
+                        }
                     }
-                );
-            }
-            case UserAction.CART_FOR_DAY: {
-                let newOrder = [];
-                for (let i = 0; i < initialState.orders.length; i++) {
-                    if (Utils.compareObjects(action.date, initialState.orders[i].date)) {
-                        newOrder = initialState.orders[i].cart;
-                        break;
-                    }
+                    return Object.assign({}, state, {
+                            currentOrder: newOrder
+                        }
+                    );
                 }
-                return Object.assign({}, state, {
-                        currentOrder: newOrder
-                    }
-                );
-            }
-            default : {
-                return state;
+                default : {
+                    return state;
+                }
             }
         }
-    }
 </script>
