@@ -19,8 +19,10 @@
   -->
 
 <link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="reducers/reducers.html">
 <script>
     {
+        /* global Redux, PolymerRedux */
         const store = Redux.createStore(reducer);
         window.MealOrderApp = {};
         MealOrderApp.store = store;
