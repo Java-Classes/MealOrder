@@ -33,7 +33,6 @@
     <template>
         <style>
             :host {
-                font-family: 'Roboto', 'Noto', sans-serif;
                 display: block;
                 padding: 0;
             }
@@ -70,10 +69,6 @@
                 };
             }
 
-            div[role="listbox"] {
-                border: 1px solid #e5e5e5;
-            }
-
             paper-search-bar {
                 margin: 0 auto;
                 width: 70%;
@@ -83,7 +78,6 @@
 
             .item {
                 @apply --layout-horizontal;
-                /*padding: 20px;*/
                 background-color: white;
                 border: 1px solid #ddd;
                 cursor: pointer;
@@ -286,12 +280,12 @@
             }
 
             _toggle(e) {
-                const div = this.shadowRoot.querySelector("#list");
+                const list = this.$.list;
                 if (!e.model.selected) {
-                    div.selectIndex(e.model.index);
+                    list.selectIndex(e.model.index);
                 }
                 else {
-                    div.deselectIndex(e.model.index);
+                    list.deselectIndex(e.model.index);
                 }
             }
         }
