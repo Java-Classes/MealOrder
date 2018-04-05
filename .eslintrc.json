@@ -47,8 +47,6 @@
     "UserAction": false,
     "initialState": false,
     "reducer": true,
-    "Redux": true,
-    "PolymerRedux": false,
     "Utils": false
   }
 }
