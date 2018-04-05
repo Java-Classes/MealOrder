@@ -45,6 +45,7 @@
     "Polymer": false,
     "MealOrderApp": false,
     "Redux": true,
+    "reducer": false,
     "PolymerRedux": false
   }
 }
