@@ -58,20 +58,6 @@
                 );
             }
 
-            case UserAction.CHANGE_HISTORY_DAY: {
-                let newHistory = [];
-                for (let i = 0; i < initialState.history.length; i++) {
-                    if (Utils.compareObjects(action.date, initialState.history[i].date)) {
-                        newHistory = initialState.history[i].order;
-                        break;
-                    }
-                }
-                return Object.assign({}, state, {
-                        currentHistory: newHistory
-                    }
-                );
-            }
-
             case UserAction.CART_FOR_DAY: {
                 let newOrder = [];
                 for (let i = 0; i < initialState.orders.length; i++) {
