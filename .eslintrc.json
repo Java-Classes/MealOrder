@@ -43,10 +43,11 @@
   ],
   "globals": {
     "Polymer": false,
-    "MealOrderApp": true,
-    "UserAction": true,
-    "initialState": true,
+    "MealOrderApp": false,
+    "UserAction": false,
+    "initialState": false,
     "Redux": true,
-    "PolymerRedux": true,
+    "PolymerRedux": false,
+    "Utils": false
   }
 }
