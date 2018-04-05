@@ -144,7 +144,11 @@
                     </div>
                 </template>
             </iron-list>
-            <div class="total-sum">Общая сумма: [[totalSum]]</div>
+            <dom-if if="[[totalSum]]">
+                <template>
+                    <div class="total-sum">Общая сумма: [[totalSum]]</div>
+                </template>
+            </dom-if>
         </div>
     </template>
     <script>
