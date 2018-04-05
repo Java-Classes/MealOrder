@@ -18,6 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*exported*/
 class Utils {
     static compareObjects(o1, o2) {
         for (let p in o1) {
