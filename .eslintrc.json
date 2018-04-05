@@ -46,6 +46,7 @@
     "MealOrderApp": false,
     "UserAction": false,
     "initialState": false,
+    "reducer": false,
     "Redux": true,
     "PolymerRedux": false,
     "Utils": false

@@ -314,16 +314,7 @@
 
             static get actions() {
                 return {
-                    addDish(dish) {
-                        return {
-                            type: UserAction.ADD_DISH,
-                            dish: dish
-                        }
-                    },
                 }
-            }
-            _addDishToOrder(e) {
-                this.dispatch('addDish', e.detail);
             }
 
             _getClassForDrawer(page) {
