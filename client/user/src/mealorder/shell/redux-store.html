@@ -23,11 +23,11 @@
 <link rel="import" href="actions/user-actions.html">
 <script>
     {
-        window.initialState = {};
+        MealOrderApp.initialState = {};
         const store = Redux.createStore(reducer);
 
         window.MealOrderApp = {};
         MealOrderApp.store = store;
-        window.ReduxMixin = PolymerRedux(MealOrderApp.store);
+        MealOrderApp.ReduxMixin = PolymerRedux(MealOrderApp.store);
     }
 </script>
