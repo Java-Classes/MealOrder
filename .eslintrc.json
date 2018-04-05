@@ -44,7 +44,7 @@
   "globals": {
     "Polymer": false,
     "MealOrderApp": false,
-    "Redux": false,
+    "Redux": true,
     "PolymerRedux": false
   }
 }

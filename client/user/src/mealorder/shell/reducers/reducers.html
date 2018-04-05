@@ -19,11 +19,11 @@
   -->
 <script>
     {
-        MealOrderMainApp.initialState = {};
+        MealOrderApp.initialState = {};
 
         MealOrderApp.reducer = (state, action) => {
             if (!state) {
-                return initialState;
+                return MealOrderApp.initialState;
             }
             switch (action.type) {
                 default :
