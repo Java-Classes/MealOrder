@@ -31,26 +31,13 @@
 <link rel="import" href="../../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<dom-module id="meal-order-user-cart">
+<link rel="import" href="meal-order-user-order.html">
+
+<dom-module id="user-cart">
     <template>
         <style>
             :host {
                 color: #4f4f4f;
-            }
-
-            .order-details {
-                display: flex;
-                font-size: 15px;
-                align-items: center;
-                border-bottom: 2px solid #fcfcfc;
-            }
-
-            .vendor {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding-left: 4%;
-                background-color: #fcfcfc;
             }
 
             .cart {
@@ -59,59 +46,20 @@
                 max-height: 93vh;
             }
 
-            .order-title {
-                width: 50%;
-                text-align: left;
-                padding-left: 4%;
-            }
-
-            .order-price {
-                width: 20%;
-                text-align: right;
-            }
-
-            .order-quantity {
-                width: 15%;
-            }
-
-            .amount-title {
-                width: 50%;
-                text-align: left;
-                padding-left: 4%;
-                font-weight: bolder;
-            }
-
-            .amount-order-price {
-                width: 20%;
-                text-align: right;
-
-            }
-
             .total {
                 display: flex;
                 justify-content: space-between;
                 margin: 6% 4% 10% 4%;
                 font-weight: bolder;
             }
+
         </style>
+
         <div class="cart">
 
-            <dom-repeat items="[[order]]" as="dish">
+            <dom-repeat items="[[order]]" as="vendor">
                 <template>
-                    <div class="vendor">
-                        <div>[[dish.vendor]]</div>
-                        <paper-icon-button icon="delete" class="icon-delete"></paper-icon-button>
-                    </div>
-                    <dom-repeat items="[[dish.dishes]]" as="d">
-                        <template>
-                            <div class="order-details">
-                                <div class="order-title">[[d.title]]</div>
-                                <div class="order-price">[[d.price]] ₴</div>
-                                <div class="order-quantity">[[d.quantity]]</div>
-                                <paper-icon-button icon="remove" on-click="_removeDish"></paper-icon-button>
-                            </div>
-                        </template>
-                    </dom-repeat>
+                    <meal-order-user-order menu="[[vendor]]"></meal-order-user-order>
                 </template>
             </dom-repeat>
 
@@ -121,6 +69,7 @@
             </div>
 
         </div>
+
     </template>
     <script>
         /**
@@ -131,9 +80,9 @@
          * @customElement
          * @polymer
          */
-        class MealOrderUserCart extends Polymer.Element {
+        class UserCart extends Polymer.Element {
             static get is() {
-                return 'meal-order-user-cart';
+                return 'user-cart';
             }
 
             static get properties() {
@@ -158,21 +107,12 @@
                     order: {
                         type: Array,
                     },
-                    /**
-                     * Total cost of an order for current day.
-                     */
                     total: {
                         type: Number,
                         computed: '_getTotalAmount(order)'
                     }
                 }
             };
-            _removeDish(e) {
-                const dish = {};
-                dish.vendor = e.model.parentModel.__data.dish.vendor;
-                dish.name = e.model.__data.d.title;
-                this.dispatchEvent(new CustomEvent('dish-removed', {detail: dish}));
-            }
 
             _getTotalAmount() {
                 let sum = 0;
@@ -184,6 +124,7 @@
                 return sum;
             }
         }
-        window.customElements.define(MealOrderUserCart.is, MealOrderUserCart);
+
+        window.customElements.define(UserCart.is, UserCart);
     </script>
 </dom-module>
