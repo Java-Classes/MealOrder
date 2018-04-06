@@ -58,6 +58,15 @@
                 align-items: center;
             }
 
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .header paper-item {
+                padding: 2px 1% 2px 2%;
+            }
             .bold {
                 font-weight: bold;
             }
@@ -102,7 +111,7 @@
                 }
             }
         </style>
-        <div class="wrapper">
+        <div class="header">
             <paper-item on-click="_toggle" class="menu-caption">
                 <div class="menu-caption">
                     [[menu.name]]
