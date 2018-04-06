@@ -25,7 +25,6 @@
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
-<link rel="import" href="../menu/meal-order-vendor-menus.html">
 <dom-module id="meal-order-menu-order">
     <template>
         <style>
@@ -105,9 +104,8 @@
                 </paper-tab>
             </template>
         </paper-tabs>
-
-        <meal-order-vendor-menus items="[[menu]]" on-dish-added="addDishToOrder"></meal-order-vendor-menus>
-
+        <meal-order-vendor-menus items="[[menu]]"
+                                 on-dish-added="_addDishToOrder"></meal-order-vendor-menus>
     </template>
     <script>
         /**
@@ -121,7 +119,7 @@
          * @polymer
          * @ReduxMixin
          */
-        class MealOrderMenuOrder extends ReduxMixin(Polymer.Element) {
+        class MealOrderMenuOrder extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-menu-order';
             }
@@ -160,8 +158,20 @@
                 return {
                     menuForDay(date) {
                         return {
-                            type: UserAction.MENU_FOR_DAY,
+                            type: MealOrderApp.UserAction.MENU_FOR_DAY,
                             date: date
+                        }
+                    },
+                    cartForDay(date) {
+                        return {
+                            type: MealOrderApp.UserAction.CART_FOR_DAY,
+                            date: date
+                        }
+                    },
+                    addDish(dish) {
+                        return {
+                            type: MealOrderApp.UserAction.ADD_DISH,
+                            dish: dish
                         }
                     },
                 }
@@ -171,6 +181,7 @@
                 super.connectedCallback();
                 if (this.menuForDates[0].hasMenu) {
                     this.dispatch('menuForDay', this.menuForDates[0]);
+                    this.dispatch('cartForDay', this.menuForDates[0].date);
                 }
             }
 
@@ -189,10 +200,11 @@
 
             _handleClick(e) {
                 this.dispatch('menuForDay', this.menuForDates[e.model.index]);
+                this.dispatch('cartForDay', this.menuForDates[e.model.index].date);
             }
 
-            addDishToOrder(e) {
-                this.dispatchEvent(new CustomEvent('dish-added', {detail: e.detail}));
+            _addDishToOrder(e) {
+                this.dispatch('addDish', e.detail);
             }
 
         }
