@@ -173,21 +173,18 @@
                         type: Array
                     }
                 }
-            };
+            }
 
             _getExpandIcon() {
                 if (this.$.menu.className === 'expanded') {
-                    console.log('expanded');
                     return 'expand-less';
                 }
                 else {
-                    console.log('collapsed');
-
                     return 'expand-more';
                 }
             }
 
-            _toggle(e) {
+            _toggle() {
                 if (this.$.menu.className === 'collapsed') {
                     this.$.menu.className = 'expanded';
                     this.$.expand.icon = 'expand-less';
