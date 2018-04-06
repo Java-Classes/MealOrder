@@ -31,7 +31,7 @@
       href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 
-<dom-module id="meal-order-main-app">
+<dom-module id="meal-order-client-app">
     <template>
         <style>
         </style>
@@ -62,9 +62,9 @@
     </template>
 
     <script>
-        class MealOrderMainApp extends MealOrderMainApp.ReduxMixin(Polymer.Element) {
+        class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
-                return 'meal-order-main-app';
+                return 'meal-order-client-app';
             }
 
             static get properties() {
@@ -74,6 +74,6 @@
             }
         }
 
-        window.customElements.define(MealOrderMainApp.is, MealOrderMainApp);
+        window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
     </script>
 </dom-module>
