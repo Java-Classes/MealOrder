@@ -143,13 +143,13 @@
 
             static get actions() {
                 return {
-                    menuForDay(date) {
+                    changeCurrentMenu(date) {
                         return {
                             type: MealOrderApp.UserAction.CHANGE_CURRENT_MENU,
                             date: date
                         }
                     },
-                    cartForDay(date) {
+                    changeCurrentCart(date) {
                         return {
                             type: MealOrderApp.UserAction.CHANGE_CURRENT_CART,
                             date: date
@@ -186,8 +186,8 @@
             }
 
             _handleClick(e) {
-                this.dispatch('menuForDay', this.menuForDates[e.model.index].date);
-                this.dispatch('cartForDay', this.menuForDates[e.model.index].date);
+                this.dispatch('changeCurrentMenu', this.menuForDates[e.model.index].date);
+                this.dispatch('changeCurrentCart', this.menuForDates[e.model.index].date);
             }
 
             _addDishToOrder(e) {

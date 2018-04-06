@@ -251,7 +251,7 @@
                         attr-for-selected="name"
                         fallback-selection="view404"
                         role="main">
-                    <meal-order-menu-container></meal-order-menu-container>
+                    <meal-order-menu-container name="menu" on-dish-added="_addDishToOrder"></meal-order-menu-container>
                 </iron-pages>
 
             </app-header-layout>
@@ -314,7 +314,19 @@
 
             static get actions() {
                 return {
+                    addDish(dish) {
+                        return {
+                            type: MealOrderClientApp.UserAction.ADD_DISH_TO_CART,
+                            dish: dish
+                        }
+                    },
+                    removeDish(dish) {
+                    }
                 }
+            }
+
+            _addDishToOrder(e) {
+                this.dispatch('addDish', e.detail);
             }
 
             _getClassForDrawer(page) {
