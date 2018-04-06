@@ -25,7 +25,7 @@
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
-<dom-module id="meal-order-menu-order">
+<dom-module id="meal-order-menu-container">
     <template>
         <style>
             body {
@@ -119,9 +119,9 @@
          * @polymer
          * @ReduxMixin
          */
-        class MealOrderMenuOrder extends MealOrderApp.ReduxMixin(Polymer.Element) {
+        class MealOrderMenuContainer extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
-                return 'meal-order-menu-order';
+                return 'meal-order-menu-container';
             }
 
             static get properties() {
@@ -209,6 +209,6 @@
 
         }
 
-        window.customElements.define(MealOrderMenuOrder.is, MealOrderMenuOrder);
+        window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
     </script>
 </dom-module>
