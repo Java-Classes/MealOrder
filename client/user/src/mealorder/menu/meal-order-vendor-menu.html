@@ -37,16 +37,11 @@
                 padding: 0;
             }
 
-            body {
-                height: 100vh;
-                margin: 0;
-                display: flex;
-            }
-
             paper-item {
                 font-size: 15px;
-                padding: 5px 5%;
+                padding: 2px 5%;
                 width: 90%;
+                border-bottom: 1px solid #ddd;
             }
 
             .menu-dishes {
@@ -63,8 +58,8 @@
                 align-items: center;
             }
 
-            .bolder {
-                font-weight: bolder;
+            .bold {
+                font-weight: bold;
             }
 
             .dish-title {
@@ -123,10 +118,10 @@
                             <div>
                                 <div class="wrapper">
                                     <paper-item>
-                                        <div class="dish-title bolder">
+                                        <div class="dish-title bold">
                                             [[item.categoryName]]
                                         </div>
-                                        <div class="dish-price bolder">
+                                        <div class="dish-price bold">
                                             Цена
                                         </div>
                                         <div class="add-dish-icon">
@@ -216,4 +211,3 @@
         window.customElements.define(MealOrderVendorMenu.is, MealOrderVendorMenu);
     </script>
 </dom-module>
-
