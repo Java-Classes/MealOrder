@@ -49,12 +49,16 @@
                 color: #179EFF;
             }
 
-            paper-tab .link {
+            paper-tab .paper-tab-container {
                 @apply --layout-horizontal;
                 @apply --layout-center-center;
                 text-decoration: none;
                 color: #4f4f4f;
                 font-size: 1.5em;
+            }
+
+            .link-disabled {
+                color: #8c8c8c;
             }
 
             .day-of-the-week {
@@ -81,19 +85,34 @@
 
         <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='key'>
             <template is="dom-repeat" items="{{menuForDates}}" as="calendar">
-                <paper-tab
-                        key="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
-                        link>
-                    <a class="link"
-                       name="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
-                       href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
-                       on-click="_handleClick">
-                        <div>
-                            <div class="day-of-the-week">Пн</div>
-                            <div class="day">{{calendar.date.day}}</div>
-                        </div>
-                    </a>
-                </paper-tab>
+                <dom-if if="[[calendar.hasMenu]]">
+                    <template>
+                        <paper-tab link>
+                            <a class="paper-tab-container"
+                               href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                               on-click="_handleClick">
+                                <div>
+                                    <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                    </div>
+                                    <div class="day">{{calendar.date.day}}</div>
+                                </div>
+                            </a>
+                        </paper-tab>
+                    </template>
+                </dom-if>
+                <dom-if if="[[!calendar.hasMenu]]">
+                    <template>
+                        <paper-tab link disabled>
+                            <div class="paper-tab-container link-disabled">
+                                <div>
+                                    <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                    </div>
+                                    <div class="day">{{calendar.date.day}}</div>
+                                </div>
+                            </div>
+                        </paper-tab>
+                    </template>
+                </dom-if>
             </template>
         </paper-tabs>
 
