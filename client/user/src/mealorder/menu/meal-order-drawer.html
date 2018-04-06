@@ -40,7 +40,7 @@
 
         <app-route
                 route="{{route}}"
-                pattern="/:page"
+                pattern="/:page/:date"
                 data="{{routeData}}"></app-route>
 
         <iron-pages
@@ -48,15 +48,14 @@
                 attr-for-selected="name"
                 fallback-selection="view404"
                 role="main">
-            <meal-order-user-cart name="menu" order="[[order]]"
-                                  on-dish-removed="_removeDishFromOrder"></meal-order-user-cart>
             <app-datepicker name="history" id="date-picker" view="vertical"
-                            date="{{currentDate}}" auto-update-date="true" locale="ru-RU"></app-datepicker>
+                            input-date="[[inputDate]]" date="{{outputDate}}" auto-update-date="true"
+                            locale="ru-RU"></app-datepicker>
         </iron-pages>
     </template>
 
     <script>
-        class MealOrderDrawer extends Polymer.Element {
+        class MealOrderDrawer extends ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-drawer';
             }
@@ -74,31 +73,41 @@
                     /**
                      * Chosen date.
                      */
-                    currentDate: {},
+                    inputDate: {},
+                    outputDate: {},
+                    routeData: {},
                 }
             };
 
             static get observers() {
                 return [
-                    '_updateDate(currentDate)',
-                    '_changehistoryUrl(currentDate)'
+                    '_updateDate(outputDate)',
+                    '_changeHistoryUrl(routeData)'
                 ];
             }
 
-            _changehistoryUrl() {
-                if (this.routeData.page) {
-                    const newRouteData = {};
-                    newRouteData.page = 'history/' + '#/' + this.currentDate;
-                    this.set('routeData', newRouteData);
+            _changeHistoryUrl() {
+                if (this.routeData.date) {
+                    const routeDate = this.routeData.date.split('-');
+                    this.set('inputDate', routeDate[0] + "/" + routeDate[1] + "/" + routeDate[2]);
+                    const arr = this.routeData.date.split('-');
+                    const date = {};
+                    date.year = arr[0];
+                    date.month = arr[1];
+                    date.day = arr[2];
+                    this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
                 }
             }
 
             _updateDate() {
-                const arr = this.currentDate.split('/');
+                const arr = this.outputDate.split('/');
                 const date = {};
                 date.year = arr[0];
                 date.month = arr[1];
                 date.day = arr[2];
+                const newRouteData = {};
+                newRouteData.page = 'history/' + date.year + "-" + date.month + "-" + date.day;
+                this.set('routeData', newRouteData);
                 this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
             }
         }
