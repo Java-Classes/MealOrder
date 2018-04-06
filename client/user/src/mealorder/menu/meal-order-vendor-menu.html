@@ -39,8 +39,8 @@
 
             paper-item {
                 font-size: 15px;
-                padding: 2px 5%;
-                width: 90%;
+                padding: 2px 2%;
+                width: 96%;
                 border-bottom: 1px solid #ddd;
             }
 
@@ -106,11 +106,11 @@
             <paper-item on-click="_toggle" class="menu-caption">
                 <div class="menu-caption">
                     [[menu.name]]
-                    <paper-icon-button id="expand" icon="expand-less"></paper-icon-button>
+                    <paper-icon-button id="expand" icon="expand-more"></paper-icon-button>
                 </div>
             </paper-item>
         </div>
-        <div id="menu" class="expanded">
+        <div id="menu" class="collapsed">
             <dom-repeat items="[[menu.categories]]" as="item">
                 <template>
                     <dom-if if="[[item.dishes.length]]">
