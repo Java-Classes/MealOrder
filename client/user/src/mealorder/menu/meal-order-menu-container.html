@@ -24,7 +24,6 @@
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../shell/redux-store.html">
-<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
 <dom-module id="meal-order-menu-container">
     <template>
         <style>
@@ -84,7 +83,8 @@
         </app-route>
 
         <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='key'>
-            <template is="dom-repeat" items="{{menuForDates}}" as="calendar">
+            <dom-repeat items="{{calendar}}" as="calendar">
+                <template>
                 <dom-if if="[[calendar.hasMenu]]">
                     <template>
                         <paper-tab link>
@@ -113,9 +113,9 @@
                         </paper-tab>
                     </template>
                 </dom-if>
-            </template>
+                </template>
+            </dom-repeat>
         </paper-tabs>
-
     </template>
     <script>
         /**
@@ -123,11 +123,9 @@
          *
          * Contains a menu for the current date and tabs for quick date navigation.
          *
-         * Fires `menuForDay` event
-         *
          * @customElement
          * @polymer
-         * @appliesMixin ExlibrisApplication.ReduxMixin
+         * @appliesMixin MealOrderApp.ReduxMixin
          */
         class MealOrderMenuContainer extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
@@ -137,18 +135,11 @@
             static get properties() {
                 return {
                     /**
-                     * Fired when a dish add button is tapped.
-                     *
-                     * @event `dish-added`
-                     * @param {dish} contains vendor, category, title.
-                     */
-
-                    /**
                      * Array of dates with menu which may not exist.
                      */
-                    menuForDates: {
+                    calendar: {
                         type: Array,
-                        statePath: 'menuForDates'
+                        statePath: 'calendar'
                     },
 
                     /**
@@ -158,6 +149,9 @@
                         type: Array,
                         statePath: 'menuForDay'
                     },
+                    /**
+                     * Used for routing.
+                     */
                     routeData: {
                         type: Object,
                     }
@@ -165,6 +159,19 @@
             }
 
             static get actions() {
+                /**
+                 * Fired when a paper tab is selected.
+                 *
+                 * @action `changeCurrentMenu`
+                 * @param {date} contains selected date by tab
+                 */
+
+                /**
+                 * Fired when a paper tab is selected.
+                 *
+                 * @action `changeCurrentCart`
+                 * @param {date} contains selected date by tab
+                 */
                 return {
                     changeCurrentMenu(date) {
                         return {
@@ -178,20 +185,14 @@
                             date: date
                         }
                     },
-                    addDish(dish) {
-                        return {
-                            type: MealOrderApp.UserAction.ADD_DISH_TO_CART,
-                            dish: dish
-                        }
-                    },
                 }
             }
 
             connectedCallback() {
                 super.connectedCallback();
-                if (this.menuForDates[0].hasMenu) {
-                    this.dispatch('menuForDay', this.menuForDates[0].date);
-                    this.dispatch('cartForDay', this.menuForDates[0].date);
+                if (this.calendar[0].hasMenu) {
+                    this.dispatch('changeCurrentMenu', this.calendar[0].date);
+                    this.dispatch('changeCurrentCart', this.calendar[0].date);
                 }
             }
 
@@ -203,8 +204,8 @@
 
             _pageChanged() {
                 if (!this.route.path) {
-                    this.set('route.path', '/menu/' + this.menuForDates[0].date.year + "-" +
-                        this.menuForDates[0].date.month + "-" + this.menuForDates[0].date.day);
+                    this.set('route.path', '/menu/' + this.calendar[0].date.year + "-" +
+                        this.calendar[0].date.month + "-" + this.calendar[0].date.day);
                 }
                 else {
                     const arr = this.routeData.date.split('-');
@@ -212,18 +213,14 @@
                     date.year = arr[0];
                     date.month = arr[1];
                     date.day = arr[2];
-                    this.dispatch('menuForDay', date);
-                    this.dispatch('cartForDay', date);
+                    this.dispatch('changeCurrentMenu', date);
+                    this.dispatch('changeCurrentCart', date);
                 }
             }
 
             _handleClick(e) {
-                this.dispatch('changeCurrentMenu', this.menuForDates[e.model.index].date);
-                this.dispatch('changeCurrentCart', this.menuForDates[e.model.index].date);
-            }
-
-            _addDishToOrder(e) {
-                this.dispatch('addDish', e.detail);
+                this.dispatch('changeCurrentMenu', this.calendar[e.model.index].date);
+                this.dispatch('changeCurrentCart', this.calendar[e.model.index].date);
             }
         }
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);

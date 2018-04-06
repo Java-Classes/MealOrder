@@ -53,9 +53,8 @@
                             locale="ru-RU"></app-datepicker>
         </iron-pages>
     </template>
-
     <script>
-        class MealOrderDrawer extends ReduxMixin(Polymer.Element) {
+        class MealOrderDrawer extends Polymer.Element {
             static get is() {
                 return 'meal-order-drawer';
             }
@@ -77,7 +76,7 @@
                     outputDate: {},
                     routeData: {},
                 }
-            };
+            }
 
             static get observers() {
                 return [
@@ -111,7 +110,6 @@
                 this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
             }
         }
-
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>

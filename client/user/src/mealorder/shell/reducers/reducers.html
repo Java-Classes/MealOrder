@@ -96,7 +96,7 @@
             }];
 
         MealOrderApp.initialState = {
-            menuForDates: arrayOfDates,
+            calendar: arrayOfDates,
             menuForDay: [],
 
             menu: [
@@ -239,11 +239,6 @@
                 return MealOrderApp.initialState;
             }
             switch (action.type) {
-
-                case MealOrderApp.UserAction.ADD_DISH_TO_CART: {
-                    return state;
-                }
-
                 case MealOrderApp.UserAction.CHANGE_CURRENT_MENU: {
                     let arr = [];
                     let j = 0;
