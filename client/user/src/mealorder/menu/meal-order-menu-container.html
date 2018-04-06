@@ -145,19 +145,19 @@
                 return {
                     menuForDay(date) {
                         return {
-                            type: MealOrderApp.UserAction.MENU_FOR_DAY,
+                            type: MealOrderApp.UserAction.CHANGE_CURRENT_MENU,
                             date: date
                         }
                     },
                     cartForDay(date) {
                         return {
-                            type: MealOrderApp.UserAction.CART_FOR_DAY,
+                            type: MealOrderApp.UserAction.CHANGE_CURRENT_CART,
                             date: date
                         }
                     },
                     addDish(dish) {
                         return {
-                            type: MealOrderApp.UserAction.ADD_DISH,
+                            type: MealOrderApp.UserAction.ADD_DISH_TO_CART,
                             dish: dish
                         }
                     },
@@ -186,7 +186,7 @@
             }
 
             _handleClick(e) {
-                this.dispatch('menuForDay', this.menuForDates[e.model.index]);
+                this.dispatch('menuForDay', this.menuForDates[e.model.index].date);
                 this.dispatch('cartForDay', this.menuForDates[e.model.index].date);
             }
 

@@ -232,18 +232,18 @@
             }
             switch (action.type) {
 
-                case MealOrderApp.UserAction.ADD_DISH: {
+                case MealOrderApp.UserAction.ADD_DISH_TO_CART: {
                     return state;
                 }
 
-                case MealOrderApp.UserAction.MENU_FOR_DAY: {
+                case MealOrderApp.UserAction.CHANGE_CURRENT_MENU: {
                     let arr = [];
-                    let k = 0;
+                    let j = 0;
 
                     for (let i = 0; i < state.menu.length; i++) {
-                        if (state.menu[i].date.day === action.date.date.day) {
-                            arr[k] = state.menu[i];
-                            k++;
+                        if (Utils.compareObjects(action.date, state.menu[i].date)) {
+                            arr[j] = state.menu[i];
+                            j++;
                         }
                     }
                     return Object.assign({}, state, {
@@ -252,7 +252,7 @@
                         }
                     );
                 }
-                case MealOrderApp.UserAction.CART_FOR_DAY: {
+                case MealOrderApp.UserAction.CHANGE_CURRENT_CART: {
                     let newOrder = [];
                     for (let i = 0; i < state.orders.length; i++) {
                         if (Utils.compareObjects(action.date, state.orders[i].date)) {
