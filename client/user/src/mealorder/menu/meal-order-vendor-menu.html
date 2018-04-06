@@ -201,9 +201,9 @@
 
             addDish(e) {
                 const dish = {};
-                dish.vendor = this.vendor;
-                dish.name = e.model.__data.dish.title;
-                dish.price = e.model.__data.dish.price;
+                dish.vendor = this.menu.name;
+                dish.price = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].price;
+                dish.title = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].title;
                 this.dispatchEvent(new CustomEvent('dish-added', {detail: dish}));
             }
         }
