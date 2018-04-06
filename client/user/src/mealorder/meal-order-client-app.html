@@ -170,6 +170,7 @@
                         </div>
                     </app-toolbar>
                 </iron-pages>
+                <meal-order-drawer order="[[order]]" on-changed-history-date="_changeHistoryDate"></meal-order-drawer>
 
             </app-drawer>
 
@@ -235,7 +236,6 @@
         /**
          * Main user meal order component.
          *
-         * <p>Is adopted for both desktop and mobile.
          * Consists of 2 page:
          * 1. A page with vendor menus, and user's shopping cart.
          * 2. A page with user's history.
