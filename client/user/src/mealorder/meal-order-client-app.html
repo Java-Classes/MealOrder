@@ -34,9 +34,8 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
-<link rel="import" href="../mealorder/meal-order-main-app.html">
 <link rel="import" href="shell/redux-store.html">
-<dom-module id="meal-order-main-app">
+<dom-module id="meal-order-client-app">
     <template>
         <style>
             :host {
@@ -277,9 +276,9 @@
          * @polymer
          * @ReduxMixin
          */
-        class MealOrderMainApp extends MealOrderMainApp.ReduxMixin(Polymer.Element) {
+        class MealOrderClientApp extends MealOrderMainApp.ReduxMixin(Polymer.Element) {
             static get is() {
-                return 'meal-order-main-app';
+                return 'meal-order-client-app';
             }
 
             static get properties() {
@@ -322,6 +321,6 @@
             }
         }
 
-        window.customElements.define(MealOrderMainApp.is, MealOrderMainApp);
+        window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
     </script>
 </dom-module>
