@@ -74,15 +74,19 @@
 
         <app-route
                 route="{{route}}"
-                pattern="/:menu"
-                data="{{routeData}}">
+                pattern="/:menu/:date"
+                data="{{routeData}}"
+                tail="{{subroute}}">
         </app-route>
 
-        <paper-tabs class="tabs" selected="0">
+        <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='key'>
             <template is="dom-repeat" items="{{menuForDates}}" as="calendar">
-                <paper-tab link>
+                <paper-tab
+                        key="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                        link>
                     <a class="link"
-                       href="/#/menu/#/[[calendar.date.year]]/[[calendar.date.month]]/[[calendar.date.day]]"
+                       name="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                       href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                        on-click="_handleClick">
                         <div>
                             <div class="day-of-the-week">Пн</div>
@@ -167,7 +171,7 @@
             connectedCallback() {
                 super.connectedCallback();
                 if (this.menuForDates[0].hasMenu) {
-                    this.dispatch('menuForDay', this.menuForDates[0]);
+                    this.dispatch('menuForDay', this.menuForDates[0].date);
                     this.dispatch('cartForDay', this.menuForDates[0].date);
                 }
             }
@@ -180,8 +184,17 @@
 
             _pageChanged() {
                 if (!this.route.path) {
-                    this.set('route.path', '/menu/#/' + this.menuForDates[0].date.year + "/" +
-                        this.menuForDates[0].date.month + "/" + this.menuForDates[0].date.day);
+                    this.set('route.path', '/menu/' + this.menuForDates[0].date.year + "-" +
+                        this.menuForDates[0].date.month + "-" + this.menuForDates[0].date.day);
+                }
+                else {
+                    const arr = this.routeData.date.split('-');
+                    const date = {};
+                    date.year = arr[0];
+                    date.month = arr[1];
+                    date.day = arr[2];
+                    this.dispatch('menuForDay', date);
+                    this.dispatch('cartForDay', date);
                 }
             }
 
