@@ -1,0 +1,354 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="shell/redux-store.html">
+<link rel="import" href="menu/meal-order-user-history.html">
+<link rel="import" href="menu/meal-order-menu-order.html">
+<link rel="import" href="menu/meal-order-drawer.html">
+<dom-module id="meal-order-main-app">
+    <template>
+        <style>
+            :host {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                --app-primary-color: #4285f4;
+                --app-secondary-color: black;
+                display: block;
+            }
+
+            app-header {
+                background-color: #616161;
+                color: #fff;
+                right: 300px;
+            }
+
+            app-header .main-title {
+                font-size: 1.375em;
+            }
+
+            app-drawer-layout {
+                background-color: #F2F2F2;
+            }
+
+            app-drawer-layout:not([narrow]) [drawer-toggle] {
+                display: none;
+            }
+
+            app-header app-toolbar .container {
+                display: flex;
+                width: 100%;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            app-header app-toolbar .container .order-container {
+                display: flex;
+            }
+
+            app-header app-toolbar .container .date-container {
+                display: flex;
+                margin-left: 10px;
+                align-items: center;
+            }
+
+            app-header .history-of-orders a {
+                font-size: 0.8em;
+                text-decoration: none;
+                color: white;
+            }
+
+            app-header .history-of-orders a:hover {
+                color: #179EFF;
+            }
+
+            app-header .history-icon {
+                display: none;
+                color: white;
+            }
+
+            app-header .calendar {
+                font-weight: lighter;
+                font-size: 0.75em;
+            }
+
+            app-header .order {
+                font-size: 0.75em;
+            }
+
+            .order-date {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%
+            }
+
+            .order-date .order {
+                font-size: 24px;
+            }
+
+            .order-date .day {
+                font-size: 0.7em;
+                font-weight: lighter;
+                text-align: center;
+            }
+
+            .order-date .day-of-the-week {
+                font-size: 22px;
+            }
+
+            @media only screen and (max-width: 600px) {
+
+                .history-of-orders {
+                    display: none;
+                }
+
+                app-header .history-icon {
+                    display: block;
+                }
+
+                app-header .date-container .date-range-icon {
+                    display: none;
+                }
+
+                app-header .date-container .calendar {
+                    display: none;
+                }
+
+            }
+
+            app-drawer.history {
+                --app-drawer-width: 300px;
+            }
+
+
+            app-drawer {
+                --app-drawer-content-container: {
+                    background-color: #fafafa;
+                }
+            }
+
+            .menu-history {
+                margin-right: 44px;
+            }
+
+            .icon-container {
+                width: 100px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+        </style>
+
+        <app-location route="{{route}}"
+                      use-hash-as-path></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:page"
+                data="{{routeData}}"></app-route>
+
+        <app-drawer-layout fullbleed narrow="{{narrow}}">
+            <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
+
+                <iron-pages selected="[[routeData.page]]"
+                            attr-for-selected="name"
+                            fallback-selection="view404"
+                            role="main">
+                    <app-toolbar name="menu">
+                        <div class="order-date">
+                            <div class="order">Заказ</div>
+                            <div>
+                                <div class="day">Пн</div>
+                                <div class="day-of-the-week">21</div>
+                            </div>
+                        </div>
+                    </app-toolbar>
+
+                    <app-toolbar name="history">
+                        <div class="order-date">
+                            <div class="order">История заказов</div>
+                        </div>
+                    </app-toolbar>
+                </iron-pages>
+                <meal-order-drawer order="[[order]]" on-changed-history-date="_changeHistoryDate"></meal-order-drawer>
+            </app-drawer>
+
+            <app-header-layout>
+                <app-header slot="header" reveals effects="waterfall">
+                    <app-toolbar>
+                        <div class="container">
+                            <div class="order-container">
+                                <div class="main-title">Заказ обедов</div>
+                            </div>
+                            <iron-pages
+                                    selected="[[routeData.page]]"
+                                    attr-for-selected="name"
+                                    fallback-selection="view404"
+                                    role="main">
+
+                                <div name="menu">
+                                    <div class="history-of-orders"><a href="/#/history/">История заказов</a></div>
+                                    <div class="icon-container">
+                                        <a href="/#/history/">
+                                            <iron-icon class="history-icon" icon="maps:icons:history"></iron-icon>
+                                        </a>
+                                        <div>
+                                            <iron-icon class="order" icon="icons:shopping-cart"
+                                                       drawer-toggle></iron-icon>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div name="history">
+                                    <div class="history-of-orders menu-history"><a href="/#/menu/">Сделать заказ</a>
+                                    </div>
+                                    <div class="icon-container">
+                                        <a href="/#/menu/">
+                                            <iron-icon class="history-icon" icon="maps:icons:add"></iron-icon>
+                                        </a>
+                                        <div>
+                                            <iron-icon class="order" icon="icons:date-range"
+                                                       drawer-toggle></iron-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                            </iron-pages>
+                        </div>
+                    </app-toolbar>
+                </app-header>
+                <iron-pages
+                        selected="[[routeData.page]]"
+                        attr-for-selected="name"
+                        fallback-selection="view404"
+                        role="main">
+                    <meal-order-menu-order name="menu" on-dish-added="_addDishToOrder"></meal-order-menu-order>
+                    <meal-order-user-history name="history" cart="[[history]]" narrow="[[narrow]]"></meal-order-user-history>
+                </iron-pages>
+
+            </app-header-layout>
+
+        </app-drawer-layout>
+    </template>
+    <script>
+        /**
+         * Main user meal order component.
+         *
+         * <p>Is adopted for both desktop and mobile.
+         * Consists of 2 page:
+         * 1. A page with vendor menus, and user's shopping cart.
+         * 2. A page with user's history.
+         *
+         * The redux mixin provides its own data system and data flow.
+         * Fires following redux events:
+         * <li>addDish</li>
+         * <li>removeDish</li>
+         * <li>changeHistoryDate</li>
+         *
+         * @customElement
+         * @polymer
+         * @ReduxMixin
+         */
+        class MealOrderMainApp extends ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'meal-order-main-app';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Used for routing.
+                     */
+                    routeData: {},
+
+                    /**
+                     * Current user's meal order.
+                     */
+                    order: {
+                        type: Array,
+                        statePath: 'currentOrder'
+                    },
+
+                    /**
+                     * User's history for the chosen day.
+                     */
+                    history: {
+                        type: Array,
+                        statePath: 'currentHistory'
+                    }
+                }
+            };
+
+            static get actions() {
+                return {
+                    addDish(dish) {
+                        return {
+                            type: UserAction.ADD_DISH,
+                            dish: dish
+                        }
+                    },
+                    removeDish(dish) {
+                        return {
+                            type: UserAction.REMOVE_DISH,
+                            dish: dish
+                        }
+                    },
+                    changeHistoryDate(date) {
+                        return {
+                            type: UserAction.CHANGE_HISTORY_DAY,
+                            date: date
+                        }
+                    }
+                }
+            }
+            _addDishToOrder(e) {
+                this.dispatch('addDish', e.detail);
+            }
+
+            _removeDishFromOrder(e) {
+                this.dispatch('removeDish', e.detail);
+            }
+
+            _changeHistoryDate(e) {
+                this.dispatch('changeHistoryDate', e.detail);
+            }
+
+            _getClassForDrawer(page) {
+                return page;
+            }
+        }
+
+        window.customElements.define(MealOrderMainApp.is, MealOrderMainApp);
+    </script>
+</dom-module>

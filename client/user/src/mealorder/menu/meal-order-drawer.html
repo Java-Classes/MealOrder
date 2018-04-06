@@ -1,0 +1,110 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/app-datepicker/app-datepicker.html">
+
+<link rel="import" href="meal-order-user-cart.html">
+
+<dom-module id="meal-order-drawer">
+    <template>
+        <style>
+            #date-picker {
+                --app-datepicker-selection-bg: #fafafa;
+                --app-datepicker-selection-color: #616161;
+                --app-datepicker-iron-selected: #616161;
+                --app-datepicker-selected-day-bg: #179EFF;
+                --app-datepicker-today-color: #179EFF;
+                --app-datepicker-date-hover-background-color: #179EFF;
+            }
+        </style>
+
+        <app-location route="{{route}}"
+                      use-hash-as-path></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:page"
+                data="{{routeData}}"></app-route>
+
+        <iron-pages
+                selected="[[routeData.page]]"
+                attr-for-selected="name"
+                fallback-selection="view404"
+                role="main">
+            <meal-order-user-cart name="menu" order="[[order]]"
+                                  on-dish-removed="_removeDishFromOrder"></meal-order-user-cart>
+            <app-datepicker name="history" id="date-picker" view="vertical"
+                            date="{{currentDate}}" auto-update-date="true" locale="ru-RU"></app-datepicker>
+        </iron-pages>
+    </template>
+
+    <script>
+        class MealOrderDrawer extends ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'meal-order-drawer';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Current user's meal order.
+                     */
+                    order: {
+                        type: Array,
+                        statePath: 'currentOrder'
+                    },
+
+                    /**
+                     * Chosen date.
+                     */
+                    currentDate: {},
+                }
+            };
+
+            static get observers() {
+                return [
+                    '_updateDate(currentDate)',
+                    '_changehistoryUrl(currentDate)'
+                ];
+            }
+
+            _changehistoryUrl() {
+                if (this.routeData.page) {
+                    const newRouteData = {};
+                    newRouteData.page = 'history/' + '#/' + this.currentDate;
+                    this.set('routeData', newRouteData);
+                }
+            }
+
+            _updateDate() {
+                const arr = this.currentDate.split('/');
+                const date = {};
+                date.year = arr[0];
+                date.month = arr[1];
+                date.day = arr[2];
+                this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
+            }
+        }
+
+        window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
+    </script>
+</dom-module>

@@ -1,0 +1,301 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
+
+<link rel="import" href="meal-order-vendor-menu.html">
+<dom-module id="meal-order-vendor-menus">
+    <template>
+        <style>
+            :host {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                display: block;
+                padding: 0;
+            }
+
+            body {
+                height: 100vh;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+            }
+
+            app-toolbar {
+                background-color: var(--google-green-700);
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+                font-weight: bold;
+                color: white;
+                font-size: 18px;
+                z-index: 1;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+            }
+
+            app-toolbar paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+            iron-list {
+                --iron-list-items-container: {
+                    width: 70%;
+                    margin: 2% auto;
+                    border-bottom: 1px solid #ddd;
+                };
+            }
+
+            div[role="listbox"] {
+                border: 1px solid #e5e5e5;
+            }
+
+            paper-search-bar {
+                margin: 0 auto;
+                width: 70%;
+                border-radius: 5px;
+                background-color: #ffffff;
+            }
+
+            .item {
+                @apply --layout-horizontal;
+                /*padding: 20px;*/
+                background-color: white;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                margin-bottom: 10px;
+            }
+
+            .pad {
+                padding: 15px;
+                @apply --layout-flex;
+                @apply --layout-vertical;
+                font-size: 15px;
+            }
+
+            .vendor {
+                color: #4f4f4f;
+                display: none;
+            }
+
+            .item.expand .vendor {
+                display: block;
+            }
+
+            @media (max-width: 460px) {
+                paper-toolbar .bottom.title {
+                    font-size: 14px;
+                }
+            }
+
+            #expand-button {
+                position: absolute;
+                right: 0;
+                top: 7px;
+            }
+
+            .primary {
+                font-size: 16px;
+            }
+
+            .non-select {
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;
+                /* Non-prefixed version, currently supported by Chrome and Opera */
+            }
+
+            @media only screen and (max-width: 600px) {
+
+                paper-search-bar {
+                    margin: 0 auto;
+                    width: 100%;
+                }
+
+                iron-list {
+                    --iron-list-items-container: {
+                        margin: 4% auto;
+                        width: 100%;
+                    }
+                }
+            }
+        </style>
+
+        <paper-search-bar query="{{filter}}" hide-filter-button="true"
+                          placeholder="Поиск"></paper-search-bar>
+
+        <iron-list scroll-target="document" id="list" items="[[filtered]]" as="item"
+                   selection-enabled
+                   multi-selection>
+            <template>
+                <div class="non-select">
+                    <div class$="[[getClassForItem(selected)]]" tabindex$="[[tabIndex]]">
+                        <div class="pad">
+                            <div class="primary">
+                                [[item.name]]
+                                <paper-icon-button id="expand-button" icon="[[getIcon(selected)]]"
+                                                   on-click="_reSelect"></paper-icon-button>
+                            </div>
+                            <div class="expand vendor">
+                                <meal-order-vendor-menu
+                                        items="[[item.categories]]" vendor="[[item.name]]"
+                                        on-dish-added="addDish"></meal-order-vendor-menu>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </iron-list>
+    </template>
+    <script>
+        /**
+         * vendor-menus represents an expanding list of menus for current date and filter.
+         *
+         * <p>Is adopted for both desktop and mobile.
+         * Contains search by dish keywords.
+         *
+         * @customElement
+         * @polymer
+         */
+        class MealOrderVendorMenus extends Polymer.Element {
+            static get is() {
+                return 'meal-order-vendor-menus';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Fired when a dish add button is tapped.
+                     *
+                     * @event `dish-added`
+                     * @param {dish} contains vendor, category, title.
+                     */
+
+                    /**
+                     * Full menu for day.
+                     * For structure details see {@code redux-store.html} or inner template.
+                     */
+                    items: {
+                        type: Array,
+                    },
+
+                    /**
+                     * Menu with filter applied.
+                     */
+                    filtered: {
+                        type: Array,
+                        computed: 'filteredItems(items,filter)',
+                        reflectToAttribute: true
+                    },
+
+                    /**
+                     * Inputted key word or word part to search in menu.
+                     */
+                    filter: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    }
+
+                }
+            };
+
+            static get observers() {
+                return [
+                    '_handleInput(filter)'
+                ];
+            }
+
+            categoryExists(item) {
+                return item.dishes.length > 0;
+            }
+
+            addDish(e) {
+                this.dispatchEvent(new CustomEvent('dish-added', {detail: e.detail}));
+            }
+
+            _handleInput() {
+                const div = this.shadowRoot.querySelector("#list");
+                for (let i = 0; i < this.items.length; i++) {
+                    if (this.filter !== '') {
+                        div.selectIndex(i);
+                        div.selectIndex(i);
+                    }
+                }
+            }
+
+            filteredItems() {
+                const predicate = this.filter;
+                const filtered = [];
+                for (let i = 0; i < this.items.length; i++) {
+                    const vendorCategories = this.items[i].categories;
+                    let newVendorCategories = [];
+                    for (let j = 0; j < vendorCategories.length; j++) {
+                        let vendorDishes = vendorCategories[j].dishes;
+                        let newVendorDishes = vendorDishes.filter(dish => dish.title.toLowerCase().includes(predicate.toLowerCase()));
+                        newVendorCategories.push({
+                            categoryName: vendorCategories[j].categoryName,
+                            dishes: newVendorDishes
+                        });
+                    }
+                    filtered.push({name: this.items[i].name, categories: newVendorCategories});
+                }
+                return filtered;
+            }
+
+            getClassForItem(selected) {
+                return selected ? 'item expand' : 'item';
+            };
+
+            getIcon(selected) {
+                if (selected) {
+                    return 'expand-less';
+                }
+                else {
+                    return 'expand-more';
+
+                }
+            }
+
+            _reSelect(e) {
+                const div = this.shadowRoot.querySelector("#list");
+                if (!e.model.selected) {
+                    div.selectIndex(e.model.index);
+                }
+                else {
+                    div.deselectIndex(e.model.index);
+                }
+            }
+        }
+
+        window.customElements.define(MealOrderVendorMenus.is, MealOrderVendorMenus);
+    </script>
+</dom-module>
