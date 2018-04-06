@@ -227,35 +227,35 @@
 
         MealOrderApp.reducer = (state, action) => {
             if (!state) {
-                return initialState;
+                return MealOrderApp.initialState;
             }
             switch (action.type) {
 
-                case UserAction.ADD_DISH: {
+                case MealOrderApp.UserAction.ADD_DISH: {
                     return state;
                 }
 
-                case UserAction.MENU_FOR_DAY: {
+                case MealOrderApp.UserAction.MENU_FOR_DAY: {
                     let arr = [];
                     let k = 0;
 
-                    for (let i = 0; i < initialState.menu.length; i++) {
-                        if (initialState.menu[i].date.day === action.date.date.day) {
-                            arr[k] = initialState.menu[i];
+                    for (let i = 0; i < state.menu.length; i++) {
+                        if (state.menu[i].date.day === action.date.date.day) {
+                            arr[k] = state.menu[i];
                             k++;
                         }
                     }
                     return Object.assign({}, state, {
-                            dateForMenu: initialState.dateForMenu,
+                            dateForMenu: state.dateForMenu,
                             menuForDay: arr
                         }
                     );
                 }
-                case UserAction.CART_FOR_DAY: {
+                case MealOrderApp.UserAction.CART_FOR_DAY: {
                     let newOrder = [];
-                    for (let i = 0; i < initialState.orders.length; i++) {
-                        if (Utils.compareObjects(action.date, initialState.orders[i].date)) {
-                            newOrder = initialState.orders[i].cart;
+                    for (let i = 0; i < state.orders.length; i++) {
+                        if (Utils.compareObjects(action.date, state.orders[i].date)) {
+                            newOrder = state.orders[i].cart;
                             break;
                         }
                     }
