@@ -40,7 +40,6 @@
     <template>
         <style>
             :host {
-                font-family: 'Roboto', 'Noto', sans-serif;
                 --app-primary-color: #4285f4;
                 --app-secondary-color: black;
                 display: block;
@@ -107,16 +106,6 @@
                 font-size: 24px;
             }
 
-            #day {
-                font-size: 0.7em;
-                font-weight: lighter;
-                text-align: center;
-            }
-
-            #day-of-the-week {
-                font-size: 22px;
-            }
-
             #menu-history {
                 margin-right: 44px;
             }
@@ -126,6 +115,16 @@
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
+            }
+
+            #day {
+                font-size: 0.7em;
+                font-weight: lighter;
+                text-align: center;
+            }
+
+            #day-of-the-week {
+                font-size: 22px;
             }
 
             @media only screen and (max-width: 600px) {
@@ -172,8 +171,6 @@
                     </app-toolbar>
                 </iron-pages>
 
-                <meal-order-drawer order="[[order]]"
-                                   on-changed-history-date="_changeHistoryDate"></meal-order-drawer>
             </app-drawer>
 
             <app-header-layout>
@@ -243,15 +240,9 @@
          * 1. A page with vendor menus, and user's shopping cart.
          * 2. A page with user's history.
          *
-         * The redux mixin provides its own data system and data flow.
-         * Fires following redux events:
-         * <li>addDish</li>
-         * <li>removeDish</li>
-         * <li>changeHistoryDate</li>
-         *
          * @customElement
          * @polymer
-         * @ReduxMixin
+         * @appliesMixin ExlibrisApplication.ReduxMixin
          */
         class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
