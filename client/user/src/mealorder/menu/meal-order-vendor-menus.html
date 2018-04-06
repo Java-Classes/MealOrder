@@ -37,13 +37,6 @@
                 padding: 0;
             }
 
-            body {
-                height: 100vh;
-                margin: 0;
-                display: flex;
-                flex-direction: column;
-            }
-
             app-toolbar {
                 background-color: var(--google-green-700);
                 box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
@@ -65,7 +58,6 @@
                 --iron-list-items-container: {
                     width: 70%;
                     margin: 2% auto;
-                    border-bottom: 1px solid #ddd;
                 };
             }
 
@@ -85,35 +77,10 @@
             }
 
             .pad {
-                padding: 15px;
                 @apply --layout-flex;
                 @apply --layout-vertical;
                 font-size: 15px;
-            }
-
-            .vendor {
-                color: #4f4f4f;
-                display: none;
-            }
-
-            .item.expand .vendor {
-                display: block;
-            }
-
-            @media (max-width: 460px) {
-                paper-toolbar .bottom.title {
-                    font-size: 14px;
-                }
-            }
-
-            #expand-button {
-                position: absolute;
-                right: 0;
-                top: 7px;
-            }
-
-            .primary {
-                font-size: 16px;
+                border-radius: 15px;
             }
 
             .non-select {
@@ -150,19 +117,10 @@
                    multi-selection>
             <template>
                 <div class="non-select">
-                    <div class$="[[getClassForItem(selected)]]" tabindex$="[[tabIndex]]">
+                    <div class="item">
                         <div class="pad">
-                            <div class="primary">
-                                [[item.name]]
-                                <paper-icon-button id="expand-button" icon="[[getIcon(selected)]]"
-                                                   on-click="_toggle"></paper-icon-button>
-                            </div>
-                            <div class="expand vendor">
-                                <meal-order-vendor-menu
-                                        items="[[item.categories]]" vendor="[[item.name]]"
-                                        on-dish-added="addDish"></meal-order-vendor-menu>
-                            </div>
-
+                            <meal-order-vendor-menu menu="[[item]]" on-dish-added="addDish"
+                                                    on-vendor-menu-resize="_resize"></meal-order-vendor-menu>
                         </div>
                     </div>
                 </div>
@@ -228,22 +186,11 @@
                 ];
             }
 
-            categoryExists(item) {
-                return item.dishes.length > 0;
+            _resize() {
+                this.shadowRoot.querySelector("#list").notifyResize();
             }
-
             addDish(e) {
                 this.dispatchEvent(new CustomEvent('dish-added', {detail: e.detail}));
-            }
-
-            _handleInput() {
-                const div = this.shadowRoot.querySelector("#list");
-                for (let i = 0; i < this.items.length; i++) {
-                    if (this.filter !== '') {
-                        div.selectIndex(i);
-                        div.selectIndex(i);
-                    }
-                }
             }
 
             filteredItems() {
@@ -263,30 +210,6 @@
                     filtered.push({name: this.items[i].name, categories: newVendorCategories});
                 }
                 return filtered;
-            }
-
-            getClassForItem(selected) {
-                return selected ? 'item expand' : 'item';
-            };
-
-            getIcon(selected) {
-                if (selected) {
-                    return 'expand-less';
-                }
-                else {
-                    return 'expand-more';
-
-                }
-            }
-
-            _toggle(e) {
-                const list = this.$.list;
-                if (!e.model.selected) {
-                    list.selectIndex(e.model.index);
-                }
-                else {
-                    list.deselectIndex(e.model.index);
-                }
             }
         }
 
