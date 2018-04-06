@@ -28,16 +28,6 @@
 <dom-module id="meal-order-menu-container">
     <template>
         <style>
-            body {
-                font-family: 'Roboto', 'Noto', sans-serif;
-                margin: 0;
-                display: flex;
-                align-items: flex-end;
-                height: 80px;
-                background: #009688;
-                color: white;
-            }
-
             paper-tabs {
                 -webkit-font-smoothing: antialiased;
                 width: 100%;
@@ -59,7 +49,7 @@
                 color: #179EFF;
             }
 
-            .link {
+            paper-tab .link {
                 @apply --layout-horizontal;
                 @apply --layout-center-center;
                 text-decoration: none;
@@ -73,12 +63,10 @@
             }
 
             @media only screen and (max-width: 600px) {
-
                 paper-tabs {
                     margin-top: 3%;
                     width: 100%;
                 }
-
             }
         </style>
         <app-location route="{{route}}"
@@ -104,8 +92,7 @@
                 </paper-tab>
             </template>
         </paper-tabs>
-        <meal-order-vendor-menus items="[[menu]]"
-                                 on-dish-added="_addDishToOrder"></meal-order-vendor-menus>
+
     </template>
     <script>
         /**
@@ -206,9 +193,7 @@
             _addDishToOrder(e) {
                 this.dispatch('addDish', e.detail);
             }
-
         }
-
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
     </script>
 </dom-module>
