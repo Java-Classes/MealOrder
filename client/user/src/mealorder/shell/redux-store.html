@@ -24,7 +24,7 @@
     {
         /* global Redux, PolymerRedux */
         const store = Redux.createStore(MealOrderApp.reducer);
-        window.MealOrderApp = window.MealOrderApp || {};
+
         MealOrderApp.store = store;
         MealOrderApp.ReduxMixin = PolymerRedux(MealOrderApp.store);
     }
