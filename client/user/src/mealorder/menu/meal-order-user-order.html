@@ -1,0 +1,114 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+
+
+<dom-module id="meal-order-user-order">
+    <template>
+        <style>
+            :host {
+                color: #4f4f4f;
+            }
+
+            .order-details {
+                display: flex;
+                font-size: 15px;
+                align-items: center;
+                border-bottom: 2px solid #fcfcfc;
+            }
+
+            .vendor {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-left: 4%;
+                background-color: #fcfcfc;
+            }
+
+            .order-title {
+                width: 50%;
+                text-align: left;
+                padding-left: 4%;
+            }
+
+            .order-price {
+                width: 20%;
+                text-align: right;
+            }
+
+            .order-quantity {
+                width: 15%;
+            }
+
+        </style>
+        <div class="vendor">
+            <div>[[order.vendor]]</div>
+            <paper-icon-button icon="delete" class="icon-delete"></paper-icon-button>
+        </div>
+        <dom-repeat items="[[order.dishes]]" as="dish">
+            <template>
+                <div class="order-details">
+                    <div class="order-title">[[dish.title]]</div>
+                    <div class="order-price">[[dish.price]] ₴</div>
+                    <div class="order-quantity">[[dish.quantity]]</div>
+                    <paper-icon-button icon="remove" on-click="_removeDish"></paper-icon-button>
+                </div>
+            </template>
+        </dom-repeat>
+    </template>
+    <script>
+        /**
+         * user-cart is user's order for current date, for current vendor.
+         *
+         * <p>Is adopted for both desktop and mobile.
+         *
+         * @customElement
+         * @polymer
+         */
+        class MealOrderUserOrder extends Polymer.Element {
+            static get is() {
+                return 'meal-order-user-order';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Order for a current vendor.
+                     */
+                    order: {
+                        type: Array
+                    }
+                }
+            }
+
+            _removeDish(e) {
+                const dish = {};
+                dish.vendor = this.order.vendor;
+                dish.name = this.order.dishes[e.model.index].title;
+                this.dispatchEvent(new CustomEvent('dish-removed', {composed: true, detail: dish}));
+            }
+        }
+
+        window.customElements.define(MealOrderUserOrder.is, MealOrderUserOrder);
+    </script>
+</dom-module>

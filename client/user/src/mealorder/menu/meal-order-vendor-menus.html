@@ -21,11 +21,8 @@
 <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
 
 <link rel="import" href="meal-order-vendor-menu.html">
@@ -33,16 +30,8 @@
     <template>
         <style>
             :host {
-                font-family: 'Roboto', 'Noto', sans-serif;
                 display: block;
                 padding: 0;
-            }
-
-            body {
-                height: 100vh;
-                margin: 0;
-                display: flex;
-                flex-direction: column;
             }
 
             app-toolbar {
@@ -70,10 +59,6 @@
                 };
             }
 
-            div[role="listbox"] {
-                border: 1px solid #e5e5e5;
-            }
-
             paper-search-bar {
                 margin: 0 auto;
                 width: 70%;
@@ -83,43 +68,17 @@
 
             .item {
                 @apply --layout-horizontal;
-                /*padding: 20px;*/
                 background-color: white;
                 border: 1px solid #ddd;
                 cursor: pointer;
-                margin-bottom: 10px;
+                margin-bottom: 5px;
             }
 
             .pad {
-                padding: 15px;
                 @apply --layout-flex;
                 @apply --layout-vertical;
                 font-size: 15px;
-            }
-
-            .vendor {
-                color: #4f4f4f;
-                display: none;
-            }
-
-            .item.expand .vendor {
-                display: block;
-            }
-
-            @media (max-width: 460px) {
-                paper-toolbar .bottom.title {
-                    font-size: 14px;
-                }
-            }
-
-            #expand-button {
-                position: absolute;
-                right: 0;
-                top: 7px;
-            }
-
-            .primary {
-                font-size: 16px;
+                border-radius: 15px;
             }
 
             .non-select {
@@ -156,19 +115,10 @@
                    multi-selection>
             <template>
                 <div class="non-select">
-                    <div class$="[[getClassForItem(selected)]]" tabindex$="[[tabIndex]]">
+                    <div class="item">
                         <div class="pad">
-                            <div class="primary">
-                                [[item.name]]
-                                <paper-icon-button id="expand-button" icon="[[getIcon(selected)]]"
-                                                   on-click="_reSelect"></paper-icon-button>
-                            </div>
-                            <div class="expand vendor">
-                                <meal-order-vendor-menu
-                                        items="[[item.categories]]" vendor="[[item.name]]"
-                                        on-dish-added="addDish"></meal-order-vendor-menu>
-                            </div>
-
+                            <meal-order-vendor-menu menu="[[item]]"
+                                                    on-vendor-menu-resize="_resize"></meal-order-vendor-menu>
                         </div>
                     </div>
                 </div>
@@ -201,7 +151,8 @@
 
                     /**
                      * Full menu for day.
-                     * For structure details see {@code redux-store.html} or inner template.
+                     *
+                     * @property {array} each item is a menu of a vendor for a day.
                      */
                     items: {
                         type: Array,
@@ -226,30 +177,10 @@
                     }
 
                 }
-            };
-
-            static get observers() {
-                return [
-                    '_handleInput(filter)'
-                ];
             }
 
-            categoryExists(item) {
-                return item.dishes.length > 0;
-            }
-
-            addDish(e) {
-                this.dispatchEvent(new CustomEvent('dish-added', {detail: e.detail}));
-            }
-
-            _handleInput() {
-                const div = this.shadowRoot.querySelector("#list");
-                for (let i = 0; i < this.items.length; i++) {
-                    if (this.filter !== '') {
-                        div.selectIndex(i);
-                        div.selectIndex(i);
-                    }
-                }
+            _resize() {
+                this.shadowRoot.querySelector("#list").notifyResize();
             }
 
             filteredItems() {
@@ -269,30 +200,6 @@
                     filtered.push({name: this.items[i].name, categories: newVendorCategories});
                 }
                 return filtered;
-            }
-
-            getClassForItem(selected) {
-                return selected ? 'item expand' : 'item';
-            };
-
-            getIcon(selected) {
-                if (selected) {
-                    return 'expand-less';
-                }
-                else {
-                    return 'expand-more';
-
-                }
-            }
-
-            _reSelect(e) {
-                const div = this.shadowRoot.querySelector("#list");
-                if (!e.model.selected) {
-                    div.selectIndex(e.model.index);
-                }
-                else {
-                    div.deselectIndex(e.model.index);
-                }
             }
         }
 

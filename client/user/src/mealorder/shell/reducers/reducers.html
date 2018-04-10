@@ -17,12 +17,259 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
+<link rel="import" href="../redux-store.html">
+<script src="../utils/Utils.js"></script>
 <script>
-    const reducer = (state, action) => {
+    {
+        window.MealOrderApp = window.MealOrderApp || {};
+        /*global Utils */
+        const arrayOfDates = [{
+            date: {
+                year: '2018',
+                month: '03',
+                day: '21',
+            },
+            dayOfTheWeek: 'Ср',
+            hasMenu: true
+        },
+            {
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '22',
+                },
+                dayOfTheWeek: 'Чт',
+                hasMenu: true
+            },
+            {
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '23',
+                },
+                dayOfTheWeek: 'Пт',
+                hasMenu: true
+            },
+            {
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '24',
+                },
+                dayOfTheWeek: 'Сб',
+                hasMenu: false
+            },
+            {
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '25',
+                },
+                dayOfTheWeek: 'Вс',
+                hasMenu: false
+            }
+            , {
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '26',
+                },
+                dayOfTheWeek: 'Пн',
+                hasMenu: true
+            }
+            , {
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '27',
+                },
+                dayOfTheWeek: 'Вт',
+                hasMenu: true
+            }
+            , {
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '28',
+                },
+                dayOfTheWeek: 'Ср',
+                hasMenu: true
+            }];
+
+        MealOrderApp.initialState = {
+
+            calendar: arrayOfDates,
+            menuForDay: [],
+
+            menu: [
+                {
+                    name: 'Пюре',
+                    date: {
+                        year: '2018',
+                        month: '03',
+                        day: '21',
+                    },
+                    categories: [{
+                        categoryName: 'Первое блюдо', dishes: [
+                            {title: 'Борщ украинский', price: 35},
+                            {title: 'Солянка', price: 40},
+                            {title: 'Суп гороховый', price: 140},
+                            {title: 'Уха', price: 35},
+                            {title: 'Суп-пюре грибной', price: 40}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо', dishes: [
+                                {title: 'Утиные крылышки', price: 40},
+                                {title: 'Куриные крылышки', price: 45}]
+                        }
+                    ]
+                },
+                {
+                    name: 'Позитив',
+                    date: {
+                        year: '2018',
+                        month: '03',
+                        day: '21',
+                    },
+                    categories: [{
+                        categoryName: 'Первое блюдо', dishes: [
+                            {title: 'Борщ украинский', price: 35},
+                            {title: 'Суп с лапшой', price: 40},
+                            {title: 'Борщ красный', price: 40},
+                            {title: 'Борщ зеленый', price: 35}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо', dishes: [
+                                {title: 'Стейк из лосося', price: 40},
+                                {title: 'Стейк из говядины', price: 45}]
+                        },
+                        {
+                            categoryName: 'Напитки', dishes: [
+                                {title: 'Лимонад', price: 40}]
+                        }
+                    ]
+                },
+                {
+                    name: 'Пюре',
+                    date: {
+                        year: '2018',
+                        month: '03',
+                        day: '22',
+                    },
+                    categories: [{
+                        categoryName: 'Первое блюдо', dishes: [
+                            {title: 'Суп гречневый', price: 35},
+                            {title: 'Солянка', price: 40},
+                            {title: 'Суп гороховый', price: 140},
+                            {title: 'Уха', price: 35},
+                            {title: 'Суп-пюре грибной', price: 40}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо', dishes: [
+                                {title: 'Утиные крылышки', price: 40},
+                                {title: 'Куриные крылышки', price: 45}]
+                        }
+                    ]
+                },
+                {
+                    name: 'Позитив',
+                    date: {
+                        year: '2018',
+                        month: '03',
+                        day: '22',
+                    },
+                    categories: [{
+                        categoryName: 'Первое блюдо', dishes: [
+                            {title: 'Суп сырный', price: 35},
+                            {title: 'Суп с лапшой', price: 40},
+                            {title: 'Борщ красный', price: 40},
+                            {title: 'Борщ зеленый', price: 35}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо', dishes: [
+                                {title: 'Стейк из лосося', price: 40},
+                                {title: 'Стейк из говядины', price: 45}]
+                        },
+                        {
+                            categoryName: 'Напитки', dishes: [
+                                {title: 'Лимонад', price: 40}]
+                        }
+                    ]
+                }],
+            currentOrder: [],
+            orders: [{
+                date: {day: '21', month: '03', year: '2018'}, cart: [{
+                    vendor: "Пюре",
+                    dishes: [
+                        {title: 'Борщ украинский', price: 35, quantity: 1},
+                        {title: 'Солянка', price: 40, quantity: 1},
+                        {title: 'Суп гороховый', price: 40, quantity: 1},
+                        {title: 'Уха', price: 35, quantity: 1},
+                        {title: 'Суп-пюре грибной', price: 40, quantity: 1},
+                        {title: 'Суп куриный', price: 40, quantity: 1},]
+                }, {
+                    vendor: 'Позитив',
+                    dishes: [{title: 'Суп куриный', price: 35, quantity: 1}, {
+                        title: 'Стейк из лосося',
+                        price: 35,
+                        quantity: 1
+                    }]
+                }]
+            }, {
+                date: {day: '22', month: '03', year: '2018'}, cart: [{
+                    vendor: "Пюре",
+                    dishes: [
+                        {title: 'Щи русские', price: 48, quantity: 1},
+                        {title: 'Солянка', price: 40, quantity: 1},
+                        {title: 'Суп гороховый', price: 40, quantity: 1},
+                        {title: 'Уха', price: 35, quantity: 1},
+                        {title: 'Суп-пюре грибной', price: 40, quantity: 1},
+                        {title: 'Суп куриный', price: 40, quantity: 1},]
+                }, {
+                    vendor: 'Позитив',
+                    dishes: [{title: 'Лапша по армянски', price: 35, quantity: 1}, {
+                        title: 'Стейк из лосося',
+                        price: 35,
+                        quantity: 1
+                    }]
+                }]
+            }]
+        };
+
+        MealOrderApp.reducer = (state, action) => {
             if (!state) {
-                return initialState;
+                return MealOrderApp.initialState;
             }
             switch (action.type) {
+                case MealOrderApp.UserAction.CHANGE_CURRENT_MENU: {
+                    let arr = [];
+                    let j = 0;
+
+                    for (let i = 0; i < state.menu.length; i++) {
+                        if (Utils.compareObjects(action.date, state.menu[i].date)) {
+                            arr[j] = state.menu[i];
+                            j++;
+                        }
+                    }
+                    return Object.assign({}, state, {
+                            dateForMenu: state.dateForMenu,
+                            menuForDay: arr
+                        }
+                    );
+                }
+                case MealOrderApp.UserAction.CHANGE_CURRENT_CART: {
+                    let newOrder = [];
+                    for (let i = 0; i < state.orders.length; i++) {
+                        if (Utils.compareObjects(action.date, state.orders[i].date)) {
+                            newOrder = state.orders[i].cart;
+                            break;
+                        }
+                    }
+                    return Object.assign({}, state, {
+                            currentOrder: newOrder
+                        }
+                    );
+                }
                 case UserAction.CHANGE_HISTORY_DAY: {
                     let newHistory = [];
                     for (let i = 0; i < initialState.history.length; i++) {
@@ -36,42 +283,11 @@
                         }
                     );
                 }
-            case UserAction.REMOVE_DISH: {
-                return state;
+                default : {
+                    return state;
+                }
             }
 
-            case UserAction.MENU_FOR_DAY: {
-                let arr = [];
-                let k = 0;
-
-                for (let i = 0; i < initialState.menu.length; i++) {
-                    if (initialState.menu[i].date.day === action.date.date.day) {
-                        arr[k] = initialState.menu[i];
-                        k++;
-                    }
-                }
-                return Object.assign({}, state, {
-                        dateForMenu: initialState.dateForMenu,
-                        menuForDay: arr
-                    }
-                );
-            }
-            case UserAction.CART_FOR_DAY: {
-                let newOrder = [];
-                for (let i = 0; i < initialState.orders.length; i++) {
-                    if (Utils.compareObjects(action.date, initialState.orders[i].date)) {
-                        newOrder = initialState.orders[i].cart;
-                        break;
-                    }
-                }
-                return Object.assign({}, state, {
-                        currentOrder: newOrder
-                    }
-                );
-            }
-            default : {
-                return state;
-            }
         }
-    };
+    }
 </script>
