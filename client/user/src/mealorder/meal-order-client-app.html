@@ -21,10 +21,13 @@
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import"
+      href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import"
+      href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import"
+      href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
@@ -162,8 +165,8 @@
                         <div class="app-toolbar-header">
                             <div class="app-toolbar-content">Заказ</div>
                             <div>
-                                <div id="day">Пн</div>
-                                <div id="day-of-the-week">21</div>
+                                <div id="day">[[selectedDay.dayOfTheWeek]]</div>
+                                <div id="day-of-the-week">[[selectedDay.day]]</div>
                             </div>
                         </div>
                     </app-toolbar>
@@ -199,7 +202,8 @@
                                                        icon="maps:icons:history"></iron-icon>
                                         </a>
                                         <div>
-                                            <iron-icon class="app-toolbar-content" icon="icons:shopping-cart"
+                                            <iron-icon class="app-toolbar-content"
+                                                       icon="icons:shopping-cart"
                                                        drawer-toggle></iron-icon>
                                         </div>
                                     </div>
@@ -215,7 +219,8 @@
                                                        icon="maps:icons:add"></iron-icon>
                                         </a>
                                         <div>
-                                            <iron-icon class="app-toolbar-content" icon="icons:date-range"
+                                            <iron-icon class="app-toolbar-content"
+                                                       icon="icons:date-range"
                                                        drawer-toggle></iron-icon>
                                         </div>
                                     </div>
@@ -229,8 +234,8 @@
                         attr-for-selected="name"
                         fallback-selection="view404"
                         role="main">
-                    <meal-order-menu-container name="menu"
-                                           on-dish-added="_addDishToOrder"></meal-order-menu-container>
+                    <meal-order-menu-container on-date-updated="_updateDay"
+                                               name="menu"></meal-order-menu-container>
                 </iron-pages>
 
             </app-header-layout>
@@ -250,17 +255,13 @@
          * @appliesMixin MealOrderApp.ReduxMixin
          */
         class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
+
             static get is() {
                 return 'meal-order-client-app';
             }
 
             static get properties() {
                 return {
-                    /**
-                     * Chosen date.
-                     */
-                    currentDate: {},
-
                     /**
                      * Current user's meal order.
                      */
@@ -275,6 +276,14 @@
                         type: Array,
                         statePath: 'currentHistory'
                     },
+
+                    /**
+                     * Current selected day by user.
+                     */
+                    selectedDay: {
+                        type: Object,
+                    },
+
                     /**
                      * Used for routing.
                      */
@@ -303,7 +312,21 @@
             _getClassForDrawer(page) {
                 return page;
             }
+
+            _updateDay(e) {
+                const date = new Date(e.detail.year, e.detail.month - 1, e.detail.day);
+
+                let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
+                dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
+
+                const selectedDay = {
+                    day: e.detail.day,
+                    dayOfTheWeek: dayOfTheWeek,
+                };
+                this.set('selectedDay', selectedDay);
+            }
         }
+
         window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
     </script>
 </dom-module>

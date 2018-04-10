@@ -85,9 +85,8 @@
 
         <app-route
                 route="{{route}}"
-                pattern="/:menu/:date"
-                data="{{routeData}}"
-                tail="{{subroute}}">
+                pattern="/:page/:date"
+                data="{{routeData}}">
         </app-route>
 
         <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='key'>
@@ -95,12 +94,14 @@
                 <template>
                     <dom-if if="[[calendar.hasMenu]]">
                         <template>
-                            <paper-tab link>
+                            <paper-tab
+                                    key="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                                    link>
                                 <a class="paper-tab-container"
                                    href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                                    on-click="_handleClick">
                                     <div>
-                                        <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                        <div class="day-of-the-week">{{calendar.dayOfTheWeek}}
                                         </div>
                                         <div class="day">{{calendar.date.day}}</div>
                                     </div>
@@ -110,10 +111,12 @@
                     </dom-if>
                     <dom-if if="[[!calendar.hasMenu]]">
                         <template>
-                            <paper-tab link disabled>
+                            <paper-tab
+                                    key="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                                    link disabled>
                                 <div class="paper-tab-container disabled">
                                     <div>
-                                        <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                        <div class="day-of-the-week">{{calendar.dayOfTheWeek}}
                                         </div>
                                         <div class="day">{{calendar.date.day}}</div>
                                     </div>
@@ -125,13 +128,13 @@
             </dom-repeat>
         </paper-tabs>
         <iron-pages
-                selected="[[routeData.menu]]"
+                selected="[[routeData.page]]"
                 attr-for-selected="name"
                 fallback-selection="view404"
                 role="main">
 
-            <meal-order-vendor-menus name="[[routeData.menu]]"
-                                     items="[[menu]]" route="[[subroute]]"
+            <meal-order-vendor-menus name="menu"
+                                     items="[[menu]]"
                                      on-dish-added="_addDishToOrder"></meal-order-vendor-menus>
         </iron-pages>
     </template>
@@ -171,6 +174,13 @@
                      * Used for routing.
                      */
                     routeData: {
+                        type: Object,
+                    },
+
+                    /**
+                     * Current selected day by user.
+                     */
+                    selectedDay: {
                         type: Object,
                     }
                 };
@@ -212,13 +222,6 @@
                 }
             }
 
-            connectedCallback() {
-                super.connectedCallback();
-                if (this.calendar[0].hasMenu) {
-                    this.dispatch('changeCurrentMenu', this.calendar[0].date);
-                    this.dispatch('changeCurrentCart', this.calendar[0].date);
-                }
-            }
 
             static get observers() {
                 return [
@@ -227,18 +230,29 @@
             }
 
             _pageChanged() {
-                if (!this.route.path) {
+                if (!this.routeData.page) {
                     this.set('route.path', '/menu/' + this.calendar[0].date.year + "-" +
                         this.calendar[0].date.month + "-" + this.calendar[0].date.day);
                 }
                 else {
-                    const arr = this.routeData.date.split('-');
-                    const date = {};
-                    date.year = arr[0];
-                    date.month = arr[1];
-                    date.day = arr[2];
-                    this.dispatch('changeCurrentMenu', date);
-                    this.dispatch('changeCurrentCart', date);
+                    let date = {};
+                    if (this.routeData.page.startsWith("menu")) {
+                        if (!this.routeData.date) {
+                            date = this.selectedDay || this.calendar[0].date;
+                            this.set('route.path', '/menu/' + date.year + "-" +
+                                date.month + "-" + date.day);
+                        }
+                        else {
+                            const arr = this.routeData.date.split('-');
+                            date.year = arr[0];
+                            date.month = arr[1];
+                            date.day = arr[2];
+                            this.set('selectedDay', date);
+                        }
+                        this.dispatch('changeCurrentMenu', date);
+                        this.dispatch('changeCurrentCart', date);
+                        this.dispatchEvent(new CustomEvent('date-updated', {detail: date}));
+                    }
                 }
             }
 
