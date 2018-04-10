@@ -117,7 +117,7 @@
                 <div class="non-select">
                     <div class="item">
                         <div class="pad">
-                            <meal-order-vendor-menu menu="[[item]]" on-dish-added="addDish"
+                            <meal-order-vendor-menu menu="[[item]]"
                                                     on-vendor-menu-resize="_resize"></meal-order-vendor-menu>
                         </div>
                     </div>
@@ -181,9 +181,6 @@
 
             _resize() {
                 this.shadowRoot.querySelector("#list").notifyResize();
-            }
-            addDish(e) {
-                this.dispatchEvent(new CustomEvent('dish-added', {detail: e.detail}));
             }
 
             filteredItems() {
