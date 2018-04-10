@@ -82,6 +82,17 @@
                 }
             }
 
+            static get actions() {
+                return {
+                    removeDish(dish) {
+                        return {
+                            type: MealOrderApp.UserAction.REMOVE_DISH,
+                            dish: dish
+                        }
+                    }
+                }
+            }
+
             static get observers() {
                 return [
                     '_updateDate(outputDate)',
@@ -102,8 +113,8 @@
                 }
             }
 
-            _removeDishFromOrder() {
-                console.log('removing');
+            _removeDishFromOrder(e) {
+                this.dispatch('removeDish', e.detail);
             }
 
             _updateDate() {
@@ -118,6 +129,7 @@
                 this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
             }
         }
+
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>
