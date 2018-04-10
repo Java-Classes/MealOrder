@@ -71,10 +71,18 @@
                     },
 
                     /**
-                     * Chosen date.
+                     * Date that the user can select on the calendar.
                      */
                     inputDate: {},
+
+                    /**
+                     * Chosen day.
+                     */
                     outputDate: {},
+
+                    /**
+                     * Used for routing.
+                     */
                     routeData: {},
                 }
             }
@@ -87,7 +95,7 @@
             }
 
             _changeHistoryUrl() {
-                if (this.routeData.date && this.routeData.page.startsWith("history")) {
+                if (this.routeData.page && this.routeData.page.startsWith("history")) {
                     const routeDate = this.routeData.date.split('-');
                     this.set('inputDate', routeDate[0] + "/" + routeDate[1] + "/" + routeDate[2]);
                     const arr = this.routeData.date.split('-');
