@@ -294,8 +294,10 @@
             }
 
             _removeDishFromOrder(e) {
-                console.log(e.detail);
-                this.dispatch('removeDish', e.detail);
+                const dish = {};
+                dish.date = this.currentDate;
+                dish.details = e.detail;
+                this.dispatch('removeDish', dish);
             }
 
             _getClassForDrawer(page) {

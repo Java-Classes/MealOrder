@@ -159,12 +159,6 @@
                     }
                 }
             };
-            _removeDish(e) {
-                const dish = {};
-                dish.vendor = e.model.parentModel.__data.dish.vendor;
-                dish.name = e.model.__data.d.title;
-                this.dispatchEvent(new CustomEvent('dish-removed', {detail: dish}));
-            }
 
             _getTotalAmount() {
                 let sum = 0;
