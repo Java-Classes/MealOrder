@@ -22,10 +22,9 @@
 <link rel="import" href="reducers/reducers.html">
 <script>
     {
+
         /* global Redux, PolymerRedux */
         const store = Redux.createStore(MealOrderApp.reducer);
-
-        window.MealOrderApp = {};
         MealOrderApp.store = store;
         MealOrderApp.ReduxMixin = PolymerRedux(MealOrderApp.store);
     }
