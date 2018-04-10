@@ -114,12 +114,14 @@
                     </dom-repeat>
                 </template>
             </dom-repeat>
-
-            <div class="total">
-                <div class="amount">Общая сумма:</div>
-                <div class="price">[[total]]</div>
-            </div>
-
+            <dom-if if="[[order.length]]">
+                <template>
+                    <div class="total">
+                        <div class="amount">Общая сумма:</div>
+                        <div class="price">[[total]]</div>
+                    </div>
+                </template>
+            </dom-if>
         </div>
     </template>
     <script>

@@ -21,6 +21,8 @@
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/app-datepicker/app-datepicker.html">
+<link rel="import" href="meal-order-user-cart.html">
+
 
 <dom-module id="meal-order-drawer">
     <template>
@@ -48,6 +50,8 @@
                 attr-for-selected="name"
                 fallback-selection="view404"
                 role="main">
+            <meal-order-user-cart name="menu" order="[[order]]"
+                                  on-dish-removed="_removeDishFromOrder"></meal-order-user-cart>
             <app-datepicker name="history" id="date-picker" view="vertical"
                             input-date="[[inputDate]]" date="{{outputDate}}" auto-update-date="true"
                             locale="ru-RU"></app-datepicker>
@@ -96,6 +100,10 @@
                     date.day = arr[2];
                     this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
                 }
+            }
+
+            _removeDishFromOrder() {
+                console.log('removing');
             }
 
             _updateDate() {
