@@ -21,12 +21,14 @@
 <script src="../utils/Utils.js"></script>
 <script>
     {
+        window.MealOrderApp = window.MealOrderApp || {};
         /*global Utils */
         const arrayOfDates = [{
             date: {
                 year: '2018',
                 month: '03',
                 day: '21',
+                dayOfTheWeek: 'Ср',
             },
             hasMenu: true
         },
@@ -35,6 +37,7 @@
                     year: '2018',
                     month: '03',
                     day: '22',
+                    dayOfTheWeek: 'Чт',
                 },
                 hasMenu: true
             },
@@ -43,6 +46,7 @@
                     year: '2018',
                     month: '03',
                     day: '23',
+                    dayOfTheWeek: 'Пт',
                 },
                 hasMenu: true
             },
@@ -51,6 +55,7 @@
                     year: '2018',
                     month: '03',
                     day: '24',
+                    dayOfTheWeek: 'Сб',
                 },
                 hasMenu: false
             },
@@ -59,6 +64,7 @@
                     year: '2018',
                     month: '03',
                     day: '25',
+                    dayOfTheWeek: 'Вс',
                 },
                 hasMenu: false
             }
@@ -67,6 +73,7 @@
                     year: '2018',
                     month: '03',
                     day: '26',
+                    dayOfTheWeek: 'Пн',
                 },
                 hasMenu: true
             }
@@ -75,6 +82,7 @@
                     year: '2018',
                     month: '03',
                     day: '27',
+                    dayOfTheWeek: 'Вт',
                 },
                 hasMenu: true
             }
@@ -83,12 +91,13 @@
                     year: '2018',
                     month: '03',
                     day: '28',
+                    dayOfTheWeek: 'Ср',
                 },
                 hasMenu: true
             }];
 
         MealOrderApp.initialState = {
-            menuForDates: arrayOfDates,
+            calendar: arrayOfDates,
             menuForDay: [],
 
             menu: [
@@ -231,19 +240,14 @@
                 return MealOrderApp.initialState;
             }
             switch (action.type) {
-
-                case MealOrderApp.UserAction.ADD_DISH: {
-                    return state;
-                }
-
-                case MealOrderApp.UserAction.MENU_FOR_DAY: {
+                case MealOrderApp.UserAction.CHANGE_CURRENT_MENU: {
                     let arr = [];
-                    let k = 0;
+                    let j = 0;
 
                     for (let i = 0; i < state.menu.length; i++) {
-                        if (state.menu[i].date.day === action.date.date.day) {
-                            arr[k] = state.menu[i];
-                            k++;
+                        if (Utils.compareObjects(action.date, state.menu[i].date)) {
+                            arr[j] = state.menu[i];
+                            j++;
                         }
                     }
                     return Object.assign({}, state, {
@@ -252,7 +256,7 @@
                         }
                     );
                 }
-                case MealOrderApp.UserAction.CART_FOR_DAY: {
+                case MealOrderApp.UserAction.CHANGE_CURRENT_CART: {
                     let newOrder = [];
                     for (let i = 0; i < state.orders.length; i++) {
                         if (Utils.compareObjects(action.date, state.orders[i].date)) {
