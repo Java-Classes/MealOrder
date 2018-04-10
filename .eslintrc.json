@@ -28,7 +28,8 @@
       {
         "ignore": [
           0,
-          1
+          1,
+          2
         ]
       }
     ],
@@ -42,6 +43,7 @@
     "html"
   ],
   "globals": {
-    "Polymer": false
+    "Polymer": false,
+    "MealOrderApp": false
   }
 }

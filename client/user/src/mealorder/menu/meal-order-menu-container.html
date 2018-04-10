@@ -1,0 +1,246 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../shell/redux-store.html">
+<link rel="import" href="../shell/actions/user-actions.html">
+
+<link rel="import" href="meal-order-vendor-menus.html">
+
+<dom-module id="meal-order-menu-container">
+    <template>
+        <style>
+            paper-tabs {
+                -webkit-font-smoothing: antialiased;
+                width: 100%;
+                margin-bottom: 1px;
+                --paper-tabs-selection-bar-color: #179EFF;
+                --paper-tab-ink: #179EFF;
+            }
+
+            paper-tabs {
+                margin: 3% auto;
+                width: 70%;
+            }
+
+            paper-tab.iron-selected .day-of-the-week {
+                color: #179EFF;
+            }
+
+            paper-tab.iron-selected .day {
+                color: #179EFF;
+            }
+
+            paper-tab .paper-tab-container {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                text-decoration: none;
+                color: #323232;
+                font-size: 1.5em;
+            }
+
+            .disabled .day{
+                color: #8c8c8c;
+            }
+
+            .disabled .day-of-the-week{
+                color: #8c8c8c;
+            }
+
+            .day-of-the-week {
+                font-size: 0.7em;
+                font-weight: lighter;
+            }
+
+            @media only screen and (max-width: 600px) {
+                paper-tabs {
+                    margin-top: 3%;
+                    width: 100%;
+                }
+            }
+        </style>
+        <app-location route="{{route}}"
+                      use-hash-as-path></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:menu/:date"
+                data="{{routeData}}"
+                tail="{{subroute}}">
+        </app-route>
+
+        <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='key'>
+            <dom-repeat items="{{calendar}}" as="calendar">
+                <template>
+                <dom-if if="[[calendar.hasMenu]]">
+                    <template>
+                        <paper-tab link>
+                            <a class="paper-tab-container"
+                               href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                               on-click="_handleClick">
+                                <div>
+                                    <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                    </div>
+                                    <div class="day">{{calendar.date.day}}</div>
+                                </div>
+                            </a>
+                        </paper-tab>
+                    </template>
+                </dom-if>
+                <dom-if if="[[!calendar.hasMenu]]">
+                    <template>
+                        <paper-tab link disabled>
+                            <div class="paper-tab-container disabled">
+                                <div>
+                                    <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                    </div>
+                                    <div class="day">{{calendar.date.day}}</div>
+                                </div>
+                            </div>
+                        </paper-tab>
+                    </template>
+                </dom-if>
+                </template>
+            </dom-repeat>
+        </paper-tabs>
+        <iron-pages
+                selected="[[routeData.menu]]"
+                attr-for-selected="name"
+                fallback-selection="view404"
+                role="main">
+
+            <meal-order-vendor-menus name="[[routeData.menu]]"
+                                     items="[[menu]]" route="[[subroute]]"
+                                     on-dish-added="addDishToOrder"></meal-order-vendor-menus>
+        </iron-pages>
+    </template>
+    <script>
+        /**
+         * menu-order is container for vendors' menus and navigation.
+         *
+         * Contains a menu for the current date and tabs for quick date navigation.
+         *
+         * @customElement
+         * @polymer
+         * @appliesMixin MealOrderApp.ReduxMixin
+         */
+        class MealOrderMenuContainer extends MealOrderApp.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'meal-order-menu-container';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Array of dates with menu which may not exist.
+                     */
+                    calendar: {
+                        type: Array,
+                        statePath: 'calendar'
+                    },
+
+                    /**
+                     * Menu for a current day.
+                     */
+                    menu: {
+                        type: Array,
+                        statePath: 'menuForDay'
+                    },
+                    /**
+                     * Used for routing.
+                     */
+                    routeData: {
+                        type: Object,
+                    }
+                };
+            }
+
+            static get actions() {
+                /**
+                 * Fired when a paper tab is selected.
+                 *
+                 * @action `changeCurrentMenu`
+                 * @param {date} contains selected date by tab
+                 */
+
+                /**
+                 * Fired when a paper tab is selected.
+                 *
+                 * @action `changeCurrentCart`
+                 * @param {date} contains selected date by tab
+                 */
+                return {
+                    changeCurrentMenu(date) {
+                        return {
+                            type: MealOrderApp.UserAction.CHANGE_CURRENT_MENU,
+                            date: date
+                        }
+                    },
+                    changeCurrentCart(date) {
+                        return {
+                            type: MealOrderApp.UserAction.CHANGE_CURRENT_CART,
+                            date: date
+                        }
+                    },
+                }
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                if (this.calendar[0].hasMenu) {
+                    this.dispatch('changeCurrentMenu', this.calendar[0].date);
+                    this.dispatch('changeCurrentCart', this.calendar[0].date);
+                }
+            }
+
+            static get observers() {
+                return [
+                    '_pageChanged(routeData.menu)'
+                ];
+            }
+
+            _pageChanged() {
+                if (!this.route.path) {
+                    this.set('route.path', '/menu/' + this.calendar[0].date.year + "-" +
+                        this.calendar[0].date.month + "-" + this.calendar[0].date.day);
+                }
+                else {
+                    const arr = this.routeData.date.split('-');
+                    const date = {};
+                    date.year = arr[0];
+                    date.month = arr[1];
+                    date.day = arr[2];
+                    this.dispatch('changeCurrentMenu', date);
+                    this.dispatch('changeCurrentCart', date);
+                }
+            }
+
+            _handleClick(e) {
+                this.dispatch('changeCurrentMenu', this.calendar[e.model.index].date);
+                this.dispatch('changeCurrentCart', this.calendar[e.model.index].date);
+            }
+        }
+        window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
+    </script>
+</dom-module>
