@@ -165,7 +165,7 @@
                         <div class="app-toolbar-header">
                             <div class="app-toolbar-content">Заказ</div>
                             <div>
-                                <div id="day">[[selectedDay.stringDay]]</div>
+                                <div id="day">[[selectedDay.dayOfTheWeek]]</div>
                                 <div id="day-of-the-week">[[selectedDay.day]]</div>
                             </div>
                         </div>
@@ -297,12 +297,12 @@
             _updateDay(e) {
                 const date = new Date(e.detail.year, e.detail.month - 1, e.detail.day);
 
-                let stringDay = date.toLocaleDateString("ru-RU", {weekday: 'long'});
-                stringDay = stringDay.charAt(0).toUpperCase() + stringDay.slice(1);
+                let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
+                dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
 
                 const selectedDay = {
                     day: e.detail.day,
-                    stringDay: stringDay,
+                    dayOfTheWeek: dayOfTheWeek,
                 };
                 this.set('selectedDay', selectedDay);
             }

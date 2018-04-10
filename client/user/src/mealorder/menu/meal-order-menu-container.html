@@ -219,8 +219,7 @@
                     let date = {};
                     if (this.routeData.page.startsWith("menu")) {
                         if (!this.routeData.date) {
-                            date = this.selectedDay;
-                            console.log(date);
+                            date = this.selectedDay || this.calendar[0].date;
                             this.set('route.path', '/menu/' + date.year + "-" +
                                 date.month + "-" + date.day);
                         }
