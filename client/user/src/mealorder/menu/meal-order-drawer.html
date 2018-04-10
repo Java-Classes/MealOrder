@@ -41,7 +41,8 @@
         <app-route
                 route="{{route}}"
                 pattern="/:page/:date"
-                data="{{routeData}}"></app-route>
+                data="{{routeData}}">
+        </app-route>
 
         <iron-pages
                 selected="[[routeData.page]]"
@@ -99,17 +100,21 @@
             }
 
             _updateDate() {
-                const arr = this.outputDate.split('/');
-                const date = {};
-                date.year = arr[0];
-                date.month = arr[1];
-                date.day = arr[2];
-                const newRouteData = {};
-                newRouteData.page = 'history/' + date.year + "-" + date.month + "-" + date.day;
-                this.set('routeData', newRouteData);
-                this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
+                if (this.routeData.page && this.routeData.page.startsWith("history")) {
+                    const arr = this.outputDate.split('/');
+                    const date = {};
+                    date.year = arr[0];
+                    date.month = arr[1];
+                    date.day = arr[2];
+                    const newRouteData = {};
+                    newRouteData.page = 'history';
+                    newRouteData.date = date.year + "-" + date.month + "-" + date.day;
+                    this.set('routeData', newRouteData);
+                    this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
+                }
             }
         }
+
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>
