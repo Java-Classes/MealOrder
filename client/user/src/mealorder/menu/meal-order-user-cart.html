@@ -31,6 +31,9 @@
 <link rel="import" href="../../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="meal-order-user-order.html">
+
 <dom-module id="meal-order-user-cart">
     <template>
         <style>
@@ -98,20 +101,7 @@
 
             <dom-repeat items="[[order]]" as="dish">
                 <template>
-                    <div class="vendor">
-                        <div>[[dish.vendor]]</div>
-                        <paper-icon-button icon="delete" class="icon-delete"></paper-icon-button>
-                    </div>
-                    <dom-repeat items="[[dish.dishes]]" as="d">
-                        <template>
-                            <div class="order-details">
-                                <div class="order-title">[[d.title]]</div>
-                                <div class="order-price">[[d.price]] ₴</div>
-                                <div class="order-quantity">[[d.quantity]]</div>
-                                <paper-icon-button icon="remove" on-click="_removeDish"></paper-icon-button>
-                            </div>
-                        </template>
-                    </dom-repeat>
+                    <meal-order-user-order order="[[dish]]"></meal-order-user-order>
                 </template>
             </dom-repeat>
             <dom-if if="[[order.length]]">

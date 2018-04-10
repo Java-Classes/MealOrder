@@ -174,7 +174,8 @@
                         </div>
                     </app-toolbar>
                 </iron-pages>
-                <meal-order-drawer order="[[order]]"></meal-order-drawer>
+                <meal-order-drawer order="[[order]]"
+                                   on-dish-removed="_removeDishFromOrder"></meal-order-drawer>
 
             </app-drawer>
 
@@ -279,6 +280,22 @@
                      */
                     routeData: {},
                 }
+            }
+
+            static get actions() {
+                return {
+                    removeDish(dish) {
+                        return {
+                            type: MealOrderApp.UserAction.REMOVE_DISH,
+                            dish: dish
+                        }
+                    }
+                }
+            }
+
+            _removeDishFromOrder(e) {
+                console.log(e.detail);
+                this.dispatch('removeDish', e.detail);
             }
 
             _getClassForDrawer(page) {
