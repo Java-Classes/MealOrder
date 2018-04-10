@@ -86,7 +86,7 @@
             }
 
             _changeHistoryUrl() {
-                if (this.routeData.date) {
+                if (this.routeData.date && this.routeData.page.startsWith("history")) {
                     const routeDate = this.routeData.date.split('-');
                     this.set('inputDate', routeDate[0] + "/" + routeDate[1] + "/" + routeDate[2]);
                     const arr = this.routeData.date.split('-');

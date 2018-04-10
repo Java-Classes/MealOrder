@@ -56,11 +56,15 @@
                 @apply --layout-horizontal;
                 @apply --layout-center-center;
                 text-decoration: none;
-                color: #4f4f4f;
+                color: #323232;
                 font-size: 1.5em;
             }
 
-            .link-disabled {
+            .disabled .day{
+                color: #8c8c8c;
+            }
+
+            .disabled .day-of-the-week{
                 color: #8c8c8c;
             }
 
@@ -107,7 +111,7 @@
                 <dom-if if="[[!calendar.hasMenu]]">
                     <template>
                         <paper-tab link disabled>
-                            <div class="paper-tab-container link-disabled">
+                            <div class="paper-tab-container disabled">
                                 <div>
                                     <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
                                     </div>
