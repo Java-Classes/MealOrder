@@ -60,11 +60,11 @@
                 font-size: 1.5em;
             }
 
-            .disabled .day{
+            .disabled .day {
                 color: #8c8c8c;
             }
 
-            .disabled .day-of-the-week{
+            .disabled .day-of-the-week {
                 color: #8c8c8c;
             }
 
@@ -93,34 +93,34 @@
         <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='key'>
             <dom-repeat items="{{calendar}}" as="calendar">
                 <template>
-                <dom-if if="[[calendar.hasMenu]]">
-                    <template>
-                        <paper-tab link>
-                            <a class="paper-tab-container"
-                               href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
-                               on-click="_handleClick">
-                                <div>
-                                    <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                    <dom-if if="[[calendar.hasMenu]]">
+                        <template>
+                            <paper-tab link>
+                                <a class="paper-tab-container"
+                                   href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                                   on-click="_handleClick">
+                                    <div>
+                                        <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                        </div>
+                                        <div class="day">{{calendar.date.day}}</div>
                                     </div>
-                                    <div class="day">{{calendar.date.day}}</div>
-                                </div>
-                            </a>
-                        </paper-tab>
-                    </template>
-                </dom-if>
-                <dom-if if="[[!calendar.hasMenu]]">
-                    <template>
-                        <paper-tab link disabled>
-                            <div class="paper-tab-container disabled">
-                                <div>
-                                    <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                </a>
+                            </paper-tab>
+                        </template>
+                    </dom-if>
+                    <dom-if if="[[!calendar.hasMenu]]">
+                        <template>
+                            <paper-tab link disabled>
+                                <div class="paper-tab-container disabled">
+                                    <div>
+                                        <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                        </div>
+                                        <div class="day">{{calendar.date.day}}</div>
                                     </div>
-                                    <div class="day">{{calendar.date.day}}</div>
                                 </div>
-                            </div>
-                        </paper-tab>
-                    </template>
-                </dom-if>
+                            </paper-tab>
+                        </template>
+                    </dom-if>
                 </template>
             </dom-repeat>
         </paper-tabs>
@@ -132,7 +132,7 @@
 
             <meal-order-vendor-menus name="[[routeData.menu]]"
                                      items="[[menu]]" route="[[subroute]]"
-                                     on-dish-added="addDishToOrder"></meal-order-vendor-menus>
+                                     on-dish-added="_addDishToOrder"></meal-order-vendor-menus>
         </iron-pages>
     </template>
     <script>
@@ -191,6 +191,12 @@
                  * @param {date} contains selected date by tab
                  */
                 return {
+                    addDish(dish) {
+                        return {
+                            type: MealOrderApp.UserAction.ADD_DISH,
+                            dish: dish
+                        }
+                    },
                     changeCurrentMenu(date) {
                         return {
                             type: MealOrderApp.UserAction.CHANGE_CURRENT_MENU,
@@ -236,11 +242,19 @@
                 }
             }
 
+            _addDishToOrder(e) {
+                const order = {};
+                order.dish = e.detail;
+                order.date = this.routeData.date;
+                this.dispatch('addDish', order);
+            }
+
             _handleClick(e) {
                 this.dispatch('changeCurrentMenu', this.calendar[e.model.index].date);
                 this.dispatch('changeCurrentCart', this.calendar[e.model.index].date);
             }
         }
+
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
     </script>
 </dom-module>
