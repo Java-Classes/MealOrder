@@ -115,11 +115,11 @@
             <paper-item on-click="_toggle" class="menu-caption">
                 <div class="menu-caption">
                     [[menu.name]]
-                    <paper-icon-button id="expand" icon="expand-more"></paper-icon-button>
+                    <paper-icon-button id="expand" icon="expand-less"></paper-icon-button>
                 </div>
             </paper-item>
         </div>
-        <div id="menu" class="collapsed">
+        <div id="menu" class="expanded">
             <dom-repeat items="[[menu.categories]]" as="item">
                 <template>
                     <dom-if if="[[item.dishes.length]]">
