@@ -128,13 +128,13 @@
             </dom-repeat>
         </paper-tabs>
         <iron-pages
-                selected="[[routeData.menu]]"
+                selected="[[routeData.page]]"
                 attr-for-selected="name"
                 fallback-selection="view404"
                 role="main">
 
-            <meal-order-vendor-menus name="[[routeData.menu]]"
-                                     items="[[menu]]" route="[[subroute]]"
+            <meal-order-vendor-menus name="menu"
+                                     items="[[menu]]"
                                      on-dish-added="_addDishToOrder"></meal-order-vendor-menus>
         </iron-pages>
     </template>
