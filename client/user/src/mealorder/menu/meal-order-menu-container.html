@@ -224,15 +224,17 @@
                                 date.month + "-" + date.day);
                         }
                         else {
+                            const YEAR = 0;
+                            const MONTH = 1;
+                            const DAY = 2;
                             const arr = this.routeData.date.split('-');
-                            date.year = arr[0];
-                            date.month = arr[1];
-                            date.day = arr[2];
+                            date.year = arr[YEAR];
+                            date.month = arr[MONTH];
+                            date.day = arr[DAY];
                             this.set('selectedDay', date);
                         }
                         this.dispatch('changeCurrentMenu', date);
                         this.dispatch('changeCurrentCart', date);
-                        this.dispatchEvent(new CustomEvent('date-updated', {detail: date}));
                     }
                 }
             }

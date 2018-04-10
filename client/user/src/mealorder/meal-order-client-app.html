@@ -43,12 +43,6 @@
 <dom-module id="meal-order-client-app">
     <template>
         <style>
-            :host {
-                --app-primary-color: #4285f4;
-                --app-secondary-color: black;
-                display: block;
-            }
-
             app-header {
                 background-color: #616161;
                 color: #fff;
@@ -93,14 +87,14 @@
                 font-size: 0.75em;
             }
 
-            app-drawer.history {
-                --app-drawer-width: 300px;
-            }
-
             app-drawer {
                 --app-drawer-content-container: {
                     background-color: #fafafa;
                 }
+            }
+
+            .wide {
+                --app-drawer-width: 300px;
             }
 
             .app-toolbar-header {
@@ -150,18 +144,18 @@
 
         <app-route
                 route="{{route}}"
-                pattern="/:page"
+                pattern="/:page/:date"
                 data="{{routeData}}"></app-route>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
 
                 <iron-pages selected="[[routeData.page]]"
-                            attr-for-selected="name"
+                            attr-for-selected="data-page"
                             fallback-selection="view404"
                             role="main">
 
-                    <app-toolbar name="menu">
+                    <app-toolbar data-page="menu">
                         <div class="app-toolbar-header">
                             <div class="app-toolbar-content">Заказ</div>
                             <div>
@@ -171,7 +165,7 @@
                         </div>
                     </app-toolbar>
 
-                    <app-toolbar name="history">
+                    <app-toolbar data-page="history">
                         <div class="app-toolbar-header">
                             <div class="app-toolbar-content">История заказов</div>
                         </div>
@@ -188,11 +182,11 @@
                             <div id="main-title">Заказ обедов</div>
                             <iron-pages
                                     selected="[[routeData.page]]"
-                                    attr-for-selected="name"
+                                    attr-for-selected="data-page"
                                     fallback-selection="view404"
                                     role="main">
 
-                                <div name="menu">
+                                <div data-page="menu">
                                     <div class="route-title"><a href="/#/history/">История
                                         заказов</a></div>
                                     <div class="icon-container">
@@ -208,7 +202,7 @@
                                     </div>
                                 </div>
 
-                                <div name="history">
+                                <div data-page="history">
                                     <div id="menu-history" class="route-title"><a href="/#/menu/">Сделать
                                         заказ</a>
                                     </div>
@@ -230,11 +224,10 @@
                 </app-header>
                 <iron-pages
                         selected="[[routeData.page]]"
-                        attr-for-selected="name"
+                        attr-for-selected="data-page"
                         fallback-selection="view404"
                         role="main">
-                    <meal-order-menu-container on-date-updated="_updateDay"
-                                               name="menu"></meal-order-menu-container>
+                    <meal-order-menu-container data-page="menu"></meal-order-menu-container>
                 </iron-pages>
 
             </app-header-layout>
@@ -245,7 +238,7 @@
         /**
          * Main user meal order component.
          *
-         * Consists of 2 page:
+         * Consists of 2 pages:
          * 1. A page with vendor menus, and user's shopping cart.
          * 2. A page with user's history.
          *
@@ -290,24 +283,42 @@
                 }
             }
 
-            _getClassForDrawer(page) {
-                return page;
+            static get observers() {
+                return [
+                    '_pageChanged(routeData.date)'
+                ];
             }
 
-            _updateDay(e) {
-                const date = new Date(e.detail.year, e.detail.month - 1, e.detail.day);
+            _getClassForDrawer(page) {
+                if (page === "history") {
+                    return "wide";
+                }
+            }
+
+            _pageChanged() {
+                const YEAR = 0;
+                const MONTH = 1;
+                const DAY = 2;
+
+                const arr = this.routeData.date.split('-');
+
+                let urlDate = {};
+                urlDate.year = arr[YEAR];
+                urlDate.month = arr[MONTH];
+                urlDate.day = arr[DAY];
+
+                const date = new Date(urlDate.year, urlDate.month-1, urlDate.day);
 
                 let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
                 dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
 
                 const selectedDay = {
-                    day: e.detail.day,
+                    day: urlDate.day,
                     dayOfTheWeek: dayOfTheWeek,
                 };
                 this.set('selectedDay', selectedDay);
             }
         }
-
         window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
     </script>
 </dom-module>
