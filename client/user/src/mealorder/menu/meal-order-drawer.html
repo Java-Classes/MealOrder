@@ -117,10 +117,11 @@
                     date.setDate(date.getDate());
                     date.setMonth(date.getMonth());
 
-                    const YESTERDAY= -1;
                     const yesterdayDate = {};
                     yesterdayDate.year = "" + date.getFullYear();
-                    yesterdayDate.month = ("0" + (date.getMonth() + 1)).slice(YESTERDAY-1);
+
+                    let month = date.getMonth() + 1;
+                    yesterdayDate.month = month < 10 ? '0' + month : '' + month;
                     yesterdayDate.day = "" + (date.getDate() - 1);
                     this.set('inputDate', yesterdayDate.year + "/" + yesterdayDate.month + "/" +
                         yesterdayDate.day);
