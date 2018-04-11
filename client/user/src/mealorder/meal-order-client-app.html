@@ -39,6 +39,7 @@
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="shell/redux-store.html">
 <link rel="import" href="menu/meal-order-menu-container.html">
+<link rel="import" href="menu/meal-order-user-history.html">
 <link rel="import" href="menu/meal-order-drawer.html">
 <dom-module id="meal-order-client-app">
     <template>
@@ -178,7 +179,7 @@
                     </app-toolbar>
                 </iron-pages>
                 <meal-order-drawer order="[[order]]"
-                                   on-dish-removed="_removeDishFromOrder"></meal-order-drawer>
+                                   on-dish-removed="_removeDishFromOrder" on-changed-history-date="_updateHistoryDay"></meal-order-drawer>
 
             </app-drawer>
 
@@ -236,6 +237,8 @@
                         role="main">
                     <meal-order-menu-container on-date-updated="_updateDay"
                                                name="menu"></meal-order-menu-container>
+                    <meal-order-user-history name="history" cart="[[history]]"
+                                             narrow="[[narrow]]"></meal-order-user-history>
                 </iron-pages>
 
             </app-header-layout>
@@ -298,6 +301,12 @@
                             type: MealOrderApp.UserAction.REMOVE_DISH,
                             dish: dish
                         }
+                    },
+                    changeHistoryDate(date) {
+                        return {
+                            type: MealOrderApp.UserAction.CHANGE_HISTORY_DAY,
+                            date: date
+                        }
                     }
                 }
             }
@@ -324,6 +333,10 @@
                     dayOfTheWeek: dayOfTheWeek,
                 };
                 this.set('selectedDay', selectedDay);
+            }
+
+            _updateHistoryDay(e) {
+                this.dispatch('changeHistoryDate', e.detail);
             }
         }
 

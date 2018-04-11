@@ -233,8 +233,57 @@
                         quantity: 1
                     }]
                 }]
-            }]
+            }],
+
+            history: [{
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '29',
+                }, order: [{
+                    vendor: "Пюре",
+                    dishes: [
+                        {title: 'Борщ украинский', price: 35, quantity: 1},
+                        {title: 'Солянка', price: 40, quantity: 1},
+                        {title: 'Суп гороховый', price: 40, quantity: 1},
+                        {title: 'Уха', price: 35, quantity: 1},
+                        {title: 'Суп-пюре грибной', price: 40, quantity: 1},
+                        {title: 'Суп куриный', price: 40, quantity: 1},]
+                }, {
+                    vendor: 'Позитив',
+                    dishes: [{title: 'Суп куриный', price: 35, quantity: 1}, {
+                        title: 'Стейк из лосося',
+                        price: 35,
+                        quantity: 1
+                    }]
+                }]
+            }, {
+                date: {
+                    year: '2018',
+                    month: '03',
+                    day: '28',
+                }, order: [{
+                    vendor: "Пюре",
+                    dishes: [
+                        {title: 'Грибное пюре', price: 45, quantity: 1},
+                        {title: 'Солянка', price: 40, quantity: 1},
+                        {title: 'Суп гороховый', price: 40, quantity: 1},
+                        {title: 'Уха', price: 35, quantity: 1},
+                        {title: 'Суп-пюре грибной', price: 40, quantity: 1},
+                        {title: 'Суп куриный', price: 40, quantity: 1},]
+                }, {
+                    vendor: 'Позитив',
+                    dishes: [{title: 'Каша манная', price: 15, quantity: 5}, {
+                        title: 'Стейк из лосося',
+                        price: 35,
+                        quantity: 1
+                    }]
+                }]
+            }],
+
+            currentHistory: [],
         };
+
 
         MealOrderApp.reducer = (state, action) => {
             if (!state) {
@@ -270,11 +319,11 @@
                         }
                     );
                 }
-                case UserAction.CHANGE_HISTORY_DAY: {
+                case MealOrderApp.UserAction.CHANGE_HISTORY_DAY: {
                     let newHistory = [];
-                    for (let i = 0; i < initialState.history.length; i++) {
-                        if (Utils.compareObjects(action.date, initialState.history[i].date)) {
-                            newHistory = initialState.history[i].order;
+                    for (let i = 0; i < state.history.length; i++) {
+                        if (Utils.compareObjects(action.date, state.history[i].date)) {
+                            newHistory = state.history[i].order;
                             break;
                         }
                     }

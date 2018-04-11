@@ -21,7 +21,6 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
 <dom-module id="meal-order-user-history">
     <template>
         <style>
@@ -108,7 +107,6 @@
 
             }
 
-
             .vendor-title {
                 font-size: 22px;
                 font-weight: bolder;
@@ -146,7 +144,7 @@
             </iron-list>
             <dom-if if="[[totalSum]]">
                 <template>
-                    <div class="total-sum">Общая сумма: [[totalSum]]</div>
+                    <div class="total-sum">Общая сумма: [[totalSum]] ₴</div>
                 </template>
             </dom-if>
         </div>
