@@ -33,29 +33,11 @@
                 display: block;
                 padding: 0;
             }
-
-            app-toolbar {
-                background-color: var(--google-green-700);
-                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-                font-weight: bold;
-                color: white;
-                font-size: 18px;
-                z-index: 1;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-            }
-
-            app-toolbar paper-icon-button {
-                --paper-icon-button-ink-color: white;
-            }
-
             iron-list {
                 --iron-list-items-container: {
                     width: 70%;
                     margin: 2% auto;
-                    border-bottom: 1px solid #ddd;
+                    border-bottom: 1px solid var(--paper-grey-300);
                 };
             }
 
@@ -63,13 +45,13 @@
                 margin: 0 auto;
                 width: 70%;
                 border-radius: 5px;
-                background-color: #ffffff;
+                background-color: white;
             }
 
             .item {
                 @apply --layout-horizontal;
                 background-color: white;
-                border: 1px solid #ddd;
+                border: 1px solid var(--paper-grey-100);
                 cursor: pointer;
                 margin-bottom: 5px;
             }
