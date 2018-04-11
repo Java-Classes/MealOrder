@@ -26,12 +26,12 @@
     <template>
         <style>
             #date-picker {
-                --app-datepicker-selection-bg: #fafafa;
-                --app-datepicker-selection-color: #616161;
-                --app-datepicker-iron-selected: #616161;
-                --app-datepicker-selected-day-bg: #179EFF;
-                --app-datepicker-today-color: #179EFF;
-                --app-datepicker-date-hover-background-color: #179EFF;
+                --app-datepicker-selection-bg: var(--paper-grey-50);
+                --app-datepicker-selection-color: var(--google-grey-700);
+                --app-datepicker-iron-selected: var(--google-grey-700);
+                --app-datepicker-selected-day-bg: var(--paper-light-blue-500);
+                --app-datepicker-today-color: var(--paper-light-blue-500);
+                --app-datepicker-date-hover-background-color: var(--paper-light-blue-500);
 
                 --app-datepicker-selected-date: {
                     font-weight: normal;
@@ -63,6 +63,14 @@
         </iron-pages>
     </template>
     <script>
+        /**
+         * meal-order-drawer is container for user's order and user's order history calendar.
+         *
+         * Contains a order for selected day and calendar.
+         *
+         * @customElement
+         * @polymer
+         */
         class MealOrderDrawer extends Polymer.Element {
             static get is() {
                 return 'meal-order-drawer';

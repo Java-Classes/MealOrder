@@ -38,6 +38,7 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="shell/redux-store.html">
 <link rel="import" href="menu/meal-order-menu-container.html">
 <link rel="import" href="menu/meal-order-drawer.html">
@@ -45,8 +46,8 @@
     <template>
         <style>
             app-header {
-                background-color: #616161;
-                color: #fff;
+                background-color: var(--google-grey-700);
+                color: var(--paper-grey-50);
                 right: 300px;
             }
 
@@ -55,7 +56,7 @@
             }
 
             app-drawer-layout {
-                background-color: #F2F2F2;
+                background-color: var(--paper-grey-100);
             }
 
             app-drawer-layout:not([narrow]) [drawer-toggle] {
@@ -72,16 +73,16 @@
             app-header .route-title a {
                 font-size: 0.8em;
                 text-decoration: none;
-                color: white;
+                color: var(--paper-grey-50);
             }
 
             app-header .route-title a:hover {
-                color: #179EFF;
+                color: var(--paper-light-blue-500);
             }
 
             app-header .history-icon {
                 display: none;
-                color: white;
+                color: var(--paper-grey-50);
             }
 
             app-header .app-toolbar-content {
@@ -90,7 +91,7 @@
 
             app-drawer {
                 --app-drawer-content-container: {
-                    background-color: #fafafa;
+                    background-color:  var(--paper-grey-50);
                 }
             }
 
