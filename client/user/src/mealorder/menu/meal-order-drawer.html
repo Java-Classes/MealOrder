@@ -22,8 +22,6 @@
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/app-datepicker/app-datepicker.html">
 <link rel="import" href="meal-order-user-cart.html">
-
-
 <dom-module id="meal-order-drawer">
     <template>
         <style>
@@ -62,6 +60,7 @@
             <app-datepicker data-page="history" id="date-picker" view="vertical"
                             input-date="[[inputDate]]" date="{{outputDate}}" auto-update-date="true"
                             locale="ru-RU"></app-datepicker>
+            <meal-order-user-cart data-page="menu" order="[[order]]"></meal-order-user-cart>
         </iron-pages>
     </template>
     <script>
@@ -85,7 +84,6 @@
                      */
                     order: {
                         type: Array,
-                        statePath: 'currentOrder'
                     },
 
                     /**
