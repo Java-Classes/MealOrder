@@ -91,7 +91,7 @@
 
             app-drawer {
                 --app-drawer-content-container: {
-                    background-color:  var(--paper-grey-50);
+                    background-color: var(--paper-grey-50);
                 }
             }
 
@@ -173,9 +173,9 @@
                         </div>
                     </app-toolbar>
                 </iron-pages>
-                <meal-order-drawer order="[[order]]"
-                                   on-dish-removed="_removeDishFromOrder"></meal-order-drawer>
-
+                <meal-order-drawer on-user-order-dish-removed="_removeDishFromOrder"
+                                   on-user-order-vendor-removed="_removeDishesByVendor"
+                                   order="[[order]]"></meal-order-drawer>
             </app-drawer>
 
             <app-header-layout>
@@ -289,10 +289,16 @@
 
             static get actions() {
                 return {
-                    removeDish(dish) {
+                    removeDish(order) {
                         return {
                             type: MealOrderApp.UserAction.REMOVE_DISH,
-                            dish: dish
+                            order: order
+                        }
+                    },
+                    removeDishesByVendor(order) {
+                        return {
+                            type: MealOrderApp.UserAction.REMOVE_DISHES_BY_VENDOR,
+                            order: order
                         }
                     }
                 }
@@ -311,13 +317,33 @@
             }
 
             _removeDishFromOrder(e) {
-                const dish = {};
-                dish.date = this.currentDate;
-                dish.details = e.detail;
-                this.dispatch('removeDish', dish);
+                const order = {};
+                order.date = this._routeDateToObject().toLocaleDateString("en-US");
+                order.dish = e.detail;
+                this.dispatch('removeDish', order);
+            }
+
+            _removeDishesByVendor(e) {
+                const order = {};
+                order.date = this._routeDateToObject().toLocaleDateString("en-US");
+                order.vendor = e.detail;
+                this.dispatch('removeDishesByVendor', order);
             }
 
             _pageChanged() {
+                const date = this._routeDateToObject();
+
+                let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
+                dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
+
+                const selectedDay = {
+                    day: date.getDate(),
+                    dayOfTheWeek: dayOfTheWeek,
+                };
+                this.set('selectedDay', selectedDay);
+            }
+
+            _routeDateToObject() {
                 const YEAR = 0;
                 const MONTH = 1;
                 const DAY = 2;
@@ -329,18 +355,10 @@
                 urlDate.month = arr[MONTH];
                 urlDate.day = arr[DAY];
 
-                const date = new Date(urlDate.year, urlDate.month-1, urlDate.day);
-
-                let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
-                dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
-
-                const selectedDay = {
-                    day: date.getDate(),
-                    dayOfTheWeek: dayOfTheWeek,
-                };
-                this.set('selectedDay', selectedDay);
+                return new Date(urlDate.year, urlDate.month - 1, urlDate.day);
             }
         }
+
         window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
     </script>
 </dom-module>

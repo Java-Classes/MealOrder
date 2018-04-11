@@ -19,31 +19,24 @@
   -->
 <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-
 <link rel="import" href="meal-order-user-order.html">
 
 <dom-module id="meal-order-user-cart">
     <template>
         <style>
-            :host {
-                color: #4f4f4f;
-            }
-
-            .cart {
+            #cart {
                 overflow-x: hidden;
                 overflow-y: auto;
                 max-height: 93vh;
             }
-
-            .total {
+            #total {
                 display: flex;
                 justify-content: space-between;
                 margin: 6% 4% 10% 4%;
                 font-weight: bolder;
             }
         </style>
-        <div class="cart">
-
+        <div id="cart">
             <dom-repeat items="[[order]]" as="dish">
                 <template>
                     <meal-order-user-order order="[[dish]]"></meal-order-user-order>
@@ -51,7 +44,7 @@
             </dom-repeat>
             <dom-if if="[[order.length]]">
                 <template>
-                    <div class="total">
+                    <div id="total">
                         <div class="amount">Общая сумма:</div>
                         <div class="price">[[total]] ₴</div>
                     </div>
@@ -62,8 +55,6 @@
     <script>
         /**
          * user-cart is user's order for current date.
-         *
-         * <p>Is adopted for both desktop and mobile.
          *
          * @customElement
          * @polymer
@@ -103,7 +94,7 @@
                         computed: '_getTotalAmount(order)'
                     }
                 }
-            };
+            }
 
             _getTotalAmount() {
                 let sum = 0;
