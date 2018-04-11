@@ -176,6 +176,7 @@
                 </iron-pages>
                 <meal-order-drawer on-user-order-dish-removed="_removeDishFromOrder"
                                    on-user-order-vendor-removed="_removeDishesByVendor"
+                                   on-menu-order-drawer-changed-history-date="_updateHistoryDay"
                                    order="[[order]]"></meal-order-drawer>
             </app-drawer>
 
@@ -232,8 +233,7 @@
                         fallback-selection="view404"
                         role="main">
                     <meal-order-menu-container data-page="menu"></meal-order-menu-container>
-                    <meal-order-user-history name="history" cart="[[history]]"
-                                             narrow="[[narrow]]"></meal-order-user-history>
+                    <meal-order-user-history data-page="history" cart="[[history]]"></meal-order-user-history>
                 </iron-pages>
 
             </app-header-layout>

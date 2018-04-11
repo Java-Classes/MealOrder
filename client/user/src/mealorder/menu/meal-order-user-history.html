@@ -24,14 +24,28 @@
 <dom-module id="meal-order-user-history">
     <template>
         <style>
-            :host {
-                font-family: 'Roboto', 'Noto', sans-serif;
-                color: #4f4f4f;
-            }
-
-            .history {
+            #history {
                 width: 70%;
                 margin: 3% auto;
+            }
+
+            #title-for-mobile {
+                display: none;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                background-color: var(--paper-grey-300);
+                height: 40px;
+                align-items: center;
+            }
+
+            .vendor-title {
+                font-size: 22px;
+                font-weight: bolder;
+                margin-top: 2%;
+                margin-bottom: 2px;
             }
 
             .history-title {
@@ -51,18 +65,10 @@
                 margin-right: 2%;
             }
 
-            .header {
-                display: flex;
-                justify-content: space-between;
-                background-color: #e2e2e2;
-                height: 40px;
-                align-items: center;
-            }
-
             .dishes {
                 display: flex;
                 justify-content: space-between;
-                background-color: white;
+                background-color: #FFFFFF;
                 height: 40px;
                 margin-bottom: 2px;
                 align-items: center;
@@ -72,18 +78,13 @@
                 display: flex;
                 justify-content: flex-end;
                 align-items: center;
-                background-color: white;
+                background-color: #FFFFFF;
                 font-weight: bolder;
                 height: 40px;
                 padding-right: 2%;
             }
 
-            .title-for-mobile {
-                display: none;
-            }
-
             @media only screen and (max-width: 600px) {
-
                 .history-title {
                     width: 40%;
                 }
@@ -93,31 +94,20 @@
 
                 }
 
-                .history {
+                #history {
                     width: 100%;
                 }
 
-                .title-for-mobile {
-                    color: #969696;
-
+                #title-for-mobile {
+                    color: var(--paper-grey-600);
                     display: flex;
                     justify-content: flex-end;
                     margin-right: 2%;
                 }
-
             }
-
-            .vendor-title {
-                font-size: 22px;
-                font-weight: bolder;
-                margin-top: 2%;
-                margin-bottom: 2px;
-            }
-
         </style>
-        <div class="history">
-
-            <div class="title-for-mobile">История заказов</div>
+        <div id="history">
+            <div id="title-for-mobile">История заказов</div>
 
             <iron-list items="[[cart]]" as="item">
                 <template>
@@ -153,8 +143,6 @@
         /**
          * User's history for individual day.
          *
-         * <p>Is adopted for both desktop and mobile.
-         *
          * @customElement
          * @polymer
          */
@@ -168,28 +156,32 @@
                     /**
                      * An array containing items to be displayed.
                      */
-                    cart: {type: Array},
+                    cart: {
+                        type: Array
+                    },
+                    /**
+                     * Total amount of the order.
+                     */
                     totalSum: {
                         type: Number,
-                        computed: 'getTotalSum(cart)',
+                        computed: '_getTotalSum(cart)',
                     }
                 }
             };
 
-            getTotalSum(cart) {
-                let total_sum = 0;
+            _getTotalSum(cart) {
+                let totalSum = 0;
                 for (let i = 0; i < cart.length; i++) {
                     const dishes = cart[i].dishes;
                     let sum = 0;
                     for (let i = 0; i < dishes.length; i++) {
                         sum += (dishes[i].price) * dishes[i].quantity;
                     }
-                    total_sum += sum;
+                    totalSum += sum;
                 }
-                return total_sum;
+                return totalSum;
             }
         }
-
         window.customElements.define(MealOrderUserHistory.is, MealOrderUserHistory);
     </script>
 </dom-module>

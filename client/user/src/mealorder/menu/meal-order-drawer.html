@@ -110,8 +110,26 @@
                 ];
             }
 
+            connectedCallback() {
+                super.connectedCallback();
+                if (!this.routeData.date) {
+                    let date = new Date();
+                    date.setDate(date.getDate());
+                    date.setMonth(date.getMonth());
+
+                    const yesterdayDate = {};
+                    yesterdayDate.year = "" + date.getFullYear();
+                    yesterdayDate.month = ("0" + (date.getMonth() + 1)).slice(-2);
+                    yesterdayDate.day = "" + (date.getDate() - 1);
+                    this.set('inputDate', yesterdayDate.year + "/" + yesterdayDate.month + "/" +
+                        yesterdayDate.day);
+                    this.dispatchEvent(new CustomEvent('menu-order-drawer-changed-history-date', {detail: yesterdayDate}));
+                }
+            }
+
             _changeHistoryUrl() {
-                if (this.routeData.page && this.routeData.page.startsWith("history")) {
+                if (this.routeData.page && this.routeData.page.startsWith("history") &&
+                    this.routeData.date) {
                     const YEAR = 0;
                     const MONTH = 1;
                     const DAY = 2;
@@ -123,7 +141,7 @@
                     date.year = arr[YEAR];
                     date.month = arr[MONTH];
                     date.day = arr[DAY];
-                    this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
+                    this.dispatchEvent(new CustomEvent('menu-order-drawer-changed-history-date', {detail: date}));
                 }
             }
 
@@ -145,6 +163,7 @@
                 }
             }
         }
+
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>
