@@ -17,6 +17,7 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
+<link rel="import" href="shell/meal-order-app-namespace.html">
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
@@ -63,6 +64,17 @@
     </template>
 
     <script>
+        /**
+         * Main user meal order component.
+         *
+         * Consists of 2 page:
+         * 1. A page with vendor menus, and user's shopping cart.
+         * 2. A page with user's history.
+         *
+         * @customElement
+         * @polymer
+         * @appliesMixin MealOrderApp.ReduxMixin
+         */
         class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-client-app';
@@ -70,6 +82,9 @@
 
             static get properties() {
                 return {
+                    /**
+                     * User for routing.
+                     */
                     routeData: {}
                 }
             }
