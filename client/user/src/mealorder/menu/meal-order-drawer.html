@@ -110,6 +110,7 @@
                 ];
             }
 
+
             connectedCallback() {
                 super.connectedCallback();
                 if (!this.routeData.date) {
@@ -119,8 +120,8 @@
 
                     const yesterdayDate = {};
                     yesterdayDate.year = "" + date.getFullYear();
-
                     let month = date.getMonth() + 1;
+                    /*eslint no-magic-numbers: ["error", { "ignore": [10] }]*/
                     yesterdayDate.month = month < 10 ? '0' + month : '' + month;
                     yesterdayDate.day = "" + (date.getDate() - 1);
                     this.set('inputDate', yesterdayDate.year + "/" + yesterdayDate.month + "/" +
