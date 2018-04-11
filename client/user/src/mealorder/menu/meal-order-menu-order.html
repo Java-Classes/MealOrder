@@ -123,7 +123,7 @@
          * @polymer
          * @ReduxMixin
          */
-        class MealOrderMenuOrder extends ReduxMixin(Polymer.Element) {
+        class MealOrderMenuOrder extends Polymer.Element {
             static get is() {
                 return 'meal-order-menu-order';
             }
@@ -152,6 +152,12 @@
                         type: Array,
                         statePath: 'menuForDay'
                     },
+                    /**
+                     * Used for routing.
+                     */
+                    routeData: {
+                        type: Object,
+                    },
                 };
             }
 
@@ -159,13 +165,13 @@
                 return {
                     menuForDay(date) {
                         return {
-                            type: UserAction.MENU_FOR_DAY,
+                            type: MealOrderApp.UserAction.MENU_FOR_DAY,
                             date: date
                         }
                     },
                     cartForDay(date) {
                         return {
-                            type: UserAction.CART_FOR_DAY,
+                            type: MealOrderApp.UserAction.CART_FOR_DAY,
                             date: date
                         }
                     },
