@@ -17,6 +17,7 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
+<link rel="import" href="shell/meal-order-app-namespace.html">
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
@@ -37,6 +38,7 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="shell/redux-store.html">
 <link rel="import" href="menu/meal-order-menu-container.html">
 <link rel="import" href="menu/meal-order-user-history.html">
@@ -44,15 +46,9 @@
 <dom-module id="meal-order-client-app">
     <template>
         <style>
-            :host {
-                --app-primary-color: #4285f4;
-                --app-secondary-color: black;
-                display: block;
-            }
-
             app-header {
-                background-color: #616161;
-                color: #fff;
+                background-color: var(--google-grey-700);
+                color: var(--paper-grey-50);
                 right: 300px;
             }
 
@@ -61,7 +57,7 @@
             }
 
             app-drawer-layout {
-                background-color: #F2F2F2;
+                background-color: var(--paper-grey-100);
             }
 
             app-drawer-layout:not([narrow]) [drawer-toggle] {
@@ -78,30 +74,30 @@
             app-header .route-title a {
                 font-size: 0.8em;
                 text-decoration: none;
-                color: white;
+                color: var(--paper-grey-50);
             }
 
             app-header .route-title a:hover {
-                color: #179EFF;
+                color: var(--paper-light-blue-500);
             }
 
             app-header .history-icon {
                 display: none;
-                color: white;
+                color: var(--paper-grey-50);
             }
 
             app-header .app-toolbar-content {
                 font-size: 0.75em;
             }
 
-            app-drawer.history {
-                --app-drawer-width: 300px;
-            }
-
             app-drawer {
                 --app-drawer-content-container: {
-                    background-color: #fafafa;
+                    background-color: var(--paper-grey-50);
                 }
+            }
+
+            .wide {
+                --app-drawer-width: 300px;
             }
 
             .app-toolbar-header {
@@ -151,18 +147,18 @@
 
         <app-route
                 route="{{route}}"
-                pattern="/:page"
+                pattern="/:page/:date"
                 data="{{routeData}}"></app-route>
 
-        <app-drawer-layout fullbleed narrow="{{narrow}}">
+        <app-drawer-layout fullbleed>
             <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
 
                 <iron-pages selected="[[routeData.page]]"
-                            attr-for-selected="name"
+                            attr-for-selected="data-page"
                             fallback-selection="view404"
                             role="main">
 
-                    <app-toolbar name="menu">
+                    <app-toolbar data-page="menu">
                         <div class="app-toolbar-header">
                             <div class="app-toolbar-content">Заказ</div>
                             <div>
@@ -172,15 +168,15 @@
                         </div>
                     </app-toolbar>
 
-                    <app-toolbar name="history">
+                    <app-toolbar data-page="history">
                         <div class="app-toolbar-header">
                             <div class="app-toolbar-content">История заказов</div>
                         </div>
                     </app-toolbar>
                 </iron-pages>
-                <meal-order-drawer order="[[order]]"
-                                   on-dish-removed="_removeDishFromOrder" on-changed-history-date="_updateHistoryDay"></meal-order-drawer>
-
+                <meal-order-drawer on-user-order-dish-removed="_removeDishFromOrder"
+                                   on-user-order-vendor-removed="_removeDishesByVendor"
+                                   order="[[order]]"></meal-order-drawer>
             </app-drawer>
 
             <app-header-layout>
@@ -190,11 +186,11 @@
                             <div id="main-title">Заказ обедов</div>
                             <iron-pages
                                     selected="[[routeData.page]]"
-                                    attr-for-selected="name"
+                                    attr-for-selected="data-page"
                                     fallback-selection="view404"
                                     role="main">
 
-                                <div name="menu">
+                                <div data-page="menu">
                                     <div class="route-title"><a href="/#/history/">История
                                         заказов</a></div>
                                     <div class="icon-container">
@@ -210,7 +206,7 @@
                                     </div>
                                 </div>
 
-                                <div name="history">
+                                <div data-page="history">
                                     <div id="menu-history" class="route-title"><a href="/#/menu/">Сделать
                                         заказ</a>
                                     </div>
@@ -232,11 +228,10 @@
                 </app-header>
                 <iron-pages
                         selected="[[routeData.page]]"
-                        attr-for-selected="name"
+                        attr-for-selected="data-page"
                         fallback-selection="view404"
                         role="main">
-                    <meal-order-menu-container on-date-updated="_updateDay"
-                                               name="menu"></meal-order-menu-container>
+                    <meal-order-menu-container data-page="menu"></meal-order-menu-container>
                     <meal-order-user-history name="history" cart="[[history]]"
                                              narrow="[[narrow]]"></meal-order-user-history>
                 </iron-pages>
@@ -247,9 +242,9 @@
     </template>
     <script>
         /**
-         * Main user meal order component.
+         * Main client meal order component.
          *
-         * Consists of 2 page:
+         * Consists of 2 pages:
          * 1. A page with vendor menus, and user's shopping cart.
          * 2. A page with user's history.
          *
@@ -296,10 +291,16 @@
 
             static get actions() {
                 return {
-                    removeDish(dish) {
+                    removeDish(order) {
                         return {
                             type: MealOrderApp.UserAction.REMOVE_DISH,
-                            dish: dish
+                            order: order
+                        }
+                    },
+                    removeDishesByVendor(order) {
+                        return {
+                            type: MealOrderApp.UserAction.REMOVE_DISHES_BY_VENDOR,
+                            order: order
                         }
                     },
                     changeHistoryDate(date) {
@@ -311,28 +312,58 @@
                 }
             }
 
-            _removeDishFromOrder(e) {
-                const dish = {};
-                dish.date = this.currentDate;
-                dish.details = e.detail;
-                this.dispatch('removeDish', dish);
+            static get observers() {
+                return [
+                    '_pageChanged(routeData.date)'
+                ];
             }
 
             _getClassForDrawer(page) {
-                return page;
+                if (page === "history") {
+                    return "wide";
+                }
             }
 
-            _updateDay(e) {
-                const date = new Date(e.detail.year, e.detail.month - 1, e.detail.day);
+            _removeDishFromOrder(e) {
+                const order = {};
+                order.date = this._routeDateToObject().toLocaleDateString("en-US");
+                order.dish = e.detail;
+                this.dispatch('removeDish', order);
+            }
+
+            _removeDishesByVendor(e) {
+                const order = {};
+                order.date = this._routeDateToObject().toLocaleDateString("en-US");
+                order.vendor = e.detail;
+                this.dispatch('removeDishesByVendor', order);
+            }
+
+            _pageChanged() {
+                const date = this._routeDateToObject();
 
                 let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
                 dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
 
                 const selectedDay = {
-                    day: e.detail.day,
+                    day: date.getDate(),
                     dayOfTheWeek: dayOfTheWeek,
                 };
                 this.set('selectedDay', selectedDay);
+            }
+
+            _routeDateToObject() {
+                const YEAR = 0;
+                const MONTH = 1;
+                const DAY = 2;
+
+                const arr = this.routeData.date.split('-');
+
+                let urlDate = {};
+                urlDate.year = arr[YEAR];
+                urlDate.month = arr[MONTH];
+                urlDate.day = arr[DAY];
+
+                return new Date(urlDate.year, urlDate.month - 1, urlDate.day);
             }
 
             _updateHistoryDay(e) {

@@ -24,8 +24,12 @@
     {
         /* global Redux, PolymerRedux */
         const store = Redux.createStore(MealOrderApp.reducer);
-
         MealOrderApp.store = store;
+        /**
+         * Redux mixin holds a state of the application.
+         * @polymer
+         * @mixinFunction
+         */
         MealOrderApp.ReduxMixin = PolymerRedux(MealOrderApp.store);
     }
 </script>
