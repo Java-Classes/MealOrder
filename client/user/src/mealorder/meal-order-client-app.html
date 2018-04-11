@@ -17,6 +17,7 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
+<link rel="import" href="shell/meal-order-app-namespace.html">
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
@@ -236,7 +237,7 @@
     </template>
     <script>
         /**
-         * Main user meal order component.
+         * Main client meal order component.
          *
          * Consists of 2 pages:
          * 1. A page with vendor menus, and user's shopping cart.
@@ -246,7 +247,6 @@
          * @polymer
          * @appliesMixin MealOrderApp.ReduxMixin
          */
-        /* @polymerMixin */
         class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
 
             static get is() {
@@ -255,6 +255,7 @@
 
             static get properties() {
                 return {
+
                     /**
                      * Current user's meal order.
                      */
@@ -308,16 +309,10 @@
                 urlDate.month = arr[MONTH];
                 urlDate.day = arr[DAY];
 
-                console.log(urlDate);
-
                 const date = new Date(urlDate.year, urlDate.month-1, urlDate.day);
-
-                console.log(date);
 
                 let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
                 dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
-
-                console.log(date);
 
                 const selectedDay = {
                     day: date.getDate(),
