@@ -37,9 +37,9 @@
             }
         </style>
         <div id="cart">
-            <dom-repeat items="[[order]]" as="dish">
+            <dom-repeat items="[[order]]" as="orderByVendor">
                 <template>
-                    <meal-order-user-order order="[[dish]]"></meal-order-user-order>
+                    <meal-order-user-order order="[[orderByVendor]]"></meal-order-user-order>
                 </template>
             </dom-repeat>
             <dom-if if="[[order.length]]">

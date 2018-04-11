@@ -21,7 +21,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
-
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
 
 <dom-module id="meal-order-user-order">
     <template>
@@ -30,7 +30,7 @@
                 display: flex;
                 font-size: 15px;
                 align-items: center;
-                border-bottom: 2px solid #fcfcfc;
+                border-bottom: 2px solid var(--google-grey-100);
             }
 
             .vendor {
@@ -38,7 +38,7 @@
                 justify-content: space-between;
                 align-items: center;
                 padding-left: 4%;
-                background-color: #fcfcfc;
+                background-color: var(--google-grey-100);
             }
 
             .order-title {
@@ -55,7 +55,6 @@
             .order-quantity {
                 width: 15%;
             }
-
         </style>
         <div class="vendor">
             <div>[[order.vendor]]</div>
@@ -106,7 +105,6 @@
                 this.dispatchEvent(new CustomEvent('user-order-dish-removed', {composed: true, detail: dish}));
             }
         }
-
         window.customElements.define(MealOrderUserOrder.is, MealOrderUserOrder);
     </script>
 </dom-module>
