@@ -86,13 +86,13 @@
                 data="{{routeData}}">
         </app-route>
 
-        <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='key'>
+        <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='data-key'>
             <dom-repeat items="{{calendar}}" as="calendar">
                 <template>
                     <dom-if if="[[calendar.hasMenu]]">
                         <template>
                             <paper-tab
-                                    key="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                                    data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                                     link>
                                 <a class="paper-tab-container"
                                    href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
@@ -109,7 +109,7 @@
                     <dom-if if="[[!calendar.hasMenu]]">
                         <template>
                             <paper-tab
-                                    key="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                                    data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                                     link disabled>
                                 <div class="paper-tab-container disabled">
                                     <div>
@@ -135,6 +135,7 @@
          * @polymer
          * @appliesMixin MealOrderApp.ReduxMixin
          */
+        /* @polymerMixin */
         class MealOrderMenuContainer extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-menu-container';

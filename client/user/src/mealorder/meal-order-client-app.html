@@ -147,7 +147,7 @@
                 pattern="/:page/:date"
                 data="{{routeData}}"></app-route>
 
-        <app-drawer-layout fullbleed narrow="{{narrow}}">
+        <app-drawer-layout fullbleed>
             <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
 
                 <iron-pages selected="[[routeData.page]]"
@@ -246,6 +246,7 @@
          * @polymer
          * @appliesMixin MealOrderApp.ReduxMixin
          */
+        /* @polymerMixin */
         class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
 
             static get is() {
@@ -307,13 +308,19 @@
                 urlDate.month = arr[MONTH];
                 urlDate.day = arr[DAY];
 
+                console.log(urlDate);
+
                 const date = new Date(urlDate.year, urlDate.month-1, urlDate.day);
+
+                console.log(date);
 
                 let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
                 dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
 
+                console.log(date);
+
                 const selectedDay = {
-                    day: urlDate.day,
+                    day: date.getDate(),
                     dayOfTheWeek: dayOfTheWeek,
                 };
                 this.set('selectedDay', selectedDay);
