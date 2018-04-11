@@ -23,6 +23,7 @@
 <link rel="import" href="../../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../shell/actions/user-actions.html">
 
@@ -35,8 +36,8 @@
                 -webkit-font-smoothing: antialiased;
                 width: 100%;
                 margin-bottom: 1px;
-                --paper-tabs-selection-bar-color: #179EFF;
-                --paper-tab-ink: #179EFF;
+                --paper-tabs-selection-bar-color: var(--paper-light-blue-500);
+                --paper-tab-ink: var(--paper-light-blue-500);
             }
 
             paper-tabs {
@@ -45,11 +46,11 @@
             }
 
             paper-tab.iron-selected .day-of-the-week {
-                color: #179EFF;
+                color: var(--paper-light-blue-500);
             }
 
             paper-tab.iron-selected .day {
-                color: #179EFF;
+                color: var(--paper-light-blue-500);
             }
 
             paper-tab .paper-tab-container {
@@ -61,11 +62,11 @@
             }
 
             .disabled .day {
-                color: #8c8c8c;
+                color: var(--paper-grey-500);
             }
 
             .disabled .day-of-the-week {
-                color: #8c8c8c;
+                color: var(--paper-grey-500);
             }
 
             .day-of-the-week {
@@ -89,19 +90,19 @@
                 data="{{routeData}}">
         </app-route>
 
-        <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='key'>
+        <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='data-key'>
             <dom-repeat items="{{calendar}}" as="calendar">
                 <template>
                     <dom-if if="[[calendar.hasMenu]]">
                         <template>
                             <paper-tab
-                                    key="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                                    data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                                     link>
                                 <a class="paper-tab-container"
                                    href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                                    on-click="_handleClick">
                                     <div>
-                                        <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                        <div class="day-of-the-week">{{calendar.dayOfTheWeek}}
                                         </div>
                                         <div class="day">{{calendar.date.day}}</div>
                                     </div>
@@ -112,11 +113,11 @@
                     <dom-if if="[[!calendar.hasMenu]]">
                         <template>
                             <paper-tab
-                                    key="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                                    data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                                     link disabled>
                                 <div class="paper-tab-container disabled">
                                     <div>
-                                        <div class="day-of-the-week">{{calendar.date.dayOfTheWeek}}
+                                        <div class="day-of-the-week">{{calendar.dayOfTheWeek}}
                                         </div>
                                         <div class="day">{{calendar.date.day}}</div>
                                     </div>
@@ -243,15 +244,17 @@
                                 date.month + "-" + date.day);
                         }
                         else {
+                            const YEAR = 0;
+                            const MONTH = 1;
+                            const DAY = 2;
                             const arr = this.routeData.date.split('-');
-                            date.year = arr[0];
-                            date.month = arr[1];
-                            date.day = arr[2];
+                            date.year = arr[YEAR];
+                            date.month = arr[MONTH];
+                            date.day = arr[DAY];
                             this.set('selectedDay', date);
                         }
                         this.dispatch('changeCurrentMenu', date);
                         this.dispatch('changeCurrentCart', date);
-                        this.dispatchEvent(new CustomEvent('date-updated', {detail: date}));
                     }
                 }
             }

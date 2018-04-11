@@ -26,15 +26,23 @@
     <template>
         <style>
             #date-picker {
-                --app-datepicker-selection-bg: #fafafa;
-                --app-datepicker-selection-color: #616161;
-                --app-datepicker-iron-selected: #616161;
-                --app-datepicker-selected-day-bg: #179EFF;
-                --app-datepicker-today-color: #179EFF;
-                --app-datepicker-date-hover-background-color: #179EFF;
+                --app-datepicker-selection-bg: var(--paper-grey-50);
+                --app-datepicker-selection-color: var(--google-grey-700);
+                --app-datepicker-iron-selected: var(--google-grey-700);
+                --app-datepicker-selected-day-bg: var(--paper-light-blue-500);
+                --app-datepicker-today-color: var(--paper-light-blue-500);
+                --app-datepicker-date-hover-background-color: var(--paper-light-blue-500);
+
+                --app-datepicker-selected-date: {
+                    font-weight: normal;
+                    font-size: 22px;
+                };
+
+                --app-datepicker-selected-year: {
+                    font-weight: normal;
+                }
             }
         </style>
-
         <app-location route="{{route}}"
                       use-hash-as-path></app-location>
 
@@ -46,15 +54,23 @@
 
         <iron-pages
                 selected="[[routeData.page]]"
-                attr-for-selected="name"
+                attr-for-selected="data-page"
                 fallback-selection="view404"
                 role="main">
-            <app-datepicker name="history" id="date-picker" view="vertical"
+            <app-datepicker data-page="history" id="date-picker" view="vertical"
                             input-date="[[inputDate]]" date="{{outputDate}}" auto-update-date="true"
                             locale="ru-RU"></app-datepicker>
         </iron-pages>
     </template>
     <script>
+        /**
+         * meal-order-drawer is container for user's order and user's order history calendar.
+         *
+         * Contains a order for selected day and calendar.
+         *
+         * @customElement
+         * @polymer
+         */
         class MealOrderDrawer extends Polymer.Element {
             static get is() {
                 return 'meal-order-drawer';
@@ -96,33 +112,39 @@
 
             _changeHistoryUrl() {
                 if (this.routeData.page && this.routeData.page.startsWith("history")) {
+                    const YEAR = 0;
+                    const MONTH = 1;
+                    const DAY = 2;
+
                     const routeDate = this.routeData.date.split('-');
-                    this.set('inputDate', routeDate[0] + "/" + routeDate[1] + "/" + routeDate[2]);
+                    this.set('inputDate', routeDate[YEAR] + "/" + routeDate[MONTH] + "/" + routeDate[DAY]);
                     const arr = this.routeData.date.split('-');
                     const date = {};
-                    date.year = arr[0];
-                    date.month = arr[1];
-                    date.day = arr[2];
+                    date.year = arr[YEAR];
+                    date.month = arr[MONTH];
+                    date.day = arr[DAY];
                     this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
                 }
             }
 
             _updateDate() {
                 if (this.routeData.page && this.routeData.page.startsWith("history")) {
+                    const YEAR = 0;
+                    const MONTH = 1;
+                    const DAY = 2;
+
                     const arr = this.outputDate.split('/');
                     const date = {};
-                    date.year = arr[0];
-                    date.month = arr[1];
-                    date.day = arr[2];
+                    date.year = arr[YEAR];
+                    date.month = arr[MONTH];
+                    date.day = arr[DAY];
                     const newRouteData = {};
                     newRouteData.page = 'history';
                     newRouteData.date = date.year + "-" + date.month + "-" + date.day;
                     this.set('routeData', newRouteData);
-                    this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
                 }
             }
         }
-
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>
