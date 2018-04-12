@@ -2,12 +2,6 @@
   "name": "MealOrder",
   "description": "",
   "main": "index.html",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components"
-  ],
-  "private": true,
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "app-layout": "PolymerElements/app-layout#^2.0.0",
