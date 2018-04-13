@@ -29,10 +29,6 @@
 <dom-module id="meal-order-vendor-menus">
     <template>
         <style>
-            :host {
-                display: block;
-                padding: 0;
-            }
             iron-list {
                 --iron-list-items-container: {
                     width: 70%;
@@ -74,7 +70,6 @@
             }
 
             @media only screen and (max-width: 600px) {
-
                 paper-search-bar {
                     margin: 0 auto;
                     width: 100%;
@@ -111,7 +106,6 @@
         /**
          * vendor-menus represents an expanding list of menus for current date and filter.
          *
-         * <p>Is adopted for both desktop and mobile.
          * Contains search by dish keywords.
          *
          * @customElement
@@ -145,7 +139,7 @@
                      */
                     filtered: {
                         type: Array,
-                        computed: 'filteredItems(items,filter)',
+                        computed: '_filteredItems(items,filter)',
                         reflectToAttribute: true
                     },
 
@@ -165,7 +159,7 @@
                 this.shadowRoot.querySelector("#list").notifyResize();
             }
 
-            filteredItems() {
+            _filteredItems() {
                 const predicate = this.filter;
                 const filtered = [];
                 for (let i = 0; i < this.items.length; i++) {
