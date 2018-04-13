@@ -56,6 +56,8 @@
         test('should parse url correctly', function () {
             setLocation('/#/history/');
             assert.equal('history', component.routeData.page);
+            setLocation('/#/menu/');
+            assert.equal('menu', component.routeData.page);
         });
     });
 </script>
