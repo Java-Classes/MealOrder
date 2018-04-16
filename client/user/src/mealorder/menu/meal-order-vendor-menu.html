@@ -144,7 +144,7 @@
                                                 </div>
                                                 <div class="add-dish-icon">
                                                     <paper-icon-button icon="add"
-                                                                       on-click="addDish"></paper-icon-button>
+                                                                       on-click="_addDish"></paper-icon-button>
                                                 </div>
                                             </paper-item>
                                         </div>
@@ -206,7 +206,7 @@
                 this.dispatchEvent(new CustomEvent('vendor-menu-resize'));
             }
 
-            addDish(e) {
+            _addDish(e) {
                 const dish = {};
                 dish.vendor = this.menu.name;
                 dish.price = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].price;
