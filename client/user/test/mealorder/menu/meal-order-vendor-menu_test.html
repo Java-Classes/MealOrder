@@ -51,12 +51,16 @@
             component.menu = MealOrderAppTest.initialMenu;
         });
         test('should store menu correctly', function () {
+            const CATEGORIES = 2;
+            const DISHES_LENGTH = 5;
+            const DISH_COST = 35;
+
             assert.equal('Пюре', component.menu.name);
-            assert.equal(2, component.menu.categories.length);
+            assert.equal(CATEGORIES, component.menu.categories.length);
             assert.equal('Первое блюдо', component.menu.categories[0].categoryName);
-            assert.equal(5, component.menu.categories[0].dishes.length);
+            assert.equal(DISHES_LENGTH, component.menu.categories[0].dishes.length);
             assert.equal('Суп гречневый', component.menu.categories[0].dishes[0].title);
-            assert.equal(35, component.menu.categories[0].dishes[0].price);
+            assert.equal(DISH_COST, component.menu.categories[0].dishes[0].price);
         });
         test('should expand and collapse on click', function () {
             const header = component.shadowRoot.querySelector('.menu-caption');
@@ -67,12 +71,8 @@
             assert.equal('expanded', menu.className);
         });
         test('should send `add-dish` event', function () {
-            const header = component.shadowRoot.querySelector('.menu-caption');
-            const menu = component.shadowRoot.querySelector('#menu');
-            header.click();
-            assert.equal('collapsed', menu.className);
-            header.click();
-            assert.equal('expanded', menu.className);
+            const domRepeat = component.shadowRoot.querySelectorAll('dom-repeat');
+            console.log(domRepeat.length);
         });
     });
 </script>
