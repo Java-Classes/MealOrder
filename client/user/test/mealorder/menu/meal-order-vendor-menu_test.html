@@ -66,6 +66,14 @@
             header.click();
             assert.equal('expanded', menu.className);
         });
+        test('should send `add-dish` event', function () {
+            const header = component.shadowRoot.querySelector('.menu-caption');
+            const menu = component.shadowRoot.querySelector('#menu');
+            header.click();
+            assert.equal('collapsed', menu.className);
+            header.click();
+            assert.equal('expanded', menu.className);
+        });
     });
 </script>
 
