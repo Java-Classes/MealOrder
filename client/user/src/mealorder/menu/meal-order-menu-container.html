@@ -87,17 +87,16 @@
                 data="{{routeData}}">
         </app-route>
 
-        <paper-tabs class="tabs" selected="[[routeData.date]]" attr-for-selected='data-key'>
+        <paper-tabs id="paper-tabs" selected="[[routeData.date]]" attr-for-selected='data-key' on-iron-select="selectDate">
             <dom-repeat items="{{calendar}}" as="calendar">
                 <template>
                     <dom-if if="[[calendar.hasMenu]]">
                         <template>
-                            <paper-tab
+                            <paper-tab class="paper-tab"
                                     data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                                     link>
                                 <a class="paper-tab-container"
-                                   href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
-                                   on-click="_handleClick">
+                                   href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]">
                                     <div>
                                         <div class="day-of-the-week">{{calendar.dayOfTheWeek}}
                                         </div>
@@ -240,10 +239,22 @@
                 }
             }
 
-            _handleClick(e) {
-                this.dispatch('changeCurrentMenu', this.calendar[e.model.index].date);
-                this.dispatch('changeCurrentCart', this.calendar[e.model.index].date);
+            selectDate(e) {
+                const YEAR = 0;
+                const MONTH = 1;
+                const DAY = 2;
+
+                const paperDate = e.target.selected.split('-');
+
+                const date = {};
+                date.year = paperDate[YEAR];
+                date.month = paperDate[MONTH];
+                date.day = paperDate[DAY];
+
+                this.dispatch('changeCurrentMenu', date);
+                this.dispatch('changeCurrentCart', date);
             }
+
         }
 
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
