@@ -38,3 +38,6 @@
         ]
     };
 }
+const CATEGORIES = 2;
+const DISHES_LENGTH = 5;
+const DISH_COST = 35;
