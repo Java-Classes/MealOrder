@@ -53,12 +53,95 @@
         setup(() => {
             component = fixture('BasicClientApp');
         });
-        test('should parse url correctly', function () {
+
+        test('should parse `routeData.page` correctly', function () {
             setLocation('/#/history/');
             assert.equal('history', component.routeData.page);
             setLocation('/#/menu/');
             assert.equal('menu', component.routeData.page);
         });
+
+        test('should parse `routeData.date` correctly', function () {
+            setLocation('/#/history/2018-03-21');
+            assert.equal('2018-03-21', component.routeData.date);
+            setLocation('/#/menu/2018-03-21');
+            assert.equal('2018-03-21', component.routeData.date);
+        });
+
+
+        test('should instantiate the `app-toolbar` with data-page `menu`' +
+            ' and the component `app-toolbar-content` with routing title', function () {
+            setLocation('/#/menu/2018-03-23');
+            const elementShadowRoot = component.shadowRoot;
+            const toolBar = elementShadowRoot.querySelector(".app-toolbar-content");
+            assert.equal(toolBar.innerHTML, 'Заказ');
+
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `menu`' +
+            ' and day, and day of the week', function () {
+            setLocation('/#/menu/2018-03-23');
+            const elementShadowRoot = component.shadowRoot;
+            const day = elementShadowRoot.querySelector("#day");
+            const dayOfTheWeek = elementShadowRoot.querySelector("#day-of-the-week");
+            assert.equal(day.innerHTML, 'Пятница');
+            assert.equal(dayOfTheWeek.innerHTML, '23');
+        });
+
+        test('should instantiate the `app-header` with main-title', function () {
+            const elementShadowRoot = component.shadowRoot;
+            const mainTitle = elementShadowRoot.querySelector("#main-title");
+            assert.equal(mainTitle.innerHTML, 'Заказ обедов');
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `menu` with routing title', function (done) {
+            setLocation('/#/menu/2018-03-23');
+
+            const pages = component.shadowRoot.querySelector('#app-header-iron');
+            pages.forceSynchronousItemUpdate();
+
+            const routeLinkTitle = pages.selectedItem.getElementsByClassName("title-link").item(0).innerHTML;
+            flush(function () {
+                assert.equal(routeLinkTitle, 'История заказов');
+                done();
+            });
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `history` with routing title', function (done) {
+            setLocation('/#/history/2018-03-23');
+
+            const pages = component.shadowRoot.querySelector('#app-header-iron');
+            pages.forceSynchronousItemUpdate();
+
+            const routeLinkTitle = pages.selectedItem.getElementsByClassName("title-link").item(0).innerHTML;
+            flush(function () {
+                assert.equal(routeLinkTitle, 'Сделать заказ');
+                done();
+            });
+        });
+
+        test('should instantiate the `meal-order-menu-container` component ' +
+            'with data-page `menu`', function (done) {
+            setLocation('/#/menu/2018-03-23');
+            const elementShadowRoot = component.shadowRoot;
+            const menuContainer = elementShadowRoot.querySelector("meal-order-menu-container");
+            flush(function () {
+                assert.isNotNull(menuContainer);
+                done();
+            });
+        });
+
+        test('should instantiate the `meal-order-drawer` component ' +
+            'with data-page `history`', function (done) {
+            setLocation('/#/history/2018-03-23');
+            const elementShadowRoot = component.shadowRoot;
+            const drawer = elementShadowRoot.querySelector("meal-order-drawer");
+            flush(function () {
+                assert.isNotNull(drawer);
+                done();
+            });
+        });
+
     });
 </script>
 

@@ -39,9 +39,9 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="shell/redux-store.html">
-<link rel="import" href="menu/meal-order-menu-container.html">
-<link rel="import" href="menu/meal-order-drawer.html">
+<link rel="import" href="./shell/redux-store.html">
+<link rel="import" href="./menu/meal-order-menu-container.html">
+<link rel="import" href="./menu/meal-order-drawer.html">
 <dom-module id="meal-order-client-app">
     <template>
         <style>
@@ -56,7 +56,9 @@
             }
 
             app-drawer-layout {
+                font-family: 'Roboto', 'Noto', sans-serif;
                 background-color: var(--paper-grey-100);
+                color: var(--google-grey-700);
             }
 
             app-drawer-layout:not([narrow]) [drawer-toggle] {
@@ -70,13 +72,13 @@
                 justify-content: space-between;
             }
 
-            app-header .route-title a {
+            app-header .title-link {
                 font-size: 0.8em;
                 text-decoration: none;
                 color: var(--paper-grey-50);
             }
 
-            app-header .route-title a:hover {
+            app-header .title-link:hover .route-title{
                 color: var(--paper-light-blue-500);
             }
 
@@ -91,11 +93,11 @@
 
             app-drawer {
                 --app-drawer-content-container: {
-                    background-color:  var(--paper-grey-50);
+                    background-color: var(--paper-grey-50);
                 }
             }
 
-            .wide {
+            app-drawer.wide {
                 --app-drawer-width: 300px;
             }
 
@@ -151,7 +153,6 @@
 
         <app-drawer-layout fullbleed>
             <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
-
                 <iron-pages selected="[[routeData.page]]"
                             attr-for-selected="data-page"
                             fallback-selection="view404"
@@ -174,7 +175,6 @@
                     </app-toolbar>
                 </iron-pages>
                 <meal-order-drawer order="[[order]]"></meal-order-drawer>
-
             </app-drawer>
 
             <app-header-layout>
@@ -311,7 +311,7 @@
                 urlDate.month = arr[MONTH];
                 urlDate.day = arr[DAY];
 
-                const date = new Date(urlDate.year, urlDate.month-1, urlDate.day);
+                const date = new Date(urlDate.year, urlDate.month - 1, urlDate.day);
 
                 let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
                 dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
@@ -323,6 +323,7 @@
                 this.set('selectedDay', selectedDay);
             }
         }
+
         window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
     </script>
 </dom-module>
