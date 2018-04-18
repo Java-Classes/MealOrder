@@ -36,6 +36,15 @@ import "spine/change/change.proto";
 import "spine/net/email_address.proto";
 import "spine/time/time.proto";
 
+// Name of a category.
+//
+// Probably it has fixed values.
+message CategoryName {
+
+    // Category of a dish.
+    string value = 1;
+}
+
 // The model representing a date range.
 //
 message MenuDateRange {
