@@ -105,6 +105,7 @@
 
             static get observers() {
                 return [
+                    '_updateDate(outputDate)',
                     '_changeHistoryUrl(routeData.page)'
                 ];
             }
@@ -140,11 +141,13 @@
                     const newRouteData = {};
                     newRouteData.page = 'history';
                     newRouteData.date = date.year + "-" + date.month + "-" + date.day;
-                    this.set('routeData', newRouteData);
-                    console.log("2");
+                    if (newRouteData.date.localeCompare(this.routeData.date) !== 0) {
+                        this.set('routeData', newRouteData);
+                    }
                 }
             }
         }
+
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>

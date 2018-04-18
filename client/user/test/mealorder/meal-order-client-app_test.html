@@ -102,9 +102,9 @@
             setLocation('/#/menu/2018-03-23');
             const pages = component.shadowRoot.querySelector('#app-drawer-iron');
             pages.forceSynchronousItemUpdate();
-            const routeLinkTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
+            const drawerTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
             flush(function () {
-                assert.equal(routeLinkTitle, 'Заказ');
+                assert.equal(drawerTitle, 'Заказ');
                 done();
             });
         });
@@ -128,9 +128,9 @@
             setLocation('/#/history/2018-03-23');
             const pages = component.shadowRoot.querySelector('#app-drawer-iron');
             pages.forceSynchronousItemUpdate();
-            const routeLinkTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
+            const drawerTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
             flush(function () {
-                assert.equal(routeLinkTitle, 'История заказов');
+                assert.equal(drawerTitle, 'История заказов');
                 done();
             });
         });
@@ -148,7 +148,6 @@
             const pages = component.shadowRoot.querySelector('#app-header-layout-iron');
             pages.forceSynchronousItemUpdate();
             assert.equal(pages.selectedItem.tagName.toLocaleLowerCase(), MealOrderMenuContainer.is);
-
         });
 
     });
