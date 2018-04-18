@@ -22,6 +22,7 @@ package javaclasses.mealorder.q;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
+import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
@@ -29,6 +30,9 @@ import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderProcessed;
 import javaclasses.mealorder.q.projection.OrderListView;
 import javaclasses.mealorder.q.projection.OrderListViewVBuilder;
+
+import java.util.List;
+import java.util.Optional;
 
 public class OrderListViewProjection extends Projection<OrderId, OrderListView, OrderListViewVBuilder> {
 
@@ -44,30 +48,36 @@ public class OrderListViewProjection extends Projection<OrderId, OrderListView, 
 
     @Subscribe
     void on(DishAddedToOrder event) {
-        getBuilder().clearBookItem()
-                    .clearBookItem();
-        getBuilder().clearBookSynopsis()
-                    .clearBookSynopsis();
+        final OrderId orderId = event.getOrderId();
+        final DishItem dish = DishItem.newBuilder()
+                                      .setName(event.getDish()
+                                                    .getName())
+                                      .setPrice(event.getDish()
+                                                     .getPrice())
+                                      .build();
+        if (getBuilder().getOrder()
+                        .contains(getOrderById(orderId))) {
+            getBuilder().setOrder(getBuilder().getOrder()
+                                              .indexOf(getOrderById(orderId)),
+                                  OrderItem.newBuilder(getOrderById(orderId))
+                                           .addDish(dish)
+                                           .build());
+        } else {
+            getBuilder().addOrder(OrderItem.newBuilder()
+                                           .addDish(dish)
+                                           .setId(event.getOrderId())
+                                           .build());
+        }
     }
 
     @Subscribe
     void on(DishRemovedFromOrder event) {
-        BookItem bookItem = BookItem.newBuilder()
-                                    .setBookId(event.getBookId())
-                                    .setBookCoverUrl(event.getDetails()
-                                                          .getBookCoverUrl())
-                                    .setTitle(event.getDetails()
-                                                   .getTitle())
-                                    .addAllCategories(event.getDetails()
-                                                           .getCategoriesList())
-                                    .setAuthor(event.getDetails()
-                                                    .getAuthor())
-                                    .setAvailable(true)
-                                    .build();
-
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
+        final List<OrderItem> orderItems = getBuilder().getOrder();
+        final int removeIndex = getDishFromOrder(event.getDish(), getOrderById(event.getOrderId()));
+        final OrderItem newOrder = OrderItem.newBuilder(getOrderById(event.getOrderId()))
+                                            .removeDish(removeIndex)
+                                            .build();
+        getBuilder().setOrder(orderItems.indexOf(getOrderById(event.getOrderId())), newOrder);
     }
 
     @Subscribe
@@ -85,4 +95,20 @@ public class OrderListViewProjection extends Projection<OrderId, OrderListView, 
                                           .getNewBookDetails()
                                           .getSynopsis());
     }
+
+    private OrderItem getOrderById(OrderId orderId) {
+        final List<OrderItem> orderItems = getBuilder().getOrder();
+        final Optional<OrderItem> inventoryItem =
+                orderItems.stream()
+                          .filter(item -> item.getId()
+                                              .equals(orderId))
+                          .findFirst();
+        return inventoryItem.get();
+    }
+
+    private int getDishFromOrder(Dish dish, OrderItem order) {
+        return order.getDishList()
+                    .indexOf(dish);
+    }
+
 }

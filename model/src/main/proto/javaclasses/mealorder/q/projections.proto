@@ -101,6 +101,9 @@ message OrderListView {
 
     // The collection of user's orders.
     repeated OrderItem order = 2;
+
+    // If true user cannot add or remove dishes.
+    bool processed = 3;
 }
 
 // **** Projections for UI role Admin. ****
