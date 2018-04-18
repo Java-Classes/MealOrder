@@ -93,7 +93,7 @@
             hasMenu: true
         }];
 
-    MealOrderAppTest.initialMenu = {
+    MealOrderAppTest.initialState = {
         calendar: arrayOfDates,
     };
 }

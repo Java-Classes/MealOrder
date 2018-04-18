@@ -25,7 +25,7 @@
     <meta name="viewport"
           content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>meal-order-client test</title>
+    <title>meal-order-menu-container test</title>
 
     <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../bower_components/web-component-tester/browser.js"></script>
@@ -50,12 +50,12 @@
 
     suite('meal-order-menu-container', function () {
         let component;
-
+        let mock;
 
         setup(() => {
             component = fixture('MealOrderMenuContainer');
-
-            component.calendar = MealOrderAppTest.initialMenu.calendar;
+            component.calendar = MealOrderAppTest.initialState.calendar;
+            mock = sinon.mock(MealOrderApp.store);
         });
 
         test('should parse `routeData.page` correctly', function () {
@@ -72,21 +72,48 @@
             assert.equal('2018-03-21', component.routeData.date);
         });
 
-        test('should parse `routeData.date` by selected paper-tab', function () {
-            const componentShadowRoot = component.shadowRoot;
-            const paperTabs = componentShadowRoot.querySelector("#paper-tabs");
+        test('should instantiate the component `paper-tabs`', function (done) {
+            flush(function () {
+                const elementShadowRoot = component.shadowRoot;
+                const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
+                assert.equal(paperTabs.id, 'paper-tabs');
+                done();
+            });
+        });
+
+        test('should parse `routeData.date` by the default selected paper-tab', function () {
+            const elementShadowRoot = component.shadowRoot;
+            const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
             assert.equal(component.routeData.date, paperTabs.selected);
         });
 
-        test('should parse changed `routeData.date` by selected paper-tab', function () {
+        test('should parse changed `routeData.date` by the selected paper-tab', function (done) {
+            const elementShadowRoot = component.shadowRoot;
 
-            const componentShadowRoot = component.shadowRoot;
-            const paperTabs = componentShadowRoot.querySelector("#paper-tabs");
-            paperTabs.select('2018-03-22');
-
-
-
+            flush(function () {
+                const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
+                paperTabs.select('2018-03-22');
+                assert.equal(component.routeData.date, '2018-03-22');
+                done();
+            });
         });
+
+        test('should responds on `on-iron-select` event and ' +
+            'fire `CHANGE_CURRENT_MENU`, `CHANGE_CURRENT_CART` actions.', function (done) {
+            const expectedAction1 = {type: MealOrderApp.UserAction.CHANGE_CURRENT_MENU, date: {}};
+            const expectedAction = {type: MealOrderApp.UserAction.CHANGE_CURRENT_CART, date: {}};
+
+            flush(function () {
+                mock.expects('dispatch').withArgs(expectedAction1);
+                flush(function () {
+                    mock.expects('dispatch').withArgs(expectedAction);
+                    done();
+                });
+            });
+            mock.verify();
+            mock.restore();
+        });
+
 
     });
 </script>

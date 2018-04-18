@@ -39,9 +39,9 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="shell/redux-store.html">
-<link rel="import" href="menu/meal-order-menu-container.html">
-<link rel="import" href="menu/meal-order-drawer.html">
+<link rel="import" href="./shell/redux-store.html">
+<link rel="import" href="./menu/meal-order-menu-container.html">
+<link rel="import" href="./menu/meal-order-drawer.html">
 <dom-module id="meal-order-client-app">
     <template>
         <style>
@@ -56,7 +56,9 @@
             }
 
             app-drawer-layout {
+                font-family: 'Roboto', 'Noto', sans-serif;
                 background-color: var(--paper-grey-100);
+                color: var(--google-grey-700);
             }
 
             app-drawer-layout:not([narrow]) [drawer-toggle] {
@@ -70,13 +72,13 @@
                 justify-content: space-between;
             }
 
-            app-header .route-title a {
+            app-header .title-link {
                 font-size: 0.8em;
                 text-decoration: none;
                 color: var(--paper-grey-50);
             }
 
-            app-header .route-title a:hover {
+            app-header .title-link:hover .route-title{
                 color: var(--paper-light-blue-500);
             }
 
@@ -91,11 +93,11 @@
 
             app-drawer {
                 --app-drawer-content-container: {
-                    background-color:  var(--paper-grey-50);
+                    background-color: var(--paper-grey-50);
                 }
             }
 
-            .wide {
+            app-drawer.wide {
                 --app-drawer-width: 300px;
             }
 
@@ -180,43 +182,45 @@
                     <app-toolbar>
                         <div class="app-toolbar-container">
                             <div id="main-title">Заказ обедов</div>
-                            <iron-pages
+                            <iron-pages id="app-header-iron"
                                     selected="[[routeData.page]]"
                                     attr-for-selected="data-page"
                                     fallback-selection="view404"
                                     role="main">
 
                                 <div data-page="menu">
-                                    <div class="route-title"><a href="/#/history/">История
-                                        заказов</a></div>
+                                    <a class="title-link"
+                                       href="/#/history/">
+                                    <div class="route-title">История заказов</div>
                                     <div class="icon-container">
-                                        <a href="/#/history/">
+
                                             <iron-icon class="history-icon"
                                                        icon="maps:icons:history"></iron-icon>
-                                        </a>
+
                                         <div>
                                             <iron-icon class="app-toolbar-content"
                                                        icon="icons:shopping-cart"
                                                        drawer-toggle></iron-icon>
                                         </div>
                                     </div>
+                                    </a>
                                 </div>
 
                                 <div data-page="history">
-                                    <div id="menu-history" class="route-title"><a href="/#/menu/">Сделать
-                                        заказ</a>
+                                    <a class="title-link"
+                                       href="/#/menu/">
+                                    <div id="menu-history" class="route-title">Сделать заказ
                                     </div>
                                     <div class="icon-container">
-                                        <a href="/#/menu/">
                                             <iron-icon class="history-icon"
                                                        icon="maps:icons:add"></iron-icon>
-                                        </a>
                                         <div>
                                             <iron-icon class="app-toolbar-content"
                                                        icon="icons:date-range"
                                                        drawer-toggle></iron-icon>
                                         </div>
                                     </div>
+                                    </a>
                                 </div>
                             </iron-pages>
                         </div>
@@ -309,7 +313,7 @@
                 urlDate.month = arr[MONTH];
                 urlDate.day = arr[DAY];
 
-                const date = new Date(urlDate.year, urlDate.month-1, urlDate.day);
+                const date = new Date(urlDate.year, urlDate.month - 1, urlDate.day);
 
                 let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
                 dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
@@ -321,6 +325,7 @@
                 this.set('selectedDay', selectedDay);
             }
         }
+
         window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
     </script>
 </dom-module>

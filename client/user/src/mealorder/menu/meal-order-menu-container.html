@@ -58,11 +58,7 @@
                 font-size: 1.5em;
             }
 
-            .disabled .day {
-                color: var(--paper-grey-500);
-            }
-
-            .disabled .day-of-the-week {
+            paper-tab[disabled] .paper-tab-container {
                 color: var(--paper-grey-500);
             }
 
@@ -87,42 +83,21 @@
                 data="{{routeData}}">
         </app-route>
 
-        <paper-tabs id="paper-tabs" selected="[[routeData.date]]" attr-for-selected='data-key' on-iron-select="selectDate">
-            <dom-repeat items="{{calendar}}" as="calendar">
-                <template>
-                    <dom-if if="[[calendar.hasMenu]]">
-                        <template>
-                            <paper-tab class="paper-tab"
-                                    data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
-                                    link>
-                                <a class="paper-tab-container"
-                                   href="/#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]">
-                                    <div>
-                                        <div class="day-of-the-week">{{calendar.dayOfTheWeek}}
-                                        </div>
-                                        <div class="day">{{calendar.date.day}}</div>
-                                    </div>
-                                </a>
-                            </paper-tab>
-                        </template>
-                    </dom-if>
-                    <dom-if if="[[!calendar.hasMenu]]">
-                        <template>
-                            <paper-tab
-                                    data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
-                                    link disabled>
-                                <div class="paper-tab-container disabled">
-                                    <div>
-                                        <div class="day-of-the-week">{{calendar.dayOfTheWeek}}
-                                        </div>
-                                        <div class="day">{{calendar.date.day}}</div>
-                                    </div>
-                                </div>
-                            </paper-tab>
-                        </template>
-                    </dom-if>
-                </template>
-            </dom-repeat>
+        <paper-tabs id="paper-tabs" selected="[[routeData.date]]" attr-for-selected='data-key'
+                    on-iron-select="_selectDate">
+            <template is="dom-repeat" items="{{calendar}}" as="calendar">
+                <paper-tab class="paper-tab"
+                           data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                           link disabled="[[!calendar.hasMenu]]">
+                    <div class="paper-tab-container">
+                        <div>
+                            <div class="day-of-the-week">{{calendar.dayOfTheWeek}}
+                            </div>
+                            <div class="day">{{calendar.date.day}}</div>
+                        </div>
+                    </div>
+                </paper-tab>
+            </template>
         </paper-tabs>
     </template>
     <script>
@@ -178,35 +153,35 @@
                  * Fired when a paper tab is selected.
                  *
                  * @action `changeCurrentMenu`
-                 * @param {date} contains selected date by tab
+                 * @param {date} selected date by tab
                  */
 
                 /**
                  * Fired when a paper tab is selected.
                  *
                  * @action `changeCurrentCart`
-                 * @param {date} contains selected date by tab
+                 * @param {date} selected date by tab
                  */
                 return {
-                    changeCurrentMenu(date) {
+                    changeCurrentMenu: date => {
                         return {
-                            type: MealOrderApp.UserAction.CHANGE_CURRENT_MENU,
-                            date: date
+                            type: MealOrderApp.UserAction.SET_CURRENT_MENU,
+                            date
                         }
                     },
-                    changeCurrentCart(date) {
+                    changeCurrentCart: date => {
                         return {
-                            type: MealOrderApp.UserAction.CHANGE_CURRENT_CART,
-                            date: date
+                            type: MealOrderApp.UserAction.SET_CURRENT_CART,
+                            date
                         }
-                    },
+                    }
                 }
             }
 
 
             static get observers() {
                 return [
-                    '_pageChanged(routeData.menu)'
+                    '_pageChanged(routeData.page)'
                 ];
             }
 
@@ -239,7 +214,7 @@
                 }
             }
 
-            selectDate(e) {
+            _selectDate(e) {
                 const YEAR = 0;
                 const MONTH = 1;
                 const DAY = 2;
@@ -251,10 +226,14 @@
                 date.month = paperDate[MONTH];
                 date.day = paperDate[DAY];
 
+                const newRouteData = {};
+                newRouteData.page = 'menu';
+                newRouteData.date = date.year + "-" + date.month + "-" + date.day;
+                this.set('routeData', newRouteData);
+
                 this.dispatch('changeCurrentMenu', date);
                 this.dispatch('changeCurrentCart', date);
             }
-
         }
 
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);

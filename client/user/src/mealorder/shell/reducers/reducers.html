@@ -242,30 +242,17 @@
                 return MealOrderApp.initialState;
             }
             switch (action.type) {
-                case MealOrderApp.UserAction.CHANGE_CURRENT_MENU: {
-                    let arr = [];
-                    let j = 0;
+                case MealOrderApp.UserAction.SET_CURRENT_MENU: {
 
-                    for (let i = 0; i < state.menu.length; i++) {
-                        if (Utils.compareObjects(action.date, state.menu[i].date)) {
-                            arr[j] = state.menu[i];
-                            j++;
-                        }
-                    }
+                    const menu = state.menu.date.filter(menu => (Utils.shallowEqual(action.date, state.menu.date)));
+
                     return Object.assign({}, state, {
-                            dateForMenu: state.dateForMenu,
-                            menuForDay: arr
+                            menuForDay: menu
                         }
                     );
                 }
-                case MealOrderApp.UserAction.CHANGE_CURRENT_CART: {
-                    let newOrder = [];
-                    for (let i = 0; i < state.orders.length; i++) {
-                        if (Utils.compareObjects(action.date, state.orders[i].date)) {
-                            newOrder = state.orders[i].cart;
-                            break;
-                        }
-                    }
+                case MealOrderApp.UserAction.SET_CURRENT_CART: {
+                    const newOrder = state.orders.find(order => Utils.shallowEqual(action.date, order.date));
                     return Object.assign({}, state, {
                             currentOrder: newOrder
                         }
