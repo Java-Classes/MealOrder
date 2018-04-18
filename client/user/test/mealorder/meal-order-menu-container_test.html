@@ -49,13 +49,12 @@
     }
 
     suite('meal-order-menu-container', function () {
+
         let component;
-        let mock;
 
         setup(() => {
             component = fixture('MealOrderMenuContainer');
             component.calendar = MealOrderAppTest.initialState.calendar;
-            mock = sinon.mock(MealOrderApp.store);
         });
 
         test('should parse `routeData.page` correctly', function () {
@@ -97,22 +96,6 @@
                 done();
             });
         });
-
-        test('should responds on `on-iron-select` event and ' +
-            'fire `CHANGE_CURRENT_MENU`, `CHANGE_CURRENT_CART` actions.', function (done) {
-            const setCurrentMenuAction = {type: MealOrderApp.UserAction.SET_CURRENT_MENU, date: {}};
-            const setCurrentCartAction = {type: MealOrderApp.UserAction.SET_CURRENT_CART, date: {}};
-            flush(function () {
-                mock.expects('dispatch').withArgs(setCurrentMenuAction);
-                flush(function () {
-                    mock.expects('dispatch').withArgs(setCurrentCartAction);
-                    done();
-                });
-            });
-            mock.verify();
-            mock.restore();
-        });
-
 
     });
 </script>
