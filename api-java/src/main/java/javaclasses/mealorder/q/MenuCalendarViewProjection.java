@@ -22,12 +22,19 @@ package javaclasses.mealorder.q;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
+import io.spine.time.LocalDate;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.q.projection.MenuCalendarView;
 import javaclasses.mealorder.q.projection.MenuCalendarViewVBuilder;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class MenuCalendarViewProjection extends Projection<MenuId, MenuCalendarView, MenuCalendarViewVBuilder> {
 
@@ -54,8 +61,49 @@ public class MenuCalendarViewProjection extends Projection<MenuId, MenuCalendarV
     @Subscribe
     void on(DateRangeForMenuSet event) {
         final MenuDateRange menuDateRange = event.getMenuDateRange();
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
+        Date start = new Date(menuDateRange.getRangeStart()
+                                           .getYear(), menuDateRange.getRangeStart()
+                                                                    .getMonth()
+                                                                    .getNumber(),
+                              menuDateRange.getRangeStart()
+                                           .getDay());
+        Date end = new Date(menuDateRange.getRangeEnd()
+                                         .getYear(), menuDateRange.getRangeEnd()
+                                                                  .getMonth()
+                                                                  .getNumber(),
+                            menuDateRange.getRangeEnd()
+                                         .getDay());
+        final List<Date> datesBetween = getDatesBetween(start, end);
+        datesBetween.forEach(date -> {
+            getBuilder().addCalendarItem(MenuCalendarItem.newBuilder()
+                                                         .setDate(toLocalDate(date))
+                                                         .setHasMenu(true)
+                                                         .build());
+        });
+    }
+
+    private LocalDate toLocalDate(Date date) {
+        return LocalDate.newBuilder()
+                        .setDay(date.getDay())
+                        .setMonthValue(date.getMonth())
+                        .setYear(date.getYear())
+                        .build();
+    }
+
+    private List<Date> getDatesBetween(
+            Date startDate, Date endDate) {
+        List<Date> datesInRange = new ArrayList<>();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startDate);
+
+        Calendar endCalendar = new GregorianCalendar();
+        endCalendar.setTime(endDate);
+
+        while (calendar.before(endCalendar)) {
+            Date result = calendar.getTime();
+            datesInRange.add(result);
+            calendar.add(Calendar.DATE, 1);
+        }
+        return datesInRange;
     }
 }
