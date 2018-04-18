@@ -78,7 +78,7 @@
                 color: var(--paper-grey-50);
             }
 
-            app-header .title-link:hover .route-title{
+            app-header .title-link:hover .route-title {
                 color: var(--paper-light-blue-500);
             }
 
@@ -153,7 +153,8 @@
 
         <app-drawer-layout fullbleed>
             <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
-                <iron-pages selected="[[routeData.page]]"
+                <iron-pages id="app-drawer-iron"
+                            selected="[[routeData.page]]"
                             attr-for-selected="data-page"
                             fallback-selection="view404"
                             role="main">
@@ -183,54 +184,53 @@
                         <div class="app-toolbar-container">
                             <div id="main-title">Заказ обедов</div>
                             <iron-pages id="app-header-iron"
-                                    selected="[[routeData.page]]"
-                                    attr-for-selected="data-page"
-                                    fallback-selection="view404"
-                                    role="main">
+                                        selected="[[routeData.page]]"
+                                        attr-for-selected="data-page"
+                                        fallback-selection="view404"
+                                        role="main">
 
                                 <div data-page="menu">
                                     <a class="title-link"
                                        href="/#/history/">
-                                    <div class="route-title">История заказов</div>
-                                    <div class="icon-container">
+                                        <div class="route-title">История заказов</div>
+                                        <div class="icon-container">
 
                                             <iron-icon class="history-icon"
                                                        icon="maps:icons:history"></iron-icon>
 
-                                        <div>
-                                            <iron-icon class="app-toolbar-content"
-                                                       icon="icons:shopping-cart"
-                                                       drawer-toggle></iron-icon>
+                                            <div>
+                                                <iron-icon class="app-toolbar-content"
+                                                           icon="icons:shopping-cart"
+                                                           drawer-toggle></iron-icon>
+                                            </div>
                                         </div>
-                                    </div>
                                     </a>
                                 </div>
 
                                 <div data-page="history">
                                     <a class="title-link"
                                        href="/#/menu/">
-                                    <div id="menu-history" class="route-title">Сделать заказ
-                                    </div>
-                                    <div class="icon-container">
+                                        <div id="menu-history" class="route-title">Сделать заказ</div>
+                                        <div class="icon-container">
                                             <iron-icon class="history-icon"
                                                        icon="maps:icons:add"></iron-icon>
-                                        <div>
-                                            <iron-icon class="app-toolbar-content"
-                                                       icon="icons:date-range"
-                                                       drawer-toggle></iron-icon>
+                                            <div>
+                                                <iron-icon class="app-toolbar-content"
+                                                           icon="icons:date-range"
+                                                           drawer-toggle></iron-icon>
+                                            </div>
                                         </div>
-                                    </div>
                                     </a>
                                 </div>
                             </iron-pages>
                         </div>
                     </app-toolbar>
                 </app-header>
-                <iron-pages
-                        selected="[[routeData.page]]"
-                        attr-for-selected="data-page"
-                        fallback-selection="view404"
-                        role="main">
+                <iron-pages id="app-header-layout-iron"
+                            selected="[[routeData.page]]"
+                            attr-for-selected="data-page"
+                            fallback-selection="view404"
+                            role="main">
                     <meal-order-menu-container data-page="menu"></meal-order-menu-container>
                 </iron-pages>
 

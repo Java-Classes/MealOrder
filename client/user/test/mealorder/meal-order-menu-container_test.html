@@ -100,13 +100,12 @@
 
         test('should responds on `on-iron-select` event and ' +
             'fire `CHANGE_CURRENT_MENU`, `CHANGE_CURRENT_CART` actions.', function (done) {
-            const expectedAction1 = {type: MealOrderApp.UserAction.CHANGE_CURRENT_MENU, date: {}};
-            const expectedAction = {type: MealOrderApp.UserAction.CHANGE_CURRENT_CART, date: {}};
-
+            const setCurrentMenuAction = {type: MealOrderApp.UserAction.SET_CURRENT_MENU, date: {}};
+            const setCurrentCartAction = {type: MealOrderApp.UserAction.SET_CURRENT_CART, date: {}};
             flush(function () {
-                mock.expects('dispatch').withArgs(expectedAction1);
+                mock.expects('dispatch').withArgs(setCurrentMenuAction);
                 flush(function () {
-                    mock.expects('dispatch').withArgs(expectedAction);
+                    mock.expects('dispatch').withArgs(setCurrentCartAction);
                     done();
                 });
             });
