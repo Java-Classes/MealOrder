@@ -249,7 +249,6 @@
          * @appliesMixin MealOrderApp.ReduxMixin
          */
         class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
-
             static get is() {
                 return 'meal-order-client-app';
             }
@@ -280,9 +279,11 @@
                     },
 
                     /**
+                     * Route data parsed using `app-route`.
+                     *
                      * Used for routing.
                      */
-                    routeData: {},
+                    routeData: {}
                 }
             }
 

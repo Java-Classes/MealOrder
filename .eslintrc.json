@@ -43,6 +43,12 @@
   ],
   "globals": {
     "Polymer": false,
-    "MealOrderApp": false
+    "MealOrderApp": true,
+    "MealOrderAppTest": true,
+    "assert": false,
+    "test": false,
+    "suite": false,
+    "fixture": false,
+    "setup": false
   }
 }

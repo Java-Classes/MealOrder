@@ -144,7 +144,7 @@
                                                 </div>
                                                 <div class="add-dish-icon">
                                                     <paper-icon-button icon="add"
-                                                                       on-click="addDish"></paper-icon-button>
+                                                                       on-click="_addDish"></paper-icon-button>
                                                 </div>
                                             </paper-item>
                                         </div>
@@ -174,13 +174,20 @@
             static get properties() {
                 return {
                     /**
+                     * Fired on `add-button` click.
+                     *
+                     * @action `dish-added`
+                     * @param {dish} contains vendor, category and dish title
+                     */
+
+                    /**
                      * Menu of a vendor.
                      *
                      * @property name is name of a vendor.
                      * @property {array} categories list of categories with dishes.
                      */
                     menu: {
-                        type: Array
+                        type: Object
                     }
                 }
             }
@@ -206,7 +213,7 @@
                 this.dispatchEvent(new CustomEvent('vendor-menu-resize'));
             }
 
-            addDish(e) {
+            _addDish(e) {
                 const dish = {};
                 dish.vendor = this.menu.name;
                 dish.price = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].price;
