@@ -243,9 +243,7 @@
             }
             switch (action.type) {
                 case MealOrderApp.UserAction.SET_CURRENT_MENU: {
-
-                    const menu = state.menu.date.filter(menu => (Utils.shallowEqual(action.date, state.menu.date)));
-
+                    const menu = state.menu.filter(menu => (Utils.shallowEqual(action.date, menu.date)));
                     return Object.assign({}, state, {
                             menuForDay: menu
                         }
