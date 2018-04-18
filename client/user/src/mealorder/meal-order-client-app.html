@@ -182,43 +182,45 @@
                     <app-toolbar>
                         <div class="app-toolbar-container">
                             <div id="main-title">Заказ обедов</div>
-                            <iron-pages
-                                    selected="[[routeData.page]]"
-                                    attr-for-selected="data-page"
-                                    fallback-selection="view404"
-                                    role="main">
+                            <iron-pages id="app-header-iron"
+                                        selected="[[routeData.page]]"
+                                        attr-for-selected="data-page"
+                                        fallback-selection="view404"
+                                        role="main">
 
                                 <div data-page="menu">
-                                    <div class="route-title"><a href="/#/history/">История
-                                        заказов</a></div>
-                                    <div class="icon-container">
-                                        <a href="/#/history/">
+                                    <a class="title-link"
+                                       href="/#/history/">
+                                        <div class="route-title">История заказов</div>
+                                        <div class="icon-container">
+
                                             <iron-icon class="history-icon"
                                                        icon="maps:icons:history"></iron-icon>
-                                        </a>
-                                        <div>
-                                            <iron-icon class="app-toolbar-content"
-                                                       icon="icons:shopping-cart"
-                                                       drawer-toggle></iron-icon>
+
+                                            <div>
+                                                <iron-icon class="app-toolbar-content"
+                                                           icon="icons:shopping-cart"
+                                                           drawer-toggle></iron-icon>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
 
                                 <div data-page="history">
-                                    <div id="menu-history" class="route-title"><a href="/#/menu/">Сделать
-                                        заказ</a>
-                                    </div>
-                                    <div class="icon-container">
-                                        <a href="/#/menu/">
+                                    <a class="title-link"
+                                       href="/#/menu/">
+                                        <div id="menu-history" class="route-title">Сделать заказ
+                                        </div>
+                                        <div class="icon-container">
                                             <iron-icon class="history-icon"
                                                        icon="maps:icons:add"></iron-icon>
-                                        </a>
-                                        <div>
-                                            <iron-icon class="app-toolbar-content"
-                                                       icon="icons:date-range"
-                                                       drawer-toggle></iron-icon>
+                                            <div>
+                                                <iron-icon class="app-toolbar-content"
+                                                           icon="icons:date-range"
+                                                           drawer-toggle></iron-icon>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </iron-pages>
                         </div>
