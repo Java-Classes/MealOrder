@@ -22,12 +22,16 @@ package javaclasses.mealorder.q;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
+import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.MenuId;
+import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.q.projection.MenuListView;
 import javaclasses.mealorder.q.projection.MenuListViewVBuilder;
+
+import java.util.List;
 
 public class MenuListViewProjection extends Projection<MenuId, MenuListView, MenuListViewVBuilder> {
 
@@ -43,54 +47,38 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
 
     @Subscribe
     void on(MenuImported event) {
-        getBuilder().clearBookItem()
-                    .clearBookItem();
-        getBuilder().clearBookSynopsis()
-                    .clearBookSynopsis();
+        final VendorName vendorName = VendorName.newBuilder()
+                                                .setValue(event.getVendorId()
+                                                               .getValue())
+                                                .build();
+        final Iterable<? extends DishesByCategory> allDishesByCategories = getAllDishesByCategories(
+                event.getDishList());
+        final MenuItem menuItem = MenuItem.newBuilder()
+                                          .setVendorName(vendorName)
+                                          .setIsAvailable(true)
+                                          .addAllDishesByCategory(allDishesByCategories)
+                                          .build();
+        getBuilder().addMenu(menuItem);
     }
+
 
     @Subscribe
     void on(DateRangeForMenuSet event) {
-        BookItem bookItem = BookItem.newBuilder()
-                                    .setBookId(event.getBookId())
-                                    .setBookCoverUrl(event.getDetails()
-                                                          .getBookCoverUrl())
-                                    .setTitle(event.getDetails()
-                                                   .getTitle())
-                                    .addAllCategories(event.getDetails()
-                                                           .getCategoriesList())
-                                    .setAuthor(event.getDetails()
-                                                    .getAuthor())
-                                    .setAvailable(true)
-                                    .build();
-
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
+        final List<MenuItem> menuItems = getBuilder().getMenu();
+        final MenuItem menuItem = menuItems.get(menuItems.size() - 1);
+        final MenuItem newMenuItem = MenuItem.newBuilder(menuItem)
+                                             .setMenuDateRange(event.getMenuDateRange())
+                                             .build();
+        getBuilder().setMenu(menuItems.size() - 1, newMenuItem);
     }
 
     @Subscribe
     void on(PurchaseOrderCreated event) {
-        BookItem bookItem = BookItem.newBuilder()
-                                    .setBookId(event.getBookId())
-                                    .setBookCoverUrl(event.getBookDetailsChange()
-                                                          .getNewBookDetails()
-                                                          .getBookCoverUrl())
-                                    .setTitle(event.getBookDetailsChange()
-                                                   .getNewBookDetails()
-                                                   .getTitle())
-                                    .addAllCategories(event.getBookDetailsChange()
-                                                           .getNewBookDetails()
-                                                           .getCategoriesList())
-                                    .setAuthor(event.getBookDetailsChange()
-                                                    .getNewBookDetails()
-                                                    .getAuthor())
-                                    .setAvailable(true)
-                                    .build();
+        //Todo: somehow disables menus
+    }
 
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getBookDetailsChange()
-                                          .getNewBookDetails()
-                                          .getSynopsis());
+    private Iterable<? extends DishesByCategory> getAllDishesByCategories(
+            List<Dish> dishList) {
+        return null;
     }
 }

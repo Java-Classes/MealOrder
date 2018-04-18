@@ -22,13 +22,12 @@ package javaclasses.mealorder.q;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
-import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.MenuListId;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
-import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportView;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportViewVBuilder;
 
-public class MonthlySpendingsReportViewProjection extends Projection<VendorId, MonthlySpendingsReportView, MonthlySpendingsReportViewVBuilder> {
+public class MonthlySpendingsReportViewProjection extends Projection<MenuListId, MonthlySpendingsReportView, MonthlySpendingsReportViewVBuilder> {
 
     /**
      * Creates a new instance.
@@ -36,7 +35,7 @@ public class MonthlySpendingsReportViewProjection extends Projection<VendorId, M
      * @param id the ID for the new instance
      * @throws IllegalArgumentException if the ID is not of one of the supported types
      */
-    public MonthlySpendingsReportViewProjection(VendorId id) {
+    public MonthlySpendingsReportViewProjection(MenuListId id) {
         super(id);
     }
 
@@ -46,12 +45,5 @@ public class MonthlySpendingsReportViewProjection extends Projection<VendorId, M
                     .clearBookItem();
         getBuilder().clearBookSynopsis()
                     .clearBookSynopsis();
-    }
-
-    @Subscribe
-    void on(PurchaseOrderSent event) {
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
     }
 }

@@ -212,9 +212,7 @@ message PurchaseOrderDetailsByUserView {
 // It contains users spendings for period from  month first
 // date till today if a report is formed for the current month.
 //
-// Subscribes following events:
-// 1. `PurchaseOrderDelivered`
-// 2. `PurchaseOrderSent`
+// Subscribes on PurchaseOrderDelivered:
 //
 message MonthlySpendingsReportView {
 

@@ -49,6 +49,12 @@ message MenuItem {
 
     // The collection of categories.
     repeated DishesByCategory dishesByCategory = 2;
+
+    // True if a user can add dishes to his order.
+    bool is_available = 3;
+
+    // Date range when a menu is available.
+    MenuDateRange menu_date_range = 4;
 }
 
 // Dishes grouped by category.
