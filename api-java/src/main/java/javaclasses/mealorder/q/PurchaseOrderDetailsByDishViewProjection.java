@@ -47,58 +47,37 @@ public class PurchaseOrderDetailsByDishViewProjection extends Projection<Purchas
 
     @Subscribe
     void on(PurchaseOrderCreated event) {
-        getBuilder().clearBookItem()
-                    .clearBookItem();
-        getBuilder().clearBookSynopsis()
-                    .clearBookSynopsis();
+
     }
 
     @Subscribe
     void on(PurchaseOrderDelivered event) {
 
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
     }
 
     @Subscribe
     void on(PurchaseOrderSent event) {
 
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
     }
 
     @Subscribe
     void on(PurchaseOrderValidationFailed event) {
 
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
     }
 
     @Subscribe
     void on(PurchaseOrderValidationOverruled event) {
 
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
     }
 
     @Subscribe
     void on(PurchaseOrderValidationPassed event) {
 
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
     }
 
     @Subscribe
     void on(PurchaseOrderCanceled event) {
 
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
     }
 
 }

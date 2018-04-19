@@ -52,17 +52,11 @@ public class FullMenuListViewProjection extends Projection<VendorId, FullMenuLis
 
     @Subscribe
     void on(DateRangeForMenuSet event) {
-        getBuilder().clearBookItem()
-                    .clearBookItem();
-        getBuilder().clearBookSynopsis()
-                    .clearBookSynopsis();
+
     }
 
     @Subscribe
     void on(MenuImported event) {
 
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
     }
 }

@@ -23,16 +23,16 @@ package javaclasses.mealorder.q;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.PurchaseOrderId;
+import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.VendorId;
-import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
-import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
-import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
-import javaclasses.mealorder.c.event.PurchaseOrderValidationPassed;
 import javaclasses.mealorder.q.projection.PurchaseOrderListView;
 import javaclasses.mealorder.q.projection.PurchaseOrderListViewVBuilder;
+
+import java.util.List;
+import java.util.stream.IntStream;
 
 public class PurchaseOrderListViewProjection extends Projection<PurchaseOrderId, PurchaseOrderListView, PurchaseOrderListViewVBuilder> {
 
@@ -59,59 +59,46 @@ public class PurchaseOrderListViewProjection extends Projection<PurchaseOrderId,
     }
 
     @Subscribe
-    void on(PurchaseOrderCreated event) {
-        getBuilder().clearBookItem()
-                    .clearBookItem();
-        getBuilder().clearBookSynopsis()
-                    .clearBookSynopsis();
-    }
-
-    @Subscribe
     void on(PurchaseOrderDelivered event) {
+        final PurchaseOrderItem purchaseOrderItem = PurchaseOrderItem.newBuilder()
+                                                                     .setId(event.getId())
+                                                                     .setPurchaseOrderStatus(
+                                                                             PurchaseOrderStatus.DELIVERED)
+                                                                     .build();
+        getBuilder().setPurchaseOrder(getPurchaseOrderItemById(event.getId()), purchaseOrderItem);
 
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
     }
 
     @Subscribe
     void on(PurchaseOrderSent event) {
-
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
+        final PurchaseOrderItem purchaseOrderItem = PurchaseOrderItem.newBuilder()
+                                                                     .setId(event.getPurchaseOrder()
+                                                                                 .getId())
+                                                                     .setPurchaseOrderStatus(
+                                                                             PurchaseOrderStatus.SENT)
+                                                                     .build();
+        getBuilder().setPurchaseOrder(getPurchaseOrderItemById(event.getPurchaseOrder()
+                                                                    .getId()), purchaseOrderItem);
     }
 
     @Subscribe
     void on(PurchaseOrderValidationFailed event) {
-
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
+        final PurchaseOrderItem purchaseOrderItem = PurchaseOrderItem.newBuilder()
+                                                                     .setId(event.getId())
+                                                                     .setPurchaseOrderStatus(
+                                                                             PurchaseOrderStatus.INVALID)
+                                                                     .build();
+        getBuilder().setPurchaseOrder(getPurchaseOrderItemById(event.getId()), purchaseOrderItem);
     }
 
-    @Subscribe
-    void on(PurchaseOrderValidationOverruled event) {
-
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
+    private int getPurchaseOrderItemById(PurchaseOrderId id) {
+        final List<PurchaseOrderItem> orderList = getBuilder().getPurchaseOrder();
+        final int index = IntStream.range(0, orderList.size())
+                                   .filter(i -> orderList.get(i)
+                                                         .getId()
+                                                         .equals(id))
+                                   .findFirst()
+                                   .getAsInt();
+        return index;
     }
-
-    @Subscribe
-    void on(PurchaseOrderValidationPassed event) {
-
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
-    }
-
-    @Subscribe
-    void on(PurchaseOrderCanceled event) {
-
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
-    }
-
 }

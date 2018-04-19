@@ -41,9 +41,6 @@ public class MonthlySpendingsReportViewProjection extends Projection<MenuListId,
 
     @Subscribe
     void on(PurchaseOrderDelivered event) {
-        getBuilder().clearBookItem()
-                    .clearBookItem();
-        getBuilder().clearBookSynopsis()
-                    .clearBookSynopsis();
+
     }
 }
