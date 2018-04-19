@@ -28,6 +28,12 @@ import javaclasses.mealorder.c.event.VendorUpdated;
 import javaclasses.mealorder.q.projection.VendorListView;
 import javaclasses.mealorder.q.projection.VendorListViewVBuilder;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
+/**
+ * @author Alexander Karpets
+ */
 public class VendorListViewProjection extends Projection<VendorId, VendorListView, VendorListViewVBuilder> {
 
     /**
@@ -52,18 +58,41 @@ public class VendorListViewProjection extends Projection<VendorId, VendorListVie
 
     @Subscribe
     void on(VendorAdded event) {
-        getBuilder().clearBookItem()
-                    .clearBookItem();
-        getBuilder().clearBookSynopsis()
-                    .clearBookSynopsis();
+        final VendorItem vendorItem = VendorItem.newBuilder()
+                                                .setId(event.getVendorId())
+                                                .setEmail(event.getEmail())
+                                                .setVendorName(event.getVendorName())
+                                                .addAllPhoneNumber(event.getPhoneNumberList())
+                                                .setPoDailyDeadline(event.getPoDailyDeadline())
+                                                .build();
+        getBuilder().addVendor(vendorItem);
     }
 
     @Subscribe
     void on(VendorUpdated event) {
+        final VendorItem vendorItem = VendorItem.newBuilder()
+                                                .setId(event.getVendorId())
+                                                .setEmail(event.getVendorChange()
+                                                               .getNewEmail())
+                                                .setVendorName(event.getVendorChange()
+                                                                    .getNewVendorName())
+                                                .addAllPhoneNumber(event.getVendorChange()
+                                                                        .getNewPhoneNumberList())
+                                                .setPoDailyDeadline(event.getVendorChange()
+                                                                         .getNewPoDailyDeadline())
+                                                .build();
+        getBuilder().setVendor(getVendorById(event.getVendorId()), vendorItem);
+    }
 
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getDetails()
-                                          .getSynopsis());
+    private int getVendorById(VendorId vendorId) {
+        final List<VendorItem> vendorList = getBuilder().getVendor();
+        int index = IntStream.range(0, vendorList.size())
+                             .filter(i -> vendorList.get(i)
+                                                    .getId()
+                                                    .equals(vendorId))
+                             .findFirst()
+                             .getAsInt();
+        return index;
     }
 }
 

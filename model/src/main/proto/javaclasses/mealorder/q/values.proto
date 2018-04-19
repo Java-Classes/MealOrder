@@ -132,7 +132,7 @@ message VendorItem {
     // The vendor email address.
     spine.net.EmailAddress email = 3;
 
-    // Phone numbers of the vendor.
+    // Phone numbers of a vendor.
     repeated PhoneNumber phone_number = 4;
 
     // Daily purchase order creation deadline time.

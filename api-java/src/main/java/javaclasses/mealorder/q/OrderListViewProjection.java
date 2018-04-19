@@ -34,6 +34,9 @@ import javaclasses.mealorder.q.projection.OrderListViewVBuilder;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Alexander Karpets
+ */
 public class OrderListViewProjection extends Projection<OrderId, OrderListView, OrderListViewVBuilder> {
 
     /**
@@ -82,18 +85,12 @@ public class OrderListViewProjection extends Projection<OrderId, OrderListView, 
 
     @Subscribe
     void on(OrderCanceled event) {
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getBookDetailsChange()
-                                          .getNewBookDetails()
-                                          .getSynopsis());
+        getBuilder().clearOrder();
     }
 
     @Subscribe
     void on(OrderProcessed event) {
-        getBuilder().setBookItem(bookItem);
-        getBuilder().setBookSynopsis(event.getBookDetailsChange()
-                                          .getNewBookDetails()
-                                          .getSynopsis());
+        getBuilder().setProcessed(true);
     }
 
     private OrderItem getOrderById(OrderId orderId) {
