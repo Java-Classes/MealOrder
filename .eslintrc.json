@@ -49,6 +49,8 @@
     "test": false,
     "suite": false,
     "fixture": false,
-    "setup": false
+    "setup": false,
+    "flush": false,
+    "sinon": false
   }
 }
