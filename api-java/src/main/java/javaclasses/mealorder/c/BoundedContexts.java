@@ -21,6 +21,8 @@
 package javaclasses.mealorder.c;
 
 import io.spine.server.BoundedContext;
+import io.spine.server.event.EventBus;
+import io.spine.server.event.EventEnricher;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.mealorder.c.order.OrderRepository;
@@ -97,5 +99,17 @@ public final class BoundedContexts {
                              .setStorageFactorySupplier(() -> storageFactory)
                              .setName(NAME)
                              .build();
+    }
+
+    private static EventBus.Builder createEventBus(StorageFactory storageFactory,
+                                                   PurchaseOrderRepository poRepository) {
+        final EventEnricher enricher = MealOrderEnrichments.newBuilder()
+                                                           .setPurchaseOrderRepository(poRepository)
+                                                           .build()
+                                                           .createEnricher();
+        final EventBus.Builder eventBus = EventBus.newBuilder()
+                                                  .setEnricher(enricher)
+                                                  .setStorageFactory(storageFactory);
+        return eventBus;
     }
 }

@@ -221,8 +221,6 @@ message PurchaseOrderDelivered {
 
     // Was delivered at this time.
     google.protobuf.Timestamp when_delievered = 3;
-
-
 }
 
 // The event signalizing about the successful sending of a purchase order.
