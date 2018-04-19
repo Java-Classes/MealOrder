@@ -24,6 +24,7 @@ import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.OrderId;
+import javaclasses.mealorder.OrderListId;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.OrderCanceled;
@@ -51,6 +52,7 @@ public class OrderListViewProjection extends Projection<OrderId, OrderListView, 
 
     @Subscribe
     void on(DishAddedToOrder event) {
+
         final OrderId orderId = event.getOrderId();
         final DishItem dish = DishItem.newBuilder()
                                       .setName(event.getDish()
@@ -60,11 +62,18 @@ public class OrderListViewProjection extends Projection<OrderId, OrderListView, 
                                       .build();
         if (getBuilder().getOrder()
                         .contains(getOrderById(orderId))) {
+            final OrderListId listId = OrderListId.newBuilder()
+                                                  .setUserId(event.getOrderId()
+                                                                  .getUserId())
+                                                  .setOrderDate(event.getOrderId()
+                                                                     .getOrderDate())
+                                                  .build();
             getBuilder().setOrder(getBuilder().getOrder()
                                               .indexOf(getOrderById(orderId)),
                                   OrderItem.newBuilder(getOrderById(orderId))
                                            .addDish(dish)
-                                           .build());
+                                           .build())
+                        .setListId(listId);
         } else {
             getBuilder().addOrder(OrderItem.newBuilder()
                                            .addDish(dish)

@@ -22,17 +22,22 @@ package javaclasses.mealorder.q;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
+import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrderId;
-import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
+import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
-import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
-import javaclasses.mealorder.c.event.PurchaseOrderValidationPassed;
 import javaclasses.mealorder.q.projection.PurchaseOrderDetailsByDishView;
 import javaclasses.mealorder.q.projection.PurchaseOrderDetailsByDishViewVBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author Alexander Karpets
+ */
 public class PurchaseOrderDetailsByDishViewProjection extends Projection<PurchaseOrderId, PurchaseOrderDetailsByDishView, PurchaseOrderDetailsByDishViewVBuilder> {
 
     /**
@@ -47,37 +52,38 @@ public class PurchaseOrderDetailsByDishViewProjection extends Projection<Purchas
 
     @Subscribe
     void on(PurchaseOrderCreated event) {
-
+        final List<DishItem> dishItems = getDishItems(event.getOrderList());
+        getBuilder().addAllDish(dishItems);
+        getBuilder().setId(event.getId());
     }
 
     @Subscribe
     void on(PurchaseOrderDelivered event) {
-
+        getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.DELIVERED);
     }
 
     @Subscribe
     void on(PurchaseOrderSent event) {
-
+        getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.SENT);
     }
 
     @Subscribe
     void on(PurchaseOrderValidationFailed event) {
-
+        getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.INVALID);
     }
 
-    @Subscribe
-    void on(PurchaseOrderValidationOverruled event) {
-
+    private List<DishItem> getDishItems(List<Order> orderList) {
+        List<DishItem> dishItems = new ArrayList<>();
+        orderList.forEach(order ->
+                                  order.getDishList()
+                                       .forEach(dish -> {
+                                           dishItems.add(DishItem.newBuilder()
+                                                                 .setName(dish.getName())
+                                                                 .setPrice(dish.getPrice())
+                                                                 .setId(dish.getId())
+                                                                 .build());
+                                       })
+        );
+        return dishItems;
     }
-
-    @Subscribe
-    void on(PurchaseOrderValidationPassed event) {
-
-    }
-
-    @Subscribe
-    void on(PurchaseOrderCanceled event) {
-
-    }
-
 }

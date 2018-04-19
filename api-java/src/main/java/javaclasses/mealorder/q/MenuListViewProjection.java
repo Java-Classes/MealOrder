@@ -59,6 +59,12 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
                                           .addAllDishesByCategory(allDishesByCategories)
                                           .build();
         getBuilder().addMenu(menuItem);
+        // Todo : Pasha from Timestamp to LocalDate or change proto files
+//        final MenuListId menuListId = MenuListId.newBuilder()
+//                                           .setDate(event.getWhenImported()
+//                                                         .getSeconds()))
+//                                           .build();
+//        getBuilder().setListId(menuListId);
     }
 
 
