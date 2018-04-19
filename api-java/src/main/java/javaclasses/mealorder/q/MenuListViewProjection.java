@@ -22,6 +22,7 @@ package javaclasses.mealorder.q;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
+import io.spine.time.LocalDate;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuForDay;
@@ -73,7 +74,6 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
 //        getBuilder().setListId(menuListId);
     }
 
-
     @Subscribe
     void on(DateRangeForMenuSet event) {
         final List<MenuItem> menuItems = getBuilder().getMenu();
@@ -94,7 +94,18 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
                             menuDateRange.getRangeEnd()
                                          .getDay());
         final List<Date> datesBetween = getDatesBetween(start, end);
-
+        datesBetween.forEach(date -> {
+            final LocalDate localDate = LocalDate.newBuilder()
+                                                 .setDay(date.getDay())
+                                                 .setMonthValue(date.getMonth())
+                                                 .setYear(date.getYear())
+                                                 .build();
+            final MenuForDay menuForDay = MenuForDay.newBuilder()
+                                                    .setDate(localDate)
+                                                    .setAvailable(true)
+                                                    .build();
+            menuDays.add(menuForDay);
+        });
 
         final MenuItem newMenuItem = MenuItem.newBuilder(menuItem)
                                              .addAllMenuDays(menuDays)
@@ -104,7 +115,7 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
 
     @Subscribe
     void on(PurchaseOrderCreated event) {
-        //Todo: somehow disables menus
+        //Todo: pasha disables menus
     }
 
     private Iterable<? extends DishesByCategory> getAllDishesByCategories(
