@@ -31,8 +31,8 @@
     <script src="../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../node_modules/redux/dist/redux.js"></script>
     <link rel="import" href="../../src/mealorder/meal-order-client-app.html">
-    <link rel="import" href="../../src/mealorder/menu/meal-order-drawer.html">
     <link rel="import" href="../../src/mealorder/menu/meal-order-menu-container.html">
+    <link rel="import" href="../../src/mealorder/menu/meal-order-drawer.html">
 </head>
 <body>
 
@@ -43,6 +43,9 @@
 </test-fixture>
 
 <script>
+    /*global MealOrderDrawer, MealOrderDrawer*/
+    /*eslint no-undef: "error"*/
+
     function setLocation(url) {
         window.history.pushState({}, '', url);
         Polymer.Base.fire('location-changed', {}, {node: window});
@@ -148,7 +151,7 @@
             setLocation('/#/menu/2018-03-23');
             const pages = component.shadowRoot.querySelector('#app-header-layout-iron');
             pages.forceSynchronousItemUpdate();
-            assert.equal(pages.selectedItem.tagName.toLocaleLowerCase(), MealOrderMenuContainer.is);
+            assert.equal(pages.selectedItem.tagName.toLocaleLowerCase(), c.is);
         });
 
     });
