@@ -42,15 +42,11 @@
     </template>
 </test-fixture>
 
+/*global sinon */
 <script>
     suite('meal-order-menu-container', function () {
 
         let mock;
-
-        function setLocation(url) {
-            window.history.pushState({}, '', url);
-            Polymer.Base.fire('location-changed', {}, {node: window});
-        }
 
         setup(() => {
             mock = sinon.mock(MealOrderApp.store);
@@ -67,7 +63,7 @@
             };
             mock.expects('dispatch').withArgs(setCurrentMenuAction);
             mock.expects('dispatch').withArgs(setCurrentCartAction);
-            const component = fixture('MealOrderMenuContainer');
+            fixture('MealOrderMenuContainer');
             mock.verify();
             mock.restore();
         });

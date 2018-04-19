@@ -31,7 +31,8 @@
     <script src="../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../node_modules/redux/dist/redux.js"></script>
     <link rel="import" href="../../src/mealorder/meal-order-client-app.html">
-
+    <link rel="import" href="../../src/mealorder/menu/meal-order-drawer.html">
+    <link rel="import" href="../../src/mealorder/menu/meal-order-menu-container.html">
 </head>
 <body>
 
@@ -41,6 +42,7 @@
     </template>
 </test-fixture>
 
+/*global flush */
 <script>
     function setLocation(url) {
         window.history.pushState({}, '', url);
