@@ -23,6 +23,7 @@ package javaclasses.mealorder.q;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.Dish;
+import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuForDay;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.VendorName;
@@ -33,7 +34,10 @@ import javaclasses.mealorder.q.projection.MenuListView;
 import javaclasses.mealorder.q.projection.MenuListViewVBuilder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static javaclasses.mealorder.q.Projections.getDatesBetween;
 
 public class MenuListViewProjection extends Projection<MenuId, MenuListView, MenuListViewVBuilder> {
 
@@ -75,6 +79,22 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
         final List<MenuItem> menuItems = getBuilder().getMenu();
         final MenuItem menuItem = menuItems.get(menuItems.size() - 1);
         final List<MenuForDay> menuDays = new ArrayList<>();
+
+        final MenuDateRange menuDateRange = event.getMenuDateRange();
+        Date start = new Date(menuDateRange.getRangeStart()
+                                           .getYear(), menuDateRange.getRangeStart()
+                                                                    .getMonth()
+                                                                    .getNumber(),
+                              menuDateRange.getRangeStart()
+                                           .getDay());
+        Date end = new Date(menuDateRange.getRangeEnd()
+                                         .getYear(), menuDateRange.getRangeEnd()
+                                                                  .getMonth()
+                                                                  .getNumber(),
+                            menuDateRange.getRangeEnd()
+                                         .getDay());
+        final List<Date> datesBetween = getDatesBetween(start, end);
+
 
         final MenuItem newMenuItem = MenuItem.newBuilder(menuItem)
                                              .addAllMenuDays(menuDays)

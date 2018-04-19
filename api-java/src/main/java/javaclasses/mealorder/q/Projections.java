@@ -20,6 +20,14 @@
 
 package javaclasses.mealorder.q;
 
+import io.spine.time.LocalDate;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 final class Projections {
 
     /**
@@ -28,4 +36,28 @@ final class Projections {
     private Projections() {
     }
 
+    public static List<Date> getDatesBetween(
+            Date startDate, Date endDate) {
+        List<Date> datesInRange = new ArrayList<>();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startDate);
+
+        Calendar endCalendar = new GregorianCalendar();
+        endCalendar.setTime(endDate);
+
+        while (calendar.before(endCalendar)) {
+            Date result = calendar.getTime();
+            datesInRange.add(result);
+            calendar.add(Calendar.DATE, 1);
+        }
+        return datesInRange;
+    }
+
+    public static LocalDate toLocalDate(Date date) {
+        return LocalDate.newBuilder()
+                        .setDay(date.getDay())
+                        .setMonthValue(date.getMonth())
+                        .setYear(date.getYear())
+                        .build();
+    }
 }
