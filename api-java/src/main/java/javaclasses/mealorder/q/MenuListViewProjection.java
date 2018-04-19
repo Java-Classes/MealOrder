@@ -23,6 +23,7 @@ package javaclasses.mealorder.q;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.Dish;
+import javaclasses.mealorder.MenuForDay;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
@@ -31,6 +32,7 @@ import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.q.projection.MenuListView;
 import javaclasses.mealorder.q.projection.MenuListViewVBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MenuListViewProjection extends Projection<MenuId, MenuListView, MenuListViewVBuilder> {
@@ -72,8 +74,10 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
     void on(DateRangeForMenuSet event) {
         final List<MenuItem> menuItems = getBuilder().getMenu();
         final MenuItem menuItem = menuItems.get(menuItems.size() - 1);
+        final List<MenuForDay> menuDays = new ArrayList<>();
+
         final MenuItem newMenuItem = MenuItem.newBuilder(menuItem)
-                                             .setMenuDateRange(event.getMenuDateRange())
+                                             .addAllMenuDays(menuDays)
                                              .build();
         getBuilder().setMenu(menuItems.size() - 1, newMenuItem);
     }
