@@ -22,16 +22,19 @@ package javaclasses.mealorder.q;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
+import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrderId;
-import javaclasses.mealorder.c.event.PurchaseOrderCanceled;
+import javaclasses.mealorder.PurchaseOrderStatus;
+import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
-import javaclasses.mealorder.c.event.PurchaseOrderValidationOverruled;
-import javaclasses.mealorder.c.event.PurchaseOrderValidationPassed;
 import javaclasses.mealorder.q.projection.PurchaseOrderDetailsByUserView;
 import javaclasses.mealorder.q.projection.PurchaseOrderDetailsByUserViewVBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PurchaseOrderDetailsByUserViewProjection extends Projection<PurchaseOrderId, PurchaseOrderDetailsByUserView, PurchaseOrderDetailsByUserViewVBuilder> {
 
@@ -48,36 +51,77 @@ public class PurchaseOrderDetailsByUserViewProjection extends Projection<Purchas
     @Subscribe
     void on(PurchaseOrderCreated event) {
 
+        final List<UserOrderDetails> usersOrders = getUserOrders(event);
+        getBuilder().addAllOrder(usersOrders);
+        getBuilder().setId(event.getId());
     }
 
     @Subscribe
     void on(PurchaseOrderDelivered event) {
-
+        getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.DELIVERED);
     }
 
     @Subscribe
     void on(PurchaseOrderSent event) {
-
+        getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.SENT);
     }
 
     @Subscribe
     void on(PurchaseOrderValidationFailed event) {
-
+        getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.INVALID);
     }
 
-    @Subscribe
-    void on(PurchaseOrderValidationOverruled event) {
-
+    private List<UserOrderDetails> getUserOrders(PurchaseOrderCreated event) {
+        final List<UserOrderDetails> dishes = new ArrayList<>();
+        for (int i = 0; i < event.getOrderList()
+                                 .size(); i++) {
+            if (!userOrderDetailsHasUser(dishes, event.getOrderList()
+                                                      .get(i)
+                                                      .getId()
+                                                      .getUserId())) {
+                final UserId user = event.getOrderList()
+                                         .get(i)
+                                         .getId()
+                                         .getUserId();
+                final List<DishItem> dishItems = getDishItemsForUser(user, event.getOrderList());
+                final UserOrderDetails dish = UserOrderDetails.newBuilder()
+                                                              .setId(event.getOrderList()
+                                                                          .get(i)
+                                                                          .getId()
+                                                                          .getUserId())
+                                                              .addAllDish(dishItems)
+                                                              .build();
+                dishes.add(dish);
+            }
+        }
+        return dishes;
     }
 
-    @Subscribe
-    void on(PurchaseOrderValidationPassed event) {
-
+    private boolean userOrderDetailsHasUser(List<UserOrderDetails> dishes,
+                                            UserId userId) {
+        return dishes.stream()
+                     .anyMatch(dish ->
+                                       dish.getId()
+                                           .equals(userId));
     }
 
-    @Subscribe
-    void on(PurchaseOrderCanceled event) {
+    private List<DishItem> getDishItemsForUser(UserId user, List<Order> orderList) {
+        final List<DishItem> dishItems = new ArrayList<>();
+        orderList.forEach(order -> {
+            if (order.getId()
+                     .getUserId() == user) {
 
+                order.getDishList()
+                     .forEach(dish -> {
+                         final DishItem dishItem = DishItem.newBuilder()
+                                                           .setId(dish.getId())
+                                                           .setName(dish.getName())
+                                                           .setPrice(dish.getPrice())
+                                                           .build();
+                         dishItems.add(dishItem);
+                     });
+            }
+        });
+        return dishItems;
     }
-
 }
