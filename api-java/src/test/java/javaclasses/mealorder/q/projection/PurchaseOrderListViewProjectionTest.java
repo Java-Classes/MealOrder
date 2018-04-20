@@ -20,5 +20,41 @@
 
 package javaclasses.mealorder.q.projection;
 
-public class PurchaseOrderListViewProjectionTest {
+import javaclasses.mealorder.c.event.PurchaseOrderSent;
+import javaclasses.mealorder.q.PurchaseOrderListViewProjection;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+public class PurchaseOrderListViewProjectionTest extends ProjectionTest {
+
+    private PurchaseOrderListViewProjection projection;
+
+    @BeforeEach
+    void setUp() {
+        projection = new PurchaseOrderListViewProjection(PurchaseOrderListViewProjection.ID);
+    }
+
+    @Nested
+    @DisplayName("TaskCreated event should be interpreted by MyListViewProjection and")
+    class TaskCreatedEvent {
+
+        @Test
+        @DisplayName("add TaskItem to MyListView")
+        void addView() {
+            final PurchaseOrderSent taskCreatedEvent = taskCreatedInstance();
+            dispatch(projection, createEvent(taskCreatedEvent));
+
+            final List<TaskItem> views = projection.getState()
+                                                   .getMyList()
+                                                   .getItemsList();
+            assertEquals(1, views.size());
+
+            final TaskItem view = views.get(0);
+            assertEquals(TASK_PRIORITY, view.getPriority());
+            assertEquals(DESCRIPTION, view.getDescription()
+                                          .getValue());
+        }
+    }
 }

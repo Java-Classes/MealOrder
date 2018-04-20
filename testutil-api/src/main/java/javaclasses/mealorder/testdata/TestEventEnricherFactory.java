@@ -18,29 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.mealorder.q.projection;
+package javaclasses.mealorder.testdata;
 
-import com.google.protobuf.Message;
-import io.spine.core.Event;
-import io.spine.core.EventEnvelope;
-import io.spine.server.command.TestEventFactory;
 import io.spine.server.event.EventEnricher;
-import io.spine.server.event.EventFactory;
-import javaclasses.mealorder.testdata.TestEventEnricherFactory;
 
-abstract class ProjectionTest {
+public class TestEventEnricherFactory {
+//    private static final Function<PurchaseOrderId, PurchaseOrder> PO_ID_TO_ORDER =
+//            taskId -> bookDetails;
 
-    private final EventFactory eventFactory = TestEventFactory.newInstance(getClass());
-    private final EventEnricher enricher = TestEventEnricherFactory.eventEnricherInstance();
+    private TestEventEnricherFactory() {
+    }
 
-    Event createEvent(Message messageOrAny) {
-        final Event event = eventFactory.createEvent(messageOrAny, null);
-        final EventEnvelope envelope = EventEnvelope.of(event);
-        if (!enricher.canBeEnriched(envelope)) {
-            return event;
-        }
-
-        return enricher.enrich(envelope)
-                       .getOuterObject();
+    /**
+     * Provides a pre-configured {@link EventEnricher} event instance.
+     *
+     * @return {@code EventEnricher}
+     */
+    public static EventEnricher eventEnricherInstance() {
+//        final EventEnricher result = EventEnricher.newBuilder()
+//                                                  .add(PurchaseOrderId.class,
+//                                                       PurchaseOrder.class,
+//                                                       PoIdTo::apply)
+//                                                  .build();
+        return EventEnricher.newBuilder()
+                            .build();
     }
 }

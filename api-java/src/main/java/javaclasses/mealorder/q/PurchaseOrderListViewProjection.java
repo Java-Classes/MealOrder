@@ -59,17 +59,6 @@ public class PurchaseOrderListViewProjection extends Projection<PurchaseOrderId,
     }
 
     @Subscribe
-    void on(PurchaseOrderDelivered event) {
-        final PurchaseOrderItem purchaseOrderItem = PurchaseOrderItem.newBuilder()
-                                                                     .setId(event.getId())
-                                                                     .setPurchaseOrderStatus(
-                                                                             PurchaseOrderStatus.DELIVERED)
-                                                                     .build();
-        getBuilder().setPurchaseOrder(getPurchaseOrderItemById(event.getId()), purchaseOrderItem);
-
-    }
-
-    @Subscribe
     void on(PurchaseOrderSent event) {
         final PurchaseOrderItem purchaseOrderItem = PurchaseOrderItem.newBuilder()
                                                                      .setId(event.getPurchaseOrder()
@@ -79,6 +68,17 @@ public class PurchaseOrderListViewProjection extends Projection<PurchaseOrderId,
                                                                      .build();
         getBuilder().setPurchaseOrder(getPurchaseOrderItemById(event.getPurchaseOrder()
                                                                     .getId()), purchaseOrderItem);
+    }
+
+    @Subscribe
+    void on(PurchaseOrderDelivered event) {
+        final PurchaseOrderItem purchaseOrderItem = PurchaseOrderItem.newBuilder()
+                                                                     .setId(event.getId())
+                                                                     .setPurchaseOrderStatus(
+                                                                             PurchaseOrderStatus.DELIVERED)
+                                                                     .build();
+        getBuilder().setPurchaseOrder(getPurchaseOrderItemById(event.getId()), purchaseOrderItem);
+
     }
 
     @Subscribe
