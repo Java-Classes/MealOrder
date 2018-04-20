@@ -281,9 +281,7 @@ public class TestValues {
         final Order order1 = Order.newBuilder()
                                   .addDish(DISH1)
                                   .addDish(DISH1)
-                                  .addDish(DISH2)
-                                  .addDish(DISH2)
-                                  .addDish(DISH2)
+                                  .addDish(DISH1)
                                   .setId(
                                           OrderId.newBuilder()
                                                  .setUserId(USER_ID)

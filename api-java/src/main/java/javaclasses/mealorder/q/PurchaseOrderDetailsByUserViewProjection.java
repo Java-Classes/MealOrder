@@ -108,8 +108,8 @@ public class PurchaseOrderDetailsByUserViewProjection extends Projection<Purchas
         final List<DishItem> dishItems = new ArrayList<>();
         orderList.forEach(order -> {
             if (order.getId()
-                     .getUserId() == user) {
-
+                     .getUserId()
+                     .equals(user)) {
                 order.getDishList()
                      .forEach(dish -> {
                          final DishItem dishItem = DishItem.newBuilder()
