@@ -143,6 +143,11 @@ public class TestValues {
                                                                 .setMonthValue(2)
                                                                 .setDay(19)
                                                                 .build();
+    public static final LocalDate END_DATE_FROM_PAST2 = LocalDate.newBuilder()
+                                                                 .setYear(2017)
+                                                                 .setMonthValue(3)
+                                                                 .setDay(10)
+                                                                 .build();
 
     public static final LocalDate INVALID_START_DATE = LocalDate.newBuilder()
                                                                 .setYear(2020)
@@ -162,6 +167,12 @@ public class TestValues {
                                                                              .setRangeEnd(
                                                                                      INVALID_END_DATE)
                                                                              .build();
+    public static final MenuDateRange MENU_DATE_RANGE2 = MenuDateRange.newBuilder()
+                                                                      .setRangeStart(
+                                                                              START_DATE_FROM_PAST)
+                                                                      .setRangeEnd(
+                                                                              END_DATE_FROM_PAST2)
+                                                                      .build();
 
     public static final MenuDateRange MENU_DATE_RANGE_FROM_PAST = MenuDateRange.newBuilder()
                                                                                .setRangeStart(

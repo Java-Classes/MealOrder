@@ -35,7 +35,6 @@ import javaclasses.mealorder.q.projection.MenuListView;
 import javaclasses.mealorder.q.projection.MenuListViewVBuilder;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static javaclasses.mealorder.q.Projections.getDatesBetween;
@@ -81,23 +80,12 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
         final List<MenuForDay> menuDays = new ArrayList<>();
 
         final MenuDateRange menuDateRange = event.getMenuDateRange();
-        Date start = new Date(menuDateRange.getRangeStart()
-                                           .getYear(), menuDateRange.getRangeStart()
-                                                                    .getMonth()
-                                                                    .getNumber(),
-                              menuDateRange.getRangeStart()
-                                           .getDay());
-        Date end = new Date(menuDateRange.getRangeEnd()
-                                         .getYear(), menuDateRange.getRangeEnd()
-                                                                  .getMonth()
-                                                                  .getNumber(),
-                            menuDateRange.getRangeEnd()
-                                         .getDay());
-        final List<Date> datesBetween = getDatesBetween(start, end);
+        final List<java.time.LocalDate> datesBetween = getDatesBetween(
+                menuDateRange.getRangeStart(), menuDateRange.getRangeEnd());
         datesBetween.forEach(date -> {
             final LocalDate localDate = LocalDate.newBuilder()
-                                                 .setDay(date.getDay())
-                                                 .setMonthValue(date.getMonth())
+                                                 .setDay(date.getDayOfMonth())
+                                                 .setMonthValue(date.getMonthValue())
                                                  .setYear(date.getYear())
                                                  .build();
             final MenuForDay menuForDay = MenuForDay.newBuilder()

@@ -28,8 +28,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -38,7 +36,6 @@ import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseO
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderSentInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PurchaseOrderListViewProjectionTest extends ProjectionTest {
-    final Logger logger = LoggerFactory.getLogger(PurchaseOrderListViewProjectionTest.class);
     private PurchaseOrderListViewProjection projection;
 
     @BeforeEach

@@ -22,11 +22,15 @@ package javaclasses.mealorder.testdata;
 
 import com.google.protobuf.Timestamp;
 import io.spine.net.EmailAddress;
+import javaclasses.mealorder.MenuDateRange;
+import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.UserId;
+import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
 
@@ -83,6 +87,32 @@ public class TestMealOrderEventFactory {
                                           .setWhoMarkedAsDelivered(userId)
                                           .setWhenDelievered(currentTime)
                                           .build();
+            return result;
+        }
+    }
+
+    public static class VendorEvents {
+        private VendorEvents() {
+        }
+
+        public static DateRangeForMenuSet dateRangeForMenuSetInstance() {
+            return dateRangeForMenuSetInstance(TestValues.VENDOR_ID, TestValues.MENU_ID,
+                                               TestValues.USER_ID, TestValues.MENU_DATE_RANGE2);
+        }
+
+        private static DateRangeForMenuSet dateRangeForMenuSetInstance(VendorId vendorId,
+                                                                       MenuId menuId,
+                                                                       UserId userId,
+                                                                       MenuDateRange menuDateRange) {
+            final Timestamp currentTime = getCurrentTime();
+            final DateRangeForMenuSet result =
+                    DateRangeForMenuSet.newBuilder()
+                                       .setVendorId(vendorId)
+                                       .setMenuId(menuId)
+                                       .setWhoSet(userId)
+                                       .setWhenSet(currentTime)
+                                       .setMenuDateRange(menuDateRange)
+                                       .build();
             return result;
         }
     }

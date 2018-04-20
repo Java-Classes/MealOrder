@@ -22,11 +22,10 @@ package javaclasses.mealorder.q;
 
 import io.spine.time.LocalDate;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 final class Projections {
 
@@ -36,27 +35,25 @@ final class Projections {
     private Projections() {
     }
 
-    static List<Date> getDatesBetween(
-            Date startDate, Date endDate) {
-        List<Date> datesInRange = new ArrayList<>();
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(startDate);
-
-        Calendar endCalendar = new GregorianCalendar();
-        endCalendar.setTime(endDate);
-
-        while (calendar.before(endCalendar)) {
-            Date result = calendar.getTime();
-            datesInRange.add(result);
-            calendar.add(Calendar.DATE, 1);
-        }
-        return datesInRange;
+    static List<java.time.LocalDate> getDatesBetween(
+            LocalDate startDate, LocalDate endDate) {
+        java.time.LocalDate start = java.time.LocalDate.of(startDate.getYear(),
+                                                           startDate.getMonthValue(),
+                                                           startDate.getDay());
+        java.time.LocalDate end = java.time.LocalDate.of(endDate.getYear(), endDate.getMonthValue(),
+                                                         endDate.getDay());
+        long numOfDaysBetween = ChronoUnit.DAYS.between(start, end);
+        final List<java.time.LocalDate> collect = IntStream.iterate(0, i -> i + 1)
+                                                           .limit(numOfDaysBetween)
+                                                           .mapToObj(i -> start.plusDays(i))
+                                                           .collect(Collectors.toList());
+        return collect;
     }
 
-    static LocalDate toLocalDate(Date date) {
+    static LocalDate toLocalDate(java.time.LocalDate date) {
         return LocalDate.newBuilder()
-                        .setDay(date.getDay())
-                        .setMonthValue(date.getMonth())
+                        .setDay(date.getDayOfMonth())
+                        .setMonthValue(date.getMonthValue())
                         .setYear(date.getYear())
                         .build();
     }

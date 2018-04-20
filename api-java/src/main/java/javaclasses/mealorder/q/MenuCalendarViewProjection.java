@@ -29,7 +29,7 @@ import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.q.projection.MenuCalendarView;
 import javaclasses.mealorder.q.projection.MenuCalendarViewVBuilder;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import static javaclasses.mealorder.q.Projections.getDatesBetween;
@@ -43,9 +43,11 @@ public class MenuCalendarViewProjection extends Projection<MenuId, MenuCalendarV
      * <p>The {@code ID} value should be the same for all JVMs
      * to support work with the same projection from execution to execution.
      */
-    public static final VendorId ID = VendorId.newBuilder()
-                                              .setValue("MenuCalendarViewProjectionSingleton")
-                                              .build();
+    public static final MenuId ID = MenuId.newBuilder()
+                                          .setVendorId(VendorId.newBuilder()
+                                                               .setValue(
+                                                                       "MenuCalendarViewProjectionSingleton"))
+                                          .build();
 
     /**
      * Creates a new instance.
@@ -60,19 +62,11 @@ public class MenuCalendarViewProjection extends Projection<MenuId, MenuCalendarV
     @Subscribe
     void on(DateRangeForMenuSet event) {
         final MenuDateRange menuDateRange = event.getMenuDateRange();
-        Date start = new Date(menuDateRange.getRangeStart()
-                                           .getYear(), menuDateRange.getRangeStart()
-                                                                    .getMonth()
-                                                                    .getNumber(),
-                              menuDateRange.getRangeStart()
-                                           .getDay());
-        Date end = new Date(menuDateRange.getRangeEnd()
-                                         .getYear(), menuDateRange.getRangeEnd()
-                                                                  .getMonth()
-                                                                  .getNumber(),
-                            menuDateRange.getRangeEnd()
-                                         .getDay());
-        final List<Date> datesBetween = getDatesBetween(start, end);
+        final List<LocalDate> datesBetween = getDatesBetween(event.getMenuDateRange()
+                                                                  .getRangeStart(),
+                                                             event.getMenuDateRange()
+                                                                  .getRangeEnd());
+
         datesBetween.forEach(date -> {
             getBuilder().addCalendarItem(MenuCalendarItem.newBuilder()
                                                          .setDate(toLocalDate(date))
