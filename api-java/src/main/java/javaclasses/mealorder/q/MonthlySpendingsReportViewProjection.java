@@ -23,6 +23,7 @@ package javaclasses.mealorder.q;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.MenuListId;
+import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportView;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportViewVBuilder;
@@ -41,6 +42,15 @@ public class MonthlySpendingsReportViewProjection extends Projection<MenuListId,
 
     @Subscribe
     void on(PurchaseOrderDelivered event) {
-
+        final PurchaseOrderId taskId = event.getId();
+//        final TaskEnrichment enrichment = getEnrichment(TaskEnrichment.class, context);
+//        final Task task = enrichment.getTask();
+//        final TaskItem view = TaskItem.newBuilder()
+//                                      .setId(taskId)
+//                                      .setDescription(task.getDescription())
+//                                      .setDueDate(task.getDueDate())
+//                                      .setPriority(task.getPriority())
+//                                      .build();
+//        addTaskItem(view);
     }
 }
