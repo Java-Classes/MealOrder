@@ -38,6 +38,9 @@ import javaclasses.mealorder.VendorChange;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static io.spine.time.MonthOfYear.FEBRUARY;
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
@@ -55,9 +58,17 @@ public class TestValues {
                                                            .setValue("VendorName1")
                                                            .build();
 
+    public static final VendorName VENDOR_NAME2 = VendorName.newBuilder()
+                                                            .setValue("Позитив")
+                                                            .build();
+
     public static final VendorId VENDOR_ID = VendorId.newBuilder()
                                                      .setValue("vendor:" + VENDOR_NAME)
                                                      .build();
+
+    public static final VendorId VENDOR_ID2 = VendorId.newBuilder()
+                                                      .setValue("vendor:" + VENDOR_NAME2)
+                                                      .build();
 
     public static final VendorName NEW_VENDOR_NAME = VendorName.newBuilder()
                                                                .setValue("VendorName2")
@@ -73,6 +84,13 @@ public class TestValues {
                                                                              "user@example.com")
                                                                      .build())
                                                .build();
+
+    public static final UserId USER_ID2 = UserId.newBuilder()
+                                                .setEmail(EmailAddress.newBuilder()
+                                                                      .setValue(
+                                                                              "petr@example.com")
+                                                                      .build())
+                                                .build();
 
     public static final LocalTime PO_DAILY_DEADLINE = LocalTime.newBuilder()
                                                                .setHours(10)
@@ -256,4 +274,61 @@ public class TestValues {
                                            .addDish(DISH1)
                                            .setStatus(ORDER_ACTIVE)
                                            .build();
+    public static final List<Order> BIG_ORDER = createOrder();
+
+    private static List<Order> createOrder() {
+        List<Order> orders = new ArrayList<>();
+        final Order order1 = Order.newBuilder()
+                                  .addDish(DISH1)
+                                  .addDish(DISH1)
+                                  .addDish(DISH2)
+                                  .addDish(DISH2)
+                                  .addDish(DISH2)
+                                  .setId(
+                                          OrderId.newBuilder()
+                                                 .setUserId(USER_ID)
+                                                 .setVendorId(VENDOR_ID)
+                                                 .setOrderDate(END_DATE)
+                                                 .build())
+                                  .build();
+        final Order order2 = Order.newBuilder()
+                                  .addDish(DISH1)
+                                  .addDish(DISH1)
+                                  .addDish(DISH2)
+                                  .addDish(DISH2)
+                                  .addDish(DISH2)
+                                  .setId(
+                                          OrderId.newBuilder()
+                                                 .setUserId(USER_ID2)
+                                                 .setVendorId(VENDOR_ID)
+                                                 .setOrderDate(END_DATE)
+                                                 .build())
+                                  .build();
+        final Order order3 = Order.newBuilder()
+                                  .addDish(DISH2)
+                                  .addDish(DISH2)
+                                  .setId(
+                                          OrderId.newBuilder()
+                                                 .setUserId(USER_ID)
+                                                 .setVendorId(VENDOR_ID2)
+                                                 .setOrderDate(END_DATE)
+                                                 .build())
+                                  .build();
+        final Order order4 = Order.newBuilder()
+                                  .addDish(DISH1)
+                                  .addDish(DISH1)
+                                  .addDish(DISH2)
+                                  .setId(
+                                          OrderId.newBuilder()
+                                                 .setUserId(USER_ID2)
+                                                 .setVendorId(VENDOR_ID2)
+                                                 .setOrderDate(END_DATE)
+                                                 .build())
+                                  .build();
+        orders.add(order1);
+        orders.add(order2);
+        orders.add(order3);
+        orders.add(order4);
+        return orders;
+    }
 }

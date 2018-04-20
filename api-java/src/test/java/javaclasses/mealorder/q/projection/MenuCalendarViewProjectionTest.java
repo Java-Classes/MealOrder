@@ -27,8 +27,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -47,7 +45,6 @@ public class MenuCalendarViewProjectionTest extends ProjectionTest {
     @Nested
     @DisplayName("DateRangeForMenuSet event should be interpreted by MenuCalendarViewProjection")
     class PurchaseOrderSentEvent {
-        private final Logger logger = LoggerFactory.getLogger(PurchaseOrderSentEvent.class);
 
         @Test
         @DisplayName("Should set dates with menus")

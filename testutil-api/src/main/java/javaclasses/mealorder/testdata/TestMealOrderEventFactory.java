@@ -31,8 +31,11 @@ import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
+import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
+
+import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 
@@ -87,6 +90,25 @@ public class TestMealOrderEventFactory {
                                           .setWhoMarkedAsDelivered(userId)
                                           .setWhenDelievered(currentTime)
                                           .build();
+            return result;
+        }
+
+        public static PurchaseOrderCreated purchaseOrderCreatedInstance() {
+            return purchaseOrderCreatedInstance(TestValues.PURCHASE_ORDER_ID, TestValues.USER_ID,
+                                                TestValues.BIG_ORDER);
+        }
+
+        public static PurchaseOrderCreated purchaseOrderCreatedInstance(
+                PurchaseOrderId purchaseOrderId, UserId userId,
+                List<Order> orders) {
+            final Timestamp currentTime = getCurrentTime();
+            final PurchaseOrderCreated result =
+                    PurchaseOrderCreated.newBuilder()
+                                        .setId(purchaseOrderId)
+                                        .setWhenCreated(currentTime)
+                                        .setWhoCreated(userId)
+                                        .addAllOrder(orders)
+                                        .build();
             return result;
         }
     }

@@ -50,7 +50,6 @@ public class PurchaseOrderDetailsByUserViewProjection extends Projection<Purchas
 
     @Subscribe
     void on(PurchaseOrderCreated event) {
-
         final List<UserOrderDetails> usersOrders = getUserOrders(event);
         getBuilder().addAllOrder(usersOrders);
         getBuilder().setId(event.getId());
