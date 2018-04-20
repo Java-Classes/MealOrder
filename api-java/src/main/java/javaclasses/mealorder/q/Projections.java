@@ -36,7 +36,7 @@ final class Projections {
     private Projections() {
     }
 
-    public static List<Date> getDatesBetween(
+    static List<Date> getDatesBetween(
             Date startDate, Date endDate) {
         List<Date> datesInRange = new ArrayList<>();
         Calendar calendar = new GregorianCalendar();
@@ -53,7 +53,7 @@ final class Projections {
         return datesInRange;
     }
 
-    public static LocalDate toLocalDate(Date date) {
+    static LocalDate toLocalDate(Date date) {
         return LocalDate.newBuilder()
                         .setDay(date.getDay())
                         .setMonthValue(date.getMonth())
