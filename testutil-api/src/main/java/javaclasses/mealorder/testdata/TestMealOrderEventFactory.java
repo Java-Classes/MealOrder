@@ -26,6 +26,8 @@ import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.PurchaseOrderStatus;
+import javaclasses.mealorder.UserId;
+import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -64,6 +66,23 @@ public class TestMealOrderEventFactory {
                                      .setVendorEmail(vendorEmail)
                                      .setWhenSent(currentTime)
                                      .build();
+            return result;
+        }
+
+        public static PurchaseOrderDelivered purchaseOrderDeliveredInstance() {
+            return purchaseOrderDeliveredInstance(TestValues.PURCHASE_ORDER_ID, TestValues.USER_ID);
+        }
+
+        private static PurchaseOrderDelivered purchaseOrderDeliveredInstance(
+                PurchaseOrderId purchaseOrderId,
+                UserId userId) {
+            final Timestamp currentTime = getCurrentTime();
+            final PurchaseOrderDelivered result =
+                    PurchaseOrderDelivered.newBuilder()
+                                          .setId(purchaseOrderId)
+                                          .setWhoMarkedAsDelivered(userId)
+                                          .setWhenDelievered(currentTime)
+                                          .build();
             return result;
         }
     }

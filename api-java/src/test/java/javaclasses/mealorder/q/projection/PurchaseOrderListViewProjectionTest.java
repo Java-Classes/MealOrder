@@ -20,15 +20,25 @@
 
 package javaclasses.mealorder.q.projection;
 
+import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
+import javaclasses.mealorder.q.PurchaseOrderItem;
 import javaclasses.mealorder.q.PurchaseOrderListViewProjection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderDeliveredInstance;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderSentInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PurchaseOrderListViewProjectionTest extends ProjectionTest {
-
+    final Logger logger = LoggerFactory.getLogger(PurchaseOrderListViewProjectionTest.class);
     private PurchaseOrderListViewProjection projection;
 
     @BeforeEach
@@ -37,24 +47,42 @@ public class PurchaseOrderListViewProjectionTest extends ProjectionTest {
     }
 
     @Nested
-    @DisplayName("TaskCreated event should be interpreted by MyListViewProjection and")
-    class TaskCreatedEvent {
+    @DisplayName("PurchaseOrderSent event should be interpreted by PurchaseOrderListViewProjection")
+    class PurchaseOrderSentEvent {
 
         @Test
-        @DisplayName("add TaskItem to MyListView")
+        @DisplayName("Should set order for a projection")
         void addView() {
-            final PurchaseOrderSent taskCreatedEvent = taskCreatedInstance();
-            dispatch(projection, createEvent(taskCreatedEvent));
+            final PurchaseOrderSent purchaseOrderSent = purchaseOrderSentInstance();
+            dispatch(projection, createEvent(purchaseOrderSent));
 
-            final List<TaskItem> views = projection.getState()
-                                                   .getMyList()
-                                                   .getItemsList();
-            assertEquals(1, views.size());
+            final List<PurchaseOrderItem> purchaseOrderList = projection.getState()
+                                                                        .getPurchaseOrderList();
+            assertEquals(1, purchaseOrderList.size());
+            assertEquals(15, purchaseOrderList.get(0)
+                                              .getId()
+                                              .getPoDate()
+                                              .getDay());
+        }
+    }
 
-            final TaskItem view = views.get(0);
-            assertEquals(TASK_PRIORITY, view.getPriority());
-            assertEquals(DESCRIPTION, view.getDescription()
-                                          .getValue());
+    @Nested
+    @DisplayName("PurchaseOrderDelivered event should be interpreted by PurchaseOrderListViewProjection")
+    class PurchaseOrderDeliveredEvent {
+
+        @Test
+        @DisplayName("Should change status of the PO")
+        void addView() {
+            final PurchaseOrderSent purchaseOrderSent = purchaseOrderSentInstance();
+            dispatch(projection, createEvent(purchaseOrderSent));
+            final PurchaseOrderDelivered purchaseOrderDelivered = purchaseOrderDeliveredInstance();
+            dispatch(projection, createEvent(purchaseOrderDelivered));
+            final List<PurchaseOrderItem> purchaseOrderList = projection.getState()
+                                                                        .getPurchaseOrderList();
+            assertEquals(1, purchaseOrderList.size());
+            assertEquals("DELIVERED", purchaseOrderList.get(0)
+                                                       .getPurchaseOrderStatus()
+                                                       .name());
         }
     }
 }

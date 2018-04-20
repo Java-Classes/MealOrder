@@ -66,8 +66,7 @@ public class PurchaseOrderListViewProjection extends Projection<PurchaseOrderId,
                                                                      .setPurchaseOrderStatus(
                                                                              PurchaseOrderStatus.SENT)
                                                                      .build();
-        getBuilder().setPurchaseOrder(getPurchaseOrderItemById(event.getPurchaseOrder()
-                                                                    .getId()), purchaseOrderItem);
+        getBuilder().addPurchaseOrder(purchaseOrderItem);
     }
 
     @Subscribe
