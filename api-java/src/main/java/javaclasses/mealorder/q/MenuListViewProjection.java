@@ -61,7 +61,6 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
                 event.getDishList());
         final MenuItem menuItem = MenuItem.newBuilder()
                                           .setVendorName(vendorName)
-                                          .setIsAvailable(true)
                                           .addAllDishesByCategory(allDishesByCategories)
                                           .build();
         getBuilder().addMenu(menuItem);
@@ -90,7 +89,6 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
                                                  .build();
             final MenuForDay menuForDay = MenuForDay.newBuilder()
                                                     .setDate(localDate)
-                                                    .setAvailable(true)
                                                     .build();
             menuDays.add(menuForDay);
         });

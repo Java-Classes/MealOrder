@@ -24,17 +24,11 @@ import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.MenuListId;
-import javaclasses.mealorder.Order;
-import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
-import javaclasses.mealorder.c.event.PurchaseOrderEnrichment;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportView;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportViewVBuilder;
 
-import java.util.List;
-
-import static javaclasses.mealorder.q.EventEnrichments.getEnrichment;
 
 public class MonthlySpendingsReportViewProjection extends Projection<MenuListId, MonthlySpendingsReportView, MonthlySpendingsReportViewVBuilder> {
 
@@ -52,9 +46,5 @@ public class MonthlySpendingsReportViewProjection extends Projection<MenuListId,
     @Subscribe
     void on(PurchaseOrderDelivered event, EventContext context) {
         final PurchaseOrderId taskId = event.getId();
-        final PurchaseOrderEnrichment enrichment = getEnrichment(PurchaseOrderEnrichment.class,
-                                                                 context);
-        final PurchaseOrder po = enrichment.getPurchaseOrder();
-        final List<Order> orderList = po.getOrderList();
     }
 }

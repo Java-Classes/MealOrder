@@ -72,8 +72,7 @@ message MenuListView {
 // today to the same day next week. (8 elements)
 // The each date contains information about the menus availability for it.
 //
-// Subscribes following events:
-// 1. `DateRangeForMenuSet`
+// Subscribes on `DateRangeForMenuSet`
 //
 message MenuCalendarView {
 
