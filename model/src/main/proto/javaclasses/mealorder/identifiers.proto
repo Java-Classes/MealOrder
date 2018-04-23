@@ -35,6 +35,30 @@ import "spine/net/email_address.proto";
 import "spine/time/time.proto";
 import "javaclasses/mealorder/attributes.proto";
 
+// The ID of the vendor list.
+//
+message VendorListId {
+
+    // The ID of the vendor list
+    string value = 1;
+}
+
+// The ID of the purchase order list.
+//
+message PurchaseOrderListId {
+
+    // The ID of the purchase order list.
+    string value = 1;
+}
+
+// The ID of the calendar.
+//
+message MenuCalendarId {
+
+    // The ID of the calendar.
+    string value = 1;
+}
+
 // The ID of a user.
 //
 // Represented by the user's email address.

@@ -77,8 +77,11 @@ message MenuListView {
 //
 message MenuCalendarView {
 
+    // The identifier of the calendar.
+    MenuCalendarId menu_calendar_id = 1;
+
     // The collection of calendar items (dates).
-    repeated MenuCalendarItem calendar_item = 1;
+    repeated MenuCalendarItem calendar_item = 2;
 }
 
 // The projection state of an order list.
@@ -116,23 +119,11 @@ message OrderListView {
 //
 message VendorListView {
 
+    // The identifier of the vendor list singleton.
+    VendorListId vendor_list_id = 1;
+
     // The collection of all vendors.
-    repeated VendorItem vendor = 1;
-}
-
-// The projection state of the full menu list.
-//
-// This view includes the list of all menus,
-// sorted by menu date range.
-//
-// Subscribes following events:
-// 1. `DateRangeForMenuSet`
-// 2. `MenuImported`
-//
-message FullMenuListView {
-
-    // The collection of all menus.
-    repeated FullMenuItem menu = 1;
+    repeated VendorItem vendor = 2;
 }
 
 // The projection state of the purchase order list.
@@ -151,8 +142,11 @@ message FullMenuListView {
 //
 message PurchaseOrderListView {
 
+    // The identifier of the purchase order list singleton.
+    PurchaseOrderListId purchase_order_list_id = 1;
+
     // The collection of all purchase orders.
-    repeated PurchaseOrderItem purchase_order = 1;
+    repeated PurchaseOrderItem purchase_order = 2;
 }
 
 // The projection state of a purchase order details view

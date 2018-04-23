@@ -33,10 +33,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @SuppressWarnings("Guava") // Spine Java 7 API.
 final class MealOrderEnrichments {
 
-    private final PurchaseOrderRepository taskRepo;
+    private final PurchaseOrderRepository poRepository;
 
     private MealOrderEnrichments(Builder builder) {
-        this.taskRepo = builder.taskRepo;
+        this.poRepository = builder.poRepository;
     }
 
     /**
@@ -55,17 +55,17 @@ final class MealOrderEnrichments {
     }
 
     private Function<PurchaseOrderId, PurchaseOrder> poIdToPo() {
-        final Function<PurchaseOrderId, PurchaseOrder> result = taskId -> {
-            if (taskId == null) {
+        final Function<PurchaseOrderId, PurchaseOrder> result = poId -> {
+            if (poId == null) {
                 return PurchaseOrder.getDefaultInstance();
             }
-            final Optional<PurchaseOrderAggregate> aggregate = taskRepo.find(taskId);
+            final Optional<PurchaseOrderAggregate> aggregate = poRepository.find(poId);
             if (!aggregate.isPresent()) {
                 return PurchaseOrder.getDefaultInstance();
             }
-            final PurchaseOrder task = aggregate.get()
-                                                .getState();
-            return task;
+            final PurchaseOrder po = aggregate.get()
+                                              .getState();
+            return po;
         };
         return result;
     }
@@ -84,7 +84,7 @@ final class MealOrderEnrichments {
      */
     static class Builder {
 
-        private PurchaseOrderRepository taskRepo;
+        private PurchaseOrderRepository poRepository;
 
         /**
          * The {@code private} constructor prevents direct instantiation.
@@ -94,7 +94,7 @@ final class MealOrderEnrichments {
 
         Builder setPurchaseOrderRepository(PurchaseOrderRepository definitionRepository) {
             checkNotNull(definitionRepository);
-            this.taskRepo = definitionRepository;
+            this.poRepository = definitionRepository;
             return this;
         }
 

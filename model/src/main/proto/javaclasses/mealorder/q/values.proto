@@ -50,11 +50,8 @@ message MenuItem {
     // The collection of categories.
     repeated DishesByCategory dishesByCategory = 2;
 
-    // True if a user can add dishes to his order.
-    bool is_available = 3;
-
     // Date range when a menu is available.
-    repeated MenuForDay menu_days = 4;
+    repeated MenuForDay menu_days = 3;
 }
 
 // Dishes grouped by category.
@@ -137,20 +134,6 @@ message VendorItem {
 
     // Daily purchase order creation deadline time.
     spine.time.LocalTime po_daily_deadline = 5;
-}
-
-// The item of the full menu list.
-//
-message FullMenuItem {
-
-    // The identifier of a menu.
-    MenuId menu_id = 1;
-
-    // Date range when a menu is available.
-    MenuDateRange menu_date_range = 2;
-
-    // The collection of categories.
-    repeated DishesByCategory dish = 3;
 }
 
 // The item of the purchase order list.
