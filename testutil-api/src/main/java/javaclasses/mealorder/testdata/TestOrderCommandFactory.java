@@ -35,6 +35,7 @@ import static javaclasses.mealorder.testdata.TestValues.NONEXISTENT_MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID_WITH_INVALID_DATE;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID_WITH_INVALID_VENDOR;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID2;
 
 /**
  * @author Vlad Kozachenko
@@ -72,6 +73,7 @@ public class TestOrderCommandFactory {
     public static CancelOrder cancelOrderInstance(OrderId orderId) {
         return CancelOrder.newBuilder()
                           .setOrderId(orderId)
+                          .setWhoCancels(USER_ID2)
                           .build();
     }
 

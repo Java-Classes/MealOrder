@@ -42,25 +42,25 @@ import "javaclasses/mealorder/values.proto";
 message VendorAdded {
 
     // The identifier of a added vendor.
-    VendorId vendor_id = 1;
+    VendorId vendor_id = 1 [(required) = true];
 
     // The identifier of the user who added a vendor.
-    UserId who_added = 2;
+    UserId who_added = 2 [(required) = true];
 
     // Was added at this time.
-    google.protobuf.Timestamp when_added = 3;
+    google.protobuf.Timestamp when_added = 3 [(required) = true];
 
     // The name of a vendor.
-    VendorName vendor_name = 4;
+    VendorName vendor_name = 4 [(required) = true];
 
     // The email adress to send a purchase order.
-    spine.net.EmailAddress email = 5;
+    spine.net.EmailAddress email = 5 [(required) = true];
 
     // Phone numbers of a vendor.
-    repeated PhoneNumber phone_number = 6;
+    repeated PhoneNumber phone_number = 6 [(required) = true];
 
     // Time to which all orders to this vendor must be made.
-    spine.time.LocalTime po_daily_deadline = 7;
+    spine.time.LocalTime po_daily_deadline = 7 [(required) = true];
 }
 
 // The event fired upon a vendor profile update.
@@ -68,16 +68,16 @@ message VendorAdded {
 message VendorUpdated {
 
     // The identifier of an updated vendor.
-    VendorId vendor_id = 1;
+    VendorId vendor_id = 1 [(required) = true];
 
     // The identifier of the user who updated a vendor profile.
-    UserId who_uploaded = 2;
+    UserId who_uploaded = 2 [(required) = true];
 
     // Was updated at this time.
-    google.protobuf.Timestamp when_updated = 3;
+    google.protobuf.Timestamp when_updated = 3 [(required) = true];
 
     // Changes in a vendor profile.
-    VendorChange vendor_change = 4;
+    VendorChange vendor_change = 4 [(required) = true];
 }
 
 // The event signalizing about the successful import of a menu.
@@ -88,19 +88,19 @@ message VendorUpdated {
 message MenuImported {
 
     // The identifier of the vendor that provided a menu.
-    VendorId vendor_id = 1;
+    VendorId vendor_id = 1 [(required) = true];
 
     // The identifier of an imported menu.
-    MenuId menu_id = 2;
+    MenuId menu_id = 2 [(required) = true];
 
     // The identifier of the user who imported a menu.
-    UserId who_imported = 3;
+    UserId who_imported = 3 [(required) = true];
 
     // Was imported at this time.
-    google.protobuf.Timestamp when_imported = 4;
+    google.protobuf.Timestamp when_imported = 4 [(required) = true];
 
     // The collection of menu dishes.
-    repeated Dish dish = 5;
+    repeated Dish dish = 5 [(required) = true];
 }
 
 // The event reflecting a menu active date range set.
@@ -108,19 +108,19 @@ message MenuImported {
 message DateRangeForMenuSet {
 
     // The identifier of a vendor.
-    VendorId vendor_id = 1;
+    VendorId vendor_id = 1 [(required) = true];
 
     // The identifier of a menu.
-    MenuId menu_id = 2;
+    MenuId menu_id = 2 [(required) = true];
 
     // The identifier of the user who set date range.
-    UserId who_set = 3;
+    UserId who_set = 3 [(required) = true];
 
     // Was set at this time.
-    google.protobuf.Timestamp when_set = 4;
+    google.protobuf.Timestamp when_set = 4 [(required) = true];
 
     // Date range that has been set.
-    MenuDateRange menu_date_range = 5;
+    MenuDateRange menu_date_range = 5 [(required) = true];
 }
 
 // The event signalizing about the successful creation of an order.
@@ -130,13 +130,13 @@ message DateRangeForMenuSet {
 message OrderCreated {
 
     // The identifier of an order.
-    OrderId order_id = 1;
+    OrderId order_id = 1 [(required) = true];
 
     // The identifier of the menu which contains dishes that can be added to an order.
-    MenuId menu_id = 2;
+    MenuId menu_id = 2 [(required) = true];
 
     // Was created at this time.
-    google.protobuf.Timestamp when_created = 3;
+    google.protobuf.Timestamp when_created = 3 [(required) = true];
 }
 
 // The event signalizing about a dish addition to the order.
@@ -144,13 +144,13 @@ message OrderCreated {
 message DishAddedToOrder {
 
     // The identifier of the order.
-    OrderId order_id = 1;
+    OrderId order_id = 1 [(required) = true];
 
     // A dish that added to an order.
-    Dish dish = 2;
+    Dish dish = 2 [(required) = true];
 
     // Was added at this time.
-    google.protobuf.Timestamp when_added = 3;
+    google.protobuf.Timestamp when_added = 3 [(required) = true];
 }
 
 // The event signalizing about the successful removing of a dish from the order.
@@ -158,13 +158,13 @@ message DishAddedToOrder {
 message DishRemovedFromOrder {
 
     // The identifier of the order.
-    OrderId order_id = 1;
+    OrderId order_id = 1 [(required) = true];
 
     // A dish removed from an order.
-    Dish dish = 2;
+    Dish dish = 2 [(required) = true];
 
     // Was removed at this time.
-    google.protobuf.Timestamp when_removed = 3;
+    google.protobuf.Timestamp when_removed = 3 [(required) = true];
 }
 
 // The event signalizing about the successful order cancellation.
@@ -172,13 +172,13 @@ message DishRemovedFromOrder {
 message OrderCanceled {
 
     // The identifier of an order.
-    OrderId order_id = 1;
+    OrderId order_id = 1 [(required) = true];
 
     // The identifier of the user who canceled an order.
-    UserId who_canceled = 2;
+    UserId who_canceled = 2 [(required) = true];
 
     // Was canceled at this time.
-    google.protobuf.Timestamp when_canceled = 3;
+    google.protobuf.Timestamp when_canceled = 3 [(required) = true];
 }
 
 // The event signalizing about the successful addition of an order to the purchase order.
@@ -186,10 +186,10 @@ message OrderCanceled {
 message OrderProcessed {
 
     // An order that was added to the purchase order.
-    Order order = 1;
+    Order order = 1 [(required) = true];
 
     // Was added to the purchase order at this time.
-    google.protobuf.Timestamp when_processed = 2;
+    google.protobuf.Timestamp when_processed = 2 [(required) = true];
 }
 
 // The event signalizing about the successful creation of a purchase order.
@@ -197,16 +197,16 @@ message OrderProcessed {
 message PurchaseOrderCreated {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // Was created at this time.
-    google.protobuf.Timestamp when_created = 2;
+    google.protobuf.Timestamp when_created = 2 [(required) = true];
 
     // The identifier of the user who created a purchase order.
-    UserId who_created = 3;
+    UserId who_created = 3 [(required) = true];
 
     // The collection of all orders for this day.
-    repeated Order order = 4;
+    repeated Order order = 4 [(required) = true];
 }
 
 // The event signalizing about the successful delivering of a purchase order.
@@ -214,13 +214,13 @@ message PurchaseOrderCreated {
 message PurchaseOrderDelivered {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The identifier of the user who marked a purchase order as delivered.
-    UserId who_marked_as_delivered = 2;
+    UserId who_marked_as_delivered = 2 [(required) = true];
 
     // Was delivered at this time.
-    google.protobuf.Timestamp when_delievered = 3;
+    google.protobuf.Timestamp when_delievered = 3 [(required) = true];
 }
 
 // The event signalizing about the successful sending of a purchase order.
@@ -228,16 +228,16 @@ message PurchaseOrderDelivered {
 message PurchaseOrderSent {
 
     // Purchase order.
-    PurchaseOrder purchase_order = 1;
+    PurchaseOrder purchase_order = 1 [(required) = true];
 
     // Was sent at this time.
-    google.protobuf.Timestamp when_sent = 2;
+    google.protobuf.Timestamp when_sent = 2 [(required) = true];
 
     // The email address of the sender.
-    spine.net.EmailAddress sender_email = 3;
+    spine.net.EmailAddress sender_email = 3 [(required) = true];
 
     // The email address of the recipient.
-    spine.net.EmailAddress vendor_email = 4;
+    spine.net.EmailAddress vendor_email = 4 [(required) = true];
 }
 
 // The event signalizing about failed purchase order validation.
@@ -251,13 +251,13 @@ message PurchaseOrderSent {
 message PurchaseOrderValidationFailed {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The collection of orders that caused a failure of validation.
-    repeated Order failure_order = 2;
+    repeated Order failure_order = 2 [(required) = true];
 
     // Validation failed at this time.
-    google.protobuf.Timestamp when_failed = 3;
+    google.protobuf.Timestamp when_failed = 3 [(required) = true];
 }
 
 // The event signalizing that purchase order validation is overruled successfully.
@@ -265,13 +265,13 @@ message PurchaseOrderValidationFailed {
 message PurchaseOrderValidationOverruled {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The identifier of the user who overruled validation.
-    UserId who_overruled = 2;
+    UserId who_overruled = 2 [(required) = true];
 
     // The reason why validation is overruled.
-    string reason = 3;
+    string reason = 3 [(required) = true];
 
     // Validation was overruled at this time.
     google.protobuf.Timestamp when_overruled = 4;
@@ -282,10 +282,10 @@ message PurchaseOrderValidationOverruled {
 message PurchaseOrderValidationPassed {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // Validation completed successfully at this time.
-    google.protobuf.Timestamp when_passed = 2;
+    google.protobuf.Timestamp when_passed = 2 [(required) = true];
 }
 
 // The event signalizing about the successful order cancellation.
@@ -293,13 +293,13 @@ message PurchaseOrderValidationPassed {
 message PurchaseOrderCanceled {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The identifier of the user who cancelled a purchase order.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // Was canceled at this time.
-    google.protobuf.Timestamp when_canceled = 3;
+    google.protobuf.Timestamp when_canceled = 3 [(required) = true];
 
     // The reason of cancellation.
     //

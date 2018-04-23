@@ -52,15 +52,10 @@ import "javaclasses/mealorder/values.proto";
 // this date. This time is defined in a menu vendor aggregate. See `Vendor`
 // for more details.
 //
-// Subscribes following events:
-// 1. `DateRangeForMenuSet`
-// 2. `PurchaseOrderCreated`
-// 3. `MenuImported`
-//
 message MenuListView {
 
     // The identifier of a menu list.
-    MenuListId list_id = 1;
+    MenuListId list_id = 1 [(required) = true];
 
     // The collection of menus.
     repeated MenuItem menu = 2;
@@ -72,12 +67,12 @@ message MenuListView {
 // today to the same day next week. (8 elements)
 // The each date contains information about the menus availability for it.
 //
-// Subscribes on `DateRangeForMenuSet`
+// Singleton, because the calendar is global.
 //
 message MenuCalendarView {
 
     // The identifier of the calendar.
-    MenuCalendarId menu_calendar_id = 1;
+    MenuCalendarId menu_calendar_id = 1 [(required) = true];
 
     // The collection of calendar items (dates).
     repeated MenuCalendarItem calendar_item = 2;
@@ -90,36 +85,26 @@ message MenuCalendarView {
 //
 // The order date and the user ID are specified by `OrderListId` value.
 //
-// Subscribes following events:
-// 1. `DishAddedToOrder`
-// 2. `DishRemovedFromOrder`
-// 3. `OrderCanceled`
-// 4. `OrderProcessed`
-//
+
 message OrderListView {
 
     // The identifier of an order list.
-    OrderListId list_id = 1;
+    OrderListId list_id = 1 [(required) = true];
 
     // The collection of user's orders.
     repeated OrderItem order = 2;
-
-    // If true user cannot add or remove dishes.
-    bool processed = 3;
 }
 
 // **** Projections for UI role Admin. ****
 
 // The projection state of the vendor list.
 //
-// Subscribes following events:
-// 1. `VendorAdded`
-// 2. `VendorUpdated`
+// Singleton, because there is only one list of vendors.
 //
 message VendorListView {
 
     // The identifier of the vendor list singleton.
-    VendorListId vendor_list_id = 1;
+    VendorListId vendor_list_id = 1 [(required) = true];
 
     // The collection of all vendors.
     repeated VendorItem vendor = 2;
@@ -130,19 +115,10 @@ message VendorListView {
 // This view includes the list of all purchase orders,
 // sorted by date.
 //
-// Subscribes following events:
-// 1. `PurchaseOrderCreated`
-// 2. `PurchaseOrderDelivered`
-// 3. `PurchaseOrderSent`
-// 4. `PurchaseOrderValidationFailed`
-// 5. `PurchaseOrderValidationOverruled`
-// 6. `PurchaseOrderValidationPassed`
-// 7. `PurchaseOrderCanceled`
-//
 message PurchaseOrderListView {
 
     // The identifier of the purchase order list singleton.
-    PurchaseOrderListId purchase_order_list_id = 1;
+    PurchaseOrderListId purchase_order_list_id = 1 [(required) = true];
 
     // The collection of all purchase orders.
     repeated PurchaseOrderItem purchase_order = 2;
@@ -151,19 +127,10 @@ message PurchaseOrderListView {
 // The projection state of a purchase order details view
 // grouped by dish.
 //
-// Subscribes following events:
-// 1. `PurchaseOrderCreated`
-// 2. `PurchaseOrderDelivered`
-// 3. `PurchaseOrderSent`
-// 4. `PurchaseOrderValidationFailed`
-// 5. `PurchaseOrderValidationOverruled`
-// 6. `PurchaseOrderValidationPassed`
-// 7. `PurchaseOrderCanceled`
-//
 message PurchaseOrderDetailsByDishView {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
@@ -178,19 +145,10 @@ message PurchaseOrderDetailsByDishView {
 // When a purchase order is created its validation may complete with failure.
 // Those orders which caused that failure are marked as invalid.
 //
-// Subscribes following events:
-// 1. `PurchaseOrderCreated`
-// 2. `PurchaseOrderDelivered`
-// 3. `PurchaseOrderSent`
-// 4. `PurchaseOrderValidationFailed`
-// 5. `PurchaseOrderValidationOverruled`
-// 6. `PurchaseOrderValidationPassed`
-// 7. `PurchaseOrderCanceled`
-//
 message PurchaseOrderDetailsByUserView {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
@@ -208,14 +166,10 @@ message PurchaseOrderDetailsByUserView {
 // It contains users spendings for period from  month first
 // date till today if a report is formed for the current month.
 //
-// Subscribes following events:
-// 1. `PurchaseOrderDelivered`
-// 2. `PurchaseOrderSent`
-//
 message MonthlySpendingsReportView {
 
     // The identifier of a monthly spendings report.
-    MonthlySpendingsReportId report_id = 1;
+    MonthlySpendingsReportId report_id = 1 [(required) = true];
 
     // The collection of users spendings for the specified month.
     repeated UserSpendings user_spending = 2;

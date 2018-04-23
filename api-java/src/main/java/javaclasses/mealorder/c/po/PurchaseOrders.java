@@ -277,6 +277,7 @@ class PurchaseOrders {
                                                           .setPurchaseOrder(purchaseOrder)
                                                           .setSenderEmail(senderEmail)
                                                           .setVendorEmail(vendorEmail)
+                                                          .setWhenSent(getCurrentTime())
                                                           .build();
         return result;
     }
