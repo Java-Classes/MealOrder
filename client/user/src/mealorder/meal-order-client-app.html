@@ -83,7 +83,7 @@
                 color: var(--paper-light-blue-500);
             }
 
-            app-header .history-icon {
+            app-header .link-icon {
                 display: none;
                 color: var(--paper-grey-50);
             }
@@ -117,8 +117,7 @@
                 margin-right: 44px;
             }
 
-            .icon-container {
-                width: 100px;
+            .app-header-iron-container {
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
@@ -135,13 +134,18 @@
             }
 
             @media only screen and (max-width: 600px) {
+                .app-header-iron-container {
+                    width: 100px;
+                }
+
                 .route-title {
                     display: none;
                 }
 
-                app-header .history-icon {
+                app-header .link-icon {
                     display: block;
                 }
+
             }
         </style>
         <app-location route="{{route}}"
@@ -189,38 +193,24 @@
                                         attr-for-selected="data-page"
                                         fallback-selection="view404"
                                         role="main">
-
-                                <div data-page="menu">
-                                    <a class="title-link"
-                                       href="/#/history/">
+                                <div data-page="menu" class="app-header-iron-container">
+                                    <a class="title-link" href="/#/history/">
                                         <div class="route-title">История заказов</div>
-                                        <div class="icon-container">
-                                            <iron-icon class="history-icon"
-                                                       icon="maps:icons:history"></iron-icon>
-
-                                            <div>
-                                                <iron-icon class="app-toolbar-content"
-                                                           icon="icons:shopping-cart"
-                                                           drawer-toggle></iron-icon>
-                                            </div>
-                                        </div>
+                                        <iron-icon class="link-icon"
+                                                   icon="maps:icons:history"></iron-icon>
                                     </a>
+                                    <iron-icon data-page="menu" class="drawer-icon"
+                                               icon="icons:shopping-cart" drawer-toggle></iron-icon>
                                 </div>
-
-                                <div data-page="history">
-                                    <a class="title-link"
-                                       href="/#/menu/">
+                                <div data-page="history" class="app-header-iron-container">
+                                    <a class="title-link" href="/#/menu/">
                                         <div id="menu-history" class="route-title">Сделать заказ</div>
-                                        <div class="icon-container">
-                                            <iron-icon class="history-icon"
-                                                       icon="maps:icons:add"></iron-icon>
-                                            <div>
-                                                <iron-icon class="app-toolbar-content"
-                                                           icon="icons:date-range"
-                                                           drawer-toggle></iron-icon>
-                                            </div>
-                                        </div>
+                                        <iron-icon class="link-icon"
+                                                   icon="maps:icons:add"></iron-icon>
                                     </a>
+                                    <iron-icon data-page="history" class="drawer-icon"
+                                               icon="icons:date-range"
+                                               drawer-toggle></iron-icon>
                                 </div>
                             </iron-pages>
                         </div>
