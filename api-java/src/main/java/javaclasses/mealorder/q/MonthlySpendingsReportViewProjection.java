@@ -51,27 +51,21 @@ public class MonthlySpendingsReportViewProjection extends Projection<MonthlySpen
     @Subscribe
     void on(PurchaseOrderSent event) {
         final PurchaseOrder purchaseOrder = event.getPurchaseOrder();
-
         final List<UserOrderDetails> userOrderDetailsList = new ArrayList<>();
         final List<DishItem> dishItemList = new ArrayList<>();
         final List<Order> orders = purchaseOrder.getOrderList();
 
-        for (int i = 0; i < orders.size(); i++) {
-            final UserId userId = orders.get(i)
-                                        .getId()
-                                        .getUserId();
-            final List<Dish> dishList = orders.get(i)
-                                              .getDishList();
-            for (int j = 0; j < dishList.size(); j++) {
+        for (Order order : orders) {
+            final UserId userId = order.getId()
+                                       .getUserId();
+            final List<Dish> dishList = order.getDishList();
+            for (Dish aDishList : dishList) {
                 final DishItem dishItem = DishItem.newBuilder()
-                                                  .setId(dishList.get(j)
-                                                                 .getId())
-                                                  .setName(dishList.get(j)
-                                                                   .getName())
+                                                  .setId(aDishList.getId())
+                                                  .setName(aDishList.getName())
                                                   .setPrice(Money.newBuilder()
-                                                                 .setAmount(dishList.get(j)
-                                                                                    .getPrice()
-                                                                                    .getAmount())
+                                                                 .setAmount(aDishList.getPrice()
+                                                                                     .getAmount())
                                                                  .build())
                                                   .build();
                 dishItemList.add(dishItem);
@@ -83,36 +77,25 @@ public class MonthlySpendingsReportViewProjection extends Projection<MonthlySpen
             userOrderDetailsList.add(userOrderDetails);
         }
         getBuilder().addAllOrder(userOrderDetailsList);
-
     }
 
     @Subscribe
     void on(PurchaseOrderDelivered event) {
         final List<UserSpendings> userSpendingsList = new ArrayList<>();
+        final List<UserOrderDetails> userOrderDetailsList = getBuilder().getOrder();
 
-        for (int i = 0; i < getBuilder().getOrder()
-                                        .size(); i++) {
-
+        for (UserOrderDetails userOrderDetails : userOrderDetailsList) {
             long money = 0;
-            for (int j = 0; j < getBuilder().getOrder()
-                                            .get(i)
-                                            .getDishList()
-                                            .size(); j++) {
-                money += getBuilder().getOrder()
-                                     .get(j)
-                                     .getDish(j)
-                                     .getPrice()
-                                     .getAmount();
+            for (DishItem dishItem : userOrderDetails.getDishList()) {
+                money += dishItem.getPrice()
+                                 .getAmount();
             }
-
             final Money usersMoney = Money.newBuilder()
                                           .setAmount(money)
                                           .build();
 
             final UserSpendings userSpendings = UserSpendings.newBuilder()
-                                                             .setId(getBuilder().getOrder()
-                                                                                .get(i)
-                                                                                .getId())
+                                                             .setId(userOrderDetails.getId())
                                                              .setAmount(usersMoney)
                                                              .build();
             userSpendingsList.add(userSpendings);
