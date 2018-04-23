@@ -227,7 +227,7 @@ message PurchaseOrderDelivered {
 //
 message PurchaseOrderSent {
 
-    // The identifier of a purchase order.
+    // Purchase order.
     PurchaseOrder purchase_order = 1;
 
     // Was sent at this time.
