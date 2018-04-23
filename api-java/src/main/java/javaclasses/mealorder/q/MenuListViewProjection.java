@@ -20,9 +20,11 @@
 
 package javaclasses.mealorder.q;
 
+import com.google.protobuf.Timestamp;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import io.spine.time.LocalDate;
+import javaclasses.mealorder.CategoryName;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuForDay;
@@ -36,8 +38,11 @@ import javaclasses.mealorder.q.projection.MenuListViewVBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 import static javaclasses.mealorder.q.Projections.getDatesBetween;
+import static javaclasses.mealorder.q.Projections.timeStampToLocalDate;
 
 public class MenuListViewProjection extends Projection<MenuListId, MenuListView, MenuListViewVBuilder> {
 
@@ -57,19 +62,14 @@ public class MenuListViewProjection extends Projection<MenuListId, MenuListView,
                                                 .setValue(event.getVendorId()
                                                                .getValue())
                                                 .build();
-        final Iterable<? extends DishesByCategory> allDishesByCategories = getAllDishesByCategories(
+        final List<DishesByCategory> allDishesByCategories = getAllDishesByCategories(
                 event.getDishList());
         final MenuItem menuItem = MenuItem.newBuilder()
                                           .setVendorName(vendorName)
                                           .addAllDishesByCategory(allDishesByCategories)
                                           .build();
         getBuilder().addMenu(menuItem);
-        // Todo : Pasha from Timestamp to LocalDate or change proto files
-//        final MenuListId menuListId = MenuListId.newBuilder()
-//                                           .setDate(event.getWhenImported()
-//                                                         .getSeconds()))
-//                                           .build();
-//        getBuilder().setListId(menuListId);
+
     }
 
     @Subscribe
@@ -89,6 +89,7 @@ public class MenuListViewProjection extends Projection<MenuListId, MenuListView,
                                                  .build();
             final MenuForDay menuForDay = MenuForDay.newBuilder()
                                                     .setDate(localDate)
+                                                    .setIsAvailable(true)
                                                     .build();
             menuDays.add(menuForDay);
         });
@@ -101,11 +102,72 @@ public class MenuListViewProjection extends Projection<MenuListId, MenuListView,
 
     @Subscribe
     void on(PurchaseOrderCreated event) {
-        //Todo: pasha disables menus
+        final List<MenuItem> newMenu = getBuilder().getMenu();
+        for (int i = 0; i < newMenu.size(); i++) {
+            final MenuItem menuItem = newMenu.get(i);
+            final List<MenuForDay> menuDaysList = menuItem.getMenuDaysList();
+            for (int j = 0; j < menuDaysList.size(); j++) {
+                final MenuForDay menuForDay = menuDaysList.get(j);
+                final Timestamp whenCreated = event.getWhenCreated();
+                final LocalDate date = timeStampToLocalDate(whenCreated);
+                if (menuForDay.getDate()
+                              .equals(date)) {
+                    final MenuForDay newMenuForDay = MenuForDay.newBuilder()
+                                                               .setDate(date)
+                                                               .setIsAvailable(false)
+                                                               .build();
+                    menuDaysList.set(j, newMenuForDay);
+                }
+            }
+            final MenuItem newMenuItem = MenuItem.newBuilder(menuItem)
+                                                 .clearMenuDays()
+                                                 .addAllMenuDays(menuDaysList)
+                                                 .build();
+            newMenu.set(i, newMenuItem);
+        }
+        getBuilder().clearMenu()
+                    .addAllMenu(newMenu);
     }
 
-    private Iterable<? extends DishesByCategory> getAllDishesByCategories(
+    private List<DishesByCategory> getAllDishesByCategories(
             List<Dish> dishList) {
-        return null;
+        final List<DishesByCategory> dishesByCategoryList = new ArrayList<>();
+        dishList.forEach(dish -> {
+            final int index = categoryIndex(dishesByCategoryList, dish.getCategory());
+            final DishItem newDish = DishItem.newBuilder()
+                                             .setId(dish.getId())
+                                             .setName(dish.getName())
+                                             .setPrice(dish.getPrice())
+                                             .build();
+            if (index == -1) {
+                final CategoryName category = CategoryName.newBuilder()
+                                                          .setValue(dish.getCategory())
+                                                          .build();
+
+                final DishesByCategory dishesByCategory = DishesByCategory.newBuilder()
+                                                                          .setCategory(category)
+                                                                          .addDishes(newDish)
+                                                                          .build();
+                dishesByCategoryList.add(dishesByCategory);
+            } else {
+                final DishesByCategory newDishesByCategory = DishesByCategory.newBuilder(
+                        dishesByCategoryList.get(index))
+                                                                             .addDishes(newDish)
+                                                                             .build();
+                dishesByCategoryList.set(index, newDishesByCategory);
+            }
+        });
+        return dishesByCategoryList;
     }
+
+    private int categoryIndex(List<DishesByCategory> dishByCategory, String category) {
+        final OptionalInt optionalInt = IntStream.range(0, dishByCategory.size())
+                                                 .filter(i -> dishByCategory.get(i)
+                                                                            .getCategory()
+                                                                            .getValue()
+                                                                            .equals(category))
+                                                 .findFirst();
+        return optionalInt.isPresent() ? optionalInt.getAsInt() : -1;
+    }
+
 }

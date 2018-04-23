@@ -22,25 +22,15 @@ package javaclasses.mealorder.q.projection;
 
 import com.google.protobuf.Message;
 import io.spine.core.Event;
-import io.spine.core.EventEnvelope;
 import io.spine.server.command.TestEventFactory;
-import io.spine.server.event.EventEnricher;
 import io.spine.server.event.EventFactory;
-import javaclasses.mealorder.testdata.TestEventEnricherFactory;
 
 abstract class ProjectionTest {
 
     private final EventFactory eventFactory = TestEventFactory.newInstance(getClass());
-    private final EventEnricher enricher = TestEventEnricherFactory.eventEnricherInstance();
 
     Event createEvent(Message messageOrAny) {
         final Event event = eventFactory.createEvent(messageOrAny, null);
-        final EventEnvelope envelope = EventEnvelope.of(event);
-        if (!enricher.canBeEnriched(envelope)) {
-            return event;
-        }
-
-        return enricher.enrich(envelope)
-                       .getOuterObject();
+        return event;
     }
 }

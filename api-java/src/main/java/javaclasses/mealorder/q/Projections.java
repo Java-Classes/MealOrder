@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.q;
 
+import com.google.protobuf.Timestamp;
 import io.spine.time.LocalDate;
 
 import java.time.temporal.ChronoUnit;
@@ -56,5 +57,9 @@ final class Projections {
                         .setMonthValue(date.getMonthValue())
                         .setYear(date.getYear())
                         .build();
+    }
+
+    static LocalDate timeStampToLocalDate(Timestamp timestamp) {
+        return null;
     }
 }

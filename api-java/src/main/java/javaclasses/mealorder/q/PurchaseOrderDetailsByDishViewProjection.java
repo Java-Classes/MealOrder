@@ -73,7 +73,7 @@ public class PurchaseOrderDetailsByDishViewProjection extends Projection<Purchas
     }
 
     private List<DishItem> getDishItems(List<Order> orderList) {
-        List<DishItem> dishItems = new ArrayList<>();
+        final List<DishItem> dishItems = new ArrayList<>();
         orderList.forEach(order ->
                                   order.getDishList()
                                        .forEach(dish -> {
