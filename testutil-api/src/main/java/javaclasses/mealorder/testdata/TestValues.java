@@ -127,6 +127,11 @@ public class TestValues {
                                                .setWhenImported(getCurrentTime())
                                                .build();
 
+    public static final MenuId MENU_ID2 = MenuId.newBuilder()
+                                                .setVendorId(VENDOR_ID2)
+                                                .setWhenImported(getCurrentTime())
+                                                .build();
+
     public static final MenuId NONEXISTENT_MENU_ID = MenuId.newBuilder()
                                                            .setVendorId(VENDOR_ID)
                                                            .setWhenImported(
@@ -219,6 +224,73 @@ public class TestValues {
                                          .setPrice(Money.getDefaultInstance())
                                          .build();
 
+    public static final Dish DISH3 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Картофель")
+                                         .setCategory("Второе блюдо")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(56)
+                                                        .build())
+                                         .build();
+    public static final Dish DISH4 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Борщ украинский")
+                                         .setCategory("Первое блюдо")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(33)
+                                                        .build())
+                                         .build();
+    public static final Dish DISH5 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Стейк из лосося")
+                                         .setCategory("Второе блюдо")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(80)
+                                                        .build())
+                                         .build();
+    public static final Dish DISH6 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Компот из сухофруктов")
+                                         .setCategory("Напитки")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(10)
+                                                        .build())
+                                         .build();
+    public static final Dish DISH7 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Скумбрия на гриле")
+                                         .setCategory("Второе блюдо")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(10)
+                                                        .build())
+                                         .build();
+    public static final Dish DISH8 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Суп гороховый")
+                                         .setCategory("Первое блюдо")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(10)
+                                                        .build())
+                                         .build();
+
     public static final LocalDate DATE = LocalDate.newBuilder()
                                                   .setYear(
                                                           2019)
@@ -275,6 +347,19 @@ public class TestValues {
                                            .setStatus(ORDER_ACTIVE)
                                            .build();
     public static final List<Order> BIG_ORDER = createOrder();
+    public static final List<Dish> BIG_MENU = createMenu();
+
+    private static List<Dish> createMenu() {
+        final List<Dish> menu = new ArrayList<>();
+        menu.add(DISH3);
+        menu.add(DISH4);
+        menu.add(DISH5);
+        menu.add(DISH6);
+        menu.add(DISH7);
+        menu.add(DISH8);
+
+        return menu;
+    }
 
     private static List<Order> createOrder() {
         List<Order> orders = new ArrayList<>();

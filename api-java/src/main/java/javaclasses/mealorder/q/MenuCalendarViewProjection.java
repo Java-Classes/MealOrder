@@ -22,9 +22,8 @@ package javaclasses.mealorder.q;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
+import javaclasses.mealorder.MenuCalendarId;
 import javaclasses.mealorder.MenuDateRange;
-import javaclasses.mealorder.MenuId;
-import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.q.projection.MenuCalendarView;
 import javaclasses.mealorder.q.projection.MenuCalendarViewVBuilder;
@@ -35,7 +34,7 @@ import java.util.List;
 import static javaclasses.mealorder.q.Projections.getDatesBetween;
 import static javaclasses.mealorder.q.Projections.toLocalDate;
 
-public class MenuCalendarViewProjection extends Projection<MenuId, MenuCalendarView, MenuCalendarViewVBuilder> {
+public class MenuCalendarViewProjection extends Projection<MenuCalendarId, MenuCalendarView, MenuCalendarViewVBuilder> {
 
     /**
      * {@link MenuCalendarViewProjection} is a singleton.
@@ -43,11 +42,10 @@ public class MenuCalendarViewProjection extends Projection<MenuId, MenuCalendarV
      * <p>The {@code ID} value should be the same for all JVMs
      * to support work with the same projection from execution to execution.
      */
-    public static final MenuId ID = MenuId.newBuilder()
-                                          .setVendorId(VendorId.newBuilder()
-                                                               .setValue(
-                                                                       "MenuCalendarViewProjectionSingleton"))
-                                          .build();
+    public static final MenuCalendarId ID = MenuCalendarId.newBuilder()
+                                                          .setValue(
+                                                                  "MenuCalendarViewProjectionSingleton")
+                                                          .build();
 
     /**
      * Creates a new instance.
@@ -55,7 +53,7 @@ public class MenuCalendarViewProjection extends Projection<MenuId, MenuCalendarV
      * @param id the ID for the new instance
      * @throws IllegalArgumentException if the ID is not of one of the supported types
      */
-    public MenuCalendarViewProjection(MenuId id) {
+    public MenuCalendarViewProjection(MenuCalendarId id) {
         super(id);
     }
 

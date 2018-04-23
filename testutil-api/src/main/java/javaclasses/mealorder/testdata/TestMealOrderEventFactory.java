@@ -22,6 +22,7 @@ package javaclasses.mealorder.testdata;
 
 import com.google.protobuf.Timestamp;
 import io.spine.net.EmailAddress;
+import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
@@ -31,6 +32,7 @@ import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
+import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
@@ -135,6 +137,25 @@ public class TestMealOrderEventFactory {
                                        .setWhenSet(currentTime)
                                        .setMenuDateRange(menuDateRange)
                                        .build();
+            return result;
+        }
+
+        public static MenuImported menuImportedInstance() {
+            return menuImportedInstance(TestValues.VENDOR_ID, TestValues.MENU_ID,
+                                        TestValues.USER_ID, TestValues.BIG_MENU);
+        }
+
+        private static MenuImported menuImportedInstance(VendorId vendorId, MenuId menuId,
+                                                         UserId whoImported, List<Dish> dishes) {
+            final Timestamp currentTime = getCurrentTime();
+            final MenuImported result =
+                    MenuImported.newBuilder()
+                                .setVendorId(vendorId)
+                                .setMenuId(menuId)
+                                .setWhoImported(whoImported)
+                                .setWhenImported(currentTime)
+                                .addAllDish(dishes)
+                                .build();
             return result;
         }
     }

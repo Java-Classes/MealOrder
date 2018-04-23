@@ -23,6 +23,8 @@ package javaclasses.mealorder.q;
 import io.spine.core.Subscribe;
 import io.spine.money.Money;
 import io.spine.server.projection.Projection;
+import javaclasses.mealorder.MonthlySpendingsReportId;
+import javaclasses.mealorder.PurchaseOrderId;
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.LocalMonth;
@@ -36,6 +38,7 @@ import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportView;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportViewVBuilder;
 
+public class MonthlySpendingsReportViewProjection extends Projection<MonthlySpendingsReportId, MonthlySpendingsReportView, MonthlySpendingsReportViewVBuilder> {
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +50,7 @@ public class MonthlySpendingsReportViewProjection extends Projection<MenuListId,
      * @param id the ID for the new instance
      * @throws IllegalArgumentException if the ID is not of one of the supported types
      */
-    public MonthlySpendingsReportViewProjection(MenuListId id) {
+    public MonthlySpendingsReportViewProjection(MonthlySpendingsReportId id) {
         super(id);
     }
 
