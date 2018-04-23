@@ -20,20 +20,24 @@
 
 package javaclasses.mealorder.q;
 
-import com.google.protobuf.Timestamp;
 import io.spine.core.Subscribe;
-import io.spine.net.EmailAddress;
+import io.spine.money.Money;
 import io.spine.server.projection.Projection;
+import io.spine.time.LocalDate;
+import javaclasses.mealorder.Dish;
+import javaclasses.mealorder.LocalMonth;
 import javaclasses.mealorder.MenuListId;
 import javaclasses.mealorder.MonthlySpendingsReportId;
+import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
-import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportView;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportViewVBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class MonthlySpendingsReportViewProjection extends Projection<MenuListId, MonthlySpendingsReportView, MonthlySpendingsReportViewVBuilder> {
 
@@ -48,29 +52,80 @@ public class MonthlySpendingsReportViewProjection extends Projection<MenuListId,
     }
 
     @Subscribe
-    void on(PurchaseOrderDelivered event) {
-        final PurchaseOrderId taskId = event.getId();
-        final UserId userId = event.getWhoMarkedAsDelivered();
-        final Timestamp whenDelivered = event.getWhenDelivered();
+    void on(PurchaseOrderSent event) {
+        final PurchaseOrder purchaseOrder = event.getPurchaseOrder();
+        final List<UserOrderDetails> userOrderDetailsList = new ArrayList<>();
+        final List<DishItem> dishItemList = new ArrayList<>();
+        final List<Order> orders = purchaseOrder.getOrderList();
 
-        final UserSpendings userSpendings = UserSpendings.newBuilder().build();
-        final UserOrderDetails userOrderDetails = UserOrderDetails.newBuilder().build();
+        for (int i = 0; i < orders.size(); i++) {
+            final UserId userId = orders.get(i)
+                                        .getId()
+                                        .getUserId();
+            final List<Dish> dishList = orders.get(i)
+                                              .getDishList();
+            for (int j = 0; j < dishList.size(); j++) {
+                final DishItem dishItem = DishItem.newBuilder()
+                                                  .setId(dishList.get(i)
+                                                                 .getId())
+                                                  .setName(dishList.get(i)
+                                                                   .getName())
+                                                  .setPrice(dishItemList.get(i)
+                                                                        .getPrice())
+                                                  .build();
+                dishItemList.add(dishItem);
+            }
+            final UserOrderDetails userOrderDetails = UserOrderDetails.newBuilder()
+                                                                      .setId(userId)
+                                                                      .addAllDish(dishItemList)
+                                                                      .build();
+            userOrderDetailsList.add(userOrderDetails);
+        }
 
-        getBuilder().addUserSpending(userSpendings);
-        getBuilder().addOrder(userOrderDetails);
+        final LocalDate localDate = purchaseOrder.getId()
+                                                 .getPoDate();
+        final LocalMonth localMonth = LocalMonth.newBuilder()
+                                                .setMonth(localDate.getMonth())
+                                                .setYear(localDate.getYear())
+                                                .build();
+
+        getBuilder().setReportId(MonthlySpendingsReportId.newBuilder()
+                                                         .setMonth(localMonth)
+                                                         .build());
+        getBuilder().addAllOrder(userOrderDetailsList);
     }
 
     @Subscribe
-    void on(PurchaseOrderSent event) {
-        final PurchaseOrder purchaseOrder = event.getPurchaseOrder();
-        final Timestamp whenSent = event.getWhenSent();
-        final EmailAddress senderEmail = event.getSenderEmail();
-        final EmailAddress vendorEmail = event.getVendorEmail();
+    void on(PurchaseOrderDelivered event) {
+        final List<UserSpendings> userSpendingsList = new ArrayList<>();
 
-        final UserSpendings userSpendings = UserSpendings.newBuilder().build();
-        final UserOrderDetails userOrderDetails = UserOrderDetails.newBuilder().build();
+        for (int i = 0; i < getBuilder().getOrder()
+                                        .size(); i++) {
 
-        getBuilder().addUserSpending(userSpendings);
-        getBuilder().addOrder(userOrderDetails);
+            long money = 0;
+            for (int j = 0; j < getBuilder().getOrder()
+                                            .get(i)
+                                            .getDishList()
+                                            .size(); j++) {
+                money += getBuilder().getOrder()
+                                     .get(j)
+                                     .getDish(j)
+                                     .getPrice()
+                                     .getAmount();
+            }
+
+            final Money usersMoney = Money.newBuilder()
+                                          .setAmount(money)
+                                          .build();
+
+            final UserSpendings userSpendings = UserSpendings.newBuilder()
+                                                             .setId(getBuilder().getOrder()
+                                                                                .get(i)
+                                                                                .getId())
+                                                             .setAmount(usersMoney)
+                                                             .build();
+            userSpendingsList.add(userSpendings);
+        }
+        getBuilder().addAllUserSpending(userSpendingsList);
     }
 }
