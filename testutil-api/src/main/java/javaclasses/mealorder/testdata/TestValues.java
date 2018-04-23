@@ -211,7 +211,9 @@ public class TestValues {
                                                       .build())
                                          .setName("dishName1")
                                          .setCategory("category")
-                                         .setPrice(Money.getDefaultInstance())
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(56)
+                                                        .build())
                                          .build();
 
     public static final Dish DISH2 = Dish.newBuilder()
@@ -221,7 +223,9 @@ public class TestValues {
                                                       .build())
                                          .setName("dishName2")
                                          .setCategory("category")
-                                         .setPrice(Money.getDefaultInstance())
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(56)
+                                                        .build())
                                          .build();
 
     public static final Dish DISH3 = Dish.newBuilder()

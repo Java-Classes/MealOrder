@@ -24,12 +24,7 @@ import io.spine.core.Subscribe;
 import io.spine.money.Money;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.MonthlySpendingsReportId;
-import javaclasses.mealorder.PurchaseOrderId;
-import io.spine.time.LocalDate;
 import javaclasses.mealorder.Dish;
-import javaclasses.mealorder.LocalMonth;
-import javaclasses.mealorder.MenuListId;
-import javaclasses.mealorder.MonthlySpendingsReportId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.UserId;
@@ -38,11 +33,10 @@ import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportView;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportViewVBuilder;
 
-public class MonthlySpendingsReportViewProjection extends Projection<MonthlySpendingsReportId, MonthlySpendingsReportView, MonthlySpendingsReportViewVBuilder> {
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonthlySpendingsReportViewProjection extends Projection<MenuListId, MonthlySpendingsReportView, MonthlySpendingsReportViewVBuilder> {
+public class MonthlySpendingsReportViewProjection extends Projection<MonthlySpendingsReportId, MonthlySpendingsReportView, MonthlySpendingsReportViewVBuilder> {
 
     /**
      * Creates a new instance.
@@ -57,6 +51,7 @@ public class MonthlySpendingsReportViewProjection extends Projection<MenuListId,
     @Subscribe
     void on(PurchaseOrderSent event) {
         final PurchaseOrder purchaseOrder = event.getPurchaseOrder();
+
         final List<UserOrderDetails> userOrderDetailsList = new ArrayList<>();
         final List<DishItem> dishItemList = new ArrayList<>();
         final List<Order> orders = purchaseOrder.getOrderList();
@@ -69,12 +64,15 @@ public class MonthlySpendingsReportViewProjection extends Projection<MenuListId,
                                               .getDishList();
             for (int j = 0; j < dishList.size(); j++) {
                 final DishItem dishItem = DishItem.newBuilder()
-                                                  .setId(dishList.get(i)
+                                                  .setId(dishList.get(j)
                                                                  .getId())
-                                                  .setName(dishList.get(i)
+                                                  .setName(dishList.get(j)
                                                                    .getName())
-                                                  .setPrice(dishItemList.get(i)
-                                                                        .getPrice())
+                                                  .setPrice(Money.newBuilder()
+                                                                 .setAmount(dishList.get(j)
+                                                                                    .getPrice()
+                                                                                    .getAmount())
+                                                                 .build())
                                                   .build();
                 dishItemList.add(dishItem);
             }
@@ -84,18 +82,8 @@ public class MonthlySpendingsReportViewProjection extends Projection<MenuListId,
                                                                       .build();
             userOrderDetailsList.add(userOrderDetails);
         }
-
-        final LocalDate localDate = purchaseOrder.getId()
-                                                 .getPoDate();
-        final LocalMonth localMonth = LocalMonth.newBuilder()
-                                                .setMonth(localDate.getMonth())
-                                                .setYear(localDate.getYear())
-                                                .build();
-
-        getBuilder().setReportId(MonthlySpendingsReportId.newBuilder()
-                                                         .setMonth(localMonth)
-                                                         .build());
         getBuilder().addAllOrder(userOrderDetailsList);
+
     }
 
     @Subscribe
