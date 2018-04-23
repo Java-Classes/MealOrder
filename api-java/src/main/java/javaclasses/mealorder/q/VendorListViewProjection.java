@@ -23,6 +23,7 @@ package javaclasses.mealorder.q;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.VendorListId;
 import javaclasses.mealorder.c.event.VendorAdded;
 import javaclasses.mealorder.c.event.VendorUpdated;
 import javaclasses.mealorder.q.projection.VendorListView;
@@ -34,7 +35,7 @@ import java.util.stream.IntStream;
 /**
  * @author Alexander Karpets
  */
-public class VendorListViewProjection extends Projection<VendorId, VendorListView, VendorListViewVBuilder> {
+public class VendorListViewProjection extends Projection<VendorListId, VendorListView, VendorListViewVBuilder> {
 
     /**
      * {@link VendorListViewProjection} is a singleton.
@@ -42,9 +43,9 @@ public class VendorListViewProjection extends Projection<VendorId, VendorListVie
      * <p>The {@code ID} value should be the same for all JVMs
      * to support work with the same projection from execution to execution.
      */
-    public static final VendorId ID = VendorId.newBuilder()
-                                              .setValue("VendorListViewProjectionSingleton")
-                                              .build();
+    public static final VendorListId ID = VendorListId.newBuilder()
+                                                      .setValue("VendorListViewProjectionSingleton")
+                                                      .build();
 
     /**
      * Creates a new instance.
@@ -52,7 +53,7 @@ public class VendorListViewProjection extends Projection<VendorId, VendorListVie
      * @param id the ID for the new instance
      * @throws IllegalArgumentException if the ID is not of one of the supported types
      */
-    public VendorListViewProjection(VendorId id) {
+    public VendorListViewProjection(VendorListId id) {
         super(id);
     }
 

@@ -23,8 +23,8 @@ package javaclasses.mealorder.q;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.PurchaseOrderId;
+import javaclasses.mealorder.PurchaseOrderListId;
 import javaclasses.mealorder.PurchaseOrderStatus;
-import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
@@ -34,7 +34,7 @@ import javaclasses.mealorder.q.projection.PurchaseOrderListViewVBuilder;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class PurchaseOrderListViewProjection extends Projection<PurchaseOrderId, PurchaseOrderListView, PurchaseOrderListViewVBuilder> {
+public class PurchaseOrderListViewProjection extends Projection<PurchaseOrderListId, PurchaseOrderListView, PurchaseOrderListViewVBuilder> {
 
     /**
      * {@link MenuCalendarViewProjection} is a singleton.
@@ -42,11 +42,10 @@ public class PurchaseOrderListViewProjection extends Projection<PurchaseOrderId,
      * <p>The {@code ID} value should be the same for all JVMs
      * to support work with the same projection from execution to execution.
      */
-    public static final PurchaseOrderId ID = PurchaseOrderId.newBuilder()
-                                                            .setVendorId(VendorId.newBuilder()
-                                                                                 .setValue(
-                                                                                         "PurchaseOrderListViewProjectionSingleton"))
-                                                            .build();
+    public static final PurchaseOrderListId ID = PurchaseOrderListId.newBuilder()
+                                                                    .setValue(
+                                                                            "PurchaseOrderListViewProjectionSingleton")
+                                                                    .build();
 
     /**
      * Creates a new instance.
@@ -54,7 +53,7 @@ public class PurchaseOrderListViewProjection extends Projection<PurchaseOrderId,
      * @param id the ID for the new instance
      * @throws IllegalArgumentException if the ID is not of one of the supported types
      */
-    public PurchaseOrderListViewProjection(PurchaseOrderId id) {
+    public PurchaseOrderListViewProjection(PurchaseOrderListId id) {
         super(id);
     }
 

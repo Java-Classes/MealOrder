@@ -26,7 +26,7 @@ import io.spine.time.LocalDate;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuForDay;
-import javaclasses.mealorder.MenuId;
+import javaclasses.mealorder.MenuListId;
 import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.MenuImported;
@@ -39,7 +39,7 @@ import java.util.List;
 
 import static javaclasses.mealorder.q.Projections.getDatesBetween;
 
-public class MenuListViewProjection extends Projection<MenuId, MenuListView, MenuListViewVBuilder> {
+public class MenuListViewProjection extends Projection<MenuListId, MenuListView, MenuListViewVBuilder> {
 
     /**
      * Creates a new instance.
@@ -47,7 +47,7 @@ public class MenuListViewProjection extends Projection<MenuId, MenuListView, Men
      * @param id the ID for the new instance
      * @throws IllegalArgumentException if the ID is not of one of the supported types
      */
-    public MenuListViewProjection(MenuId id) {
+    public MenuListViewProjection(MenuListId id) {
         super(id);
     }
 

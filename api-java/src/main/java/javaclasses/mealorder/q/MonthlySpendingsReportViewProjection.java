@@ -23,14 +23,13 @@ package javaclasses.mealorder.q;
 import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
-import javaclasses.mealorder.MenuListId;
+import javaclasses.mealorder.MonthlySpendingsReportId;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportView;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportViewVBuilder;
 
-
-public class MonthlySpendingsReportViewProjection extends Projection<MenuListId, MonthlySpendingsReportView, MonthlySpendingsReportViewVBuilder> {
+public class MonthlySpendingsReportViewProjection extends Projection<MonthlySpendingsReportId, MonthlySpendingsReportView, MonthlySpendingsReportViewVBuilder> {
 
     /**
      * Creates a new instance.
@@ -38,7 +37,7 @@ public class MonthlySpendingsReportViewProjection extends Projection<MenuListId,
      * @param id the ID for the new instance
      * @throws IllegalArgumentException if the ID is not of one of the supported types
      */
-    public MonthlySpendingsReportViewProjection(MenuListId id) {
+    public MonthlySpendingsReportViewProjection(MonthlySpendingsReportId id) {
         super(id);
     }
 

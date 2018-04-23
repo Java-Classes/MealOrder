@@ -38,7 +38,7 @@ import java.util.Optional;
 /**
  * @author Alexander Karpets
  */
-public class OrderListViewProjection extends Projection<OrderId, OrderListView, OrderListViewVBuilder> {
+public class OrderListViewProjection extends Projection<OrderListId, OrderListView, OrderListViewVBuilder> {
 
     /**
      * Creates a new instance.
@@ -46,7 +46,7 @@ public class OrderListViewProjection extends Projection<OrderId, OrderListView, 
      * @param id the ID for the new instance
      * @throws IllegalArgumentException if the ID is not of one of the supported types
      */
-    public OrderListViewProjection(OrderId id) {
+    public OrderListViewProjection(OrderListId id) {
         super(id);
     }
 
