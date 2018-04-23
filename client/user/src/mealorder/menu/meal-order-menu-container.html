@@ -102,7 +102,7 @@
     </template>
     <script>
         /**
-         * menu-order is container for vendors' menus and navigation.
+         * menu-order is container for the vendors' menus and navigation.
          *
          * Contains a menu for the current date and tabs for quick date navigation.
          *
@@ -163,18 +163,14 @@
                  * @param {date} selected date by tab
                  */
                 return {
-                    changeCurrentMenu: date => {
-                        return {
-                            type: MealOrderApp.UserAction.SET_CURRENT_MENU,
-                            date
-                        }
-                    },
-                    changeCurrentCart: date => {
-                        return {
-                            type: MealOrderApp.UserAction.SET_CURRENT_CART,
-                            date
-                        }
-                    }
+                    changeCurrentMenu: date => ({
+                        type: MealOrderApp.UserAction.SET_CURRENT_MENU,
+                        date
+                    }),
+                    changeCurrentCart: date => ({
+                        type: MealOrderApp.UserAction.SET_CURRENT_CART,
+                        date
+                    })
                 }
             }
 

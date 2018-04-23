@@ -64,9 +64,10 @@
     </template>
     <script>
         /**
-         * meal-order-drawer is container for user's order and user's order history calendar.
+         * meal-order-drawer is the container for the user's order and
+         * the calendar of the history of the user's orders.
          *
-         * Contains a order for selected day and calendar.
+         * Contains an order for the selected day and calendar.
          *
          * @customElement
          * @polymer
@@ -89,17 +90,23 @@
                     /**
                      * Date that the user can select on the calendar.
                      */
-                    inputDate: {},
+                    inputDate: {
+                        type: Date,
+                    },
 
                     /**
                      * Chosen day.
                      */
-                    outputDate: {},
+                    outputDate: {
+                        type: Date,
+                    },
 
                     /**
                      * Used for routing.
                      */
-                    routeData: {},
+                    routeData: {
+                        type: Object,
+                    },
                 }
             }
 

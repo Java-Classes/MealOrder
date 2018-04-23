@@ -43,9 +43,6 @@
 </test-fixture>
 
 <script>
-    /*global MealOrderDrawer, MealOrderMenuContainer*/
-    /*eslint no-undef: "error"*/
-
     function setLocation(url) {
         window.history.pushState({}, '', url);
         Polymer.Base.fire('location-changed', {}, {node: window});
