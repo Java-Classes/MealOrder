@@ -88,7 +88,7 @@ public class TestMealOrderEventFactory {
                     PurchaseOrderDelivered.newBuilder()
                                           .setId(purchaseOrderId)
                                           .setWhoMarkedAsDelivered(userId)
-                                          .setWhenDelievered(currentTime)
+                                          .setWhenDelivered(currentTime)
                                           .build();
             return result;
         }

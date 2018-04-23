@@ -61,7 +61,6 @@ public class MenuCalendarViewProjection extends Projection<MenuId, MenuCalendarV
 
     @Subscribe
     void on(DateRangeForMenuSet event) {
-        final MenuDateRange menuDateRange = event.getMenuDateRange();
         final List<LocalDate> datesBetween = getDatesBetween(event.getMenuDateRange()
                                                                   .getRangeStart(),
                                                              event.getMenuDateRange()

@@ -20,12 +20,17 @@
 
 package javaclasses.mealorder.q;
 
-import io.spine.core.EventContext;
+import com.google.protobuf.Timestamp;
 import io.spine.core.Subscribe;
+import io.spine.net.EmailAddress;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.MenuListId;
+import javaclasses.mealorder.MonthlySpendingsReportId;
+import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
+import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
+import javaclasses.mealorder.c.event.PurchaseOrderSent;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportView;
 import javaclasses.mealorder.q.projection.MonthlySpendingsReportViewVBuilder;
 
@@ -42,9 +47,30 @@ public class MonthlySpendingsReportViewProjection extends Projection<MenuListId,
         super(id);
     }
 
-    //todo: pasha
     @Subscribe
-    void on(PurchaseOrderDelivered event, EventContext context) {
+    void on(PurchaseOrderDelivered event) {
         final PurchaseOrderId taskId = event.getId();
+        final UserId userId = event.getWhoMarkedAsDelivered();
+        final Timestamp whenDelivered = event.getWhenDelivered();
+
+        final UserSpendings userSpendings = UserSpendings.newBuilder().build();
+        final UserOrderDetails userOrderDetails = UserOrderDetails.newBuilder().build();
+
+        getBuilder().addUserSpending(userSpendings);
+        getBuilder().addOrder(userOrderDetails);
+    }
+
+    @Subscribe
+    void on(PurchaseOrderSent event) {
+        final PurchaseOrder purchaseOrder = event.getPurchaseOrder();
+        final Timestamp whenSent = event.getWhenSent();
+        final EmailAddress senderEmail = event.getSenderEmail();
+        final EmailAddress vendorEmail = event.getVendorEmail();
+
+        final UserSpendings userSpendings = UserSpendings.newBuilder().build();
+        final UserOrderDetails userOrderDetails = UserOrderDetails.newBuilder().build();
+
+        getBuilder().addUserSpending(userSpendings);
+        getBuilder().addOrder(userOrderDetails);
     }
 }
