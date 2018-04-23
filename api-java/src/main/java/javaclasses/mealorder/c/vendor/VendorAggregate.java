@@ -79,6 +79,7 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
                                                    .setEmail(cmd.getEmail())
                                                    .addAllPhoneNumber(cmd.getPhoneNumberList())
                                                    .setPoDailyDeadline(cmd.getPoDailyDeadline())
+                                                   .setWhenAdded(getCurrentTime())
                                                    .build();
         return vendorAdded;
     }

@@ -99,6 +99,7 @@ public class OrderAggregate extends Aggregate<OrderId,
         final OrderCreated result = OrderCreated.newBuilder()
                                                 .setOrderId(orderId)
                                                 .setMenuId(menuId)
+                                                .setWhenCreated(getCurrentTime())
                                                 .build();
         return result;
     }
@@ -125,6 +126,7 @@ public class OrderAggregate extends Aggregate<OrderId,
         final DishAddedToOrder result = DishAddedToOrder.newBuilder()
                                                         .setOrderId(orderId)
                                                         .setDish(dish)
+                                                        .setWhenAdded(getCurrentTime())
                                                         .build();
         return result;
     }
@@ -145,6 +147,7 @@ public class OrderAggregate extends Aggregate<OrderId,
         DishRemovedFromOrder result = DishRemovedFromOrder.newBuilder()
                                                           .setOrderId(orderId)
                                                           .setDish(dish)
+                                                          .setWhenRemoved(getCurrentTime())
                                                           .build();
         return result;
     }

@@ -94,12 +94,20 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
 
     @Subscribe
     void on(OrderCanceled event) {
-        getBuilder().clearOrder();
+        final OrderItem order = getOrderById(event.getOrderId());
+        getBuilder().removeOrder(getBuilder().getOrder()
+                                             .indexOf(order));
     }
 
     @Subscribe
+
     void on(OrderProcessed event) {
-        getBuilder().setProcessed(true);
+        final OrderItem order = getOrderById(event.getOrder()
+                                                  .getId());
+        getBuilder().setOrder(getBuilder().getOrder()
+                                          .indexOf(order), OrderItem.newBuilder(order)
+                                                                    .setIsProcessed(true)
+                                                                    .build());
     }
 
     private OrderItem getOrderById(OrderId orderId) {
