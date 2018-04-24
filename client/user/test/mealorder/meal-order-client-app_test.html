@@ -32,7 +32,6 @@
     <script src="../../node_modules/redux/dist/redux.js"></script>
     <script src="test_variables.js"></script>
     <link rel="import" href="../../src/mealorder/meal-order-client-app.html">
-    <link rel="import" href="./meal-order-app-test-namespace.html">
 </head>
 <body>
 
@@ -139,7 +138,7 @@
         test('should instantiate the `meal-order-drawer` component', function (done) {
             const elementShadowRoot = component.shadowRoot;
             const drawer = elementShadowRoot.querySelector("meal-order-drawer");
-            assert.equal(drawer.tagName.toLocaleLowerCase(), MealOrderAppTest.MealOrderDrawer.is);
+            assert.equal(drawer.tagName.toLocaleLowerCase(), "meal-order-drawer");
             done();
         });
 
@@ -148,7 +147,7 @@
             setLocation('/#/menu/2018-03-23');
             const pages = component.shadowRoot.querySelector('#app-header-layout-iron');
             pages.forceSynchronousItemUpdate();
-            assert.equal(pages.selectedItem.tagName.toLocaleLowerCase(), MealOrderAppTest.MealOrderMenuContainer.is);
+            assert.equal(pages.selectedItem.tagName.toLocaleLowerCase(), "meal-order-menu-container");
         });
 
     });
