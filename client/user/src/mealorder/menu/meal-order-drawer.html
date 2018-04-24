@@ -25,29 +25,12 @@
 <dom-module id="meal-order-drawer">
     <template>
         <style>
-            #date-picker {
-                --app-datepicker-selection-bg: var(--paper-grey-50);
-                --app-datepicker-selection-color: var(--google-grey-700);
-                --app-datepicker-iron-selected: var(--google-grey-700);
-                --app-datepicker-selected-day-bg: var(--paper-light-blue-500);
-                --app-datepicker-today-color: var(--paper-light-blue-500);
-                --app-datepicker-date-hover-background-color: var(--paper-light-blue-500);
-
-                --app-datepicker-selected-date: {
-                    font-weight: normal;
-                    font-size: 22px;
-                };
-
-                --app-datepicker-selected-year: {
-                    font-weight: normal;
-                }
-            }
-
             .app-toolbar-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                width: 100%
+                width: 100%;
+                z-index: 1;
             }
 
             .app-toolbar-header .app-toolbar-content {
@@ -62,6 +45,27 @@
 
             #day-of-the-week {
                 font-size: 22px;
+            }
+
+            #date-picker {
+                z-index: 0;
+                position: absolute;
+                top: 84px;
+
+                --app-datepicker-selection-bg: var(--paper-grey-50);
+                --app-datepicker-selection-color: var(--google-grey-700);
+                --app-datepicker-iron-selected: var(--google-grey-700);
+                --app-datepicker-selected-day-bg: var(--paper-light-blue-500);
+                --app-datepicker-today-color: var(--paper-light-blue-500);
+                --app-datepicker-date-hover-background-color: var(--paper-light-blue-500);
+
+                --app-datepicker-selected-date: {
+                   display: none;
+                };
+
+                --app-datepicker-selected-year: {
+                    display: none;
+                };
             }
 
         </style>
@@ -79,7 +83,6 @@
                 attr-for-selected="data-page"
                 fallback-selection="view404"
                 role="main">
-
             <div data-page="menu">
                 <app-toolbar>
                     <div class="app-toolbar-header">
@@ -107,7 +110,7 @@
     </template>
     <script>
         /**
-         * meal-order-drawer is the container for the user's order and
+         * meal-order-drawer is container for the user's order and
          * the calendar of the history of the user's orders.
          *
          * Contains an order for the selected day and calendar.
