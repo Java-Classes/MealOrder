@@ -26,79 +26,78 @@
         /*global Utils */
         const arrayOfDates = [{
             date: {
-                year: '2018',
-                month: '03',
-                day: '21',
+                year: 2018,
+                month: 3,
+                day: 21,
             },
             dayOfTheWeek: 'Ср',
             hasMenu: true
         },
             {
                 date: {
-                    year: '2018',
-                    month: '03',
-                    day: '22',
+                    year: 2018,
+                    month: 3,
+                    day: 22,
                 },
                 dayOfTheWeek: 'Чт',
                 hasMenu: true
             },
             {
                 date: {
-                    year: '2018',
-                    month: '03',
-                    day: '23',
+                    year: 2018,
+                    month: 3,
+                    day: 23,
                 },
                 dayOfTheWeek: 'Пт',
                 hasMenu: true
             },
             {
                 date: {
-                    year: '2018',
-                    month: '03',
-                    day: '24',
+                    year: 2018,
+                    month: 3,
+                    day: 24,
                 },
                 dayOfTheWeek: 'Сб',
                 hasMenu: false
             },
             {
                 date: {
-                    year: '2018',
-                    month: '03',
-                    day: '25',
+                    year: 2018,
+                    month: 3,
+                    day: 25,
                 },
                 dayOfTheWeek: 'Вс',
                 hasMenu: false
             }
             , {
                 date: {
-                    year: '2018',
-                    month: '03',
-                    day: '26',
+                    year: 2018,
+                    month: 3,
+                    day: 26,
                 },
                 dayOfTheWeek: 'Пн',
                 hasMenu: true
             }
             , {
                 date: {
-                    year: '2018',
-                    month: '03',
-                    day: '27',
+                    year: 2018,
+                    month: 3,
+                    day: 27,
                 },
                 dayOfTheWeek: 'Вт',
                 hasMenu: true
             }
             , {
                 date: {
-                    year: '2018',
-                    month: '03',
-                    day: '28',
+                    year: 2018,
+                    month: 3,
+                    day: 28,
                 },
                 dayOfTheWeek: 'Ср',
                 hasMenu: true
             }];
 
         MealOrderApp.initialState = {
-
             calendar: arrayOfDates,
             menuForDay: [],
 
@@ -106,9 +105,9 @@
                 {
                     vendor: 'Пюре',
                     date: {
-                        year: '2018',
-                        month: '03',
-                        day: '21',
+                        year: 2018,
+                        month: 3,
+                        day: 21,
                     },
                     categories: [{
                         categoryName: 'Первое блюдо',
@@ -130,9 +129,9 @@
                 {
                     vendor: 'Позитив',
                     date: {
-                        year: '2018',
-                        month: '03',
-                        day: '21',
+                        year: 2018,
+                        month: 3,
+                        day: 21,
                     },
                     categories: [{
                         categoryName: 'Первое блюдо', dishes: [
@@ -153,11 +152,11 @@
                     ]
                 },
                 {
-                    name: 'Пюре',
+                    vendor: 'Пюре',
                     date: {
-                        year: '2018',
-                        month: '03',
-                        day: '22',
+                        year: 2018,
+                        month: 3,
+                        day: 22,
                     },
                     categories: [{
                         categoryName: 'Первое блюдо', dishes: [
@@ -175,11 +174,11 @@
                     ]
                 },
                 {
-                    name: 'Позитив',
+                    vendor: 'Позитив',
                     date: {
-                        year: '2018',
-                        month: '03',
-                        day: '22',
+                        year: 2018,
+                        month: 3,
+                        day: 22,
                     },
                     categories: [{
                         categoryName: 'Первое блюдо', dishes: [
@@ -201,7 +200,11 @@
                 }],
             currentOrder: [],
             orders: [{
-                date: {day: '21', month: '03', year: '2018'},
+                date: {
+                    year: 2018,
+                    month: 3,
+                    day: 21,
+                },
                 cart: [{
                     vendor: "Пюре",
                     dishes: [
@@ -220,8 +223,11 @@
                     }]
                 }]
             }, {
-                date:
-                    {day: '22', month: '03', year: '2018'},
+                date: {
+                    year: 2018,
+                    month: 3,
+                    day: 22,
+                    },
                 cart: [{
                     vendor: "Пюре",
                     dishes: [

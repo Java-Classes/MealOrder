@@ -85,9 +85,9 @@
                      * @typedef {Object} Order the current order
                      *
                      * @typedef {Object} Date contains day, month, year
-                     * @property {String} day
-                     * @property {String} month
-                     * @property {String} year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
                      *
                      * @typedef {Array} Cart array that contains the vendor and dishes
                      * @property {String} Vendor a vendor name
@@ -136,10 +136,10 @@
                     if (this.routeData.date) {
                         const routeDate = new Date(this.routeData.date);
                         this.set('inputDate', routeDate.getFullYear() +
-                            "/" + ("0" + (routeDate.getMonth() + 1)).slice(-2) + "/" + routeDate.getDate());
+                            "/" + (routeDate.getMonth() + 1) + "/" + routeDate.getDate());
                         const date = {};
                         date.year = routeDate.getFullYear();
-                        date.month = routeDate.getMonth();
+                        date.month = (routeDate.getMonth() + 1);
                         date.day = routeDate.getDate();
                         this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
                     }
@@ -152,14 +152,13 @@
                     const newRouteData = {};
                     newRouteData.page = 'history';
                     newRouteData.date = date.getFullYear() +
-                        "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getDate();
+                        "-" + (date.getMonth() + 1) + "-" + date.getDate();
                     if (newRouteData.date.localeCompare(this.routeData.date) !== 0) {
                         this.set('routeData', newRouteData);
                     }
                 }
             }
         }
-
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>

@@ -51,14 +51,22 @@
             mock = sinon.mock(MealOrderApp.store);
         });
 
-        test('should fire `CHANGE_CURRENT_MENU`, `CHANGE_CURRENT_CART` actions with default date.', function () {
+        test('should fire `CHANGE_CURRENT_MENU`, `CHANGE_CURRENT_ORDER` actions with default date.', function () {
             const setCurrentMenuAction = {
                 type: MealOrderApp.UserAction.SET_CURRENT_MENU,
-                date: {day: "21", month: "03", year: "2018"}
+                date: {
+                    day: 21,
+                    month: 3,
+                    year: 2018
+                }
             };
             const setCurrentOrderAction = {
                 type: MealOrderApp.UserAction.SET_CURRENT_ORDER,
-                date: {day: "21", month: "03", year: "2018"}
+                date: {
+                    day: 21,
+                    month: 3,
+                    year: 2018
+                }
             };
             mock.expects('dispatch').withArgs(setCurrentMenuAction);
             mock.expects('dispatch').withArgs(setCurrentOrderAction);

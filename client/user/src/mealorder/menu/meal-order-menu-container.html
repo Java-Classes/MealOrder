@@ -121,9 +121,9 @@
                      * Array of dates with menu which may not exist.
                      *
                      * @typedef {Object} Date contains day, month, year
-                     * @property {String} day
-                     * @property {String} month
-                     * @property {String} year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
                      *
                      * @typedef {String} dayOfTheWeek
                      * @typedef {Boolean} hasMenu If menu for this date exists
@@ -141,9 +141,9 @@
                      * @property {String} Vendor a vendor name
                      *
                      * @typedef {Object} Date contains day, month, year
-                     * @property {String} day
-                     * @property {String} month
-                     * @property {String} year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
                      *
                      * @typedef {Array} Categories array contains the category name and dishes
                      * @typedef {Array} Dishes array contains the dish title, price, quantity
@@ -220,7 +220,7 @@
                         else {
                             const routeDate = new Date(this.routeData.date);
                             date.year = routeDate.getFullYear();
-                            date.month = ("0" + (routeDate.getMonth() + 1)).slice(-2);
+                            date.month = routeDate.getMonth() + 1;
                             date.day = routeDate.getDate();
                             this.set('selectedDay', date);
                         }
@@ -235,13 +235,12 @@
                 const newRouteData = {};
                 newRouteData.page = 'menu';
                 newRouteData.date = date.getFullYear() +
-                    "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getDate();
+                    "-" + (date.getMonth() + 1) + "-" + date.getDate();
                 this.set('routeData', newRouteData);
                 this.dispatch('changeCurrentMenu', date);
                 this.dispatch('changeCurrentOrder', date);
             }
         }
-
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
     </script>
 </dom-module>

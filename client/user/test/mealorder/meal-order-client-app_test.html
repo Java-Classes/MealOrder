@@ -66,10 +66,10 @@
         });
 
         test('should parse `routeData.date` correctly', function () {
-            setLocation('/#/history/2018-03-21');
-            assert.equal('2018-03-21', component.routeData.date);
-            setLocation('/#/menu/2018-03-21');
-            assert.equal('2018-03-21', component.routeData.date);
+            setLocation('/#/history/2018-3-21');
+            assert.equal('2018-3-21', component.routeData.date);
+            setLocation('/#/menu/2018-3-21');
+            assert.equal('2018-3-21', component.routeData.date);
         });
 
 
