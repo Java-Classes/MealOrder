@@ -45,8 +45,6 @@
     "Polymer": false,
     "MealOrderApp": true,
     "MealOrderAppTest": true,
-    "MealOrderAppTest.MealOrderDrawer": false,
-    "MealOrderAppTest.MealOrderMenuContainer": false,
     "assert": false,
     "test": false,
     "suite": false,
