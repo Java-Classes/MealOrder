@@ -115,13 +115,13 @@ message VendorListView {
 // This view includes the list of all purchase orders,
 // sorted by date.
 //
-message PurchaseOrderListView {
+message PurchaseOrderItemView {
 
-    // The identifier of the purchase order list singleton.
-    PurchaseOrderListId purchase_order_list_id = 1;
+    // The identifier of a purchase order.
+    PurchaseOrderId id = 1 [(required) = true];
 
-    // The collection of all purchase orders.
-    repeated PurchaseOrderItem purchase_order = 2;
+    // The purchase order status.
+    PurchaseOrderStatus purchase_order_status = 2 [(required) = true];
 }
 
 // The projection state of a purchase order details view

@@ -21,12 +21,17 @@
 package javaclasses.mealorder.q.projection;
 
 import javaclasses.mealorder.OrderListId;
+import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.q.OrderListViewProjection;
 import javaclasses.mealorder.testdata.TestValues;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.OrderEvents.dishAddedToOrderInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrderListViewProjectionTest extends ProjectionTest {
     private OrderListViewProjection projection;
@@ -44,10 +49,34 @@ public class OrderListViewProjectionTest extends ProjectionTest {
 
         @Test
         @DisplayName("Should add dish to the order")
-        void addView() {
-//            final DishAddedToOrder dishAddedToOrder = dshAddedToOrderInstance();
-//            dispatch(projection, createEvent(dishAddedToOrder));
+        void addDish() {
+            final DishAddedToOrder dishAddedToOrder = dishAddedToOrderInstance();
+            dispatch(projection, createEvent(dishAddedToOrder));
 
+            assertEquals(1, projection.getState()
+                                      .getOrderList()
+                                      .size());
+            assertEquals("dishName1", projection.getState()
+                                                .getOrderList()
+                                                .get(0)
+                                                .getDishList()
+                                                .get(0)
+                                                .getName());
+        }
+
+        @Test
+        @DisplayName("Should add 3 dishes to the order")
+        void addThreeDishes() {
+            final DishAddedToOrder dishAddedToOrder = dishAddedToOrderInstance();
+            dispatch(projection, createEvent(dishAddedToOrder));
+            dispatch(projection, createEvent(dishAddedToOrder));
+            dispatch(projection, createEvent(dishAddedToOrder));
+
+            assertEquals(3, projection.getState()
+                                      .getOrderList()
+                                      .get(0)
+                                      .getDishList()
+                                      .size());
         }
     }
 }

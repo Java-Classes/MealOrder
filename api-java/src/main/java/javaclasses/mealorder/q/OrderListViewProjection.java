@@ -60,8 +60,7 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
                                       .setPrice(event.getDish()
                                                      .getPrice())
                                       .build();
-        if (getBuilder().getOrder()
-                        .contains(getOrderById(orderId))) {
+        if (getOrderById(orderId).isPresent()) {
             final OrderListId listId = OrderListId.newBuilder()
                                                   .setUserId(event.getOrderId()
                                                                   .getUserId())
@@ -69,8 +68,8 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
                                                                      .getOrderDate())
                                                   .build();
             getBuilder().setOrder(getBuilder().getOrder()
-                                              .indexOf(getOrderById(orderId)),
-                                  OrderItem.newBuilder(getOrderById(orderId))
+                                              .indexOf(getOrderById(orderId).get()),
+                                  OrderItem.newBuilder(getOrderById(orderId).get())
                                            .addDish(dish)
                                            .build())
                         .setListId(listId);
@@ -85,8 +84,9 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
     @Subscribe
     void on(DishRemovedFromOrder event) {
         final List<OrderItem> orderItems = getBuilder().getOrder();
-        final int removeIndex = getDishFromOrder(event.getDish(), getOrderById(event.getOrderId()));
-        final OrderItem newOrder = OrderItem.newBuilder(getOrderById(event.getOrderId()))
+        final int removeIndex = getDishFromOrder(event.getDish(),
+                                                 getOrderById(event.getOrderId()).get());
+        final OrderItem newOrder = OrderItem.newBuilder(getOrderById(event.getOrderId()).get())
                                             .removeDish(removeIndex)
                                             .build();
         getBuilder().setOrder(orderItems.indexOf(getOrderById(event.getOrderId())), newOrder);
@@ -94,7 +94,7 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
 
     @Subscribe
     void on(OrderCanceled event) {
-        final OrderItem order = getOrderById(event.getOrderId());
+        final OrderItem order = getOrderById(event.getOrderId()).get();
         getBuilder().removeOrder(getBuilder().getOrder()
                                              .indexOf(order));
     }
@@ -103,21 +103,21 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
 
     void on(OrderProcessed event) {
         final OrderItem order = getOrderById(event.getOrder()
-                                                  .getId());
+                                                  .getId()).get();
         getBuilder().setOrder(getBuilder().getOrder()
                                           .indexOf(order), OrderItem.newBuilder(order)
                                                                     .setIsProcessed(true)
                                                                     .build());
     }
 
-    private OrderItem getOrderById(OrderId orderId) {
+    private Optional<OrderItem> getOrderById(OrderId orderId) {
         final List<OrderItem> orderItems = getBuilder().getOrder();
         final Optional<OrderItem> inventoryItem =
                 orderItems.stream()
                           .filter(item -> item.getId()
                                               .equals(orderId))
                           .findFirst();
-        return inventoryItem.get();
+        return inventoryItem;
     }
 
     private int getDishFromOrder(Dish dish, OrderItem order) {

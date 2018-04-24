@@ -55,7 +55,7 @@ public class PurchaseOrderDetailsByUserViewProjectionTest extends ProjectionTest
     }
 
     @Nested
-    @DisplayName("PurchaseOrderSent event should be interpreted by PurchaseOrderListViewProjection")
+    @DisplayName("PurchaseOrderSent event should be interpreted by PurchaseOrderItemViewProjection")
     class PurchaseOrderSentEvent {
 
         @Test

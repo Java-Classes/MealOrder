@@ -20,31 +20,33 @@
 
 package javaclasses.mealorder.q.projection;
 
+import javaclasses.mealorder.PurchaseOrderListId;
+import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
-import javaclasses.mealorder.q.PurchaseOrderItem;
-import javaclasses.mealorder.q.PurchaseOrderListViewProjection;
+import javaclasses.mealorder.q.PurchaseOrderItemViewProjection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderDeliveredInstance;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderSentInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-public class PurchaseOrderListViewProjectionTest extends ProjectionTest {
-    private PurchaseOrderListViewProjection projection;
+
+public class PurchaseOrderItemViewProjectionTest extends ProjectionTest {
+    private PurchaseOrderItemViewProjection projection;
 
     @BeforeEach
     void setUp() {
-        projection = new PurchaseOrderListViewProjection(PurchaseOrderListViewProjection.ID);
+        projection = new PurchaseOrderItemViewProjection(PurchaseOrderListId.newBuilder()
+                                                                            .setValue("dsda")
+                                                                            .build());
     }
 
     @Nested
-    @DisplayName("PurchaseOrderSent event should be interpreted by PurchaseOrderListViewProjection")
+    @DisplayName("PurchaseOrderSent event should be interpreted by PurchaseOrderItemViewProjection")
     class PurchaseOrderSentEvent {
 
         @Test
@@ -53,18 +55,30 @@ public class PurchaseOrderListViewProjectionTest extends ProjectionTest {
             final PurchaseOrderSent purchaseOrderSent = purchaseOrderSentInstance();
             dispatch(projection, createEvent(purchaseOrderSent));
 
-            final List<PurchaseOrderItem> purchaseOrderList = projection.getState()
-                                                                        .getPurchaseOrderList();
-            assertEquals(1, purchaseOrderList.size());
-            assertEquals(15, purchaseOrderList.get(0)
-                                              .getId()
-                                              .getPoDate()
-                                              .getDay());
+            assertEquals("vendor:value: \"VendorName1\"", projection.getState()
+                                                                    .getId()
+                                                                    .getVendorId()
+                                                                    .getValue()
+                                                                    .trim());
+            assertEquals(15, projection.getState()
+                                       .getId()
+                                       .getPoDate()
+                                       .getDay());
+            assertEquals(2019, projection.getState()
+                                         .getId()
+                                         .getPoDate()
+                                         .getYear());
+            assertEquals(2, projection.getState()
+                                      .getId()
+                                      .getPoDate()
+                                      .getMonthValue());
+            assertEquals(PurchaseOrderStatus.SENT, projection.getState()
+                                                             .getPurchaseOrderStatus());
         }
     }
 
     @Nested
-    @DisplayName("PurchaseOrderDelivered event should be interpreted by PurchaseOrderListViewProjection")
+    @DisplayName("PurchaseOrderDelivered event should be interpreted by PurchaseOrderItemViewProjection")
     class PurchaseOrderDeliveredEvent {
 
         @Test
@@ -74,12 +88,8 @@ public class PurchaseOrderListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(purchaseOrderSent));
             final PurchaseOrderDelivered purchaseOrderDelivered = purchaseOrderDeliveredInstance();
             dispatch(projection, createEvent(purchaseOrderDelivered));
-            final List<PurchaseOrderItem> purchaseOrderList = projection.getState()
-                                                                        .getPurchaseOrderList();
-            assertEquals(1, purchaseOrderList.size());
-            assertEquals("DELIVERED", purchaseOrderList.get(0)
-                                                       .getPurchaseOrderStatus()
-                                                       .name());
+            assertEquals(PurchaseOrderStatus.DELIVERED, projection.getState()
+                                                                  .getPurchaseOrderStatus());
         }
     }
 }

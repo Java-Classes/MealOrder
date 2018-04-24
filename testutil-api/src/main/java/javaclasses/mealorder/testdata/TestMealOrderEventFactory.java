@@ -26,12 +26,14 @@ import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
+import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
+import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
@@ -158,5 +160,26 @@ public class TestMealOrderEventFactory {
                                 .build();
             return result;
         }
+    }
+
+    public static class OrderEvents {
+        private OrderEvents() {
+        }
+
+        public static DishAddedToOrder dishAddedToOrderInstance() {
+            return dishAddedToOrderInstance(TestValues.ORDER_ID, TestValues.DISH1);
+        }
+
+        private static DishAddedToOrder dishAddedToOrderInstance(OrderId orderId, Dish dish) {
+            final Timestamp currentTime = getCurrentTime();
+            final DishAddedToOrder result =
+                    DishAddedToOrder.newBuilder()
+                                    .setOrderId(orderId)
+                                    .setDish(dish)
+                                    .setWhenAdded(currentTime)
+                                    .build();
+            return result;
+        }
+
     }
 }

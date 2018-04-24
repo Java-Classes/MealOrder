@@ -136,17 +136,6 @@ message VendorItem {
     spine.time.LocalTime po_daily_deadline = 5 [(required) = true];
 }
 
-// The item of the purchase order list.
-//
-message PurchaseOrderItem {
-
-    // The identifier of a purchase order.
-    PurchaseOrderId id = 1 [(required) = true];
-
-    // The purchase order status.
-    PurchaseOrderStatus purchase_order_status = 2 [(required) = true];
-}
-
 // The item of an order list.
 //
 // Used in a purchase order details veiw grouped by User.
