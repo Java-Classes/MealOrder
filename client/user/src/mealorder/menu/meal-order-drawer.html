@@ -42,6 +42,28 @@
                     font-weight: normal;
                 }
             }
+
+            .app-toolbar-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%
+            }
+
+            .app-toolbar-header .app-toolbar-content {
+                font-size: 24px;
+            }
+
+            #day {
+                font-size: 0.7em;
+                font-weight: lighter;
+                text-align: center;
+            }
+
+            #day-of-the-week {
+                font-size: 22px;
+            }
+
         </style>
         <app-location route="{{route}}"
                       use-hash-as-path></app-location>
@@ -57,9 +79,30 @@
                 attr-for-selected="data-page"
                 fallback-selection="view404"
                 role="main">
-            <app-datepicker data-page="history" id="date-picker" view="vertical"
-                            input-date="[[inputDate]]" date="{{outputDate}}" auto-update-date="true"
-                            locale="ru-RU"></app-datepicker>
+
+            <div data-page="menu">
+                <app-toolbar>
+                    <div class="app-toolbar-header">
+                        <div class="app-toolbar-content">Заказ</div>
+                        <div>
+                            <div id="day">[[selectedDay.dayOfTheWeek]]</div>
+                            <div id="day-of-the-week">[[selectedDay.day]]</div>
+                        </div>
+                    </div>
+                </app-toolbar>
+            </div>
+            <div data-page="history">
+                <app-toolbar>
+                    <div class="app-toolbar-header">
+                        <div class="app-toolbar-content">История заказов</div>
+                    </div>
+                </app-toolbar>
+
+                <app-datepicker id="date-picker" view="vertical"
+                                input-date="[[inputDate]]" date="{{outputDate}}"
+                                auto-update-date="true"
+                                locale="ru-RU"></app-datepicker>
+            </div>
         </iron-pages>
     </template>
     <script>
@@ -144,6 +187,16 @@
                         this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
                     }
                 }
+                const date = new Date(this.routeData.date);
+
+                let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
+                dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
+
+                const selectedDay = {
+                    day: date.getDate(),
+                    dayOfTheWeek: dayOfTheWeek,
+                };
+                this.set('selectedDay', selectedDay);
             }
 
             _updateDate() {
@@ -159,6 +212,7 @@
                 }
             }
         }
+
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>

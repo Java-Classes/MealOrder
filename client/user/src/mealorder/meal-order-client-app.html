@@ -102,17 +102,6 @@
                 --app-drawer-width: 300px;
             }
 
-            .app-toolbar-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%
-            }
-
-            .app-toolbar-header .app-toolbar-content {
-                font-size: 24px;
-            }
-
             #menu-history {
                 margin-right: 44px;
             }
@@ -121,16 +110,6 @@
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
-            }
-
-            #day {
-                font-size: 0.7em;
-                font-weight: lighter;
-                text-align: center;
-            }
-
-            #day-of-the-week {
-                font-size: 22px;
             }
 
             @media only screen and (max-width: 600px) {
@@ -163,22 +142,6 @@
                             attr-for-selected="data-page"
                             fallback-selection="view404"
                             role="main">
-
-                    <app-toolbar data-page="menu">
-                        <div class="app-toolbar-header">
-                            <div class="app-toolbar-content">Заказ</div>
-                            <div>
-                                <div id="day">[[selectedDay.dayOfTheWeek]]</div>
-                                <div id="day-of-the-week">[[selectedDay.day]]</div>
-                            </div>
-                        </div>
-                    </app-toolbar>
-
-                    <app-toolbar data-page="history">
-                        <div class="app-toolbar-header">
-                            <div class="app-toolbar-content">История заказов</div>
-                        </div>
-                    </app-toolbar>
                 </iron-pages>
                 <meal-order-drawer order="[[order]]"></meal-order-drawer>
             </app-drawer>
@@ -199,7 +162,7 @@
                                         <iron-icon class="link-icon"
                                                    icon="maps:icons:history"></iron-icon>
                                     </a>
-                                    <iron-icon data-page="menu" class="drawer-icon"
+                                    <iron-icon class="drawer-icon"
                                                icon="icons:shopping-cart" drawer-toggle></iron-icon>
                                 </div>
                                 <div data-page="history" class="app-header-iron-container">
@@ -208,7 +171,7 @@
                                         <iron-icon class="link-icon"
                                                    icon="maps:icons:add"></iron-icon>
                                     </a>
-                                    <iron-icon data-page="history" class="drawer-icon"
+                                    <iron-icon class="drawer-icon"
                                                icon="icons:date-range"
                                                drawer-toggle></iron-icon>
                                 </div>
