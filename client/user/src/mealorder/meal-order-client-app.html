@@ -295,18 +295,7 @@
             }
 
             _pageChanged() {
-                const YEAR = 0;
-                const MONTH = 1;
-                const DAY = 2;
-
-                const arr = this.routeData.date.split('-');
-
-                let urlDate = {};
-                urlDate.year = arr[YEAR];
-                urlDate.month = arr[MONTH];
-                urlDate.day = arr[DAY];
-
-                const date = new Date(urlDate.year, urlDate.month - 1, urlDate.day);
+                const date = new Date(this.routeData.date);
 
                 let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
                 dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);

@@ -195,13 +195,10 @@
                                 date.month + "-" + date.day);
                         }
                         else {
-                            const YEAR = 0;
-                            const MONTH = 1;
-                            const DAY = 2;
-                            const arr = this.routeData.date.split('-');
-                            date.year = arr[YEAR];
-                            date.month = arr[MONTH];
-                            date.day = arr[DAY];
+                            const routeDate = new Date(this.routeData.date);
+                            date.year = routeDate.getFullYear();
+                            date.month = ("0" + (routeDate.getMonth() + 1)).slice(-2);
+                            date.day = routeDate.getDate();
                             this.set('selectedDay', date);
                         }
                         this.dispatch('changeCurrentMenu', date);
@@ -211,22 +208,12 @@
             }
 
             _selectDate(e) {
-                const YEAR = 0;
-                const MONTH = 1;
-                const DAY = 2;
-
-                const paperDate = e.target.selected.split('-');
-
-                const date = {};
-                date.year = paperDate[YEAR];
-                date.month = paperDate[MONTH];
-                date.day = paperDate[DAY];
-
+                const date = new Date(e.target.selected);
                 const newRouteData = {};
                 newRouteData.page = 'menu';
-                newRouteData.date = date.year + "-" + date.month + "-" + date.day;
+                newRouteData.date = date.getFullYear() +
+                    "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getDate();
                 this.set('routeData', newRouteData);
-
                 this.dispatch('changeCurrentMenu', date);
                 this.dispatch('changeCurrentOrder', date);
             }
