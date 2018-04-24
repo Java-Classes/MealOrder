@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 {
-    window.MealOrderAppTest = {};
+    window.MealOrderAppTest = window.MealOrderAppTest || {};
 
     const arrayOfDates = [{
         date: {

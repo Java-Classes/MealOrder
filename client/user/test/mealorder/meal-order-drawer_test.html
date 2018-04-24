@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <!--
   ~ Copyright 2018, TeamDev Ltd. All rights reserved.
   ~
@@ -25,19 +25,19 @@
     <meta name="viewport"
           content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>meal-order-menu-container test</title>
+    <title>meal-order-client test</title>
 
     <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../node_modules/redux/dist/redux.js"></script>
-    <script src="test_variables.js"></script>
-    <link rel="import" href="../../src/mealorder/menu/meal-order-menu-container.html">
+    <link rel="import" href="../../src/mealorder/menu/meal-order-drawer.html">
+
 </head>
 <body>
 
-<test-fixture id="MealOrderMenuContainer">
+<test-fixture id="MealOrderDrawer">
     <template>
-        <meal-order-menu-container></meal-order-menu-container>
+        <meal-order-drawer></meal-order-drawer>
     </template>
 </test-fixture>
 
@@ -47,12 +47,11 @@
         Polymer.Base.fire('location-changed', {}, {node: window});
     }
 
-    suite('meal-order-menu-container', function () {
+    suite('meal-order-drawer', function () {
         let component;
 
         setup(() => {
-            component = fixture('MealOrderMenuContainer');
-            component.calendar = MealOrderAppTest.initialState.calendar;
+            component = fixture('MealOrderDrawer');
         });
 
         test('should parse `routeData.page` correctly', function () {
@@ -62,38 +61,40 @@
             assert.equal('menu', component.routeData.page);
         });
 
-        test('should parse `routeData.date` correctly', function () {
-            setLocation('/#/history/2018-3-21');
-            assert.equal('2018-3-21', component.routeData.date);
-            setLocation('/#/menu/2018-3-21');
-            assert.equal('2018-3-21', component.routeData.date);
+        test('should instantiate the `meal-order-drawer` component', function (done) {
+            const elementShadowRoot = component.shadowRoot;
+            const datePicker = elementShadowRoot.querySelector("app-datepicker");
+            assert.equal(datePicker.tagName.toLocaleLowerCase(), "app-datepicker");
+            done();
         });
 
-        test('should instantiate the component `paper-tabs`', function (done) {
+        test('should fire `changed-history-date` event on the changed URL ' +
+            ' with the `history` routing and the date', function (done) {
+            component.addEventListener('changed-history-date', function (e) {
+                const date = {};
+                date.year = 2018;
+                date.month = 4;
+                date.day = 20;
+                assert.deepEqual(e.detail, date);
+                done();
+            });
+            setLocation('/#/menu/');
+            setLocation('/#/history/2018-4-20');
+        });
+
+        test('should change URL by selecting the date in the calendar with `history` routing', function (done) {
+            const STRING_DATE = "2018/04/20";
+
             flush(function () {
                 const elementShadowRoot = component.shadowRoot;
-                const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-                assert.equal(paperTabs.id, 'paper-tabs');
+                const datePicker = elementShadowRoot.querySelector("app-datepicker");
+                datePicker.inputDate = STRING_DATE;
+                assert.equal(datePicker.inputDate , STRING_DATE);
                 done();
             });
+            setLocation('/#/history/');
         });
 
-        test('should parse `routeData.date` by the default selected paper-tab', function () {
-            const elementShadowRoot = component.shadowRoot;
-            const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-            assert.equal(component.routeData.date, paperTabs.selected);
-        });
-
-        test('should parse changed `routeData.date` by the selected paper-tab', function (done) {
-            const elementShadowRoot = component.shadowRoot;
-
-            flush(function () {
-                const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-                paperTabs.select('2018-03-23');
-                assert.equal(component.routeData.date, '2018-3-23');
-                done();
-            });
-        });
     });
 </script>
 </body>

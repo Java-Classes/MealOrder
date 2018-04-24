@@ -64,9 +64,10 @@
     </template>
     <script>
         /**
-         * meal-order-drawer is container for user's order and user's order history calendar.
+         * meal-order-drawer is the container for the user's order and
+         * the calendar of the history of the user's orders.
          *
-         * Contains a order for selected day and calendar.
+         * Contains an order for the selected day and calendar.
          *
          * @customElement
          * @polymer
@@ -80,6 +81,20 @@
                 return {
                     /**
                      * Current user's meal order.
+                     *
+                     * @typedef {Object} Order the current order
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
+                     *
+                     * @typedef {Array} Cart array that contains the vendor and dishes
+                     * @property {String} Vendor a vendor name
+                     * @typedef {Array} Dishes array contains the dish title, price, quantity
+                     * @property {String} title
+                     * @property {String} price
+                     * @property {String} quantity
                      */
                     order: {
                         type: Array,
@@ -89,59 +104,58 @@
                     /**
                      * Date that the user can select on the calendar.
                      */
-                    inputDate: {},
+                    inputDate: {
+                        type: Date,
+                    },
 
                     /**
                      * Chosen day.
                      */
-                    outputDate: {},
+                    outputDate: {
+                        type: Date,
+                    },
 
                     /**
                      * Used for routing.
                      */
-                    routeData: {},
+                    routeData: {
+                        type: Object,
+                    },
                 }
             }
 
             static get observers() {
                 return [
                     '_updateDate(outputDate)',
-                    '_changeHistoryUrl(routeData)'
+                    '_changeHistoryUrl(routeData.page)'
                 ];
             }
 
             _changeHistoryUrl() {
                 if (this.routeData.page && this.routeData.page.startsWith("history")) {
-                    const YEAR = 0;
-                    const MONTH = 1;
-                    const DAY = 2;
-
-                    const routeDate = this.routeData.date.split('-');
-                    this.set('inputDate', routeDate[YEAR] + "/" + routeDate[MONTH] + "/" + routeDate[DAY]);
-                    const arr = this.routeData.date.split('-');
-                    const date = {};
-                    date.year = arr[YEAR];
-                    date.month = arr[MONTH];
-                    date.day = arr[DAY];
-                    this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
+                    if (this.routeData.date) {
+                        const routeDate = new Date(this.routeData.date);
+                        this.set('inputDate', routeDate.getFullYear() +
+                            "/" + (routeDate.getMonth() + 1) + "/" + routeDate.getDate());
+                        const date = {};
+                        date.year = routeDate.getFullYear();
+                        date.month = (routeDate.getMonth() + 1);
+                        date.day = routeDate.getDate();
+                        this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
+                    }
                 }
             }
 
             _updateDate() {
                 if (this.routeData.page && this.routeData.page.startsWith("history")) {
-                    const YEAR = 0;
-                    const MONTH = 1;
-                    const DAY = 2;
-
-                    const arr = this.outputDate.split('/');
-                    const date = {};
-                    date.year = arr[YEAR];
-                    date.month = arr[MONTH];
-                    date.day = arr[DAY];
+                    const date = new Date(this.outputDate.toString());
                     const newRouteData = {};
                     newRouteData.page = 'history';
-                    newRouteData.date = date.year + "-" + date.month + "-" + date.day;
-                    this.set('routeData', newRouteData);
+                    newRouteData.date = date.getFullYear() +
+                        "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                    if (newRouteData.date.localeCompare(this.routeData.date) !== 0) {
+                        this.set('routeData', newRouteData);
+                    }
                 }
             }
         }

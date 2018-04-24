@@ -30,12 +30,12 @@
     <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../node_modules/redux/dist/redux.js"></script>
+    <script src="test_variables.js"></script>
     <link rel="import" href="../../src/mealorder/meal-order-client-app.html">
-
 </head>
 <body>
 
-<test-fixture id="BasicClientApp">
+<test-fixture id="MealOrderClientApp">
     <template>
         <meal-order-client-app></meal-order-client-app>
     </template>
@@ -51,7 +51,7 @@
         let component;
 
         setup(() => {
-            component = fixture('BasicClientApp');
+            component = fixture('MealOrderClientApp');
         });
 
         test('should parse `routeData.page` correctly', function () {
@@ -62,31 +62,12 @@
         });
 
         test('should parse `routeData.date` correctly', function () {
-            setLocation('/#/history/2018-03-21');
-            assert.equal('2018-03-21', component.routeData.date);
-            setLocation('/#/menu/2018-03-21');
-            assert.equal('2018-03-21', component.routeData.date);
+            setLocation('/#/history/2018-3-21');
+            assert.equal('2018-3-21', component.routeData.date);
+            setLocation('/#/menu/2018-3-21');
+            assert.equal('2018-3-21', component.routeData.date);
         });
 
-
-        test('should instantiate the `app-toolbar` with data-page `menu`' +
-            ' and the component `app-toolbar-content` with routing title', function () {
-            setLocation('/#/menu/2018-03-23');
-            const elementShadowRoot = component.shadowRoot;
-            const toolBar = elementShadowRoot.querySelector(".app-toolbar-content");
-            assert.equal(toolBar.innerHTML, 'Заказ');
-
-        });
-
-        test('should instantiate the `app-toolbar` with data-page `menu`' +
-            ' and day, and day of the week', function () {
-            setLocation('/#/menu/2018-03-23');
-            const elementShadowRoot = component.shadowRoot;
-            const day = elementShadowRoot.querySelector("#day");
-            const dayOfTheWeek = elementShadowRoot.querySelector("#day-of-the-week");
-            assert.equal(day.innerHTML, 'Пятница');
-            assert.equal(dayOfTheWeek.innerHTML, '23');
-        });
 
         test('should instantiate the `app-header` with main-title', function () {
             const elementShadowRoot = component.shadowRoot;
@@ -96,11 +77,9 @@
 
         test('should instantiate the `app-toolbar` with data-page `menu` with routing title', function (done) {
             setLocation('/#/menu/2018-03-23');
-
             const pages = component.shadowRoot.querySelector('#app-header-iron');
             pages.forceSynchronousItemUpdate();
-
-            const routeLinkTitle = pages.selectedItem.getElementsByClassName("title-link").item(0).innerHTML;
+            const routeLinkTitle = pages.selectedItem.getElementsByClassName("route-title").item(0).innerHTML;
             flush(function () {
                 assert.equal(routeLinkTitle, 'История заказов');
                 done();
@@ -109,41 +88,69 @@
 
         test('should instantiate the `app-toolbar` with data-page `history` with routing title', function (done) {
             setLocation('/#/history/2018-03-23');
-
             const pages = component.shadowRoot.querySelector('#app-header-iron');
             pages.forceSynchronousItemUpdate();
-
-            const routeLinkTitle = pages.selectedItem.getElementsByClassName("title-link").item(0).innerHTML;
+            const routeLinkTitle = pages.selectedItem.getElementsByClassName("route-title").item(0).innerHTML;
             flush(function () {
                 assert.equal(routeLinkTitle, 'Сделать заказ');
                 done();
             });
         });
 
-        test('should instantiate the `meal-order-menu-container` component ' +
-            'with data-page `menu`', function (done) {
+        test('should instantiate the `app-toolbar` with data-page `menu`' +
+            ' and the component `app-toolbar-content` with routing title', function (done) {
             setLocation('/#/menu/2018-03-23');
-            const elementShadowRoot = component.shadowRoot;
-            const menuContainer = elementShadowRoot.querySelector("meal-order-menu-container");
+            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
+            pages.forceSynchronousItemUpdate();
+            const drawerTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
             flush(function () {
-                assert.isNotNull(menuContainer);
+                assert.equal(drawerTitle, 'Заказ');
                 done();
             });
         });
 
-        test('should instantiate the `meal-order-drawer` component ' +
-            'with data-page `history`', function (done) {
-            setLocation('/#/history/2018-03-23');
-            const elementShadowRoot = component.shadowRoot;
-            const drawer = elementShadowRoot.querySelector("meal-order-drawer");
+        test('should instantiate the `app-toolbar` with data-page `menu`' +
+            ' and day, and day of the week', function (done) {
+            setLocation('/#/menu/2018-03-23');
+            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
+            pages.forceSynchronousItemUpdate();
+            const day = pages.querySelector("#day").innerHTML;
+            const dayOfTheWeek = pages.querySelector("#day-of-the-week").innerHTML;
             flush(function () {
-                assert.isNotNull(drawer);
+                assert.equal(day, 'Пятница');
+                assert.equal(dayOfTheWeek, '23');
                 done();
             });
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `history`' +
+            ' and the component `app-toolbar-content` with routing title', function (done) {
+            setLocation('/#/history/2018-03-23');
+            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
+            pages.forceSynchronousItemUpdate();
+            const drawerTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
+            flush(function () {
+                assert.equal(drawerTitle, 'История заказов');
+                done();
+            });
+        });
+
+        test('should instantiate the `meal-order-drawer` component', function (done) {
+            const elementShadowRoot = component.shadowRoot;
+            const drawer = elementShadowRoot.querySelector("meal-order-drawer");
+            assert.equal(drawer.tagName.toLocaleLowerCase(), "meal-order-drawer");
+            done();
+        });
+
+        test('should instantiate the `meal-order-menu-container` component ' +
+            'with data-page `menu`', function () {
+            setLocation('/#/menu/2018-03-23');
+            const pages = component.shadowRoot.querySelector('#app-header-layout-iron');
+            pages.forceSynchronousItemUpdate();
+            assert.equal(pages.selectedItem.tagName.toLocaleLowerCase(), "meal-order-menu-container");
         });
 
     });
 </script>
-
 </body>
 </html>

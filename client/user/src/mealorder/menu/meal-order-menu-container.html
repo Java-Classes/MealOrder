@@ -26,7 +26,6 @@
 <link rel="import" href="../../../bower_components/paper-styles/color.html">
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../shell/actions/user-actions.html">
-
 <link rel="import" href="meal-order-vendor-menus.html">
 
 <dom-module id="meal-order-menu-container">
@@ -115,7 +114,7 @@
     </template>
     <script>
         /**
-         * menu-order is container for vendors' menus and navigation.
+         * menu-order is container for the vendors' menus and navigation.
          *
          * Contains a menu for the current date and tabs for quick date navigation.
          *
@@ -132,6 +131,14 @@
                 return {
                     /**
                      * Array of dates with menu which may not exist.
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
+                     *
+                     * @typedef {String} dayOfTheWeek
+                     * @typedef {Boolean} hasMenu If menu for this date exists
                      */
                     calendar: {
                         type: Array,
@@ -140,6 +147,21 @@
 
                     /**
                      * Menu for a current day.
+                     *
+                     * @typedef {Object} Menu the menu for the current date
+                     *
+                     * @property {String} Vendor a vendor name
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
+                     *
+                     * @typedef {Array} Categories array contains the category name and dishes
+                     * @typedef {Array} Dishes array contains the dish title, price, quantity
+                     * @property {String} title
+                     * @property {String} price
+                     * @property {String} quantity
                      */
                     menu: {
                         type: Array,
@@ -172,7 +194,7 @@
                 /**
                  * Fired when a paper tab is selected.
                  *
-                 * @action `changeCurrentCart`
+                 * @action `changeCurrentOrder`
                  * @param {date} selected date by tab
                  */
                 return {
@@ -182,18 +204,14 @@
                             dish: dish
                         }
                     },
-                    changeCurrentMenu: date => {
-                        return {
-                            type: MealOrderApp.UserAction.SET_CURRENT_MENU,
-                            date
-                        }
-                    },
-                    changeCurrentCart: date => {
-                        return {
-                            type: MealOrderApp.UserAction.SET_CURRENT_CART,
-                            date
-                        }
-                    }
+                    changeCurrentMenu: date => ({
+                        type: MealOrderApp.UserAction.SET_CURRENT_MENU,
+                        date
+                    }),
+                    changeCurrentOrder: date => ({
+                        type: MealOrderApp.UserAction.SET_CURRENT_ORDER,
+                        date
+                    })
                 }
             }
 
@@ -218,40 +236,27 @@
                                 date.month + "-" + date.day);
                         }
                         else {
-                            const YEAR = 0;
-                            const MONTH = 1;
-                            const DAY = 2;
-                            const arr = this.routeData.date.split('-');
-                            date.year = arr[YEAR];
-                            date.month = arr[MONTH];
-                            date.day = arr[DAY];
+                            const routeDate = new Date(this.routeData.date);
+                            date.year = routeDate.getFullYear();
+                            date.month = routeDate.getMonth() + 1;
+                            date.day = routeDate.getDate();
                             this.set('selectedDay', date);
                         }
                         this.dispatch('changeCurrentMenu', date);
-                        this.dispatch('changeCurrentCart', date);
+                        this.dispatch('changeCurrentOrder', date);
                     }
                 }
             }
 
             _selectDate(e) {
-                const YEAR = 0;
-                const MONTH = 1;
-                const DAY = 2;
-
-                const paperDate = e.target.selected.split('-');
-
-                const date = {};
-                date.year = paperDate[YEAR];
-                date.month = paperDate[MONTH];
-                date.day = paperDate[DAY];
-
+                const date = new Date(e.target.selected);
                 const newRouteData = {};
                 newRouteData.page = 'menu';
-                newRouteData.date = date.year + "-" + date.month + "-" + date.day;
+                newRouteData.date = date.getFullYear() +
+                    "-" + (date.getMonth() + 1) + "-" + date.getDate();
                 this.set('routeData', newRouteData);
-
                 this.dispatch('changeCurrentMenu', date);
-                this.dispatch('changeCurrentCart', date);
+                this.dispatch('changeCurrentOrder', date);
             }
 
             _addDishToOrder(e) {
@@ -260,13 +265,7 @@
                 order.date = this.routeData.date;
                 this.dispatch('addDish', order);
             }
-
-            _handleClick(e) {
-                this.dispatch('changeCurrentMenu', this.calendar[e.model.index].date);
-                this.dispatch('changeCurrentCart', this.calendar[e.model.index].date);
-            }
         }
-
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
     </script>
 </dom-module>
