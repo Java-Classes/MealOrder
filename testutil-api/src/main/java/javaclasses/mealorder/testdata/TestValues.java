@@ -104,6 +104,7 @@ public class TestValues {
     public static final PhoneNumber PHONE_NUMBER2 = PhoneNumber.newBuilder()
                                                                .setValue("0987654321")
                                                                .build();
+    public static final List<PhoneNumber> PHONE_NUMBERS = getPhoneNumbers();
 
     public static final VendorChange VENDOR_CHANGE = VendorChange.newBuilder()
                                                                  .setPreviousVendorName(VENDOR_NAME)
@@ -199,9 +200,9 @@ public class TestValues {
 
     public static final MenuDateRange MENU_DATE_RANGE_FROM_PAST = MenuDateRange.newBuilder()
                                                                                .setRangeStart(
-                                                                                             START_DATE_FROM_PAST)
+                                                                                       START_DATE_FROM_PAST)
                                                                                .setRangeEnd(
-                                                                                             END_DATE_FROM_PAST)
+                                                                                       END_DATE_FROM_PAST)
                                                                                .build();
 
     public static final Dish DISH1 = Dish.newBuilder()
@@ -363,6 +364,13 @@ public class TestValues {
         menu.add(DISH8);
 
         return menu;
+    }
+
+    private static List<PhoneNumber> getPhoneNumbers() {
+        final List<PhoneNumber> numbers = new ArrayList<>();
+        numbers.add(PHONE_NUMBER1);
+        numbers.add(PHONE_NUMBER2);
+        return numbers;
     }
 
     private static List<Order> createOrder() {

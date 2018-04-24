@@ -20,11 +20,18 @@
 
 package javaclasses.mealorder.q.projection;
 
+import javaclasses.mealorder.c.event.VendorAdded;
+import javaclasses.mealorder.c.event.VendorUpdated;
 import javaclasses.mealorder.q.VendorListViewProjection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.VendorEvents.vendorAddedInstance;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.VendorEvents.vendorUpdatedInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VendorListViewProjectionTest extends ProjectionTest {
     private VendorListViewProjection projection;
@@ -41,9 +48,21 @@ public class VendorListViewProjectionTest extends ProjectionTest {
         @Test
         @DisplayName("Should add new vendor")
         void addView() {
-//            final VendorAdded vendorAdded = vendorAddedInstance();
-//            dispatch(projection, createEvent(vendorAdded));
-
+            final VendorAdded vendorAdded = vendorAddedInstance();
+            dispatch(projection, createEvent(vendorAdded));
+            assertEquals(1, projection.getState()
+                                      .getVendorList()
+                                      .size());
+            assertEquals("vendor1@example.com", projection.getState()
+                                                          .getVendorList()
+                                                          .get(0)
+                                                          .getEmail()
+                                                          .getValue());
+            assertEquals("vendor:value: \"VendorName1\"", projection.getState()
+                                                                    .getVendorList()
+                                                                    .get(0)
+                                                                    .getId()
+                                                                    .getValue());
         }
     }
 
@@ -54,9 +73,20 @@ public class VendorListViewProjectionTest extends ProjectionTest {
         @Test
         @DisplayName("Should update vendor")
         void addView() {
-//            final VendorUpdated vendorUpdated = VendorUpdatedInstance();
-//            dispatch(projection, createEvent(vendorUpdated));
-
+            final VendorAdded vendorAdded = vendorAddedInstance();
+            dispatch(projection, createEvent(vendorAdded));
+            assertEquals("VendorName1", projection.getState()
+                                                  .getVendorList()
+                                                  .get(0)
+                                                  .getVendorName()
+                                                  .getValue());
+            final VendorUpdated vendorUpdated = vendorUpdatedInstance();
+            dispatch(projection, createEvent(vendorUpdated));
+            assertEquals("VendorName2", projection.getState()
+                                                  .getVendorList()
+                                                  .get(0)
+                                                  .getVendorName()
+                                                  .getValue());
         }
     }
 }

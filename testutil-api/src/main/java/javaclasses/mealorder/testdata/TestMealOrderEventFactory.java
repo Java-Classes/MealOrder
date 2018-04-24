@@ -22,22 +22,28 @@ package javaclasses.mealorder.testdata;
 
 import com.google.protobuf.Timestamp;
 import io.spine.net.EmailAddress;
+import io.spine.time.LocalTime;
 import javaclasses.mealorder.Dish;
 import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Order;
 import javaclasses.mealorder.OrderId;
+import javaclasses.mealorder.PhoneNumber;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.UserId;
+import javaclasses.mealorder.VendorChange;
 import javaclasses.mealorder.VendorId;
+import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
+import javaclasses.mealorder.c.event.VendorAdded;
+import javaclasses.mealorder.c.event.VendorUpdated;
 
 import java.util.List;
 
@@ -160,6 +166,49 @@ public class TestMealOrderEventFactory {
                                 .build();
             return result;
         }
+
+        public static VendorAdded vendorAddedInstance() {
+            return vendorAddedInstance(TestValues.VENDOR_ID, TestValues.USER_ID,
+                                       TestValues.VENDOR_NAME, TestValues.EMAIL,
+                                       TestValues.PHONE_NUMBERS, TestValues.PO_DAILY_DEADLINE);
+        }
+
+        private static VendorAdded vendorAddedInstance(VendorId vendorId, UserId userId,
+                                                       VendorName vendorName, EmailAddress email,
+                                                       List<PhoneNumber> numbers,
+                                                       LocalTime deadline) {
+            final Timestamp currentTime = getCurrentTime();
+            final VendorAdded result =
+                    VendorAdded.newBuilder()
+                               .setVendorId(vendorId)
+                               .setWhoAdded(userId)
+                               .setWhenAdded(currentTime)
+                               .setVendorName(vendorName)
+                               .addAllPhoneNumber(numbers)
+                               .setEmail(email)
+                               .setPoDailyDeadline(deadline)
+                               .build();
+            return result;
+        }
+
+        public static VendorUpdated vendorUpdatedInstance() {
+            return vendorUpdatedInstance(TestValues.VENDOR_ID, TestValues.USER_ID,
+                                         TestValues.VENDOR_CHANGE);
+        }
+
+        private static VendorUpdated vendorUpdatedInstance(VendorId vendorId, UserId userId,
+                                                           VendorChange vendorChange) {
+            final Timestamp currentTime = getCurrentTime();
+            final VendorUpdated result =
+                    VendorUpdated.newBuilder()
+                                 .setVendorId(vendorId)
+                                 .setWhoUploaded(userId)
+                                 .setVendorChange(vendorChange)
+                                 .setWhenUpdated(currentTime)
+                                 .build();
+            return result;
+        }
+
     }
 
     public static class OrderEvents {

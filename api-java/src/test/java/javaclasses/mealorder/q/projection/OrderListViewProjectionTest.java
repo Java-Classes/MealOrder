@@ -77,6 +77,12 @@ public class OrderListViewProjectionTest extends ProjectionTest {
                                       .get(0)
                                       .getDishList()
                                       .size());
+            assertEquals("dishName1", projection.getState()
+                                                .getOrderList()
+                                                .get(0)
+                                                .getDishList()
+                                                .get(2)
+                                                .getName());
         }
     }
 }
