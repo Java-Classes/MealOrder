@@ -45,10 +45,10 @@ import "javaclasses/mealorder/values.proto";
 message MenuItem {
 
     // The vendor name.
-    VendorName vendor_name = 1;
+    VendorName vendor_name = 1 [(required) = true];
 
     // The collection of categories.
-    repeated DishesByCategory dishesByCategory = 2;
+    repeated DishesByCategory dishesByCategory = 2 [(required) = true];
 
     // Date range when a menu is available.
     repeated MenuForDay menu_days = 3;
@@ -59,7 +59,7 @@ message MenuItem {
 message DishesByCategory {
 
     // Category of dishes.
-    CategoryName category = 1;
+    CategoryName category = 1 [(required) = true];
 
     // The collection of dishes.
     repeated DishItem dishes = 2;
@@ -69,13 +69,13 @@ message DishesByCategory {
 message DishItem {
 
     // The identifier of a dish.
-    DishId id = 1;
+    DishId id = 1 [(required) = true];
 
     // The name of a dish.
-    string name = 2;
+    string name = 2 [(required) = true];
 
     // The dish price.
-    spine.money.Money price = 3;
+    spine.money.Money price = 3 [(required) = true];
 }
 
 // The item of the menu calendar.
@@ -86,10 +86,10 @@ message DishItem {
 message MenuCalendarItem {
 
     // A date in the menu calendar.
-    spine.time.LocalDate date = 1;
+    spine.time.LocalDate date = 1 [(required) = true];
 
     // Indicates presence of attached menus on a specified date.
-    bool has_menu = 2;
+    bool has_menu = 2 [(required) = true];
 }
 
 // The item of an order list.
@@ -107,7 +107,7 @@ message MenuCalendarItem {
 message OrderItem {
 
     // The identifier of an order.
-    OrderId id = 1;
+    OrderId id = 1 [(required) = true];
 
     // The collection of ordered dishes.
     repeated DishItem dish = 2;
@@ -121,19 +121,19 @@ message OrderItem {
 message VendorItem {
 
     // The identifier of a vendor.
-    VendorId id = 1;
+    VendorId id = 1 [(required) = true];
 
     // The vendor name.
-    VendorName vendor_name = 2;
+    VendorName vendor_name = 2 [(required) = true];
 
     // The vendor email address.
-    spine.net.EmailAddress email = 3;
+    spine.net.EmailAddress email = 3 [(required) = true];
 
     // Phone numbers of a vendor.
     repeated PhoneNumber phone_number = 4;
 
     // Daily purchase order creation deadline time.
-    spine.time.LocalTime po_daily_deadline = 5;
+    spine.time.LocalTime po_daily_deadline = 5 [(required) = true];
 }
 
 // The item of the purchase order list.
@@ -141,10 +141,10 @@ message VendorItem {
 message PurchaseOrderItem {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The purchase order status.
-    PurchaseOrderStatus purchase_order_status = 2;
+    PurchaseOrderStatus purchase_order_status = 2 [(required) = true];
 }
 
 // The item of an order list.
@@ -157,7 +157,7 @@ message PurchaseOrderItem {
 message UserOrderDetails {
 
     // The identifier of the user.
-    UserId id = 1;
+    UserId id = 1 [(required) = true];
 
     // The collection of dishes.
     repeated DishItem dish = 2;
@@ -173,8 +173,8 @@ message UserOrderDetails {
 message UserSpendings {
 
     // The identifier of a user.
-    UserId id = 1;
+    UserId id = 1 [(required) = true];
 
     // Amount of spendings.
-    spine.money.Money amount = 2;
+    spine.money.Money amount = 2 [(required) = true];
 }

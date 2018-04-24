@@ -118,7 +118,7 @@ public class TestValues {
                                                                  .setNewEmail(EMAIL)
                                                                  .addNewPhoneNumber(PHONE_NUMBER1)
                                                                  .addNewPhoneNumber(PHONE_NUMBER2)
-                                                                 .setPreviousPoDailyDeadline(
+                                                                 .setNewPoDailyDeadline(
                                                                          PO_DAILY_DEADLINE)
                                                                  .build();
 

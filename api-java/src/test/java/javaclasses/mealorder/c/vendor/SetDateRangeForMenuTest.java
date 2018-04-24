@@ -66,6 +66,8 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("produce `DateRangeForMenuSet` event")
     void produceEvent() {
+        final AddVendor addVendor = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendor));
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 
@@ -119,6 +121,8 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("produce `CannotSetDateRange` rejection if date range is not valid")
     void produceRejection() {
+        final AddVendor addVendor = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendor));
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 
@@ -144,6 +148,8 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("produce `CannotSetDateRange` rejection if the order date is from the past")
     void produceCannotSetDateRangeRejection() {
+        final AddVendor addVendor = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendor));
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 
@@ -167,6 +173,8 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
     @Test
     @DisplayName("produce `CannotSetDateRange` rejection if vendor already has menu on this date range")
     void produceRejectionIfMenuExists() {
+        final AddVendor addVendor = TestVendorCommandFactory.addVendorInstance();
+        dispatchCommand(aggregate, envelopeOf(addVendor));
         final ImportMenu importMenu = TestVendorCommandFactory.importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
 
