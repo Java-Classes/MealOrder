@@ -159,7 +159,7 @@
                 /**
                  * Fired when a paper tab is selected.
                  *
-                 * @action `changeCurrentCart`
+                 * @action `changeCurrentOrder`
                  * @param {date} selected date by tab
                  */
                 return {
@@ -167,8 +167,8 @@
                         type: MealOrderApp.UserAction.SET_CURRENT_MENU,
                         date
                     }),
-                    changeCurrentCart: date => ({
-                        type: MealOrderApp.UserAction.SET_CURRENT_CART,
+                    changeCurrentOrder: date => ({
+                        type: MealOrderApp.UserAction.SET_CURRENT_ORDER,
                         date
                     })
                 }
@@ -205,7 +205,7 @@
                             this.set('selectedDay', date);
                         }
                         this.dispatch('changeCurrentMenu', date);
-                        this.dispatch('changeCurrentCart', date);
+                        this.dispatch('changeCurrentOrder', date);
                     }
                 }
             }
@@ -228,7 +228,7 @@
                 this.set('routeData', newRouteData);
 
                 this.dispatch('changeCurrentMenu', date);
-                this.dispatch('changeCurrentCart', date);
+                this.dispatch('changeCurrentOrder', date);
             }
         }
 

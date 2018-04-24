@@ -56,12 +56,12 @@
                 type: MealOrderApp.UserAction.SET_CURRENT_MENU,
                 date: {day: "21", month: "03", year: "2018"}
             };
-            const setCurrentCartAction = {
-                type: MealOrderApp.UserAction.SET_CURRENT_CART,
+            const setCurrentOrderAction = {
+                type: MealOrderApp.UserAction.SET_CURRENT_ORDER,
                 date: {day: "21", month: "03", year: "2018"}
             };
             mock.expects('dispatch').withArgs(setCurrentMenuAction);
-            mock.expects('dispatch').withArgs(setCurrentCartAction);
+            mock.expects('dispatch').withArgs(setCurrentOrderAction);
             fixture('MealOrderMenuContainer');
             mock.verify();
             mock.restore();
