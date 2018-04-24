@@ -119,6 +119,14 @@
                 return {
                     /**
                      * Array of dates with menu which may not exist.
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {String} day
+                     * @property {String} month
+                     * @property {String} year
+                     *
+                     * @typedef {String} dayOfTheWeek
+                     * @typedef {Boolean} hasMenu If menu for this date exists
                      */
                     calendar: {
                         type: Array,
@@ -127,6 +135,21 @@
 
                     /**
                      * Menu for a current day.
+                     *
+                     * @typedef {Object} Menu the menu for the current date
+                     *
+                     * @property {String} Vendor a vendor name
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {String} day
+                     * @property {String} month
+                     * @property {String} year
+                     *
+                     * @typedef {Array} Categories array contains the category name and dishes
+                     * @typedef {Array} Dishes array contains the dish title, price, quantity
+                     * @property {String} title
+                     * @property {String} price
+                     * @property {String} quantity
                      */
                     menu: {
                         type: Array,

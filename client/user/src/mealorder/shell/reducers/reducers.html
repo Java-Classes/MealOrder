@@ -104,14 +104,15 @@
 
             menu: [
                 {
-                    name: 'Пюре',
+                    vendor: 'Пюре',
                     date: {
                         year: '2018',
                         month: '03',
                         day: '21',
                     },
                     categories: [{
-                        categoryName: 'Первое блюдо', dishes: [
+                        categoryName: 'Первое блюдо',
+                        dishes: [
                             {title: 'Борщ украинский', price: 35},
                             {title: 'Солянка', price: 40},
                             {title: 'Суп гороховый', price: 140},
@@ -119,14 +120,15 @@
                             {title: 'Суп-пюре грибной', price: 40}]
                     }
                         , {
-                            categoryName: 'Второе блюдо', dishes: [
+                            categoryName: 'Второе блюдо',
+                            dishes: [
                                 {title: 'Утиные крылышки', price: 40},
                                 {title: 'Куриные крылышки', price: 45}]
                         }
                     ]
                 },
                 {
-                    name: 'Позитив',
+                    vendor: 'Позитив',
                     date: {
                         year: '2018',
                         month: '03',
@@ -252,7 +254,7 @@
                         }
                     );
                 }
-                case MealOrderApp.UserAction.SET_CURRENT_CART: {
+                case MealOrderApp.UserAction.SET_CURRENT_ORDER: {
                     const newOrder = state.orders.find(order => Utils.shallowEqual(action.date, order.date));
                     return Object.assign({}, state, {
                             currentOrder: newOrder

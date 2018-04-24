@@ -81,6 +81,20 @@
                 return {
                     /**
                      * Current user's meal order.
+                     *
+                     * @typedef {Object} Order the current order
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {String} day
+                     * @property {String} month
+                     * @property {String} year
+                     *
+                     * @typedef {Array} Cart array that contains the vendor and dishes
+                     * @property {String} Vendor a vendor name
+                     * @typedef {Array} Dishes array contains the dish title, price, quantity
+                     * @property {String} title
+                     * @property {String} price
+                     * @property {String} quantity
                      */
                     order: {
                         type: Array,
