@@ -198,12 +198,10 @@
                  * @param {date} selected date by tab
                  */
                 return {
-                    addDish(dish) {
-                        return {
-                            type: MealOrderApp.UserAction.ADD_DISH,
-                            dish: dish
-                        }
-                    },
+                    addDish: dish => ({
+                        type: MealOrderApp.UserAction.ADD_DISH,
+                        dish
+                    }),
                     changeCurrentMenu: date => ({
                         type: MealOrderApp.UserAction.SET_CURRENT_MENU,
                         date
@@ -249,12 +247,16 @@
             }
 
             _selectDate(e) {
-                const date = new Date(e.target.selected);
+                const routeDate = new Date(e.target.selected);
                 const newRouteData = {};
                 newRouteData.page = 'menu';
-                newRouteData.date = date.getFullYear() +
-                    "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                newRouteData.date = routeDate.getFullYear() +
+                    "-" + (routeDate.getMonth() + 1) + "-" + routeDate.getDate();
                 this.set('routeData', newRouteData);
+                let date = {};
+                date.year = routeDate.getFullYear();
+                date.month = routeDate.getMonth() + 1;
+                date.day = routeDate.getDate();
                 this.dispatch('changeCurrentMenu', date);
                 this.dispatch('changeCurrentOrder', date);
             }
@@ -266,6 +268,7 @@
                 this.dispatch('addDish', order);
             }
         }
+
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
     </script>
 </dom-module>

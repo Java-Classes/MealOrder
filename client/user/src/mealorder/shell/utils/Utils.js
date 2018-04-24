@@ -21,7 +21,6 @@
 /*exported Utils */
 class Utils {
     static shallowEqual(o1, o2) {
-        return Object.keys(o1)
-            .every(key => o1[key] === o2[key]);
+        return Object.keys(o1).every(key => o1[key] === o2[key]);
     }
 }

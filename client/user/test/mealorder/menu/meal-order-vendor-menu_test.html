@@ -51,6 +51,9 @@
             component.menu = MealOrderAppTest.initialMenu;
         });
         test('should store menu correctly', function () {
+            const CATEGORIES = 2;
+            const DISHES_LENGTH = 5;
+            const DISH_COST = 35;
 
             assert.equal('Пюре', component.menu.name);
             assert.equal(CATEGORIES, component.menu.categories.length);
@@ -70,7 +73,6 @@
         test('should send `add-dish` event', function (done) {
             flush(function () {
                 const addButton = component.shadowRoot.querySelector('#menu > div:nth-child(1) > div:nth-child(3) > paper-item > .add-dish-icon > paper-icon-button');
-                console.log(addButton);
                 component.addEventListener('dish-added', function () {
                     done();
                 });
