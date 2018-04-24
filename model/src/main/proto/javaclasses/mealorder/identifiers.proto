@@ -40,7 +40,7 @@ import "javaclasses/mealorder/attributes.proto";
 message VendorListId {
 
     // The ID of the vendor list
-    string value = 1 [(required) = true];
+    string value = 1;
 }
 
 // The ID of the purchase order list.
@@ -48,7 +48,7 @@ message VendorListId {
 message PurchaseOrderListId {
 
     // The ID of the purchase order list.
-    string value = 1 [(required) = true];
+    string value = 1;
 }
 
 // The ID of the calendar.
@@ -56,7 +56,7 @@ message PurchaseOrderListId {
 message MenuCalendarId {
 
     // The ID of the calendar.
-    string value = 1 [(required) = true];
+    string value = 1;
 }
 
 // The ID of a user.
@@ -66,7 +66,7 @@ message MenuCalendarId {
 message UserId {
 
     // The user's email.
-    spine.net.EmailAddress email = 1 [(required) = true];
+    spine.net.EmailAddress email = 1;
 }
 
 // The ID of a vendor.
@@ -74,7 +74,7 @@ message UserId {
 message VendorId {
 
     // Represented by the vendor name value in the next form 'vendor:<`VendorName`>'.
-    string value = 1 [(required) = true];
+    string value = 1;
 }
 
 // The ID of a order.
@@ -84,13 +84,13 @@ message VendorId {
 message OrderId {
 
     // The identifier of the vendor.
-    VendorId vendor_id = 1 [(required) = true];
+    VendorId vendor_id = 1;
 
     // The identifier of the user who makes an order.
-    UserId user_id = 2 [(required) = true];
+    UserId user_id = 2;
 
     // The date of an order.
-    spine.time.LocalDate order_date = 3 [(required) = true];
+    spine.time.LocalDate order_date = 3;
 }
 
 // The ID of a menu.
@@ -100,10 +100,10 @@ message OrderId {
 message MenuId {
 
     // The identifier of the vendor.
-    VendorId vendor_id = 1 [(required) = true];
+    VendorId vendor_id = 1;
 
     // Was imported at this time.
-    google.protobuf.Timestamp when_imported = 2 [(required) = true];
+    google.protobuf.Timestamp when_imported = 2;
 }
 
 // The ID of a dish.
@@ -113,10 +113,10 @@ message MenuId {
 message DishId {
 
     // The sequence number of a dish in the menu.
-    int32 sequential_number = 1 [(required) = true];
+    int32 sequential_number = 1;
 
     // The identifier of the menu.
-    MenuId menu_id = 2 [(required) = true];
+    MenuId menu_id = 2;
 }
 
 // The ID of a purchase order.
@@ -126,10 +126,10 @@ message DishId {
 message PurchaseOrderId {
 
     // The identifier of the vendor.
-    VendorId vendor_id = 1 [(required) = true];
+    VendorId vendor_id = 1;
 
     // The date on which a purchase order is formed.
-    spine.time.LocalDate po_date = 2 [(required) = true];
+    spine.time.LocalDate po_date = 2;
 }
 
 // The ID of a menu list projection for UI role User.
@@ -137,7 +137,7 @@ message PurchaseOrderId {
 message MenuListId {
 
     // The date on which the a list is formed.
-    spine.time.LocalDate date = 1 [(required) = true];
+    spine.time.LocalDate date = 1;
 }
 
 // The ID of an order list projection for UI role User.
@@ -145,10 +145,10 @@ message MenuListId {
 message OrderListId {
 
     // The date on which an order list is formed.
-    spine.time.LocalDate order_date = 1 [(required) = true];
+    spine.time.LocalDate order_date = 1;
 
     // The identifier of the user who made orders.
-    UserId user_id = 2 [(required) = true];
+    UserId user_id = 2;
 }
 
 // The ID of a monthly spendings report projection for UI role Admin.
@@ -156,5 +156,5 @@ message OrderListId {
 message MonthlySpendingsReportId {
 
     // The month on which spendings are calculated.
-    LocalMonth month = 1 [(required) = true];
+    LocalMonth month = 1;
 }

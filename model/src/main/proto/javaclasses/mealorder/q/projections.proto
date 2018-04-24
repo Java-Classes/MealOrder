@@ -55,7 +55,7 @@ import "javaclasses/mealorder/values.proto";
 message MenuListView {
 
     // The identifier of a menu list.
-    MenuListId list_id = 1 [(required) = true];
+    MenuListId list_id = 1;
 
     // The collection of menus.
     repeated MenuItem menu = 2;
@@ -72,7 +72,7 @@ message MenuListView {
 message MenuCalendarView {
 
     // The identifier of the calendar.
-    MenuCalendarId menu_calendar_id = 1 [(required) = true];
+    MenuCalendarId menu_calendar_id = 1;
 
     // The collection of calendar items (dates).
     repeated MenuCalendarItem calendar_item = 2;
@@ -89,7 +89,7 @@ message MenuCalendarView {
 message OrderListView {
 
     // The identifier of an order list.
-    OrderListId list_id = 1 [(required) = true];
+    OrderListId list_id = 1;
 
     // The collection of user's orders.
     repeated OrderItem order = 2;
@@ -104,7 +104,7 @@ message OrderListView {
 message VendorListView {
 
     // The identifier of the vendor list singleton.
-    VendorListId vendor_list_id = 1 [(required) = true];
+    VendorListId vendor_list_id = 1;
 
     // The collection of all vendors.
     repeated VendorItem vendor = 2;
@@ -118,7 +118,7 @@ message VendorListView {
 message PurchaseOrderListView {
 
     // The identifier of the purchase order list singleton.
-    PurchaseOrderListId purchase_order_list_id = 1 [(required) = true];
+    PurchaseOrderListId purchase_order_list_id = 1;
 
     // The collection of all purchase orders.
     repeated PurchaseOrderItem purchase_order = 2;
@@ -130,7 +130,7 @@ message PurchaseOrderListView {
 message PurchaseOrderDetailsByDishView {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1 [(required) = true];
+    PurchaseOrderId id = 1;
 
     // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
@@ -148,7 +148,7 @@ message PurchaseOrderDetailsByDishView {
 message PurchaseOrderDetailsByUserView {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1 [(required) = true];
+    PurchaseOrderId id = 1;
 
     // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
@@ -169,7 +169,7 @@ message PurchaseOrderDetailsByUserView {
 message MonthlySpendingsReportView {
 
     // The identifier of a monthly spendings report.
-    MonthlySpendingsReportId report_id = 1 [(required) = true];
+    MonthlySpendingsReportId report_id = 1;
 
     // The collection of users spendings for the specified month.
     repeated UserSpendings user_spending = 2;

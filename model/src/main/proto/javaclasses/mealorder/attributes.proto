@@ -37,8 +37,8 @@ import "spine/time/time.proto";
 message LocalMonth {
 
     // The month value.
-    spine.time.MonthOfYear month = 1 [(required) = true];
+    spine.time.MonthOfYear month = 1;
 
     // The year value.
-    int32 year = 2 [(required) = true];
+    int32 year = 2;
 }
