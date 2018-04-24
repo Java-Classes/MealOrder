@@ -22,8 +22,10 @@ package javaclasses.mealorder.q.projection;
 
 import io.spine.time.LocalDate;
 import javaclasses.mealorder.PurchaseOrderId;
+import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
+import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.q.PurchaseOrderDetailsByUserViewProjection;
 import javaclasses.mealorder.q.UserOrderDetails;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +37,8 @@ import java.util.List;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderCreatedInstance;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderDeliveredInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PurchaseOrderDetailsByUserViewProjectionTest extends ProjectionTest {
     private PurchaseOrderDetailsByUserViewProjection projection;
@@ -65,6 +69,39 @@ public class PurchaseOrderDetailsByUserViewProjectionTest extends ProjectionTest
             dispatch(projection, createEvent(purchaseOrderCreated));
             final List<UserOrderDetails> orderList = projection.getState()
                                                                .getOrderList();
+            assertEquals(2, orderList.size());
+            assertEquals("user@example.com", orderList.get(0)
+                                                      .getId()
+                                                      .getEmail()
+                                                      .getValue());
+            assertEquals("petr@example.com", orderList.get(1)
+                                                      .getId()
+                                                      .getEmail()
+                                                      .getValue());
+            assertEquals(true, orderList.get(0)
+                                        .getIsValid());
+            assertEquals(5, orderList.get(0)
+                                     .getDishList()
+                                     .size());
+            assertEquals(8, orderList.get(1)
+                                     .getDishList()
+                                     .size());
+        }
+    }
+
+    @Nested
+    @DisplayName("PurchaseOrderDelivered event should be interpreted")
+    class PurchaseOrderDeliveredEvent {
+
+        @Test
+        @DisplayName("Should change status")
+        void addView() {
+            final PurchaseOrderCreated purchaseOrderCreated = purchaseOrderCreatedInstance();
+            dispatch(projection, createEvent(purchaseOrderCreated));
+            final PurchaseOrderDelivered purchaseOrderDelivered = purchaseOrderDeliveredInstance();
+            dispatch(projection, createEvent(purchaseOrderDelivered));
+            assertEquals(PurchaseOrderStatus.DELIVERED, projection.getState()
+                                                                  .getPurchaseOrderStatus());
         }
     }
 }

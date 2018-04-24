@@ -89,6 +89,7 @@ public class PurchaseOrderDetailsByUserViewProjection extends Projection<Purchas
                                                                           .getId()
                                                                           .getUserId())
                                                               .addAllDish(dishItems)
+                                                              .setIsValid(true)
                                                               .build();
                 dishes.add(dish);
             }
