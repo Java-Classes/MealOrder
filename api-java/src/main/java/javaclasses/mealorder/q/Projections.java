@@ -20,17 +20,12 @@
 
 package javaclasses.mealorder.q;
 
-import com.google.protobuf.Timestamp;
 import io.spine.time.LocalDate;
-import io.spine.time.MonthOfYear;
 
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static io.spine.time.Timestamps2.toDate;
 
 final class Projections {
 
@@ -61,23 +56,5 @@ final class Projections {
                         .setMonthValue(date.getMonthValue())
                         .setYear(date.getYear())
                         .build();
-    }
-
-    static LocalDate timeStampToLocalDate(Timestamp timestamp) {
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(toDate(timestamp));
-        final LocalDate localDate = calendarToLocalDate(calendar);
-        return localDate;
-    }
-
-    private static LocalDate calendarToLocalDate(Calendar calendar) {
-        final LocalDate date = LocalDate.newBuilder()
-                                        .setDay(calendar.get(Calendar.DAY_OF_MONTH))
-                                        .setMonth(
-                                                MonthOfYear.valueOf(
-                                                        calendar.get(Calendar.MONTH) + 1))
-                                        .setYear(calendar.get(Calendar.YEAR))
-                                        .build();
-        return date;
     }
 }
