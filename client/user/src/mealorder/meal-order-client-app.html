@@ -193,7 +193,9 @@
                                                calendar="[[calendar]]"
                                                menu="[[menu]]"
                                                on-dish-added="_addDishToOrder"></meal-order-menu-container>
-                    <div data-page="history"></div> <!--vendor menus component-->
+                    <div data-page="history">
+                        <!--user history component-->
+                    </div>
                 </iron-pages>
 
             </app-header-layout>
@@ -219,7 +221,6 @@
 
             static get properties() {
                 return {
-
                     /**
                      * Menu for a current day.
                      *
@@ -265,6 +266,17 @@
                         statePath: 'currentOrder'
                     },
 
+                    /**
+                     * Array of dates with menu which may not exist.
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
+                     *
+                     * @typedef {String} dayOfTheWeek
+                     * @typedef {Boolean} hasMenu If menu for this date exists
+                     */
                     calendar: {
                         type: Array,
                         statePath: 'calendar'
@@ -278,6 +290,12 @@
                     routeData: {
                         type: Object,
                     },
+
+                    currentDate: {
+                        type: Object,
+                        statePath: 'currentDate'
+                    }
+
                 }
             }
 
@@ -320,21 +338,24 @@
             }
 
             _pageChanged() {
+                if (!this.routeData.page) {
+                    this.set('route.path', '/menu/' + this.currentDate.year + "-" +
+                        this.currentDate.month + "-" + this.currentDate.day);
+                }
                 if (this.routeData.page.startsWith("menu")) {
-                    if (!this.routeData.date) {
-                        this.set('routeData.date', this.calendar[0].date.year + "-" +
-                            this.calendar[0].date.month + "-" + this.calendar[0].date.day);
-                    }
-                    else
-                    {
-                        let date = {};
-                        const routeDate = new Date(this.routeData.date);
-                        date.year = routeDate.getFullYear();
-                        date.month = routeDate.getMonth() + 1;
-                        date.day = routeDate.getDate();
+                    let date = {};
+                    const routeDate = new Date(this.routeData.date);
+                    date.year = routeDate.getFullYear();
+                    date.month = routeDate.getMonth() + 1;
+                    date.day = routeDate.getDate();
 
-                        this.dispatch('changeCurrentMenu', date);
-                        this.dispatch('changeCurrentOrder', date);
+                    this.dispatch('changeCurrentMenu', date);
+                    this.dispatch('changeCurrentOrder', date);
+                }
+                if (this.routeData.page.startsWith("history")) {
+                    if (!this.routeData.date) {
+                        this.set('routeData.date', this.currentDate.year + "-" +
+                            this.currentDate.month + "-" + (this.currentDate.day - 1));
                     }
                 }
             }
