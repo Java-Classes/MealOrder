@@ -60,7 +60,7 @@
                 --app-datepicker-date-hover-background-color: var(--paper-light-blue-500);
 
                 --app-datepicker-selected-date: {
-                   display: none;
+                    display: none;
                 };
 
                 --app-datepicker-selected-year: {
@@ -146,14 +146,14 @@
                      */
                     order: {
                         type: Array,
-                        statePath: 'currentOrder'
                     },
 
                     /**
                      * Date that the user can select on the calendar.
                      */
                     inputDate: {
-                        type: Date,
+                        type: String,
+                        computed: '_changeCalendarDate(routeData.date)',
                     },
 
                     /**
@@ -169,55 +169,50 @@
                     routeData: {
                         type: Object,
                     },
+
+                    selectedDay: {
+                        type: Object,
+                        computed: '_changeSelectedDay(routeData.date)'
+                    }
                 }
             }
 
             static get observers() {
                 return [
-                    '_updateDate(outputDate)',
-                    '_changeHistoryUrl(routeData.page)'
+                    ' _calendarDateChanged(outputDate)'
                 ];
             }
 
-            _changeHistoryUrl() {
-                if (this.routeData.page && this.routeData.page.startsWith("history")) {
-                    if (this.routeData.date) {
-                        const routeDate = new Date(this.routeData.date);
-                        this.set('inputDate', routeDate.getFullYear() +
-                            "/" + (routeDate.getMonth() + 1) + "/" + routeDate.getDate());
-                        const date = {};
-                        date.year = routeDate.getFullYear();
-                        date.month = (routeDate.getMonth() + 1);
-                        date.day = routeDate.getDate();
-                        this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
-                    }
-                }
+            _changeSelectedDay() {
                 const date = new Date(this.routeData.date);
 
                 let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
                 dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
 
-                const selectedDay = {
+                const day = {
                     day: date.getDate(),
                     dayOfTheWeek: dayOfTheWeek,
                 };
-                this.set('selectedDay', selectedDay);
+                return day;
             }
 
-            _updateDate() {
-                if (this.routeData.page && this.routeData.page.startsWith("history")) {
-                    const date = new Date(this.outputDate.toString());
-                    const newRouteData = {};
-                    newRouteData.page = 'history';
-                    newRouteData.date = date.getFullYear() +
-                        "-" + (date.getMonth() + 1) + "-" + date.getDate();
-                    if (newRouteData.date.localeCompare(this.routeData.date) !== 0) {
-                        this.set('routeData', newRouteData);
-                    }
+            _changeCalendarDate() {
+                const routeDate = new Date(this.routeData.date);
+                return (routeDate.getFullYear() +
+                    "/" + (routeDate.getMonth() + 1) + "/" + routeDate.getDate());
+            }
+
+            _calendarDateChanged() {
+                const date = new Date(this.outputDate.toString());
+                const newRouteData = {};
+                newRouteData.page = 'history';
+                newRouteData.date = date.getFullYear() +
+                    "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                if (newRouteData.date.localeCompare(this.routeData.date) !== 0) {
+                    this.set('routeData', newRouteData);
                 }
             }
         }
-
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>

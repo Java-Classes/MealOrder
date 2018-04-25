@@ -189,7 +189,8 @@
                             fallback-selection="view404"
                             role="main">
                     <meal-order-menu-container data-page="menu"
-                                               date="[[routeData.date]]" calendar="[[calendar]]" menu="[[menu]]"></meal-order-menu-container>
+                                               date="[[routeData.date]]" calendar="[[calendar]]"
+                                               menu="[[menu]]"></meal-order-menu-container>
                     <div data-page="history"></div> <!--vendor menus component-->
                 </iron-pages>
 
@@ -216,7 +217,6 @@
 
             static get properties() {
                 return {
-
                     /**
                      * Menu for a current day.
                      *
@@ -262,6 +262,17 @@
                         statePath: 'currentOrder'
                     },
 
+                    /**
+                     * Array of dates with menu which may not exist.
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
+                     *
+                     * @typedef {String} dayOfTheWeek
+                     * @typedef {Boolean} hasMenu If menu for this date exists
+                     */
                     calendar: {
                         type: Array,
                         statePath: 'calendar'
@@ -322,8 +333,7 @@
                         this.set('routeData.date', this.calendar[0].date.year + "-" +
                             this.calendar[0].date.month + "-" + this.calendar[0].date.day);
                     }
-                    else
-                    {
+                    else {
                         let date = {};
                         const routeDate = new Date(this.routeData.date);
                         date.year = routeDate.getFullYear();
@@ -332,6 +342,13 @@
 
                         this.dispatch('changeCurrentMenu', date);
                         this.dispatch('changeCurrentOrder', date);
+                    }
+                }
+                if (this.routeData.page.startsWith("history")) {
+                    if (!this.routeData.date) {
+                        const date = new Date();
+                        this.set('routeData.date', date.getFullYear() + "-"
+                            + (date.getMonth()+1) +"-" + (date.getDate() -1));
                     }
                 }
             }
