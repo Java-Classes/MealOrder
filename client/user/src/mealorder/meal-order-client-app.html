@@ -189,7 +189,10 @@
                             fallback-selection="view404"
                             role="main">
                     <meal-order-menu-container data-page="menu"
-                                               date="[[routeData.date]]" calendar="[[calendar]]" menu="[[menu]]"></meal-order-menu-container>
+                                               date="[[routeData.date]]"
+                                               calendar="[[calendar]]"
+                                               menu="[[menu]]"
+                                               on-dish-added="_addDishToOrder"></meal-order-menu-container>
                     <div data-page="history"></div> <!--vendor menus component-->
                 </iron-pages>
 
@@ -334,6 +337,13 @@
                         this.dispatch('changeCurrentOrder', date);
                     }
                 }
+            }
+
+            _addDishToOrder(e) {
+                const order = {};
+                order.dish = e.detail;
+                order.date = this.routeData.date;
+                this.dispatch('addDish', order);
             }
         }
 

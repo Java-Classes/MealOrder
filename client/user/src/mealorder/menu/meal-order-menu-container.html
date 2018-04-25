@@ -92,16 +92,7 @@
                 </paper-tab>
             </template>
         </paper-tabs>
-        <iron-pages
-                selected="[[routeData.page]]"
-                attr-for-selected="name"
-                fallback-selection="view404"
-                role="main">
-
-            <meal-order-vendor-menus name="menu"
-                                     items="[[menu]]"
-                                     on-dish-added="_addDishToOrder"></meal-order-vendor-menus>
-        </iron-pages>
+            <meal-order-vendor-menus items="[[menu]]"></meal-order-vendor-menus>
     </template>
     <script>
         /**
@@ -113,7 +104,7 @@
          * @polymer
          * @appliesMixin MealOrderApp.ReduxMixin
          */
-        class MealOrderMenuContainer extends MealOrderApp.ReduxMixin(Polymer.Element) {
+        class MealOrderMenuContainer extends (Polymer.Element) {
             static get is() {
                 return 'meal-order-menu-container';
             }
@@ -157,84 +148,15 @@
                         type: Array,
                     },
 
+                    /**
+                     * Selected day.
+                     */
                     date: {
                         type: Object,
                     }
                 };
             }
-
-            /*_pageChanged() {
-                if (!this.date) {
-                    this.set('route.path', '/menu/' + this.calendar[0].date.year + "-" +
-                        this.calendar[0].date.month + "-" + this.calendar[0].date.day);
-                }
-                else {
-                    let date = {};
-                    if (this.routeData.page.startsWith("menu")) {
-                        if (!this.routeData.date) {
-                            date = this.selectedDay || this.calendar[0].date;
-                            this.set('route.path', '/menu/' + date.year + "-" +
-                                date.month + "-" + date.day);
-                        }
-                        else {
-                            const routeDate = new Date(this.routeData.date);
-                            date.year = routeDate.getFullYear();
-                            date.month = routeDate.getMonth() + 1;
-                            date.day = routeDate.getDate();
-                            this.set('selectedDay', date);
-                        }
-                        this.dispatch('changeCurrentMenu', date);
-                        this.dispatch('changeCurrentOrder', date);
-                    }
-                }
-            }*/
-
-            /*_pageChanged() {
-                if (!this.date) {
-                    this.set('route.path', '/menu/' + this.calendar[0].date.year + "-" +
-                        this.calendar[0].date.month + "-" + this.calendar[0].date.day);
-                }
-                else {
-                    let date = {};
-                    if (this.routeData.page.startsWith("menu")) {
-                        if (!this.routeData.date) {
-                            date = this.selectedDay || this.calendar[0].date;
-                            this.set('route.path', '/menu/' + date.year + "-" +
-                                date.month + "-" + date.day);
-                        }
-                        else {
-                            const routeDate = new Date(this.routeData.date);
-                            date.year = routeDate.getFullYear();
-                            date.month = routeDate.getMonth() + 1;
-                            date.day = routeDate.getDate();
-                            this.set('selectedDay', date);
-                        }
-                        this.dispatch('changeCurrentMenu', date);
-                        this.dispatch('changeCurrentOrder', date);
-                    }
-                }
-            }
-
-            _selectDate(e) {
-                const date = new Date(e.target.selected);
-                const newRouteData = {};
-                newRouteData.page = 'menu';
-                newRouteData.date = date.getFullYear() +
-                    "-" + (date.getMonth() + 1) + "-" + date.getDate();
-                this.set('routeData', newRouteData);
-                this.dispatch('changeCurrentMenu', date);
-                this.dispatch('changeCurrentOrder', date);
-            }
-
-            _addDishToOrder(e) {
-                const order = {};
-                order.dish = e.detail;
-                order.date = this.routeData.date;
-                this.dispatch('addDish', order);
-            }
-            }*/
         }
-
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
     </script>
 </dom-module>
