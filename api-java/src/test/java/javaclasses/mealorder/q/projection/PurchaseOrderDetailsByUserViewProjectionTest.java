@@ -26,6 +26,8 @@ import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
+import javaclasses.mealorder.c.event.PurchaseOrderSent;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import javaclasses.mealorder.q.PurchaseOrderDetailsByUserViewProjection;
 import javaclasses.mealorder.q.UserOrderDetails;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +40,10 @@ import java.util.List;
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderCreatedInstance;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderDeliveredInstance;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderSentInstance;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderValidationFailedInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class PurchaseOrderDetailsByUserViewProjectionTest extends ProjectionTest {
     private PurchaseOrderDetailsByUserViewProjection projection;
@@ -59,8 +64,8 @@ public class PurchaseOrderDetailsByUserViewProjectionTest extends ProjectionTest
     }
 
     @Nested
-    @DisplayName("PurchaseOrderSent event should be interpreted by PurchaseOrderItemViewProjection")
-    class PurchaseOrderSentEvent {
+    @DisplayName("PurchaseOrderCreated event should be interpreted by PurchaseOrderItemViewProjection")
+    class PurchaseOrderCreatedEvent {
 
         @Test
         @DisplayName("Should set order for a projection")
@@ -102,6 +107,60 @@ public class PurchaseOrderDetailsByUserViewProjectionTest extends ProjectionTest
             dispatch(projection, createEvent(purchaseOrderDelivered));
             assertEquals(PurchaseOrderStatus.DELIVERED, projection.getState()
                                                                   .getPurchaseOrderStatus());
+        }
+    }
+
+    @Nested
+    @DisplayName("PurchaseOrderSent  event should be interpreted")
+    class PurchaseOrderSentEvent {
+
+        @Test
+        @DisplayName("Should change status")
+        void addView() {
+            final PurchaseOrderCreated purchaseOrderCreated = purchaseOrderCreatedInstance();
+            dispatch(projection, createEvent(purchaseOrderCreated));
+            dispatch(projection, createEvent(purchaseOrderCreated));
+            final PurchaseOrderSent purchaseOrderSent = purchaseOrderSentInstance();
+            dispatch(projection, createEvent(purchaseOrderSent));
+
+            assertEquals(PurchaseOrderStatus.SENT, projection.getState()
+                                                             .getPurchaseOrderStatus());
+        }
+    }
+
+    @Nested
+    @DisplayName("PurchaseOrderValidationFailed  event should be interpreted")
+    class PurchaseOrderValidationFailedEvent {
+
+        @Test
+        @DisplayName("Should set invalid for correct user")
+        void addView() {
+            final PurchaseOrderCreated purchaseOrderCreated = purchaseOrderCreatedInstance();
+            dispatch(projection, createEvent(purchaseOrderCreated));
+            final PurchaseOrderValidationFailed poValidationFailed = purchaseOrderValidationFailedInstance();
+            dispatch(projection, createEvent(poValidationFailed));
+
+            assertEquals(false, projection.getState()
+                                          .getOrderList()
+                                          .get(0)
+                                          .getIsValid());
+            assertEquals(poValidationFailed.getFailureOrder(0)
+                                           .getId()
+                                           .getUserId(), projection.getState()
+                                                                   .getOrderList()
+                                                                   .get(0)
+                                                                   .getId());
+
+            assertEquals(true, projection.getState()
+                                         .getOrderList()
+                                         .get(1)
+                                         .getIsValid());
+            assertNotEquals(poValidationFailed.getFailureOrder(0)
+                                              .getId()
+                                              .getUserId(), projection.getState()
+                                                                      .getOrderList()
+                                                                      .get(1)
+                                                                      .getId());
         }
     }
 }
