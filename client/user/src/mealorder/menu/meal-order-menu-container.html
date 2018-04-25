@@ -75,7 +75,7 @@
             }
         </style>
 
-        <paper-tabs id="paper-tabs" selected="[[date]]" attr-for-selected='data-key'>
+        <paper-tabs on-iron-select='_dateChanged' id="paper-tabs" selected="[[date]]" attr-for-selected='data-key'>
             <template is="dom-repeat" items="{{calendar}}" as="calendar">
                 <paper-tab class="paper-tab"
                            data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
@@ -90,6 +90,7 @@
                 </paper-tab>
             </template>
         </paper-tabs>
+        <!--meal-order-vendor-menus-->
     </template>
     <script>
         /**
@@ -153,6 +154,7 @@
                     }
                 };
             }
+
         }
 
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);

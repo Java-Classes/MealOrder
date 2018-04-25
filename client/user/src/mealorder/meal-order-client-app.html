@@ -189,9 +189,12 @@
                             fallback-selection="view404"
                             role="main">
                     <meal-order-menu-container data-page="menu"
-                                               date="[[routeData.date]]" calendar="[[calendar]]"
+                                               date="[[routeData.date]]"
+                                               calendar="[[calendar]]"
                                                menu="[[menu]]"></meal-order-menu-container>
-                    <div data-page="history"></div> <!--vendor menus component-->
+                    <div data-page="history">
+                        <!--user history component-->
+                    </div>
                 </iron-pages>
 
             </app-header-layout>

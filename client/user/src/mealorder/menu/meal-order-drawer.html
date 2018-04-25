@@ -94,7 +94,7 @@
                     </div>
                 </app-toolbar>
 
-                <div></div> <!--cart component-->
+                <!--cart component-->
             </div>
             <div data-page="history">
                 <app-toolbar>
@@ -170,6 +170,9 @@
                         type: Object,
                     },
 
+                    /**
+                     * Selected day.
+                     */
                     selectedDay: {
                         type: Object,
                         computed: '_changeSelectedDay(routeData.date)'
@@ -203,13 +206,15 @@
             }
 
             _calendarDateChanged() {
-                const date = new Date(this.outputDate.toString());
-                const newRouteData = {};
-                newRouteData.page = 'history';
-                newRouteData.date = date.getFullYear() +
-                    "-" + (date.getMonth() + 1) + "-" + date.getDate();
-                if (newRouteData.date.localeCompare(this.routeData.date) !== 0) {
-                    this.set('routeData', newRouteData);
+                if (this.routeData.page.startsWith("history")) {
+                    const date = new Date(this.outputDate.toString());
+                    const newRouteData = {};
+                    newRouteData.page = 'history';
+                    newRouteData.date = date.getFullYear() +
+                        "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                    if (newRouteData.date.localeCompare(this.routeData.date) !== 0) {
+                        this.set('routeData', newRouteData);
+                    }
                 }
             }
         }
