@@ -190,9 +190,11 @@
                             role="main">
                     <meal-order-menu-container data-page="menu"
                                                date="[[routeData.date]]"
-                                               calendar="[[calendar]]"
-                                               menu="[[menu]]"
-                                               on-dish-added="_addDishToOrder"></meal-order-menu-container>
+                                               current-week-menus="[[currentWeekMenus]]"
+                                               menu-for-day="[[menuForDay]]">
+                        on-dish-added="_addDishToOrder">
+                    </meal-order-menu-container>
+
                     <div data-page="history">
                         <!--user history component-->
                     </div>
@@ -239,7 +241,7 @@
                      * @property {String} price
                      * @property {String} quantity
                      */
-                    menu: {
+                    menuForDay: {
                         type: Array,
                         statePath: 'menuForDay'
                     },
@@ -261,9 +263,9 @@
                      * @property {String} price
                      * @property {String} quantity
                      */
-                    order: {
+                    orderForDay: {
                         type: Array,
-                        statePath: 'currentOrder'
+                        statePath: 'orderForDay'
                     },
 
                     /**
@@ -277,9 +279,9 @@
                      * @typedef {String} dayOfTheWeek
                      * @typedef {Boolean} hasMenu If menu for this date exists
                      */
-                    calendar: {
+                    currentWeekMenus: {
                         type: Array,
-                        statePath: 'calendar'
+                        statePath: 'currentWeekMenus'
                     },
 
                     /**
@@ -291,6 +293,9 @@
                         type: Object,
                     },
 
+                    /**
+                     * Current date.
+                     */
                     currentDate: {
                         type: Object,
                         statePath: 'currentDate'
@@ -342,7 +347,7 @@
                     this.set('route.path', '/menu/' + this.currentDate.year + "-" +
                         this.currentDate.month + "-" + this.currentDate.day);
                 }
-                if (this.routeData.page.startsWith("menu")) {
+                /*if (this.routeData.page.startsWith("menu")) {
                     let date = {};
                     const routeDate = new Date(this.routeData.date);
                     date.year = routeDate.getFullYear();
@@ -351,7 +356,7 @@
 
                     this.dispatch('changeCurrentMenu', date);
                     this.dispatch('changeCurrentOrder', date);
-                }
+                }*/
                 if (this.routeData.page.startsWith("history")) {
                     if (!this.routeData.date) {
                         this.set('routeData.date', this.currentDate.year + "-" +

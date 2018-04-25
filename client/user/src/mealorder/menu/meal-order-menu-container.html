@@ -76,7 +76,7 @@
         </style>
 
         <paper-tabs on-iron-select='_dateChanged' id="paper-tabs" selected="[[date]]" attr-for-selected='data-key'>
-            <template is="dom-repeat" items="{{calendar}}" as="calendar">
+            <template is="dom-repeat" items="{{currentWeekMenus}}" as="calendar">
                 <paper-tab class="paper-tab"
                            data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                            link disabled="[[!calendar.hasMenu]]">
@@ -102,9 +102,19 @@
          * @polymer
          * @appliesMixin MealOrderApp.ReduxMixin
          */
-        class MealOrderMenuContainer extends (Polymer.Element) {
+        class MealOrderMenuContainer extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-menu-container';
+            }
+
+            static get actions() {
+
+                return {
+                    changeCurrentDate: date => ({
+                        type: MealOrderApp.UserAction.SET_CURRENT_DATE,
+                        date
+                    }),
+                }
             }
 
             static get properties() {
@@ -120,7 +130,7 @@
                      * @typedef {String} dayOfTheWeek
                      * @typedef {Boolean} hasMenu If menu for this date exists
                      */
-                    calendar: {
+                    currentWeekMenus: {
                         type: Array,
                     },
 
@@ -142,8 +152,8 @@
                      * @property {String} price
                      * @property {String} quantity
                      */
-                    menu: {
-                        type: Array,
+                    menuForDay: {
+                        type: Object,
                     },
 
                     /**
@@ -155,6 +165,9 @@
                 };
             }
 
+            _dateChanged(e) {
+                this.dispatch('changeCurrentDate', new Date(e.target.selected));
+            }
         }
 
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
