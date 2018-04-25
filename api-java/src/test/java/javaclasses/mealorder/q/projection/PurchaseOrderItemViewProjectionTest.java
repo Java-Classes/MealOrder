@@ -24,6 +24,7 @@ import javaclasses.mealorder.PurchaseOrderListId;
 import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import javaclasses.mealorder.q.PurchaseOrderItemViewProjection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderDeliveredInstance;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderSentInstance;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderValidationFailedInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PurchaseOrderItemViewProjectionTest extends ProjectionTest {
@@ -90,6 +92,22 @@ public class PurchaseOrderItemViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(purchaseOrderDelivered));
             assertEquals(PurchaseOrderStatus.DELIVERED, projection.getState()
                                                                   .getPurchaseOrderStatus());
+        }
+    }
+
+    @Nested
+    @DisplayName("PurchaseOrderValidationFailed event should be interpreted by PurchaseOrderItemViewProjection")
+    class PurchaseOrderValidationFailedEvent {
+
+        @Test
+        @DisplayName("Should change status of the PO")
+        void addView() {
+            final PurchaseOrderSent purchaseOrderSent = purchaseOrderSentInstance();
+            dispatch(projection, createEvent(purchaseOrderSent));
+            final PurchaseOrderValidationFailed poValidationFailed = purchaseOrderValidationFailedInstance();
+            dispatch(projection, createEvent(poValidationFailed));
+            assertEquals(PurchaseOrderStatus.INVALID, projection.getState()
+                                                                .getPurchaseOrderStatus());
         }
     }
 }

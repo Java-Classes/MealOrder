@@ -27,6 +27,7 @@ import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import javaclasses.mealorder.q.DishItem;
 import javaclasses.mealorder.q.PurchaseOrderDetailsByDishViewProjection;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +41,7 @@ import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderCreatedInstance;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderDeliveredInstance;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderSentInstance;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderValidationFailedInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PurchaseOrderDetailsByDishViewProjectionTest extends ProjectionTest {
@@ -81,6 +83,22 @@ public class PurchaseOrderDetailsByDishViewProjectionTest extends ProjectionTest
 
     @Nested
     @DisplayName("PurchaseOrderSent event should be interpreted by PurchaseOrderDetailsByDishViewProjection")
+    class PurchaseOrderValidationFailedEvent {
+
+        @Test
+        @DisplayName("Should change status for a projection")
+        void addView() {
+            final PurchaseOrderCreated purchaseOrderCreated = purchaseOrderCreatedInstance();
+            dispatch(projection, createEvent(purchaseOrderCreated));
+            final PurchaseOrderValidationFailed poValidationFailed = purchaseOrderValidationFailedInstance();
+            dispatch(projection, createEvent(poValidationFailed));
+            assertEquals(PurchaseOrderStatus.INVALID, projection.getState()
+                                                                .getPurchaseOrderStatus());
+        }
+    }
+
+    @Nested
+    @DisplayName("PurchaseOrderSent event should be interpreted by PurchaseOrderDetailsByDishViewProjection")
     class PurchaseOrderSentEvent {
 
         @Test
@@ -94,7 +112,6 @@ public class PurchaseOrderDetailsByDishViewProjectionTest extends ProjectionTest
                                                              .getPurchaseOrderStatus());
         }
     }
-
     @Nested
     @DisplayName("PurchaseOrderDelivered event should be interpreted by PurchaseOrderDetailsByDishViewProjection")
     class PurchaseOrderDeliveredEvent {
