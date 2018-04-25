@@ -337,15 +337,17 @@
                 }
             }
 
+
             _pageChanged() {
+                const DATE_LENGTH = 10;
                 if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
-                    this.set('route.path', '/menu/' + this.currentDate.toISOString().slice(0,10));
+                    this.set('route.path', '/menu/' + this.currentDate.toISOString().slice(0,DATE_LENGTH));
                 }
                 if (this.routeData.page.startsWith("history")) {
                     if (!this.routeData.date) {
                         let yesterday = new Date(this.currentDate);
                         yesterday.setDate(yesterday.getDate()-1);
-                        this.set('routeData.date', yesterday.toISOString().slice(0,10));
+                        this.set('routeData.date', yesterday.toISOString().slice(0, DATE_LENGTH));
                     }
                 }
             }
