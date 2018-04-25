@@ -38,6 +38,7 @@ import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
+import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.OrderCanceled;
 import javaclasses.mealorder.c.event.OrderProcessed;
@@ -281,6 +282,22 @@ public class TestMealOrderEventFactory {
                                   .setOrder(order)
                                   .setWhenProcessed(currentTime)
                                   .build();
+            return result;
+        }
+
+        public static DishRemovedFromOrder dishRemovedFromOrderInstance() {
+            return dishRemovedFromOrderInstance(TestValues.ORDER_ID, TestValues.DISH1);
+        }
+
+        private static DishRemovedFromOrder dishRemovedFromOrderInstance(OrderId orderId,
+                                                                         Dish dish) {
+            final Timestamp currentTime = getCurrentTime();
+            final DishRemovedFromOrder result =
+                    DishRemovedFromOrder.newBuilder()
+                                        .setOrderId(orderId)
+                                        .setDish(dish)
+                                        .setWhenRemoved(currentTime)
+                                        .build();
             return result;
         }
     }
