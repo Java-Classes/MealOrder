@@ -170,7 +170,8 @@
                                 </div>
                                 <div data-page="history" class="app-header-iron-container">
                                     <a class="title-link" href="/#/menu/">
-                                        <div id="menu-history" class="route-title">Сделать заказ</div>
+                                        <div id="menu-history" class="route-title">Сделать заказ
+                                        </div>
                                         <iron-icon class="link-icon"
                                                    icon="maps:icons:add"></iron-icon>
                                     </a>
@@ -187,7 +188,9 @@
                             attr-for-selected="data-page"
                             fallback-selection="view404"
                             role="main">
-                    <meal-order-menu-container data-page="menu"></meal-order-menu-container>
+                    <meal-order-menu-container data-page="menu"
+                                               date="[[routeData.date]]" calendar="[[calendar]]" menu="[[menu]]"></meal-order-menu-container>
+                    <div data-page="history"></div> <!--vendor menus component-->
                 </iron-pages>
 
             </app-header-layout>
@@ -213,6 +216,30 @@
 
             static get properties() {
                 return {
+
+                    /**
+                     * Menu for a current day.
+                     *
+                     * @typedef {Object} Menu the menu for the current date
+                     *
+                     * @property {String} Vendor a vendor name
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
+                     *
+                     * @typedef {Array} Categories array contains the category name and dishes
+                     * @typedef {Array} Dishes array contains the dish title, price, quantity
+                     * @property {String} title
+                     * @property {String} price
+                     * @property {String} quantity
+                     */
+                    menu: {
+                        type: Array,
+                        statePath: 'menuForDay'
+                    },
+
                     /**
                      * Current user's meal order.
                      *
@@ -235,11 +262,9 @@
                         statePath: 'currentOrder'
                     },
 
-                    /**
-                     * Current selected day by user.
-                     */
-                    selectedDay: {
-                        type: Object,
+                    calendar: {
+                        type: Array,
+                        statePath: 'calendar'
                     },
 
                     /**
@@ -253,9 +278,35 @@
                 }
             }
 
+            static get actions() {
+                /**
+                 * Fired when a paper tab is selected.
+                 *
+                 * @action `changeCurrentMenu`
+                 * @param {date} selected date by tab
+                 */
+
+                /**
+                 * Fired when a paper tab is selected.
+                 *
+                 * @action `changeCurrentOrder`
+                 * @param {date} selected date by tab
+                 */
+                return {
+                    changeCurrentMenu: date => ({
+                        type: MealOrderApp.UserAction.SET_CURRENT_MENU,
+                        date
+                    }),
+                    changeCurrentOrder: date => ({
+                        type: MealOrderApp.UserAction.SET_CURRENT_ORDER,
+                        date
+                    })
+                }
+            }
+
             static get observers() {
                 return [
-                    '_pageChanged(routeData.date)'
+                    '_pageChanged(routeData.page)'
                 ];
             }
 
@@ -266,16 +317,23 @@
             }
 
             _pageChanged() {
-                const date = new Date(this.routeData.date);
+                if (this.routeData.page.startsWith("menu")) {
+                    if (!this.routeData.date) {
+                        this.set('routeData.date', this.calendar[0].date.year + "-" +
+                            this.calendar[0].date.month + "-" + this.calendar[0].date.day);
+                    }
+                    else
+                    {
+                        let date = {};
+                        const routeDate = new Date(this.routeData.date);
+                        date.year = routeDate.getFullYear();
+                        date.month = routeDate.getMonth() + 1;
+                        date.day = routeDate.getDate();
 
-                let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
-                dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
-
-                const selectedDay = {
-                    day: date.getDate(),
-                    dayOfTheWeek: dayOfTheWeek,
-                };
-                this.set('selectedDay', selectedDay);
+                        this.dispatch('changeCurrentMenu', date);
+                        this.dispatch('changeCurrentOrder', date);
+                    }
+                }
             }
         }
 

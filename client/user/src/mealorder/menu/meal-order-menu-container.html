@@ -74,28 +74,19 @@
                 }
             }
         </style>
-        <app-location route="{{route}}"
-                      use-hash-as-path></app-location>
 
-        <app-route
-                route="{{route}}"
-                pattern="/:page/:date"
-                data="{{routeData}}">
-        </app-route>
-
-        <paper-tabs id="paper-tabs" selected="[[routeData.date]]" attr-for-selected='data-key'
-                    on-iron-select="_selectDate">
+        <paper-tabs id="paper-tabs" selected="[[date]]" attr-for-selected='data-key'>
             <template is="dom-repeat" items="{{calendar}}" as="calendar">
                 <paper-tab class="paper-tab"
                            data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                            link disabled="[[!calendar.hasMenu]]">
-                    <div class="paper-tab-container">
+                    <a href="#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]" class="paper-tab-container">
                         <div>
                             <div class="day-of-the-week">{{calendar.dayOfTheWeek}}
                             </div>
                             <div class="day">{{calendar.date.day}}</div>
                         </div>
-                    </div>
+                    </a>
                 </paper-tab>
             </template>
         </paper-tabs>
@@ -130,7 +121,6 @@
                      */
                     calendar: {
                         type: Array,
-                        statePath: 'calendar'
                     },
 
                     /**
@@ -153,58 +143,42 @@
                      */
                     menu: {
                         type: Array,
-                        statePath: 'menuForDay'
-                    },
-                    /**
-                     * Used for routing.
-                     */
-                    routeData: {
-                        type: Object,
                     },
 
-                    /**
-                     * Current selected day by user.
-                     */
-                    selectedDay: {
+                    date: {
                         type: Object,
                     }
                 };
             }
 
-            static get actions() {
-                /**
-                 * Fired when a paper tab is selected.
-                 *
-                 * @action `changeCurrentMenu`
-                 * @param {date} selected date by tab
-                 */
-
-                /**
-                 * Fired when a paper tab is selected.
-                 *
-                 * @action `changeCurrentOrder`
-                 * @param {date} selected date by tab
-                 */
-                return {
-                    changeCurrentMenu: date => ({
-                        type: MealOrderApp.UserAction.SET_CURRENT_MENU,
-                        date
-                    }),
-                    changeCurrentOrder: date => ({
-                        type: MealOrderApp.UserAction.SET_CURRENT_ORDER,
-                        date
-                    })
+            /*_pageChanged() {
+                if (!this.date) {
+                    this.set('route.path', '/menu/' + this.calendar[0].date.year + "-" +
+                        this.calendar[0].date.month + "-" + this.calendar[0].date.day);
                 }
-            }
+                else {
+                    let date = {};
+                    if (this.routeData.page.startsWith("menu")) {
+                        if (!this.routeData.date) {
+                            date = this.selectedDay || this.calendar[0].date;
+                            this.set('route.path', '/menu/' + date.year + "-" +
+                                date.month + "-" + date.day);
+                        }
+                        else {
+                            const routeDate = new Date(this.routeData.date);
+                            date.year = routeDate.getFullYear();
+                            date.month = routeDate.getMonth() + 1;
+                            date.day = routeDate.getDate();
+                            this.set('selectedDay', date);
+                        }
+                        this.dispatch('changeCurrentMenu', date);
+                        this.dispatch('changeCurrentOrder', date);
+                    }
+                }
+            }*/
 
-            static get observers() {
-                return [
-                    '_pageChanged(routeData.page)'
-                ];
-            }
-
-            _pageChanged() {
-                if (!this.routeData.page) {
+            /*_pageChanged() {
+                if (!this.date) {
                     this.set('route.path', '/menu/' + this.calendar[0].date.year + "-" +
                         this.calendar[0].date.month + "-" + this.calendar[0].date.day);
                 }
@@ -238,7 +212,7 @@
                 this.set('routeData', newRouteData);
                 this.dispatch('changeCurrentMenu', date);
                 this.dispatch('changeCurrentOrder', date);
-            }
+            }*/
         }
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
     </script>
