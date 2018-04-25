@@ -76,7 +76,7 @@
         </style>
 
         <paper-tabs on-iron-select='_dateChanged' id="paper-tabs" selected="[[date]]" attr-for-selected='data-key'>
-            <template is="dom-repeat" items="{{calendar}}" as="calendar">
+            <template is="dom-repeat" items="{{currentWeekMenus}}" as="calendar">
                 <paper-tab class="paper-tab"
                            data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
                            link disabled="[[!calendar.hasMenu]]">
@@ -120,7 +120,7 @@
                      * @typedef {String} dayOfTheWeek
                      * @typedef {Boolean} hasMenu If menu for this date exists
                      */
-                    calendar: {
+                    currentWeekMenus: {
                         type: Array,
                     },
 
@@ -142,7 +142,7 @@
                      * @property {String} price
                      * @property {String} quantity
                      */
-                    menu: {
+                    menuForDay: {
                         type: Array,
                     },
 
@@ -154,11 +154,6 @@
                     }
                 };
             }
-
-            _dateChanged() {
-                this.dispatch('changeCurrentOrder', this.date);
-            }
-
         }
 
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);

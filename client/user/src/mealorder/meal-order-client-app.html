@@ -190,8 +190,8 @@
                             role="main">
                     <meal-order-menu-container data-page="menu"
                                                date="[[routeData.date]]"
-                                               calendar="[[calendar]]"
-                                               menu="[[menu]]"></meal-order-menu-container>
+                                               current-week-menus="[[currentWeekMenus]]"
+                                               menu-for-day="[[menuForDay]]"></meal-order-menu-container>
                     <div data-page="history">
                         <!--user history component-->
                     </div>
@@ -238,7 +238,7 @@
                      * @property {String} price
                      * @property {String} quantity
                      */
-                    menu: {
+                    menuForDay: {
                         type: Array,
                         statePath: 'menuForDay'
                     },
@@ -260,9 +260,9 @@
                      * @property {String} price
                      * @property {String} quantity
                      */
-                    order: {
+                    orderForDay: {
                         type: Array,
-                        statePath: 'currentOrder'
+                        statePath: 'orderForDay'
                     },
 
                     /**
@@ -276,9 +276,9 @@
                      * @typedef {String} dayOfTheWeek
                      * @typedef {Boolean} hasMenu If menu for this date exists
                      */
-                    calendar: {
+                    currentWeekMenus: {
                         type: Array,
-                        statePath: 'calendar'
+                        statePath: 'currentWeekMenus'
                     },
 
                     /**

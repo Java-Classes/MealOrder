@@ -98,7 +98,7 @@
             }];
 
         MealOrderApp.initialState = {
-            calendar: arrayOfDates,
+            currentWeekMenus: arrayOfDates,
             menuForDay: [],
 
             currentDate: {
@@ -107,7 +107,7 @@
                 day: 21,
             },
 
-            menu: [
+            menus: [
                 {
                     vendor: 'Пюре',
                     date: {
@@ -204,14 +204,14 @@
                         }
                     ]
                 }],
-            currentOrder: [],
+            orderForDay: [],
             orders: [{
                 date: {
                     year: 2018,
                     month: 3,
                     day: 21,
                 },
-                cart: [{
+                order: [{
                     vendor: "Пюре",
                     dishes: [
                         {title: 'Борщ украинский', price: 35, quantity: 1},
@@ -234,7 +234,7 @@
                     month: 3,
                     day: 22,
                     },
-                cart: [{
+                order: [{
                     vendor: "Пюре",
                     dishes: [
                         {title: 'Щи русские', price: 48, quantity: 1},
@@ -260,7 +260,7 @@
             }
             switch (action.type) {
                 case MealOrderApp.UserAction.SET_CURRENT_MENU: {
-                    const menu = state.menu.filter(menu => (Utils.shallowEqual(action.date, menu.date)));
+                    const menu = state.menus.filter(menu => (Utils.shallowEqual(action.date, menu.date)));
                     return Object.assign({}, state, {
                             menuForDay: menu
                         }
