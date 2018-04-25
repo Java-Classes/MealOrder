@@ -35,6 +35,7 @@ import javaclasses.mealorder.q.projection.PurchaseOrderDetailsByUserViewVBuilder
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class PurchaseOrderDetailsByUserViewProjection extends Projection<PurchaseOrderId, PurchaseOrderDetailsByUserView, PurchaseOrderDetailsByUserViewVBuilder> {
 
@@ -68,8 +69,20 @@ public class PurchaseOrderDetailsByUserViewProjection extends Projection<Purchas
     @Subscribe
     void on(PurchaseOrderValidationFailed event) {
         getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.INVALID);
-        //todo set which failed
+        event.getFailureOrderList()
+             .forEach(order -> {
+                 final UserId userId = order.getId()
+                                            .getUserId();
+                 final int index = getOrderIndexByUserId(userId);
+                 final UserOrderDetails newOrder = UserOrderDetails.newBuilder(
+                         getBuilder().getOrder()
+                                     .get(index))
+                                                                   .setIsValid(false)
+                                                                   .build();
+                 getBuilder().setOrder(index, newOrder);
+             });
     }
+
 
     private List<UserOrderDetails> getUserOrders(PurchaseOrderCreated event) {
         final List<UserOrderDetails> dishes = new ArrayList<>();
@@ -124,5 +137,16 @@ public class PurchaseOrderDetailsByUserViewProjection extends Projection<Purchas
             }
         });
         return dishItems;
+    }
+
+    private int getOrderIndexByUserId(UserId userId) {
+        final List<UserOrderDetails> orders = getState().getOrderList();
+        final int index = IntStream.range(0, orders.size())
+                                   .filter(i -> orders.get(i)
+                                                      .getId()
+                                                      .equals(userId))
+                                   .findFirst()
+                                   .getAsInt();
+        return index;
     }
 }
