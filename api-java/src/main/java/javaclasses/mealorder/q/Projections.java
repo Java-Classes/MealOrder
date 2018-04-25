@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-final class Projections {
+public final class Projections {
 
     /**
      * The {@code private} constructor prevents the utility class instantiation.
