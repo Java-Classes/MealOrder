@@ -318,6 +318,11 @@ public class TestValues {
                                                   .setVendorId(VENDOR_ID)
                                                   .setOrderDate(DATE)
                                                   .build();
+    public static final OrderId ORDER_ID2 = OrderId.newBuilder()
+                                                   .setUserId(USER_ID2)
+                                                   .setVendorId(VENDOR_ID2)
+                                                   .setOrderDate(DATE)
+                                                   .build();
 
     public static final VendorId INVALID_VENDOR_ID = VendorId.newBuilder()
                                                              .setValue("vendor:INVALID")

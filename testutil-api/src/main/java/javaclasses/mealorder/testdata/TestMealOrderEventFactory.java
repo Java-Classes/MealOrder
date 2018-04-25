@@ -245,6 +245,9 @@ public class TestMealOrderEventFactory {
             return dishAddedToOrderInstance(TestValues.ORDER_ID, TestValues.DISH1);
         }
 
+        public static DishAddedToOrder dishAddedToOrderInstance2() {
+            return dishAddedToOrderInstance(TestValues.ORDER_ID2, TestValues.DISH2);
+        }
         private static DishAddedToOrder dishAddedToOrderInstance(OrderId orderId, Dish dish) {
             final Timestamp currentTime = getCurrentTime();
             final DishAddedToOrder result =
