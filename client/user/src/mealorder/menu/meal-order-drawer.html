@@ -207,17 +207,15 @@
 
             _calendarDateChanged() {
                 if (this.routeData.page && this.routeData.page.startsWith("history")) {
-                    const date = new Date(this.outputDate.toString());
+                    const date = this.outputDate.replace(/\//g, '-');
                     const newRouteData = {};
                     newRouteData.page = 'history';
-                    newRouteData.date = date.getFullYear() +
-                        "-" + (date.getMonth() + 1) + "-" + date.getDate();
-                    if (newRouteData.date.localeCompare(this.routeData.date) !== 0) {
-                        this.set('routeData', newRouteData);
-                    }
+                    newRouteData.date = date;
+                    this.set('routeData', newRouteData);
                 }
             }
         }
+
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>
