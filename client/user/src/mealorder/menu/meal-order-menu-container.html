@@ -102,9 +102,19 @@
          * @polymer
          * @appliesMixin MealOrderApp.ReduxMixin
          */
-        class MealOrderMenuContainer extends (Polymer.Element) {
+        class MealOrderMenuContainer extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-menu-container';
+            }
+
+            static get actions() {
+
+                return {
+                    changeCurrentDate: date => ({
+                        type: MealOrderApp.UserAction.SET_CURRENT_DATE,
+                        date
+                    }),
+                }
             }
 
             static get properties() {
@@ -143,7 +153,7 @@
                      * @property {String} quantity
                      */
                     menuForDay: {
-                        type: Array,
+                        type: Object,
                     },
 
                     /**
@@ -153,6 +163,10 @@
                         type: Object,
                     }
                 };
+            }
+
+            _dateChanged(e) {
+                this.dispatch('changeCurrentDate', new Date(e.target.selected));
             }
         }
 

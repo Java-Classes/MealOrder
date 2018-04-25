@@ -233,7 +233,7 @@
                     year: 2018,
                     month: 3,
                     day: 22,
-                    },
+                },
                 order: [{
                     vendor: "Пюре",
                     dishes: [
@@ -272,6 +272,23 @@
                             currentOrder: newOrder
                         }
                     );
+                }
+                case MealOrderApp.UserAction.SET_CURRENT_DATE: {
+
+                    let date = {};
+                    date.day = action.date.getDate();
+                    date.month = action.date.getMonth() + 1;
+                    date.year = action.date.getFullYear();
+
+                    const menu = state.menus.filter(menu => (Utils.shallowEqual(date, menu.date)));
+
+                    const newOrder = state.orders.find(order => Utils.shallowEqual(date, order.date));
+                    return Object.assign({}, state, {
+                            menuForDay: menu,
+                            currentOrder: newOrder,
+                        }
+                    );
+
                 }
                 default : {
                     return state;

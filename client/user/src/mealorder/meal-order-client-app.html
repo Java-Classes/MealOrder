@@ -290,6 +290,9 @@
                         type: Object,
                     },
 
+                    /**
+                     * Current date.
+                     */
                     currentDate: {
                         type: Object,
                         statePath: 'currentDate'
@@ -341,7 +344,7 @@
                     this.set('route.path', '/menu/' + this.currentDate.year + "-" +
                         this.currentDate.month + "-" + this.currentDate.day);
                 }
-                if (this.routeData.page.startsWith("menu")) {
+                /*if (this.routeData.page.startsWith("menu")) {
                     let date = {};
                     const routeDate = new Date(this.routeData.date);
                     date.year = routeDate.getFullYear();
@@ -350,7 +353,7 @@
 
                     this.dispatch('changeCurrentMenu', date);
                     this.dispatch('changeCurrentOrder', date);
-                }
+                }*/
                 if (this.routeData.page.startsWith("history")) {
                     if (!this.routeData.date) {
                         this.set('routeData.date', this.currentDate.year + "-" +
