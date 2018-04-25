@@ -23,7 +23,6 @@ package javaclasses.mealorder.q;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.MenuCalendarId;
-import javaclasses.mealorder.MenuDateRange;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.q.projection.MenuCalendarView;
 import javaclasses.mealorder.q.projection.MenuCalendarViewVBuilder;

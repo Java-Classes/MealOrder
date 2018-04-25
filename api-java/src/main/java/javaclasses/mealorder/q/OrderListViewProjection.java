@@ -22,7 +22,7 @@ package javaclasses.mealorder.q;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
-import javaclasses.mealorder.Dish;
+import javaclasses.mealorder.DishId;
 import javaclasses.mealorder.OrderId;
 import javaclasses.mealorder.OrderListId;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
@@ -59,6 +59,8 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
                                                     .getName())
                                       .setPrice(event.getDish()
                                                      .getPrice())
+                                      .setId(event.getDish()
+                                                  .getId())
                                       .build();
         if (getOrderById(orderId).isPresent()) {
             final OrderListId listId = OrderListId.newBuilder()
@@ -84,12 +86,13 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
     @Subscribe
     void on(DishRemovedFromOrder event) {
         final List<OrderItem> orderItems = getBuilder().getOrder();
-        final int removeIndex = getDishFromOrder(event.getDish(),
-                                                 getOrderById(event.getOrderId()).get());
+        final int removeIndex = getDishIndexFromOrder(event.getDish()
+                                                           .getId(),
+                                                      getOrderById(event.getOrderId()).get());
         final OrderItem newOrder = OrderItem.newBuilder(getOrderById(event.getOrderId()).get())
                                             .removeDish(removeIndex)
                                             .build();
-        getBuilder().setOrder(orderItems.indexOf(getOrderById(event.getOrderId())), newOrder);
+        getBuilder().setOrder(orderItems.indexOf(getOrderById(event.getOrderId()).get()), newOrder);
     }
 
     @Subscribe
@@ -100,7 +103,6 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
     }
 
     @Subscribe
-
     void on(OrderProcessed event) {
         final OrderItem order = getOrderById(event.getOrder()
                                                   .getId()).get();
@@ -120,9 +122,17 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
         return inventoryItem;
     }
 
-    private int getDishFromOrder(Dish dish, OrderItem order) {
-        return order.getDishList()
-                    .indexOf(dish);
+    private int getDishIndexFromOrder(DishId dishId, OrderItem order) {
+        final int[] index = {-1};
+        order.getDishList()
+             .forEach(dishItem -> {
+                 if (dishItem.getId()
+                             .equals(dishId)) {
+                     index[0] = order.getDishList()
+                                     .indexOf(dishItem);
+                 }
+             });
+        return index[0];
     }
 
 }
