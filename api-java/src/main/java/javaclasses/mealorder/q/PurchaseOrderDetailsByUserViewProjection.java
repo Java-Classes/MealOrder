@@ -68,6 +68,7 @@ public class PurchaseOrderDetailsByUserViewProjection extends Projection<Purchas
     @Subscribe
     void on(PurchaseOrderValidationFailed event) {
         getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.INVALID);
+        //todo set which failed
     }
 
     private List<UserOrderDetails> getUserOrders(PurchaseOrderCreated event) {

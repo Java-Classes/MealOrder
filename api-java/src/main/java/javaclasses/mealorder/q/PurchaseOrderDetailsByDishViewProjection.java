@@ -70,6 +70,7 @@ public class PurchaseOrderDetailsByDishViewProjection extends Projection<Purchas
     @Subscribe
     void on(PurchaseOrderValidationFailed event) {
         getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.INVALID);
+        //todo : set what failed
     }
 
     private List<DishItem> getDishItems(List<Order> orderList) {

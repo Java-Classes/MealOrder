@@ -39,9 +39,12 @@ import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.MenuImported;
+import javaclasses.mealorder.c.event.OrderCanceled;
+import javaclasses.mealorder.c.event.OrderProcessed;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
+import javaclasses.mealorder.c.event.PurchaseOrderValidationFailed;
 import javaclasses.mealorder.c.event.VendorAdded;
 import javaclasses.mealorder.c.event.VendorUpdated;
 
@@ -65,6 +68,23 @@ public class TestMealOrderEventFactory {
 
     public static class PurchaseOrderEvents {
         private PurchaseOrderEvents() {
+        }
+
+        public static PurchaseOrderValidationFailed purchaseOrderValidationFailedInstance() {
+            return purchaseOrderValidationFailedInstance(TestValues.PURCHASE_ORDER_ID,
+                                                         TestValues.ORDER);
+        }
+
+        public static PurchaseOrderValidationFailed purchaseOrderValidationFailedInstance(
+                PurchaseOrderId purchaseOrderId, Order order) {
+            final Timestamp currentTime = getCurrentTime();
+            final PurchaseOrderValidationFailed result =
+                    PurchaseOrderValidationFailed.newBuilder()
+                                                 .setId(purchaseOrderId)
+                                                 .addFailureOrder(order)
+                                                 .setWhenFailed(currentTime)
+                                                 .build();
+            return result;
         }
 
         public static PurchaseOrderSent purchaseOrderSentInstance() {
@@ -112,6 +132,7 @@ public class TestMealOrderEventFactory {
             return purchaseOrderCreatedInstance(TestValues.PURCHASE_ORDER_ID2, TestValues.USER_ID,
                                                 TestValues.BIG_ORDER);
         }
+
         public static PurchaseOrderCreated purchaseOrderCreatedInstance(
                 PurchaseOrderId purchaseOrderId, UserId userId,
                 List<Order> orders) {
@@ -234,5 +255,33 @@ public class TestMealOrderEventFactory {
             return result;
         }
 
+        public static OrderCanceled orderCanceledInstance() {
+            return orderCanceledInstance(TestValues.ORDER_ID, TestValues.USER_ID);
+        }
+
+        private static OrderCanceled orderCanceledInstance(OrderId orderId, UserId userId) {
+            final Timestamp currentTime = getCurrentTime();
+            final OrderCanceled result =
+                    OrderCanceled.newBuilder()
+                                 .setOrderId(orderId)
+                                 .setWhoCanceled(userId)
+                                 .setWhenCanceled(currentTime)
+                                 .build();
+            return result;
+        }
+
+        public static OrderProcessed orderProcessedInstance() {
+            return orderProcessedInstance(TestValues.ORDER);
+        }
+
+        private static OrderProcessed orderProcessedInstance(Order order) {
+            final Timestamp currentTime = getCurrentTime();
+            final OrderProcessed result =
+                    OrderProcessed.newBuilder()
+                                  .setOrder(order)
+                                  .setWhenProcessed(currentTime)
+                                  .build();
+            return result;
+        }
     }
 }
