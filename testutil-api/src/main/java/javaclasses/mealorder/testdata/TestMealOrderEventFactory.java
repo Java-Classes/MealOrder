@@ -108,6 +108,10 @@ public class TestMealOrderEventFactory {
                                                 TestValues.BIG_ORDER);
         }
 
+        public static PurchaseOrderCreated purchaseOrderCreatedInstance2() {
+            return purchaseOrderCreatedInstance(TestValues.PURCHASE_ORDER_ID2, TestValues.USER_ID,
+                                                TestValues.BIG_ORDER);
+        }
         public static PurchaseOrderCreated purchaseOrderCreatedInstance(
                 PurchaseOrderId purchaseOrderId, UserId userId,
                 List<Order> orders) {

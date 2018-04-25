@@ -23,6 +23,7 @@ package javaclasses.mealorder.q.projection;
 import javaclasses.mealorder.MenuListId;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.MenuImported;
+import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.q.MenuListViewProjection;
 import javaclasses.mealorder.testdata.TestValues;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +32,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderCreatedInstance2;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.VendorEvents.dateRangeForMenuSetInstance;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.VendorEvents.menuImportedInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MenuListViewProjectionTest extends ProjectionTest {
     private MenuListViewProjection projection;
@@ -65,6 +68,28 @@ public class MenuListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(menuImported));
             final DateRangeForMenuSet dateRangeForMenuSet = dateRangeForMenuSetInstance();
             dispatch(projection, createEvent(dateRangeForMenuSet));
+        }
+    }
+
+    @Nested
+    @DisplayName("PurchaseOrderCreated  event should be interpreted by MenuListViewProjection")
+    class PurchaseOrderCreatedEvent {
+        @Test
+        @DisplayName("Should disable menu")
+        void addView() {
+            final MenuImported menuImported = menuImportedInstance();
+            dispatch(projection, createEvent(menuImported));
+            final DateRangeForMenuSet dateRangeForMenuSet = dateRangeForMenuSetInstance();
+            dispatch(projection, createEvent(dateRangeForMenuSet));
+            final PurchaseOrderCreated purchaseOrderCreated = purchaseOrderCreatedInstance2();
+            dispatch(projection, createEvent(purchaseOrderCreated));
+
+            assertEquals(false, projection.getState()
+                                          .getMenuList()
+                                          .get(0)
+                                          .getMenuDaysList()
+                                          .get(18)
+                                          .getIsAvailable());
         }
     }
 }

@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.spine.time.MonthOfYear.FEBRUARY;
+import static io.spine.time.MonthOfYear.MARCH;
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
@@ -304,6 +305,14 @@ public class TestValues {
                                                   .setDay(15)
                                                   .build();
 
+    public static final LocalDate DATE2 = LocalDate.newBuilder()
+                                                   .setYear(
+                                                           2017)
+                                                   .setMonth(
+                                                           MARCH)
+                                                   .setDay(3)
+                                                   .build();
+
     public static final OrderId ORDER_ID = OrderId.newBuilder()
                                                   .setUserId(USER_ID)
                                                   .setVendorId(VENDOR_ID)
@@ -345,7 +354,11 @@ public class TestValues {
             .setVendorId(VENDOR_ID)
             .setPoDate(DATE)
             .build();
-
+    public static final PurchaseOrderId PURCHASE_ORDER_ID2 = PurchaseOrderId
+            .newBuilder()
+            .setVendorId(VENDOR_ID)
+            .setPoDate(DATE2)
+            .build();
     public static final Order ORDER = Order.newBuilder()
                                            .setId(ORDER_ID)
                                            .addDish(DISH1)

@@ -20,7 +20,6 @@
 
 package javaclasses.mealorder.q;
 
-import com.google.protobuf.Timestamp;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import io.spine.time.LocalDate;
@@ -42,7 +41,6 @@ import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import static javaclasses.mealorder.q.Projections.getDatesBetween;
-import static javaclasses.mealorder.q.Projections.timeStampToLocalDate;
 
 public class MenuListViewProjection extends Projection<MenuListId, MenuListView, MenuListViewVBuilder> {
 
@@ -102,14 +100,15 @@ public class MenuListViewProjection extends Projection<MenuListId, MenuListView,
 
     @Subscribe
     void on(PurchaseOrderCreated event) {
-        final List<MenuItem> newMenu = getBuilder().getMenu();
+        final List<MenuItem> newMenu = new ArrayList<>(getBuilder().getMenu());
         for (int i = 0; i < newMenu.size(); i++) {
             final MenuItem menuItem = newMenu.get(i);
-            final List<MenuForDay> menuDaysList = menuItem.getMenuDaysList();
+            final List<MenuForDay> menuDaysList = new ArrayList<>(menuItem.getMenuDaysList());
+            final LocalDate date = event.getId()
+                                        .getPoDate();
             for (int j = 0; j < menuDaysList.size(); j++) {
                 final MenuForDay menuForDay = menuDaysList.get(j);
-                final Timestamp whenCreated = event.getWhenCreated();
-                final LocalDate date = timeStampToLocalDate(whenCreated);
+
                 if (menuForDay.getDate()
                               .equals(date)) {
                     final MenuForDay newMenuForDay = MenuForDay.newBuilder()

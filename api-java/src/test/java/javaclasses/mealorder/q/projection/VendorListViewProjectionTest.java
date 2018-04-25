@@ -62,7 +62,8 @@ public class VendorListViewProjectionTest extends ProjectionTest {
                                                                     .getVendorList()
                                                                     .get(0)
                                                                     .getId()
-                                                                    .getValue());
+                                                                    .getValue()
+                                                                    .trim());
         }
     }
 
