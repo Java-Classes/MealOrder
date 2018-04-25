@@ -188,11 +188,13 @@
                             attr-for-selected="data-page"
                             fallback-selection="view404"
                             role="main">
-                    <meal-order-menu-container data-page="menu"
-                                               date="[[routeData.date]]"
-                                               current-week-menus="[[currentWeekMenus]]"
-                                               menu-for-day="[[menuForDay]]">
-                        on-dish-added="_addDishToOrder">
+                    <meal-order-menu-container
+                            on-current-date-changed="_changeCurrentDate"
+                            data-page="menu"
+                            date="[[routeData.date]]"
+                            current-week-menus="[[currentWeekMenus]]"
+                            menu-for-day="[[menuForDay]]"
+                            on-dish-added="_addDishToOrder">
                     </meal-order-menu-container>
 
                     <div data-page="history">
@@ -319,14 +321,10 @@
                  * @param {date} selected date by tab
                  */
                 return {
-                    changeCurrentMenu: date => ({
-                        type: MealOrderApp.UserAction.SET_CURRENT_MENU,
+                    setCurrentDate: date => ({
+                        type: MealOrderApp.UserAction.SET_CURRENT_DATE,
                         date
                     }),
-                    changeCurrentOrder: date => ({
-                        type: MealOrderApp.UserAction.SET_CURRENT_ORDER,
-                        date
-                    })
                 }
             }
 
@@ -343,26 +341,20 @@
             }
 
             _pageChanged() {
-                if (!this.routeData.page) {
-                    this.set('route.path', '/menu/' + this.currentDate.year + "-" +
-                        this.currentDate.month + "-" + this.currentDate.day);
+                if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
+                    this.set('route.path', '/menu/' + this.currentDate.toISOString().slice(0,10));
                 }
-                /*if (this.routeData.page.startsWith("menu")) {
-                    let date = {};
-                    const routeDate = new Date(this.routeData.date);
-                    date.year = routeDate.getFullYear();
-                    date.month = routeDate.getMonth() + 1;
-                    date.day = routeDate.getDate();
-
-                    this.dispatch('changeCurrentMenu', date);
-                    this.dispatch('changeCurrentOrder', date);
-                }*/
                 if (this.routeData.page.startsWith("history")) {
                     if (!this.routeData.date) {
-                        this.set('routeData.date', this.currentDate.year + "-" +
-                            this.currentDate.month + "-" + (this.currentDate.day - 1));
+                        let yesterday = new Date(this.currentDate);
+                        yesterday.setDate(yesterday.getDate()-1);
+                        this.set('routeData.date', yesterday.toISOString().slice(0,10));
                     }
                 }
+            }
+
+            _changeCurrentDate(e) {
+                this.dispatch('setCurrentDate', e.detail.date)
             }
 
             _addDishToOrder(e) {

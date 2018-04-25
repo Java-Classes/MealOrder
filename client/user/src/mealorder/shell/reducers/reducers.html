@@ -25,74 +25,42 @@
     {
         /*global Utils */
         const arrayOfDates = [{
-            date: {
-                year: 2018,
-                month: 3,
-                day: 21,
-            },
+            date: new Date('2018-03-21'),
             dayOfTheWeek: 'Ср',
             hasMenu: true
         },
             {
-                date: {
-                    year: 2018,
-                    month: 3,
-                    day: 22,
-                },
+                date: new Date('2018-03-22'),
                 dayOfTheWeek: 'Чт',
                 hasMenu: true
             },
             {
-                date: {
-                    year: 2018,
-                    month: 3,
-                    day: 23,
-                },
+                date: new Date('2018-03-23'),
                 dayOfTheWeek: 'Пт',
                 hasMenu: true
             },
             {
-                date: {
-                    year: 2018,
-                    month: 3,
-                    day: 24,
-                },
+                date: new Date('2018-03-24'),
                 dayOfTheWeek: 'Сб',
                 hasMenu: false
             },
             {
-                date: {
-                    year: 2018,
-                    month: 3,
-                    day: 25,
-                },
+                date: new Date('2018-03-25'),
                 dayOfTheWeek: 'Вс',
                 hasMenu: false
             }
             , {
-                date: {
-                    year: 2018,
-                    month: 3,
-                    day: 26,
-                },
+                date: new Date('2018-03-26'),
                 dayOfTheWeek: 'Пн',
                 hasMenu: true
             }
             , {
-                date: {
-                    year: 2018,
-                    month: 3,
-                    day: 27,
-                },
+                date: new Date('2018-03-27'),
                 dayOfTheWeek: 'Вт',
                 hasMenu: true
             }
             , {
-                date: {
-                    year: 2018,
-                    month: 3,
-                    day: 28,
-                },
+                date: new Date('2018-03-28'),
                 dayOfTheWeek: 'Ср',
                 hasMenu: true
             }];
@@ -101,20 +69,11 @@
             currentWeekMenus: arrayOfDates,
             menuForDay: [],
 
-            currentDate: {
-                year: 2018,
-                month: 3,
-                day: 21,
-            },
-
+            currentDate: new Date('2018-03-21'),
             menus: [
                 {
                     vendor: 'Пюре',
-                    date: {
-                        year: 2018,
-                        month: 3,
-                        day: 21,
-                    },
+                    date: new Date('2018-03-21'),
                     categories: [{
                         categoryName: 'Первое блюдо',
                         dishes: [
@@ -134,11 +93,7 @@
                 },
                 {
                     vendor: 'Позитив',
-                    date: {
-                        year: 2018,
-                        month: 3,
-                        day: 21,
-                    },
+                    date: new Date('2018-03-21'),
                     categories: [{
                         categoryName: 'Первое блюдо', dishes: [
                             {title: 'Борщ украинский', price: 35},
@@ -159,11 +114,7 @@
                 },
                 {
                     vendor: 'Пюре',
-                    date: {
-                        year: 2018,
-                        month: 3,
-                        day: 22,
-                    },
+                    date: new Date('2018-03-22'),
                     categories: [{
                         categoryName: 'Первое блюдо', dishes: [
                             {title: 'Суп гречневый', price: 35},
@@ -181,11 +132,7 @@
                 },
                 {
                     vendor: 'Позитив',
-                    date: {
-                        year: 2018,
-                        month: 3,
-                        day: 22,
-                    },
+                    date: new Date('2018-03-22'),
                     categories: [{
                         categoryName: 'Первое блюдо', dishes: [
                             {title: 'Суп сырный', price: 35},
@@ -206,11 +153,7 @@
                 }],
             orderForDay: [],
             orders: [{
-                date: {
-                    year: 2018,
-                    month: 3,
-                    day: 21,
-                },
+                date: new Date('2018-03-21'),
                 order: [{
                     vendor: "Пюре",
                     dishes: [
@@ -229,11 +172,7 @@
                     }]
                 }]
             }, {
-                date: {
-                    year: 2018,
-                    month: 3,
-                    day: 22,
-                },
+                date: new Date('2018-03-22'),
                 order: [{
                     vendor: "Пюре",
                     dishes: [
@@ -259,36 +198,14 @@
                 return MealOrderApp.initialState;
             }
             switch (action.type) {
-                case MealOrderApp.UserAction.SET_CURRENT_MENU: {
-                    const menu = state.menus.filter(menu => (Utils.shallowEqual(action.date, menu.date)));
-                    return Object.assign({}, state, {
-                            menuForDay: menu
-                        }
-                    );
-                }
-                case MealOrderApp.UserAction.SET_CURRENT_ORDER: {
-                    const newOrder = state.orders.find(order => Utils.shallowEqual(action.date, order.date));
-                    return Object.assign({}, state, {
-                            currentOrder: newOrder
-                        }
-                    );
-                }
                 case MealOrderApp.UserAction.SET_CURRENT_DATE: {
-
-                    let date = {};
-                    date.day = action.date.getDate();
-                    date.month = action.date.getMonth() + 1;
-                    date.year = action.date.getFullYear();
-
-                    const menu = state.menus.filter(menu => (Utils.shallowEqual(date, menu.date)));
-
-                    const newOrder = state.orders.find(order => Utils.shallowEqual(date, order.date));
+                    const menu = state.menus.filter(menu => menu.date.getTime() === action.date.getTime());
+                    const newOrder = state.orders.find(order => order.date.getTime() === action.date.getTime());
                     return Object.assign({}, state, {
                             menuForDay: menu,
                             currentOrder: newOrder,
                         }
                     );
-
                 }
                 default : {
                     return state;

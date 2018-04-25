@@ -75,16 +75,18 @@
             }
         </style>
 
-        <paper-tabs on-iron-select='_dateChanged' id="paper-tabs" selected="[[date]]" attr-for-selected='data-key'>
+        <paper-tabs on-iron-select='_dateChanged' id="paper-tabs" selected="[[date]]"
+                    attr-for-selected='data-key'>
             <template is="dom-repeat" items="{{currentWeekMenus}}" as="calendar">
                 <paper-tab class="paper-tab"
-                           data-key$="[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]"
+                           data-key$="[[_getDate(calendar.date)]]"
                            link disabled="[[!calendar.hasMenu]]">
-                    <a href="#/menu/[[calendar.date.year]]-[[calendar.date.month]]-[[calendar.date.day]]" class="paper-tab-container">
+                    <a href="#/menu/[[_getDate(calendar.date)]]"
+                       class="paper-tab-container">
                         <div>
                             <div class="day-of-the-week">{{calendar.dayOfTheWeek}}
                             </div>
-                            <div class="day">{{calendar.date.day}}</div>
+                            <div class="day">[[_getDay(calendar.date)]]</div>
                         </div>
                     </a>
                 </paper-tab>
@@ -102,19 +104,9 @@
          * @polymer
          * @appliesMixin MealOrderApp.ReduxMixin
          */
-        class MealOrderMenuContainer extends MealOrderApp.ReduxMixin(Polymer.Element) {
+        class MealOrderMenuContainer extends (Polymer.Element) {
             static get is() {
                 return 'meal-order-menu-container';
-            }
-
-            static get actions() {
-
-                return {
-                    changeCurrentDate: date => ({
-                        type: MealOrderApp.UserAction.SET_CURRENT_DATE,
-                        date
-                    }),
-                }
             }
 
             static get properties() {
@@ -165,8 +157,17 @@
                 };
             }
 
+            _getDay(date) {
+                return date.getDate();
+            }
+
+            _getDate(date) {
+                return date.toISOString().slice(0,10);
+            }
+
             _dateChanged(e) {
-                this.dispatch('changeCurrentDate', new Date(e.target.selected));
+                this.dispatchEvent(new CustomEvent('current-date-changed',
+                    {detail: {date: new Date(e.target.selected)}}));
             }
         }
 
