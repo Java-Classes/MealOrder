@@ -289,6 +289,12 @@
                     routeData: {
                         type: Object,
                     },
+
+                    currentDate: {
+                        type: Object,
+                        statePath: 'currentDate'
+                    }
+
                 }
             }
 
@@ -331,27 +337,24 @@
             }
 
             _pageChanged() {
+                if (!this.routeData.page) {
+                    this.set('route.path', '/menu/' + this.currentDate.year + "-" +
+                        this.currentDate.month + "-" + this.currentDate.day);
+                }
                 if (this.routeData.page.startsWith("menu")) {
-                    if (!this.routeData.date) {
-                        this.set('routeData.date', this.calendar[0].date.year + "-" +
-                            this.calendar[0].date.month + "-" + this.calendar[0].date.day);
-                    }
-                    else {
-                        let date = {};
-                        const routeDate = new Date(this.routeData.date);
-                        date.year = routeDate.getFullYear();
-                        date.month = routeDate.getMonth() + 1;
-                        date.day = routeDate.getDate();
+                    let date = {};
+                    const routeDate = new Date(this.routeData.date);
+                    date.year = routeDate.getFullYear();
+                    date.month = routeDate.getMonth() + 1;
+                    date.day = routeDate.getDate();
 
-                        this.dispatch('changeCurrentMenu', date);
-                        this.dispatch('changeCurrentOrder', date);
-                    }
+                    this.dispatch('changeCurrentMenu', date);
+                    this.dispatch('changeCurrentOrder', date);
                 }
                 if (this.routeData.page.startsWith("history")) {
                     if (!this.routeData.date) {
-                        const date = new Date();
-                        this.set('routeData.date', date.getFullYear() + "-"
-                            + (date.getMonth()+1) +"-" + (date.getDate() -1));
+                        this.set('routeData.date', this.currentDate.year + "-" +
+                            this.currentDate.month + "-" + (this.currentDate.day - 1));
                     }
                 }
             }

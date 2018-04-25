@@ -206,7 +206,7 @@
             }
 
             _calendarDateChanged() {
-                if (this.routeData.page.startsWith("history")) {
+                if (this.routeData.page && this.routeData.page.startsWith("history")) {
                     const date = new Date(this.outputDate.toString());
                     const newRouteData = {};
                     newRouteData.page = 'history';

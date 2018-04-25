@@ -155,6 +155,10 @@
                 };
             }
 
+            _dateChanged() {
+                this.dispatch('changeCurrentOrder', this.date);
+            }
+
         }
 
         window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
