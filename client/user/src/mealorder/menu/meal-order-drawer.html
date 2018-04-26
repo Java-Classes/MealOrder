@@ -129,24 +129,11 @@
             static get properties() {
                 return {
                     /**
-                     * Current user's meal order.
-                     *
-                     * @typedef {Object} Order the current order
-                     *
-                     * @typedef {Object} Date contains day, month, year
-                     * @property {Number} day
-                     * @property {Number} month
-                     * @property {Number} year
-                     *
-                     * @typedef {Array} Cart array that contains the vendor and dishes
-                     * @property {String} Vendor a vendor name
-                     * @typedef {Array} Dishes array contains the dish title, price, quantity
-                     * @property {String} title
-                     * @property {String} price
-                     * @property {String} quantity
+                     * Selected day.
                      */
-                    order: {
-                        type: Array,
+                    selectedDay: {
+                        type: Object,
+                        computed: '_changeSelectedDay(routeData.date)'
                     },
 
                     /**
@@ -170,14 +157,6 @@
                     routeData: {
                         type: Object,
                     },
-
-                    /**
-                     * Selected day.
-                     */
-                    selectedDay: {
-                        type: Object,
-                        computed: '_changeSelectedDay(routeData.date)'
-                    }
                 }
             }
 

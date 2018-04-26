@@ -112,30 +112,10 @@
             static get properties() {
                 return {
                     /**
-                     * Menu for a current day.
-                     *
-                     * @typedef {Object} Menu the menu for the current date
-                     *
-                     * @property {String} Vendor a vendor name
-                     *
-                     * @typedef {Object} Date contains day, month, year
-                     * @property {Number} day
-                     * @property {Number} month
-                     * @property {Number} year
-                     *
-                     * @typedef {Array} Categories array contains the category name and dishes
-                     * @typedef {Array} Dishes array contains the dish title, price, quantity
-                     * @property {String} title
-                     * @property {String} price
-                     * @property {String} quantity
+                     * The current server time for the calendar.
                      */
-                    menus: {
-                        type: Array,
-                    },
-
-                    menuForDay: {
+                    serverTime: {
                         type: Object,
-                        computed: '_getMenuForDay(date)'
                     },
 
                     /**
@@ -157,12 +137,26 @@
                     },
 
                     /**
-                     * The current server time for the calendar.
+                     * Menu for a current day.
+                     *
+                     * @typedef {Object} Menu the menu for the current date
+                     *
+                     * @property {String} Vendor a vendor name
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
+                     *
+                     * @typedef {Array} Categories array contains the category name and dishes
+                     * @typedef {Array} Dishes array contains the dish title, price, quantity
+                     * @property {String} title
+                     * @property {String} price
+                     * @property {String} quantity
                      */
-                    serverTime: {
-                        type: Object,
+                    menus: {
+                        type: Array,
                     },
-
                 };
             }
 
@@ -190,15 +184,16 @@
             _getMenuDatesForWeek(menus) {
                 const weekDates = [];
                 let menuDates = [];
+                const DAYS_IN_PERIOD = 8;
 
-                for (let i = 0; i < 8; i++) {
+                for (let i = 0; i < DAYS_IN_PERIOD; i++) {
                     let tempDate = new Date();
                     tempDate.setDate(this.serverTime.getDate() + i);
                     tempDate.setMonth(this.serverTime.getMonth());
                     weekDates.push(tempDate);
                 }
 
-                const dates = this.menus.filter(menu => menu.date);
+                const dates = menus.filter(menu => menu.date);
                 for (let i = 0; i < dates.length; i++) {
                     menuDates.push(dates[i].date);
                 }
@@ -207,9 +202,10 @@
                     .filter((s, i, a) => a.indexOf(s) === i)
                     .map(s => new Date(s));
 
+                const HOURS_PER_DAY = 86400000;
                 for (let i = 0; i < menuDates.length; i++) {
                     const diff = weekDates[i].getTime() - menuDates[i].getTime();
-                    if (diff >= 0 && diff < 86400000) {
+                    if (diff >= 0 && diff < HOURS_PER_DAY) {
                         weekDates[i].hasMenu = true;
                     }
                 }
