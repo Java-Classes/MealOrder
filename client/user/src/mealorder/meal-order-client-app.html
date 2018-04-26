@@ -17,9 +17,6 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<link rel="import" href="shell/meal-order-app-namespace.html">
-<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import"
@@ -39,10 +36,11 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="./shell/meal-order-app-namespace.html">
 <link rel="import" href="./shell/redux-store.html">
-<link rel="import" href="./menu/meal-order-menu-container.html">
+<link rel="import" href="./meal-order-toolbar.html">
 <link rel="import" href="./menu/meal-order-drawer.html">
-
+<link rel="import" href="./menu/meal-order-menu-container.html">
 <dom-module id="meal-order-client-app">
     <template>
         <style>
@@ -50,10 +48,6 @@
                 background-color: var(--google-grey-700);
                 color: var(--paper-grey-50);
                 right: 300px;
-            }
-
-            #main-title {
-                font-size: 1.375em;
             }
 
             app-header-layout {
@@ -67,28 +61,6 @@
 
             app-drawer-layout:not([narrow]) [drawer-toggle] {
                 display: none;
-            }
-
-            app-header app-toolbar .app-toolbar-container {
-                display: flex;
-                width: 100%;
-                align-items: center;
-                justify-content: space-between;
-            }
-
-            app-header .title-link {
-                font-size: 0.8em;
-                text-decoration: none;
-                color: var(--paper-grey-50);
-            }
-
-            app-header .title-link:hover .route-title {
-                color: var(--paper-light-blue-500);
-            }
-
-            app-header .link-icon {
-                display: none;
-                color: var(--paper-grey-50);
             }
 
             app-header .app-toolbar-content {
@@ -105,30 +77,6 @@
                 --app-drawer-width: 300px;
             }
 
-            #menu-history {
-                margin-right: 44px;
-            }
-
-            .app-header-iron-container {
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-            }
-
-            @media only screen and (max-width: 600px) {
-                .app-header-iron-container {
-                    width: 100px;
-                }
-
-                .route-title {
-                    display: none;
-                }
-
-                app-header .link-icon {
-                    display: block;
-                }
-
-            }
         </style>
         <app-location route="{{route}}"
                       use-hash-as-path></app-location>
@@ -139,7 +87,7 @@
                 data="{{routeData}}"></app-route>
 
         <app-drawer-layout fullbleed>
-            <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
+            <app-drawer slot="drawer" align="right" class$="[[_getDrawerClass(routeData.page)]]">
                 <iron-pages id="app-drawer-iron"
                             selected="[[routeData.page]]"
                             attr-for-selected="data-page"
@@ -151,37 +99,7 @@
 
             <app-header-layout>
                 <app-header slot="header" reveals effects="waterfall">
-                    <app-toolbar>
-                        <div class="app-toolbar-container">
-                            <div id="main-title">Заказ обедов</div>
-                            <iron-pages id="app-header-iron"
-                                        selected="[[routeData.page]]"
-                                        attr-for-selected="data-page"
-                                        fallback-selection="view404"
-                                        role="main">
-                                <div data-page="menu" class="app-header-iron-container">
-                                    <a class="title-link" href="/#/history/">
-                                        <div class="route-title">История заказов</div>
-                                        <iron-icon class="link-icon"
-                                                   icon="maps:icons:history"></iron-icon>
-                                    </a>
-                                    <iron-icon class="drawer-icon"
-                                               icon="icons:shopping-cart" drawer-toggle></iron-icon>
-                                </div>
-                                <div data-page="history" class="app-header-iron-container">
-                                    <a class="title-link" href="/#/menu/">
-                                        <div id="menu-history" class="route-title">Сделать заказ
-                                        </div>
-                                        <iron-icon class="link-icon"
-                                                   icon="maps:icons:add"></iron-icon>
-                                    </a>
-                                    <iron-icon class="drawer-icon"
-                                               icon="icons:date-range"
-                                               drawer-toggle></iron-icon>
-                                </div>
-                            </iron-pages>
-                        </div>
-                    </app-toolbar>
+                    <meal-order-toolbar page="[[routeData.page]]"></meal-order-toolbar>
                 </app-header>
                 <iron-pages id="app-header-layout-iron"
                             selected="[[routeData.page]]"
@@ -226,7 +144,7 @@
                      *
                      * @typedef {Object} Menu the menu for the current date
                      *
-                     * @property {String} Vendor a vendor name
+                     * @property {String} vendor a vendor name
                      *
                      * @typedef {Object} Date contains day, month, year
                      * @property {Number} day
@@ -270,7 +188,7 @@
                 ];
             }
 
-            _getClassForDrawer(page) {
+            _getDrawerClass(page) {
                 if (page === "history") {
                     return "wide";
                 }

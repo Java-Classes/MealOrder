@@ -133,7 +133,7 @@
                      */
                     selectedDay: {
                         type: Object,
-                        computed: '_changeSelectedDay(routeData.date)'
+                        computed: '_getSelectedDay(routeData.date)'
                     },
 
                     /**
@@ -141,7 +141,7 @@
                      */
                     inputDate: {
                         type: String,
-                        computed: '_changeCalendarDate(routeData.date)',
+                        computed: '_getCalendarDay(routeData.date)',
                     },
 
                     /**
@@ -166,20 +166,15 @@
                 ];
             }
 
-            _changeSelectedDay() {
-                const date = new Date(this.routeData.date);
-
-                let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
-                dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
-
-                const day = {
-                    day: date.getDate(),
-                    dayOfTheWeek: dayOfTheWeek,
-                };
-                return day;
+            _getSelectedDay() {
+                const dayOfTheWeek = new Date(this.routeData.date).toLocaleDateString("ru-RU", {weekday: 'long'});
+                const selectedDay = {};
+                selectedDay.day = new Date(this.routeData.date).getDate();
+                selectedDay.dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);;
+                return selectedDay;
             }
 
-            _changeCalendarDate() {
+            _getCalendarDay() {
                 const routeDate = new Date(this.routeData.date);
                 return (routeDate.getFullYear() +
                     "/" + (routeDate.getMonth() + 1) + "/" + routeDate.getDate());
