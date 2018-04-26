@@ -161,7 +161,7 @@
                 const dayOfTheWeek = new Date(this.routeData.date).toLocaleDateString("ru-RU", {weekday: 'long'});
                 const selectedDay = {};
                 selectedDay.day = new Date(this.routeData.date).getDate();
-                selectedDay.dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);;
+                selectedDay.dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
                 return selectedDay;
             }
 
