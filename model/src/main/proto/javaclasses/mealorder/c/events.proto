@@ -101,26 +101,9 @@ message MenuImported {
 
     // The collection of menu dishes.
     repeated Dish dish = 5 [(required) = true];
-}
-
-// The event reflecting a menu active date range set.
-//
-message DateRangeForMenuSet {
-
-    // The identifier of a vendor.
-    VendorId vendor_id = 1 [(required) = true];
-
-    // The identifier of a menu.
-    MenuId menu_id = 2 [(required) = true];
-
-    // The identifier of the user who set date range.
-    UserId who_set = 3 [(required) = true];
-
-    // Was set at this time.
-    google.protobuf.Timestamp when_set = 4 [(required) = true];
 
     // Date range that has been set.
-    MenuDateRange menu_date_range = 5 [(required) = true];
+    MenuDateRange menu_date_range = 6 [(required) = true];
 }
 
 // The event signalizing about the successful creation of an order.

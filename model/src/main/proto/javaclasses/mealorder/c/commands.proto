@@ -92,23 +92,9 @@ message ImportMenu {
 
     // The collection of dishes.
     repeated Dish dish = 4 [(required) = true];
-}
-
-// Sets a menu date range.
-//
-message SetDateRangeForMenu {
-
-    // The identifier of a vendor.
-    VendorId vendor_id = 1 [(required) = true];
-
-    // The identifier of a menu.
-    MenuId menu_id = 2 [(required) = true];
-
-    // The identifier of the user who sets a menu date range.
-    UserId user_id = 3 [(required) = true];
 
     // A menu date range that should be set.
-    MenuDateRange menu_date_range = 4 [(required) = true];
+    MenuDateRange menu_date_range = 5 [(required) = true];
 }
 
 // Creates a new order.

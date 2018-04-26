@@ -36,7 +36,6 @@ import javaclasses.mealorder.UserId;
 import javaclasses.mealorder.VendorChange;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorName;
-import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.DishAddedToOrder;
 import javaclasses.mealorder.c.event.DishRemovedFromOrder;
 import javaclasses.mealorder.c.event.MenuImported;
@@ -70,6 +69,7 @@ public class TestMealOrderEventFactory {
                                                                       .setStatus(
                                                                               PurchaseOrderStatus.CREATED)
                                                                       .build();
+
     private TestMealOrderEventFactory() {
     }
 
@@ -103,6 +103,7 @@ public class TestMealOrderEventFactory {
             return purchaseOrderSentInstance(PURCHASE_ORDER2, TestValues.USER_ID3.getEmail(),
                                              TestValues.EMAIL);
         }
+
         public static PurchaseOrderSent purchaseOrderSentInstance(PurchaseOrder po,
                                                                   EmailAddress senderEmail,
                                                                   EmailAddress vendorEmail) {
@@ -125,6 +126,7 @@ public class TestMealOrderEventFactory {
             return purchaseOrderDeliveredInstance(TestValues.PURCHASE_ORDER_ID2,
                                                   TestValues.USER_ID);
         }
+
         private static PurchaseOrderDelivered purchaseOrderDeliveredInstance(
                 PurchaseOrderId purchaseOrderId,
                 UserId userId) {
@@ -167,34 +169,15 @@ public class TestMealOrderEventFactory {
         private VendorEvents() {
         }
 
-        public static DateRangeForMenuSet dateRangeForMenuSetInstance() {
-            return dateRangeForMenuSetInstance(TestValues.VENDOR_ID, TestValues.MENU_ID,
-                                               TestValues.USER_ID, TestValues.MENU_DATE_RANGE2);
-        }
-
-        private static DateRangeForMenuSet dateRangeForMenuSetInstance(VendorId vendorId,
-                                                                       MenuId menuId,
-                                                                       UserId userId,
-                                                                       MenuDateRange menuDateRange) {
-            final Timestamp currentTime = getCurrentTime();
-            final DateRangeForMenuSet result =
-                    DateRangeForMenuSet.newBuilder()
-                                       .setVendorId(vendorId)
-                                       .setMenuId(menuId)
-                                       .setWhoSet(userId)
-                                       .setWhenSet(currentTime)
-                                       .setMenuDateRange(menuDateRange)
-                                       .build();
-            return result;
-        }
-
         public static MenuImported menuImportedInstance() {
             return menuImportedInstance(TestValues.VENDOR_ID, TestValues.MENU_ID,
-                                        TestValues.USER_ID, TestValues.BIG_MENU);
+                                        TestValues.USER_ID, TestValues.BIG_MENU,
+                                        TestValues.MENU_DATE_RANGE2);
         }
 
         private static MenuImported menuImportedInstance(VendorId vendorId, MenuId menuId,
-                                                         UserId whoImported, List<Dish> dishes) {
+                                                         UserId whoImported, List<Dish> dishes,
+                                                         MenuDateRange menuDateRange) {
             final Timestamp currentTime = getCurrentTime();
             final MenuImported result =
                     MenuImported.newBuilder()
@@ -203,6 +186,7 @@ public class TestMealOrderEventFactory {
                                 .setWhoImported(whoImported)
                                 .setWhenImported(currentTime)
                                 .addAllDish(dishes)
+                                .setMenuDateRange(menuDateRange)
                                 .build();
             return result;
         }
@@ -262,6 +246,7 @@ public class TestMealOrderEventFactory {
         public static DishAddedToOrder dishAddedToOrderInstance2() {
             return dishAddedToOrderInstance(TestValues.ORDER_ID2, TestValues.DISH2);
         }
+
         private static DishAddedToOrder dishAddedToOrderInstance(OrderId orderId, Dish dish) {
             final Timestamp currentTime = getCurrentTime();
             final DishAddedToOrder result =

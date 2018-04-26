@@ -50,8 +50,11 @@ message MenuItem {
     // The collection of categories.
     repeated DishesByCategory dishesByCategory = 2 [(required) = true];
 
-    // Date range when a menu is available.
-    repeated MenuForDay menu_days = 3;
+    // A date on which a menu is intended.
+    spine.time.LocalDate menu_date = 3 [(required) = true];
+
+    // Indicates if a menu is available for user.
+    bool is_avilable = 4 [(required) = true];
 }
 
 // Dishes grouped by category.

@@ -21,9 +21,13 @@
 package javaclasses.mealorder.q;
 
 import io.spine.time.LocalDate;
+import javaclasses.mealorder.CategoryName;
+import javaclasses.mealorder.Dish;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -56,5 +60,46 @@ public final class Projections {
                         .setMonthValue(date.getMonthValue())
                         .setYear(date.getYear())
                         .build();
+    }
+
+    static List<DishesByCategory> getAllDishesByCategories(
+            List<Dish> dishList) {
+        final List<DishesByCategory> dishesByCategoryList = new ArrayList<>();
+        dishList.forEach(dish -> {
+            final int index = categoryIndex(dishesByCategoryList, dish.getCategory());
+            final DishItem newDish = DishItem.newBuilder()
+                                             .setId(dish.getId())
+                                             .setName(dish.getName())
+                                             .setPrice(dish.getPrice())
+                                             .build();
+            if (index == -1) {
+                final CategoryName category = CategoryName.newBuilder()
+                                                          .setValue(dish.getCategory())
+                                                          .build();
+
+                final DishesByCategory dishesByCategory = DishesByCategory.newBuilder()
+                                                                          .setCategory(category)
+                                                                          .addDishes(newDish)
+                                                                          .build();
+                dishesByCategoryList.add(dishesByCategory);
+            } else {
+                final DishesByCategory newDishesByCategory = DishesByCategory.newBuilder(
+                        dishesByCategoryList.get(index))
+                                                                             .addDishes(newDish)
+                                                                             .build();
+                dishesByCategoryList.set(index, newDishesByCategory);
+            }
+        });
+        return dishesByCategoryList;
+    }
+
+    static int categoryIndex(List<DishesByCategory> dishByCategory, String category) {
+        final OptionalInt optionalInt = IntStream.range(0, dishByCategory.size())
+                                                 .filter(i -> dishByCategory.get(i)
+                                                                            .getCategory()
+                                                                            .getValue()
+                                                                            .equals(category))
+                                                 .findFirst();
+        return optionalInt.isPresent() ? optionalInt.getAsInt() : -1;
     }
 }

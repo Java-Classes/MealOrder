@@ -75,7 +75,7 @@ message MenuCalendarView {
     MenuCalendarId menu_calendar_id = 1;
 
     // The collection of calendar items (dates).
-    repeated MenuCalendarItem calendar_item = 2;
+    repeated MenuCalendarItem calendar_item = 2 [(required) = true];
 }
 
 // The projection state of an order list.
@@ -96,6 +96,25 @@ message OrderListView {
 }
 
 // **** Projections for UI role Admin. ****
+
+// The projection state of the full menu item.
+//
+// This view has menu with date range.
+//
+message FullMenuView {
+
+    // // The identifier of a full menu.
+    MenuId menu_id = 1;
+
+    // The vendor name.
+    VendorName vendor_name = 2 [(required) = true];
+
+    // The collection of categories.
+    repeated DishesByCategory dishesByCategory = 3;
+
+    // A date range for a menu.
+    MenuDateRange menu_date_range = 4 [(required) = true];
+}
 
 // The projection state of the vendor list.
 //
@@ -136,7 +155,7 @@ message PurchaseOrderDetailsByDishView {
     PurchaseOrderStatus purchase_order_status = 2;
 
     // The collection of dishes.
-    repeated DishItem dish = 3;
+    repeated DishItem dish = 3 [(required) = true];
 }
 
 // The projection state of a purchase order details view
@@ -154,7 +173,7 @@ message PurchaseOrderDetailsByUserView {
     PurchaseOrderStatus purchase_order_status = 2;
 
     // The collection of orders.
-    repeated UserOrderDetails order = 3;
+    repeated UserOrderDetails order = 3 [(required) = true];
 }
 
 // The projection state of a monthly spendings report view.

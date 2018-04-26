@@ -47,7 +47,6 @@ import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.mar
 import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.addVendorInstance;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.importMenuInstance;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.setDateRangeForMenuInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -84,9 +83,6 @@ class MealOrderTest {
 
         final Command importMenu = createCommand(importMenuInstance());
         commandBus.post(importMenu, observer);
-
-        final Command setDateRangeForMenu = createCommand(setDateRangeForMenuInstance());
-        commandBus.post(setDateRangeForMenu, observer);
 
         final Command createOrderCommand = createCommand(createOrderInstance());
         commandBus.post(createOrderCommand, observer);

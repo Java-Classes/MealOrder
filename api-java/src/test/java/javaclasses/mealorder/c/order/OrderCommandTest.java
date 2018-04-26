@@ -23,7 +23,6 @@ package javaclasses.mealorder.c.order;
 import io.spine.client.ActorRequestFactory;
 import io.spine.client.TestActorRequestFactory;
 import io.spine.core.Command;
-import io.spine.grpc.StreamObservers;
 import io.spine.server.BoundedContext;
 import io.spine.server.commandbus.CommandBus;
 import io.spine.server.event.EventBus;
@@ -62,10 +61,5 @@ public class OrderCommandTest {
                 requestFactory.command()
                               .create(TestVendorCommandFactory.importMenuInstance());
         commandBus.post(importMenu, noOpObserver());
-
-        final Command setDateRangeForMenu =
-                requestFactory.command()
-                              .create(TestVendorCommandFactory.setDateRangeForMenuInstance());
-        commandBus.post(setDateRangeForMenu, noOpObserver());
     }
 }

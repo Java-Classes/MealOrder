@@ -21,29 +21,27 @@
 package javaclasses.mealorder.q.projection;
 
 import javaclasses.mealorder.c.event.MenuImported;
-import javaclasses.mealorder.q.MenuCalendarItem;
-import javaclasses.mealorder.q.MenuCalendarViewProjection;
+import javaclasses.mealorder.q.FullMenuViewProjection;
+import javaclasses.mealorder.testdata.TestValues;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.VendorEvents.menuImportedInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MenuCalendarViewProjectionTest extends ProjectionTest {
-    private MenuCalendarViewProjection projection;
+public class FullMenuViewProjectionTest extends ProjectionTest {
+    private FullMenuViewProjection projection;
 
     @BeforeEach
     void setUp() {
-        projection = new MenuCalendarViewProjection(MenuCalendarViewProjection.ID);
+        projection = new FullMenuViewProjection(TestValues.MENU_ID);
     }
 
     @Nested
-    @DisplayName("MenuImported event should be interpreted by MenuCalendarViewProjection")
+    @DisplayName("MenuImported event should be interpreted by FullMenuViewProjection")
     class MenuImportedEvent {
 
         @Test
@@ -51,9 +49,15 @@ public class MenuCalendarViewProjectionTest extends ProjectionTest {
         void addView() {
             final MenuImported menuImported = menuImportedInstance();
             dispatch(projection, createEvent(menuImported));
-            final List<MenuCalendarItem> calendarItems = projection.getState()
-                                                                   .getCalendarItemList();
-            assertEquals(25, calendarItems.size());
+
+            assertEquals(menuImported.getMenuId(), projection.getState()
+                                                             .getMenuId());
+            assertEquals(menuImported.getMenuDateRange(), projection.getState()
+                                                                    .getMenuDateRange());
+            assertEquals(3, projection.getState()
+                                      .getDishesByCategoryList()
+                                      .size());
+
         }
     }
 }

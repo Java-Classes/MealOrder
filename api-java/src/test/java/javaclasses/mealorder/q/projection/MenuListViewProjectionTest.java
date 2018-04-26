@@ -21,7 +21,6 @@
 package javaclasses.mealorder.q.projection;
 
 import javaclasses.mealorder.MenuListId;
-import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.q.MenuItem;
@@ -36,7 +35,6 @@ import java.util.List;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderCreatedInstance2;
-import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.VendorEvents.dateRangeForMenuSetInstance;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.VendorEvents.menuImportedInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -62,86 +60,38 @@ public class MenuListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(menuImported));
             final List<MenuItem> menuList = projection.getState()
                                                       .getMenuList();
-            assertEquals(3, menuList.get(0)
-                                    .getDishesByCategoryList()
-                                    .size());
-            assertEquals("Второе блюдо", menuList.get(0)
-                                                 .getDishesByCategoryList()
-                                                 .get(0)
-                                                 .getCategory()
-                                                 .getValue());
-            assertEquals(3, menuList.get(0)
-                                    .getDishesByCategoryList()
-                                    .get(0)
-                                    .getDishesList()
-                                    .size());
-            assertEquals("Картофель", menuList.get(0)
-                                              .getDishesByCategoryList()
-                                              .get(0)
-                                              .getDishesList()
-                                              .get(0)
-                                              .getName());
-        }
-    }
-
-    @Nested
-    @DisplayName("DateRangeForMenuSet event should be interpreted by MenuListViewProjection")
-    class DateRangeForMenuSetEvent {
-        @Test
-        @DisplayName("Should set dates with menus")
-        void addView() {
-            final MenuImported menuImported = menuImportedInstance();
-            dispatch(projection, createEvent(menuImported));
-            final DateRangeForMenuSet dateRangeForMenuSet = dateRangeForMenuSetInstance();
-            dispatch(projection, createEvent(dateRangeForMenuSet));
-            final List<MenuItem> menuList = projection.getState()
-                                                      .getMenuList();
-            assertEquals(25, menuList.get(0)
-                                     .getMenuDaysList()
-                                     .size());
-            assertEquals(18, menuList.get(0)
-                                     .getMenuDaysList()
-                                     .get(5)
-                                     .getDate()
+            assertEquals(menuList.get(1)
+                                 .getDishesByCategoryList(), menuList.get(0)
+                                                                     .getDishesByCategoryList());
+            assertEquals(25, menuList.size());
+            assertEquals(18, menuList.get(5)
+                                     .getMenuDate()
                                      .getDay());
-            assertEquals(2, menuList.get(0)
-                                    .getMenuDaysList()
-                                    .get(5)
-                                    .getDate()
-                                    .getMonthValue());
-            assertEquals(2017, menuList.get(0)
-                                       .getMenuDaysList()
-                                       .get(5)
-                                       .getDate()
+            assertEquals(2017, menuList.get(5)
+                                       .getMenuDate()
                                        .getYear());
+            assertEquals(2, menuList.get(5)
+                                    .getMenuDate()
+                                    .getMonthValue());
+            assertEquals(true, menuList.get(5)
+                                       .getIsAvilable());
         }
-    }
 
-    @Nested
-    @DisplayName("PurchaseOrderCreated  event should be interpreted by MenuListViewProjection")
-    class PurchaseOrderCreatedEvent {
         @Test
         @DisplayName("Should disable menu")
-        void addView() {
+        void addView2() {
             final MenuImported menuImported = menuImportedInstance();
             dispatch(projection, createEvent(menuImported));
-            final DateRangeForMenuSet dateRangeForMenuSet = dateRangeForMenuSetInstance();
-            dispatch(projection, createEvent(dateRangeForMenuSet));
             final PurchaseOrderCreated purchaseOrderCreated = purchaseOrderCreatedInstance2();
             dispatch(projection, createEvent(purchaseOrderCreated));
-
             assertFalse(projection.getState()
                                   .getMenuList()
-                                  .get(0)
-                                  .getMenuDaysList()
                                   .get(18)
-                                  .getIsAvailable());
+                                  .getIsAvilable());
             assertTrue(projection.getState()
                                  .getMenuList()
-                                 .get(0)
-                                 .getMenuDaysList()
-                                 .get(17)
-                                 .getIsAvailable());
+                                 .get(19)
+                                 .getIsAvilable());
         }
     }
 }

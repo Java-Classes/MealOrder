@@ -36,19 +36,6 @@ import "spine/change/change.proto";
 import "spine/net/email_address.proto";
 import "spine/time/time.proto";
 
-// Day with status.
-//
-// If not available this menu will be disabled on UI.
-//
-message MenuForDay {
-
-    // Menu date
-    spine.time.LocalDate date = 1 [(required) = true];
-
-    // If available a user can add dishes to his order.
-    bool is_available = 2 [(required) = true];
-}
-
 // Name of a category.
 //
 // Probably it has fixed values.

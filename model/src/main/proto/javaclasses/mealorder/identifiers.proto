@@ -39,7 +39,7 @@ import "javaclasses/mealorder/attributes.proto";
 //
 message VendorListId {
 
-    // The ID of the vendor list
+    // The ID of the vendor list.
     string value = 1 [(required) = true];
 }
 

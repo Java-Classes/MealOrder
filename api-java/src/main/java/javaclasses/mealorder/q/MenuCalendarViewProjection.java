@@ -23,7 +23,7 @@ package javaclasses.mealorder.q;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.MenuCalendarId;
-import javaclasses.mealorder.c.event.DateRangeForMenuSet;
+import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.q.projection.MenuCalendarView;
 import javaclasses.mealorder.q.projection.MenuCalendarViewVBuilder;
 
@@ -57,7 +57,7 @@ public class MenuCalendarViewProjection extends Projection<MenuCalendarId, MenuC
     }
 
     @Subscribe
-    void on(DateRangeForMenuSet event) {
+    void on(MenuImported event) {
         final List<LocalDate> datesBetween = getDatesBetween(event.getMenuDateRange()
                                                                   .getRangeStart(),
                                                              event.getMenuDateRange()
