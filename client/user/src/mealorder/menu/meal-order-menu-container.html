@@ -180,7 +180,6 @@
             _getMenuForDay(date) {
                 const routeDate = new Date(date);
                 const menus = this.menus.filter(menu => menu.date);
-                console.log(menus.filter(menu => menu.date.getTime() === routeDate.getTime()));
                 return menus.filter(menu => menu.date.getTime() === routeDate.getTime());
             }
 

@@ -162,18 +162,23 @@
             _filteredItems() {
                 const predicate = this.filter;
                 const filtered = [];
-                for (let i = 0; i < this.menuForDay.length; i++) {
-                    const vendorCategories = this.menuForDay[i].categories;
-                    let newVendorCategories = [];
-                    for (let j = 0; j < vendorCategories.length; j++) {
-                        let vendorDishes = vendorCategories[j].dishes;
-                        let newVendorDishes = vendorDishes.filter(dish => dish.title.toLowerCase().includes(predicate.toLowerCase()));
-                        newVendorCategories.push({
-                            categoryName: vendorCategories[j].categoryName,
-                            dishes: newVendorDishes
+                if (this.menuForDay) {
+                    for (let i = 0; i < this.menuForDay.length; i++) {
+                        const vendorCategories = this.menuForDay[i].categories;
+                        let newVendorCategories = [];
+                        for (let j = 0; j < vendorCategories.length; j++) {
+                            let vendorDishes = vendorCategories[j].dishes;
+                            let newVendorDishes = vendorDishes.filter(dish => dish.title.toLowerCase().includes(predicate.toLowerCase()));
+                            newVendorCategories.push({
+                                categoryName: vendorCategories[j].categoryName,
+                                dishes: newVendorDishes
+                            });
+                        }
+                        filtered.push({
+                            vendor: this.menuForDay[i].vendor,
+                            categories: newVendorCategories
                         });
                     }
-                    filtered.push({vendor: this.menuForDay[i].vendor, categories: newVendorCategories});
                 }
                 return filtered;
             }

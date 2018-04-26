@@ -266,6 +266,15 @@
                 }
             }
 
+            static get actions() {
+                return {
+                    addDishToOrder: order => ({
+                        type: MealOrderApp.UserAction.ADD_DISH_TO_ORDER,
+                        order
+                    })
+                }
+            }
+
             static get observers() {
                 return [
                     '_pageChanged(routeData.page)'
@@ -296,7 +305,7 @@
                 const order = {};
                 order.dish = e.detail;
                 order.date = this.routeData.date;
-                //this.dispatch('addDish', order);
+                this.dispatch('addDishToOrder', order);
             }
         }
 

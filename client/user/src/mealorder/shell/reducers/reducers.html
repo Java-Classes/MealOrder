@@ -130,10 +130,14 @@
         };
 
         MealOrderApp.reducer = (state, action) => {
+
             if (!state) {
                 return MealOrderApp.initialState;
             }
             switch (action.type) {
+                case MealOrderApp.UserAction.ADD_DISH_TO_ORDER: {
+                    return state;
+                }
                 default : {
                     return state;
                 }
