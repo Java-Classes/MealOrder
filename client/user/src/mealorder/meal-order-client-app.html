@@ -43,6 +43,7 @@
 <link rel="import" href="menu/meal-order-menu-container.html">
 <link rel="import" href="menu/meal-order-user-history.html">
 <link rel="import" href="menu/meal-order-drawer.html">
+
 <dom-module id="meal-order-client-app">
     <template>
         <style>
@@ -56,8 +57,13 @@
                 font-size: 1.375em;
             }
 
+            app-header-layout {
+                background-color: var(--paper-grey-100);
+            }
+
             app-drawer-layout {
                 background-color: var(--paper-grey-100);
+                color: var(--google-grey-700);
             }
 
             app-drawer-layout:not([narrow]) [drawer-toggle] {
@@ -71,17 +77,17 @@
                 justify-content: space-between;
             }
 
-            app-header .route-title a {
+            app-header .title-link {
                 font-size: 0.8em;
                 text-decoration: none;
                 color: var(--paper-grey-50);
             }
 
-            app-header .route-title a:hover {
+            app-header .title-link:hover .route-title {
                 color: var(--paper-light-blue-500);
             }
 
-            app-header .history-icon {
+            app-header .link-icon {
                 display: none;
                 color: var(--paper-grey-50);
             }
@@ -96,50 +102,33 @@
                 }
             }
 
-            .wide {
+            app-drawer.wide {
                 --app-drawer-width: 300px;
-            }
-
-            .app-toolbar-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%
-            }
-
-            .app-toolbar-header .app-toolbar-content {
-                font-size: 24px;
             }
 
             #menu-history {
                 margin-right: 44px;
             }
 
-            .icon-container {
-                width: 100px;
+            .app-header-iron-container {
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
             }
 
-            #day {
-                font-size: 0.7em;
-                font-weight: lighter;
-                text-align: center;
-            }
-
-            #day-of-the-week {
-                font-size: 22px;
-            }
-
             @media only screen and (max-width: 600px) {
+                .app-header-iron-container {
+                    width: 100px;
+                }
+
                 .route-title {
                     display: none;
                 }
 
-                app-header .history-icon {
+                app-header .link-icon {
                     display: block;
                 }
+
             }
         </style>
         <app-location route="{{route}}"
@@ -152,32 +141,13 @@
 
         <app-drawer-layout fullbleed>
             <app-drawer slot="drawer" align="right" class$="[[_getClassForDrawer(routeData.page)]]">
-
-                <iron-pages selected="[[routeData.page]]"
+                <iron-pages id="app-drawer-iron"
+                            selected="[[routeData.page]]"
                             attr-for-selected="data-page"
                             fallback-selection="view404"
                             role="main">
-
-                    <app-toolbar data-page="menu">
-                        <div class="app-toolbar-header">
-                            <div class="app-toolbar-content">Заказ</div>
-                            <div>
-                                <div id="day">[[selectedDay.dayOfTheWeek]]</div>
-                                <div id="day-of-the-week">[[selectedDay.day]]</div>
-                            </div>
-                        </div>
-                    </app-toolbar>
-
-                    <app-toolbar data-page="history">
-                        <div class="app-toolbar-header">
-                            <div class="app-toolbar-content">История заказов</div>
-                        </div>
-                    </app-toolbar>
                 </iron-pages>
-                <meal-order-drawer on-user-order-dish-removed="_removeDishFromOrder"
-                                   on-user-order-vendor-removed="_removeDishesByVendor"
-                                   on-menu-order-drawer-changed-history-date="_updateHistoryDay"
-                                   order="[[order]]"></meal-order-drawer>
+                <meal-order-drawer></meal-order-drawer>
             </app-drawer>
 
             <app-header-layout>
@@ -185,54 +155,47 @@
                     <app-toolbar>
                         <div class="app-toolbar-container">
                             <div id="main-title">Заказ обедов</div>
-                            <iron-pages
-                                    selected="[[routeData.page]]"
-                                    attr-for-selected="data-page"
-                                    fallback-selection="view404"
-                                    role="main">
-
-                                <div data-page="menu">
-                                    <div class="route-title"><a href="/#/history/">История
-                                        заказов</a></div>
-                                    <div class="icon-container">
-                                        <a href="/#/history/">
-                                            <iron-icon class="history-icon"
-                                                       icon="maps:icons:history"></iron-icon>
-                                        </a>
-                                        <div>
-                                            <iron-icon class="app-toolbar-content"
-                                                       icon="icons:shopping-cart"
-                                                       drawer-toggle></iron-icon>
-                                        </div>
-                                    </div>
+                            <iron-pages id="app-header-iron"
+                                        selected="[[routeData.page]]"
+                                        attr-for-selected="data-page"
+                                        fallback-selection="view404"
+                                        role="main">
+                                <div data-page="menu" class="app-header-iron-container">
+                                    <a class="title-link" href="/#/history/">
+                                        <div class="route-title">История заказов</div>
+                                        <iron-icon class="link-icon"
+                                                   icon="maps:icons:history"></iron-icon>
+                                    </a>
+                                    <iron-icon class="drawer-icon"
+                                               icon="icons:shopping-cart" drawer-toggle></iron-icon>
                                 </div>
-
-                                <div data-page="history">
-                                    <div id="menu-history" class="route-title"><a href="/#/menu/">Сделать
-                                        заказ</a>
-                                    </div>
-                                    <div class="icon-container">
-                                        <a href="/#/menu/">
-                                            <iron-icon class="history-icon"
-                                                       icon="maps:icons:add"></iron-icon>
-                                        </a>
-                                        <div>
-                                            <iron-icon class="app-toolbar-content"
-                                                       icon="icons:date-range"
-                                                       drawer-toggle></iron-icon>
+                                <div data-page="history" class="app-header-iron-container">
+                                    <a class="title-link" href="/#/menu/">
+                                        <div id="menu-history" class="route-title">Сделать заказ
                                         </div>
-                                    </div>
+                                        <iron-icon class="link-icon"
+                                                   icon="maps:icons:add"></iron-icon>
+                                    </a>
+                                    <iron-icon class="drawer-icon"
+                                               icon="icons:date-range"
+                                               drawer-toggle></iron-icon>
                                 </div>
                             </iron-pages>
                         </div>
                     </app-toolbar>
                 </app-header>
-                <iron-pages
-                        selected="[[routeData.page]]"
-                        attr-for-selected="data-page"
-                        fallback-selection="view404"
-                        role="main">
-                    <meal-order-menu-container data-page="menu"></meal-order-menu-container>
+                <iron-pages id="app-header-layout-iron"
+                            selected="[[routeData.page]]"
+                            attr-for-selected="data-page"
+                            fallback-selection="view404"
+                            role="main">
+                    <meal-order-menu-container
+                            data-page="menu"
+                            server-time="[[serverTime]]"
+                            date="[[routeData.date]]"
+                            menus="[[menus]]"
+                            on-dish-added="_addDishToOrder">
+                    </meal-order-menu-container>
                     <meal-order-user-history data-page="history" cart="[[history]]"></meal-order-user-history>
                 </iron-pages>
 
@@ -245,15 +208,14 @@
          * Main client meal order component.
          *
          * Consists of 2 pages:
-         * 1. A page with vendor menus, and user's shopping cart.
-         * 2. A page with user's history.
+         * 1. A page with the vendor menus and the user's shopping cart.
+         * 2. A page with the user's history.
          *
          * @customElement
          * @polymer
          * @appliesMixin MealOrderApp.ReduxMixin
          */
         class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
-
             static get is() {
                 return 'meal-order-client-app';
             }
@@ -261,60 +223,60 @@
             static get properties() {
                 return {
                     /**
-                     * Current user's meal order.
+                     * Menu for a current day.
+                     *
+                     * @typedef {Object} Menu the menu for the current date
+                     *
+                     * @property {String} Vendor a vendor name
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
+                     *
+                     * @typedef {Array} Categories array contains the category name and dishes
+                     * @typedef {Array} Dishes array contains the dish title, price, quantity
+                     * @property {String} title
+                     * @property {String} price
+                     * @property {String} quantity
                      */
-                    order: {
+                    menus: {
                         type: Array,
-                        statePath: 'currentOrder'
-                    },
-                    /**
-                     * User's history for the chosen day.
-                     */
-                    history: {
-                        type: Array,
-                        statePath: 'currentHistory'
+                        statePath: 'menus'
                     },
 
                     /**
-                     * Current selected day by user.
+                     * Route data parsed using `app-route`.
+                     *
+                     * Used for routing.
                      */
-                    selectedDay: {
+                    routeData: {
                         type: Object,
                     },
 
                     /**
-                     * Used for routing.
+                     * The current server time for the calendar.
                      */
-                    routeData: {},
+                    serverTime: {
+                        type: Object,
+                        statePath: 'serverTime'
+                    }
+
                 }
             }
 
             static get actions() {
                 return {
-                    removeDish(order) {
-                        return {
-                            type: MealOrderApp.UserAction.REMOVE_DISH,
-                            order: order
-                        }
-                    },
-                    removeDishesByVendor(order) {
-                        return {
-                            type: MealOrderApp.UserAction.REMOVE_DISHES_BY_VENDOR,
-                            order: order
-                        }
-                    },
-                    changeHistoryDate(date) {
-                        return {
-                            type: MealOrderApp.UserAction.CHANGE_HISTORY_DAY,
-                            date: date
-                        }
-                    }
+                    addDishToOrder: order => ({
+                        type: MealOrderApp.UserAction.ADD_DISH_TO_ORDER,
+                        order
+                    })
                 }
             }
 
             static get observers() {
                 return [
-                    '_pageChanged(routeData.date)'
+                    '_pageChanged(routeData.page)'
                 ];
             }
 
@@ -324,53 +286,27 @@
                 }
             }
 
-            _removeDishFromOrder(e) {
-                const order = {};
-                order.date = this._routeDateToObject().toLocaleDateString("en-US");
-                order.dish = e.detail;
-                this.dispatch('removeDish', order);
-            }
-
-            _removeDishesByVendor(e) {
-                const order = {};
-                order.date = this._routeDateToObject().toLocaleDateString("en-US");
-                order.vendor = e.detail;
-                this.dispatch('removeDishesByVendor', order);
-            }
-
             _pageChanged() {
-                const date = this._routeDateToObject();
-
-                let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
-                dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
-
-                const selectedDay = {
-                    day: date.getDate(),
-                    dayOfTheWeek: dayOfTheWeek,
-                };
-                this.set('selectedDay', selectedDay);
+                const DATE_LENGTH = 10;
+                if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
+                    this.set('route.path', '/menu/' + this.serverTime.toISOString().slice(0,DATE_LENGTH));
+                }
+                if (this.routeData.page.startsWith("history")) {
+                    if (!this.routeData.date) {
+                        let yesterday = new Date(this.serverTime);
+                        yesterday.setDate(yesterday.getDate()-1);
+                        this.set('routeData.date', yesterday.toISOString().slice(0, DATE_LENGTH));
+                    }
+                }
             }
 
-            _routeDateToObject() {
-                const YEAR = 0;
-                const MONTH = 1;
-                const DAY = 2;
-
-                const arr = this.routeData.date.split('-');
-
-                let urlDate = {};
-                urlDate.year = arr[YEAR];
-                urlDate.month = arr[MONTH];
-                urlDate.day = arr[DAY];
-
-                return new Date(urlDate.year, urlDate.month - 1, urlDate.day);
-            }
-
-            _updateHistoryDay(e) {
-                this.dispatch('changeHistoryDate', e.detail);
+            _addDishToOrder(e) {
+                const order = {};
+                order.dish = e.detail;
+                order.date = this.routeData.date;
+                this.dispatch('addDishToOrder', order);
             }
         }
-
         window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
     </script>
 </dom-module>

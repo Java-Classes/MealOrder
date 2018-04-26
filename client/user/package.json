@@ -1,8 +1,7 @@
 {
-  "name": "polymer",
+  "name": "MealOrder",
   "version": "1.0.0",
-  "private": true,
-  "description": "Test",
+  "description": "Application for meal order",
   "scripts": {
     "test": "polymer test",
     "postinstall": "bower install"

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>meal-order-menu-container test</title>
+
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../../node_modules/redux/dist/redux.js"></script>
+    <script src="../test_variables.js"></script>
+    <link rel="import" href="../../../src/mealorder/menu/meal-order-menu-container.html">
+</head>
+<body>
+
+<test-fixture id="MealOrderMenuContainer">
+    <template>
+        <meal-order-menu-container></meal-order-menu-container>
+    </template>
+</test-fixture>
+
+<script>
+    function setLocation(url) {
+        window.history.pushState({}, '', url);
+        Polymer.Base.fire('location-changed', {}, {node: window});
+    }
+
+    suite('meal-order-menu-container', function () {
+        let component;
+
+        setup(() => {
+            component = fixture('MealOrderMenuContainer');
+            component.calendar = MealOrderAppTest.initialState.calendar;
+        });
+
+        test('should parse `routeData.page` correctly', function () {
+            setLocation('/#/history/');
+            assert.equal('history', component.routeData.page);
+            setLocation('/#/menu/');
+            assert.equal('menu', component.routeData.page);
+        });
+
+        test('should parse `routeData.date` correctly', function () {
+            setLocation('/#/history/2018-3-21');
+            assert.equal('2018-3-21', component.routeData.date);
+            setLocation('/#/menu/2018-3-21');
+            assert.equal('2018-3-21', component.routeData.date);
+        });
+
+        test('should instantiate the component `paper-tabs`', function (done) {
+            flush(function () {
+                const elementShadowRoot = component.shadowRoot;
+                const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
+                assert.equal(paperTabs.id, 'paper-tabs');
+                done();
+            });
+        });
+
+        test('should parse `routeData.date` by the default selected paper-tab', function () {
+            const elementShadowRoot = component.shadowRoot;
+            const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
+            assert.equal(component.routeData.date, paperTabs.selected);
+        });
+
+        test('should parse changed `routeData.date` by the selected paper-tab', function (done) {
+            const elementShadowRoot = component.shadowRoot;
+
+            flush(function () {
+                const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
+                paperTabs.select('2018-03-23');
+                assert.equal(component.routeData.date, '2018-3-23');
+                done();
+            });
+        });
+    });
+</script>
+</body>
+</html>

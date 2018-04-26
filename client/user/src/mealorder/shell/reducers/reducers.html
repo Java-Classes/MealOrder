@@ -18,100 +18,20 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../meal-order-app-namespace.html">
-
 <link rel="import" href="../redux-store.html">
-<script src="../utils/Utils.js"></script>
+
 <script>
     {
-        /*global Utils */
-        const arrayOfDates = [{
-            date: {
-                year: '2018',
-                month: '03',
-                day: '21',
-            },
-            dayOfTheWeek: 'Ср',
-            hasMenu: true
-        },
-            {
-                date: {
-                    year: '2018',
-                    month: '03',
-                    day: '22',
-                },
-                dayOfTheWeek: 'Чт',
-                hasMenu: true
-            },
-            {
-                date: {
-                    year: '2018',
-                    month: '03',
-                    day: '23',
-                },
-                dayOfTheWeek: 'Пт',
-                hasMenu: true
-            },
-            {
-                date: {
-                    year: '2018',
-                    month: '03',
-                    day: '24',
-                },
-                dayOfTheWeek: 'Сб',
-                hasMenu: false
-            },
-            {
-                date: {
-                    year: '2018',
-                    month: '03',
-                    day: '25',
-                },
-                dayOfTheWeek: 'Вс',
-                hasMenu: false
-            }
-            , {
-                date: {
-                    year: '2018',
-                    month: '03',
-                    day: '26',
-                },
-                dayOfTheWeek: 'Пн',
-                hasMenu: true
-            }
-            , {
-                date: {
-                    year: '2018',
-                    month: '03',
-                    day: '27',
-                },
-                dayOfTheWeek: 'Вт',
-                hasMenu: true
-            }
-            , {
-                date: {
-                    year: '2018',
-                    month: '03',
-                    day: '28',
-                },
-                dayOfTheWeek: 'Ср',
-                hasMenu: true
-            }];
-
         MealOrderApp.initialState = {
 
-            calendar: arrayOfDates,
-            menuForDay: [],
-
-            menu: [
+            serverTime: new Date('2018-03-21'),
+            menus: [
                 {
-                    name: 'Пюре',
-                    date: {
-                        year: '2018',
-                        month: '03',
-                        day: '21',
-                    },
+                    vendor: 'Пюре',
+                    date: new Date('2018-03-21'),
                     categories: [{
-                        categoryName: 'Первое блюдо', dishes: [
+                        categoryName: 'Первое блюдо',
+                        dishes: [
                             {title: 'Борщ украинский', price: 35},
                             {title: 'Солянка', price: 40},
                             {title: 'Суп гороховый', price: 140},
@@ -119,19 +39,16 @@
                             {title: 'Суп-пюре грибной', price: 40}]
                     }
                         , {
-                            categoryName: 'Второе блюдо', dishes: [
+                            categoryName: 'Второе блюдо',
+                            dishes: [
                                 {title: 'Утиные крылышки', price: 40},
                                 {title: 'Куриные крылышки', price: 45}]
                         }
                     ]
                 },
                 {
-                    name: 'Позитив',
-                    date: {
-                        year: '2018',
-                        month: '03',
-                        day: '21',
-                    },
+                    vendor: 'Позитив',
+                    date: new Date('2018-03-21'),
                     categories: [{
                         categoryName: 'Первое блюдо', dishes: [
                             {title: 'Борщ украинский', price: 35},
@@ -151,12 +68,8 @@
                     ]
                 },
                 {
-                    name: 'Пюре',
-                    date: {
-                        year: '2018',
-                        month: '03',
-                        day: '22',
-                    },
+                    vendor: 'Пюре',
+                    date: new Date('2018-03-22'),
                     categories: [{
                         categoryName: 'Первое блюдо', dishes: [
                             {title: 'Суп гречневый', price: 35},
@@ -173,12 +86,29 @@
                     ]
                 },
                 {
-                    name: 'Позитив',
-                    date: {
-                        year: '2018',
-                        month: '03',
-                        day: '22',
-                    },
+                    vendor: 'Позитив',
+                    date: new Date('2018-03-22'),
+                    categories: [{
+                        categoryName: 'Первое блюдо', dishes: [
+                            {title: 'Суп сырный', price: 35},
+                            {title: 'Суп с лапшой', price: 40},
+                            {title: 'Борщ красный', price: 40},
+                            {title: 'Борщ зеленый', price: 35}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо', dishes: [
+                                {title: 'Стейк из лосося', price: 40},
+                                {title: 'Стейк из говядины', price: 45}]
+                        },
+                        {
+                            categoryName: 'Напитки', dishes: [
+                                {title: 'Лимонад', price: 40}]
+                        }
+                    ]
+                },
+                {
+                    vendor: 'Позитив',
+
                     categories: [{
                         categoryName: 'Первое блюдо', dishes: [
                             {title: 'Суп сырный', price: 35},
@@ -197,9 +127,9 @@
                         }
                     ]
                 }],
-            currentOrder: [],
             orders: [{
-                date: {day: '21', month: '03', year: '2018'}, cart: [{
+                date: new Date('2018-03-21'),
+                order: [{
                     vendor: "Пюре",
                     dishes: [
                         {title: 'Борщ украинский', price: 35, quantity: 1},
@@ -217,7 +147,8 @@
                     }]
                 }]
             }, {
-                date: {day: '22', month: '03', year: '2018'}, cart: [{
+                date: new Date('2018-03-22'),
+                order: [{
                     vendor: "Пюре",
                     dishes: [
                         {title: 'Щи русские', price: 48, quantity: 1},
@@ -234,7 +165,9 @@
                         quantity: 1
                     }]
                 }]
-            }],
+            },],
+
+            currentOrder: [],
 
             history: [{
                 date: {
@@ -289,51 +222,20 @@
                 return MealOrderApp.initialState;
             }
             switch (action.type) {
-                case MealOrderApp.UserAction.CHANGE_CURRENT_MENU: {
-                    let arr = [];
-                    let j = 0;
 
-                    for (let i = 0; i < state.menu.length; i++) {
-                        if (Utils.compareObjects(action.date, state.menu[i].date)) {
-                            arr[j] = state.menu[i];
-                            j++;
-                        }
-                    }
-                    return Object.assign({}, state, {
-                            dateForMenu: state.dateForMenu,
-                            menuForDay: arr
-                        }
-                    );
+                case MealOrderApp.UserAction.ADD_DISH_TO_ORDER: {
+                    return state;
                 }
-                case MealOrderApp.UserAction.CHANGE_CURRENT_CART: {
-                    let newOrder = [];
-                    for (let i = 0; i < state.orders.length; i++) {
-                        if (Utils.compareObjects(action.date, state.orders[i].date)) {
-                            newOrder = state.orders[i].cart;
-                            break;
-                        }
-                    }
-                    return Object.assign({}, state, {
-                            currentOrder: newOrder
-                        }
-                    );
-                }
-                case MealOrderApp.UserAction.REMOVE_DISH: {
+                case MealOrderApp.UserAction.REMOVE_DISH_FROM_ORDER: {
                     return state;
                 }
                 case MealOrderApp.UserAction.REMOVE_DISHES_BY_VENDOR: {
                     return state;
                 }
-                case MealOrderApp.UserAction.CHANGE_HISTORY_DAY: {
-                    let newHistory = [];
-                    for (let i = 0; i < state.history.length; i++) {
-                        if (Utils.compareObjects(action.date, state.history[i].date)) {
-                            newHistory = state.history[i].order;
-                            break;
-                        }
-                    }
+                case MealOrderApp.UserAction.GET_ORDERED_ITEMS: {
+                    const newOrder = state.orders.find(order => order.date.getTime() === action.date.getTime());
                     return Object.assign({}, state, {
-                            currentHistory: newHistory
+                            currentOrder: newOrder
                         }
                     );
                 }
@@ -343,4 +245,5 @@
             }
         }
     }
+
 </script>
