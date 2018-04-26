@@ -89,7 +89,7 @@
         <app-drawer-layout fullbleed>
             <app-drawer id="drawer" slot="drawer" align="right"
                         class$="[[_getDrawerClass(routeData.page)]]">
-                <meal-order-drawer></meal-order-drawer>
+                <meal-order-drawer route-data="{{routeData}}"></meal-order-drawer>
             </app-drawer>
 
             <app-header-layout>

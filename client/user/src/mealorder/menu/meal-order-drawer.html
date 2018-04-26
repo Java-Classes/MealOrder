@@ -18,8 +18,6 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../../../bower_components/app-route/app-location.html">
-<link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/app-datepicker/app-datepicker.html">
 
@@ -70,14 +68,6 @@
             }
 
         </style>
-        <app-location route="{{route}}"
-                      use-hash-as-path></app-location>
-
-        <app-route
-                route="{{route}}"
-                pattern="/:page/:date"
-                data="{{routeData}}">
-        </app-route>
 
         <iron-pages
                 selected="[[routeData.page]]"
@@ -156,6 +146,7 @@
                      */
                     routeData: {
                         type: Object,
+                        notify: true,
                     },
                 }
             }
@@ -181,7 +172,7 @@
             }
 
             _calendarDateChanged() {
-                if (this.routeData.page && this.routeData.page.startsWith("history")) {
+                if (this.routeData && this.routeData.page.startsWith("history")) {
                     const date = this.outputDate.replace(/\//g, '-');
                     const newRouteData = {};
                     newRouteData.page = 'history';
