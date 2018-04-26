@@ -17,6 +17,7 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
@@ -25,7 +26,33 @@
 <dom-module id="meal-order-drawer">
     <template>
         <style>
+            .app-toolbar-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                z-index: 1;
+            }
+
+            .app-toolbar-header .app-toolbar-content {
+                font-size: 24px;
+            }
+
+            #day {
+                font-size: 0.7em;
+                font-weight: lighter;
+                text-align: center;
+            }
+
+            #day-of-the-week {
+                font-size: 22px;
+            }
+
             #date-picker {
+                z-index: 0;
+                position: absolute;
+                top: 84px;
+
                 --app-datepicker-selection-bg: var(--paper-grey-50);
                 --app-datepicker-selection-color: var(--google-grey-700);
                 --app-datepicker-iron-selected: var(--google-grey-700);
@@ -34,14 +61,14 @@
                 --app-datepicker-date-hover-background-color: var(--paper-light-blue-500);
 
                 --app-datepicker-selected-date: {
-                    font-weight: normal;
-                    font-size: 22px;
+                    display: none;
                 };
 
                 --app-datepicker-selected-year: {
-                    font-weight: normal;
-                }
+                    display: none;
+                };
             }
+
         </style>
         <app-location route="{{route}}"
                       use-hash-as-path></app-location>
@@ -57,17 +84,38 @@
                 attr-for-selected="data-page"
                 fallback-selection="view404"
                 role="main">
-            <app-datepicker data-page="history" id="date-picker" view="vertical"
-                            input-date="[[inputDate]]" date="{{outputDate}}" auto-update-date="true"
-                            locale="ru-RU"></app-datepicker>
-            <meal-order-user-cart data-page="menu" order="[[order]]"></meal-order-user-cart>
+            <div data-page="menu">
+                <app-toolbar>
+                    <div class="app-toolbar-header">
+                        <div class="app-toolbar-content">Заказ</div>
+                        <div>
+                            <div id="day">[[selectedDay.dayOfTheWeek]]</div>
+                            <div id="day-of-the-week">[[selectedDay.day]]</div>
+                        </div>
+                    </div>
+                </app-toolbar>
+                <meal-order-user-cart data-page="menu"></meal-order-user-cart>
+            </div>
+            <div data-page="history">
+                <app-toolbar>
+                    <div class="app-toolbar-header">
+                        <div class="app-toolbar-content">История заказов</div>
+                    </div>
+                </app-toolbar>
+
+                <app-datepicker id="date-picker" view="vertical"
+                                input-date="[[inputDate]]" date="{{outputDate}}"
+                                auto-update-date="true"
+                                locale="ru-RU"></app-datepicker>
+            </div>
         </iron-pages>
     </template>
     <script>
         /**
-         * meal-order-drawer is container for user's order and user's order history calendar.
+         * meal-order-drawer is container for the user's order and
+         * the calendar of the history of the user's orders.
          *
-         * Contains a order for selected day and calendar.
+         * Contains an order for the selected day and calendar.
          *
          * @customElement
          * @polymer
@@ -80,71 +128,73 @@
             static get properties() {
                 return {
                     /**
-                     * Current user's meal order.
+                     * Selected day.
                      */
-                    order: {
-                        type: Array,
+                    selectedDay: {
+                        type: Object,
+                        computed: '_changeSelectedDay(routeData.date)'
                     },
 
                     /**
                      * Date that the user can select on the calendar.
                      */
-                    inputDate: {},
+                    inputDate: {
+                        type: String,
+                        computed: '_changeCalendarDate(routeData.date)',
+                    },
 
                     /**
                      * Chosen day.
                      */
-                    outputDate: {},
+                    outputDate: {
+                        type: Date,
+                    },
 
                     /**
                      * Used for routing.
                      */
-                    routeData: {},
+                    routeData: {
+                        type: Object,
+                    },
                 }
             }
 
             static get observers() {
                 return [
-                    '_updateDate(outputDate)',
-                    '_changeHistoryUrl(routeData)'
+                    ' _calendarDateChanged(outputDate)'
                 ];
             }
 
-            _changeHistoryUrl() {
-                if (this.routeData.page && this.routeData.page.startsWith("history")) {
-                    const YEAR = 0;
-                    const MONTH = 1;
-                    const DAY = 2;
+            _changeSelectedDay() {
+                const date = new Date(this.routeData.date);
 
-                    const routeDate = this.routeData.date.split('-');
-                    this.set('inputDate', routeDate[YEAR] + "/" + routeDate[MONTH] + "/" + routeDate[DAY]);
-                    const arr = this.routeData.date.split('-');
-                    const date = {};
-                    date.year = arr[YEAR];
-                    date.month = arr[MONTH];
-                    date.day = arr[DAY];
-                    this.dispatchEvent(new CustomEvent('changed-history-date', {detail: date}));
-                }
+                let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'long'});
+                dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
+
+                const day = {
+                    day: date.getDate(),
+                    dayOfTheWeek: dayOfTheWeek,
+                };
+                return day;
             }
 
-            _updateDate() {
-                if (this.routeData.page && this.routeData.page.startsWith("history")) {
-                    const YEAR = 0;
-                    const MONTH = 1;
-                    const DAY = 2;
+            _changeCalendarDate() {
+                const routeDate = new Date(this.routeData.date);
+                return (routeDate.getFullYear() +
+                    "/" + (routeDate.getMonth() + 1) + "/" + routeDate.getDate());
+            }
 
-                    const arr = this.outputDate.split('/');
-                    const date = {};
-                    date.year = arr[YEAR];
-                    date.month = arr[MONTH];
-                    date.day = arr[DAY];
+            _calendarDateChanged() {
+                if (this.routeData.page && this.routeData.page.startsWith("history")) {
+                    const date = this.outputDate.replace(/\//g, '-');
                     const newRouteData = {};
                     newRouteData.page = 'history';
-                    newRouteData.date = date.year + "-" + date.month + "-" + date.day;
+                    newRouteData.date = date;
                     this.set('routeData', newRouteData);
                 }
             }
         }
+
         window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>

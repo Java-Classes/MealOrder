@@ -1,0 +1,12 @@
+{
+  "persistent": true,
+  "verbose": true,
+  "plugins": {
+    "sauce": {
+      "disabled": true,
+      "browsers": [
+        "all"
+      ]
+    }
+  }
+}
