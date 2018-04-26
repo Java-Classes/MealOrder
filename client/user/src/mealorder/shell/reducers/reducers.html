@@ -19,57 +19,12 @@
   -->
 <link rel="import" href="../meal-order-app-namespace.html">
 <link rel="import" href="../redux-store.html">
-<script src="../utils/Utils.js"></script>
 
 <script>
     {
-        /*global Utils */
-        const arrayOfDates = [{
-            date: new Date('2018-03-21'),
-            dayOfTheWeek: 'Ср',
-            hasMenu: true
-        },
-            {
-                date: new Date('2018-03-22'),
-                dayOfTheWeek: 'Чт',
-                hasMenu: true
-            },
-            {
-                date: new Date('2018-03-23'),
-                dayOfTheWeek: 'Пт',
-                hasMenu: true
-            },
-            {
-                date: new Date('2018-03-24'),
-                dayOfTheWeek: 'Сб',
-                hasMenu: false
-            },
-            {
-                date: new Date('2018-03-25'),
-                dayOfTheWeek: 'Вс',
-                hasMenu: false
-            }
-            , {
-                date: new Date('2018-03-26'),
-                dayOfTheWeek: 'Пн',
-                hasMenu: true
-            }
-            , {
-                date: new Date('2018-03-27'),
-                dayOfTheWeek: 'Вт',
-                hasMenu: true
-            }
-            , {
-                date: new Date('2018-03-28'),
-                dayOfTheWeek: 'Ср',
-                hasMenu: true
-            }];
-
         MealOrderApp.initialState = {
-            currentWeekMenus: arrayOfDates,
-            menuForDay: [],
 
-            currentDate: new Date('2018-03-21'),
+            serverTime: new Date('2018-03-21'),
             menus: [
                 {
                     vendor: 'Пюре',
@@ -150,47 +105,28 @@
                                 {title: 'Лимонад', price: 40}]
                         }
                     ]
+                },
+                {
+                    vendor: 'Позитив',
+
+                    categories: [{
+                        categoryName: 'Первое блюдо', dishes: [
+                            {title: 'Суп сырный', price: 35},
+                            {title: 'Суп с лапшой', price: 40},
+                            {title: 'Борщ красный', price: 40},
+                            {title: 'Борщ зеленый', price: 35}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо', dishes: [
+                                {title: 'Стейк из лосося', price: 40},
+                                {title: 'Стейк из говядины', price: 45}]
+                        },
+                        {
+                            categoryName: 'Напитки', dishes: [
+                                {title: 'Лимонад', price: 40}]
+                        }
+                    ]
                 }],
-            orderForDay: [],
-            orders: [{
-                date: new Date('2018-03-21'),
-                order: [{
-                    vendor: "Пюре",
-                    dishes: [
-                        {title: 'Борщ украинский', price: 35, quantity: 1},
-                        {title: 'Солянка', price: 40, quantity: 1},
-                        {title: 'Суп гороховый', price: 40, quantity: 1},
-                        {title: 'Уха', price: 35, quantity: 1},
-                        {title: 'Суп-пюре грибной', price: 40, quantity: 1},
-                        {title: 'Суп куриный', price: 40, quantity: 1},]
-                }, {
-                    vendor: 'Позитив',
-                    dishes: [{title: 'Суп куриный', price: 35, quantity: 1}, {
-                        title: 'Стейк из лосося',
-                        price: 35,
-                        quantity: 1
-                    }]
-                }]
-            }, {
-                date: new Date('2018-03-22'),
-                order: [{
-                    vendor: "Пюре",
-                    dishes: [
-                        {title: 'Щи русские', price: 48, quantity: 1},
-                        {title: 'Солянка', price: 40, quantity: 1},
-                        {title: 'Суп гороховый', price: 40, quantity: 1},
-                        {title: 'Уха', price: 35, quantity: 1},
-                        {title: 'Суп-пюре грибной', price: 40, quantity: 1},
-                        {title: 'Суп куриный', price: 40, quantity: 1},]
-                }, {
-                    vendor: 'Позитив',
-                    dishes: [{title: 'Лапша по армянски', price: 35, quantity: 1}, {
-                        title: 'Стейк из лосося',
-                        price: 35,
-                        quantity: 1
-                    }]
-                }]
-            }]
         };
 
         MealOrderApp.reducer = (state, action) => {
@@ -198,15 +134,6 @@
                 return MealOrderApp.initialState;
             }
             switch (action.type) {
-                case MealOrderApp.UserAction.SET_CURRENT_DATE: {
-                    const menu = state.menus.filter(menu => menu.date.getTime() === action.date.getTime());
-                    const newOrder = state.orders.find(order => order.date.getTime() === action.date.getTime());
-                    return Object.assign({}, state, {
-                            menuForDay: menu,
-                            currentOrder: newOrder,
-                        }
-                    );
-                }
                 default : {
                     return state;
                 }

@@ -17,6 +17,7 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
@@ -128,24 +129,11 @@
             static get properties() {
                 return {
                     /**
-                     * Current user's meal order.
-                     *
-                     * @typedef {Object} Order the current order
-                     *
-                     * @typedef {Object} Date contains day, month, year
-                     * @property {Number} day
-                     * @property {Number} month
-                     * @property {Number} year
-                     *
-                     * @typedef {Array} Cart array that contains the vendor and dishes
-                     * @property {String} Vendor a vendor name
-                     * @typedef {Array} Dishes array contains the dish title, price, quantity
-                     * @property {String} title
-                     * @property {String} price
-                     * @property {String} quantity
+                     * Selected day.
                      */
-                    order: {
-                        type: Array,
+                    selectedDay: {
+                        type: Object,
+                        computed: '_changeSelectedDay(routeData.date)'
                     },
 
                     /**
@@ -169,14 +157,6 @@
                     routeData: {
                         type: Object,
                     },
-
-                    /**
-                     * Selected day.
-                     */
-                    selectedDay: {
-                        type: Object,
-                        computed: '_changeSelectedDay(routeData.date)'
-                    }
                 }
             }
 
