@@ -79,7 +79,7 @@
 
         <paper-tabs id="paper-tabs" selected="[[date]]"
                     attr-for-selected='data-key'>
-            <template is="dom-repeat" items="{{currentWeek}}" as="calendar">
+            <template is="dom-repeat" items="[[_getMenuDatesForWeek(menus)]]" as="calendar">
                 <paper-tab class="paper-tab"
                            data-key$="[[_getDate(calendar)]]"
                            link disabled="[[!calendar.hasMenu]]">
@@ -94,7 +94,7 @@
                 </paper-tab>
             </template>
         </paper-tabs>
-            <meal-order-vendor-menus items="[[menuForDay]]"></meal-order-vendor-menus>
+            <meal-order-vendor-menus menu-for-day="[[_getMenuForDay(date)]]"></meal-order-vendor-menus>
     </template>
     <script>
         /**
@@ -180,6 +180,7 @@
             _getMenuForDay(date) {
                 const routeDate = new Date(date);
                 const menus = this.menus.filter(menu => menu.date);
+                console.log(menus.filter(menu => menu.date.getTime() === routeDate.getTime()));
                 return menus.filter(menu => menu.date.getTime() === routeDate.getTime());
             }
 

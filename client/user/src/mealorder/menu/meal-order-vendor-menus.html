@@ -130,7 +130,7 @@
                      *
                      * @property {{name:String vendor name, categories:array a menu of a vendor for a day}}.
                      */
-                    items: {
+                    menuForDay: {
                         type: Array,
                     },
 
@@ -139,7 +139,7 @@
                      */
                     filtered: {
                         type: Array,
-                        computed: '_filteredItems(items,filter)',
+                        computed: '_filteredItems(menuForDay,filter)',
                         reflectToAttribute: true
                     },
 
@@ -162,8 +162,8 @@
             _filteredItems() {
                 const predicate = this.filter;
                 const filtered = [];
-                for (let i = 0; i < this.items.length; i++) {
-                    const vendorCategories = this.items[i].categories;
+                for (let i = 0; i < this.menuForDay.length; i++) {
+                    const vendorCategories = this.menuForDay[i].categories;
                     let newVendorCategories = [];
                     for (let j = 0; j < vendorCategories.length; j++) {
                         let vendorDishes = vendorCategories[j].dishes;
@@ -173,7 +173,7 @@
                             dishes: newVendorDishes
                         });
                     }
-                    filtered.push({vendor: this.items[i].vendor, categories: newVendorCategories});
+                    filtered.push({vendor: this.menuForDay[i].vendor, categories: newVendorCategories});
                 }
                 return filtered;
             }
