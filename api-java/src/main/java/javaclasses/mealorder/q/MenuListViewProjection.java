@@ -74,7 +74,6 @@ public class MenuListViewProjection extends Projection<MenuListId, MenuListView,
                                               .build();
             getBuilder().addMenu(menuItem);
         });
-
     }
 
     @Subscribe
@@ -93,7 +92,5 @@ public class MenuListViewProjection extends Projection<MenuListId, MenuListView,
                             getBuilder().setMenu(index, newMenuItem);
                         }
                     });
-
     }
-
 }

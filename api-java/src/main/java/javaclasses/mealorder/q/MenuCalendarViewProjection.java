@@ -70,5 +70,4 @@ public class MenuCalendarViewProjection extends Projection<MenuCalendarId, MenuC
                                                          .build());
         });
     }
-
 }

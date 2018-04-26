@@ -52,7 +52,6 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
 
     @Subscribe
     void on(DishAddedToOrder event) {
-
         final OrderId orderId = event.getOrderId();
         final DishItem dish = DishItem.newBuilder()
                                       .setName(event.getDish()
@@ -134,5 +133,4 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
              });
         return index[0];
     }
-
 }
