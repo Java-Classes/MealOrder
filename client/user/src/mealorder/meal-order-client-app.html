@@ -87,19 +87,15 @@
                 data="{{routeData}}"></app-route>
 
         <app-drawer-layout fullbleed>
-            <app-drawer slot="drawer" align="right" class$="[[_getDrawerClass(routeData.page)]]">
-                <iron-pages id="app-drawer-iron"
-                            selected="[[routeData.page]]"
-                            attr-for-selected="data-page"
-                            fallback-selection="view404"
-                            role="main">
-                </iron-pages>
+            <app-drawer id="drawer" slot="drawer" align="right"
+                        class$="[[_getDrawerClass(routeData.page)]]">
                 <meal-order-drawer></meal-order-drawer>
             </app-drawer>
 
             <app-header-layout>
                 <app-header slot="header" reveals effects="waterfall">
-                    <meal-order-toolbar page="[[routeData.page]]"></meal-order-toolbar>
+                    <meal-order-toolbar on-drawer-toggle="_drawerToggle"
+                                        page="[[routeData.page]]"></meal-order-toolbar>
                 </app-header>
                 <iron-pages id="app-header-layout-iron"
                             selected="[[routeData.page]]"
@@ -197,15 +193,19 @@
             _pageChanged() {
                 const DATE_LENGTH = 10;
                 if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
-                    this.set('route.path', '/menu/' + this.serverTime.toISOString().slice(0,DATE_LENGTH));
+                    this.set('route.path', '/menu/' + this.serverTime.toISOString().slice(0, DATE_LENGTH));
                 }
                 if (this.routeData.page.startsWith("history")) {
                     if (!this.routeData.date) {
                         let yesterday = new Date(this.serverTime);
-                        yesterday.setDate(yesterday.getDate()-1);
+                        yesterday.setDate(yesterday.getDate() - 1);
                         this.set('routeData.date', yesterday.toISOString().slice(0, DATE_LENGTH));
                     }
                 }
+            }
+
+            _drawerToggle() {
+                this.$.drawer.toggle();
             }
         }
 

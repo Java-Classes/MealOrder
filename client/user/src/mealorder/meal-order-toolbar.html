@@ -92,8 +92,9 @@
                             <iron-icon class="link-icon"
                                        icon="maps:icons:history"></iron-icon>
                         </a>
-                        <iron-icon class="link-icon"
-                                   icon="icons:shopping-cart" drawer-toggle></iron-icon>
+                        <iron-icon on-click="_drawerToggle"
+                                   class="link-icon"
+                                   icon="icons:shopping-cart"></iron-icon>
                     </div>
                     <div data-page="history" class="app-header-iron-container">
                         <a class="title-link" href="/#/menu/">
@@ -101,15 +102,24 @@
                             <iron-icon class="link-icon"
                                        icon="maps:icons:add"></iron-icon>
                         </a>
-                        <iron-icon class="link-icon"
-                                   icon="icons:date-range"
-                                   drawer-toggle></iron-icon>
+                        <iron-icon on-click="_drawerToggle"
+                                   class="link-icon"
+                                   icon="icons:date-range"></iron-icon>
                     </div>
                 </iron-pages>
             </div>
         </app-toolbar>
     </template>
     <script>
+        /**
+         * meal-order-toolbar is container for the `app-toolbar`
+         *
+         * Contains the main title and the link title and also icon for drawer toggle
+         * on depending on menu and history routing.
+         *
+         * @customElement
+         * @polymer
+         */
         class MealOrderToolbar extends (Polymer.Element) {
             static get is() {
                 return 'meal-order-toolbar';
@@ -117,10 +127,17 @@
 
             static get properties() {
                 return {
+                    /**
+                     * Current page.
+                     */
                     page: {
                         type: Object,
                     }
                 }
+            }
+
+            _drawerToggle() {
+                this.dispatchEvent(new CustomEvent('drawer-toggle',));
             }
         }
 
