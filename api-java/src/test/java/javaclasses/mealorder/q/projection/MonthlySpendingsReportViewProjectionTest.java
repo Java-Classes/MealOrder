@@ -32,7 +32,9 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderDeliveredInstance;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderDeliveredInstance2;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderSentInstance;
+import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderSentInstance2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MonthlySpendingsReportViewProjectionTest extends ProjectionTest {
@@ -61,6 +63,38 @@ public class MonthlySpendingsReportViewProjectionTest extends ProjectionTest {
             final PurchaseOrderSent purchaseOrderSent = purchaseOrderSentInstance();
             dispatch(projection, createEvent(purchaseOrderSent));
             assertEquals(1  , projection.getState().getOrderCount());
+            assertEquals(1, projection.getState()
+                                      .getOrderList()
+                                      .get(0)
+                                      .getDishList()
+                                      .size());
+            assertEquals(0, projection.getState()
+                                      .getUserSpendingList()
+                                      .size());
+        }
+
+        @Test
+        @DisplayName("Should add compicated orders for a projection")
+        void addView2() {
+            final PurchaseOrderSent purchaseOrderSent = purchaseOrderSentInstance();
+            dispatch(projection, createEvent(purchaseOrderSent));
+            final PurchaseOrderSent purchaseOrderSent2 = purchaseOrderSentInstance2();
+            dispatch(projection, createEvent(purchaseOrderSent2));
+            assertEquals(5, projection.getState()
+                                      .getOrderCount());
+            assertEquals(1, projection.getState()
+                                      .getOrderList()
+                                      .get(0)
+                                      .getDishList()
+                                      .size());
+            assertEquals(0, projection.getState()
+                                      .getUserSpendingList()
+                                      .size());
+            assertEquals(2, projection.getState()
+                                      .getOrderList()
+                                      .get(3)
+                                      .getDishList()
+                                      .size());
         }
     }
 
@@ -72,9 +106,41 @@ public class MonthlySpendingsReportViewProjectionTest extends ProjectionTest {
         void addView() {
             final PurchaseOrderSent purchaseOrderSent = purchaseOrderSentInstance();
             dispatch(projection, createEvent(purchaseOrderSent));
+            final PurchaseOrderSent purchaseOrderSent2 = purchaseOrderSentInstance2();
+            dispatch(projection, createEvent(purchaseOrderSent2));
             final PurchaseOrderDelivered purchaseOrderDelivered = purchaseOrderDeliveredInstance();
+            final PurchaseOrderDelivered purchaseOrderDelivered2 = purchaseOrderDeliveredInstance2();
+
             dispatch(projection, createEvent(purchaseOrderDelivered));
-            assertEquals(1, projection.getState().getUserSpendingCount());
+            assertEquals("user@example.com", projection.getState()
+                                                       .getUserSpendingList()
+                                                       .get(0)
+                                                       .getId()
+                                                       .getEmail()
+                                                       .getValue());
+            assertEquals(56, projection.getState()
+                                       .getUserSpendingList()
+                                       .get(0)
+                                       .getAmount()
+                                       .getAmount());
+            assertEquals(1, projection.getState()
+                                      .getUserSpendingList()
+                                      .size());
+
+            dispatch(projection, createEvent(purchaseOrderDelivered2));
+            assertEquals(336, projection.getState()
+                                        .getUserSpendingList()
+                                        .get(0)
+                                        .getAmount()
+                                        .getAmount());
+            assertEquals(2, projection.getState()
+                                      .getUserSpendingList()
+                                      .size());
+            assertEquals(448, projection.getState()
+                                        .getUserSpendingList()
+                                        .get(1)
+                                        .getAmount()
+                                        .getAmount());
         }
     }
 

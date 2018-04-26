@@ -92,7 +92,12 @@ public class TestValues {
                                                                               "petr@example.com")
                                                                       .build())
                                                 .build();
-
+    public static final UserId USER_ID3 = UserId.newBuilder()
+                                                .setEmail(EmailAddress.newBuilder()
+                                                                      .setValue(
+                                                                              "sasha@mail.com")
+                                                                      .build())
+                                                .build();
     public static final LocalTime PO_DAILY_DEADLINE = LocalTime.newBuilder()
                                                                .setHours(10)
                                                                .setMinutes(0)
@@ -361,7 +366,7 @@ public class TestValues {
             .build();
     public static final PurchaseOrderId PURCHASE_ORDER_ID2 = PurchaseOrderId
             .newBuilder()
-            .setVendorId(VENDOR_ID)
+            .setVendorId(VENDOR_ID2)
             .setPoDate(DATE2)
             .build();
     public static final Order ORDER = Order.newBuilder()

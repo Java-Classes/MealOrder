@@ -153,6 +153,9 @@ message UserOrderDetails {
 
     // An order validation status.
     bool is_valid = 3;
+
+    // The identifier of a purchase order.
+    PurchaseOrderId purchase_order_id = 4;
 }
 
 // The item of a monthly spendings report view.

@@ -24,6 +24,7 @@ import javaclasses.mealorder.MenuListId;
 import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
+import javaclasses.mealorder.q.MenuItem;
 import javaclasses.mealorder.q.MenuListViewProjection;
 import javaclasses.mealorder.testdata.TestValues;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,11 +32,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderCreatedInstance2;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.VendorEvents.dateRangeForMenuSetInstance;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.VendorEvents.menuImportedInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MenuListViewProjectionTest extends ProjectionTest {
     private MenuListViewProjection projection;
@@ -55,6 +60,27 @@ public class MenuListViewProjectionTest extends ProjectionTest {
         void addView() {
             final MenuImported menuImported = menuImportedInstance();
             dispatch(projection, createEvent(menuImported));
+            final List<MenuItem> menuList = projection.getState()
+                                                      .getMenuList();
+            assertEquals(3, menuList.get(0)
+                                    .getDishesByCategoryList()
+                                    .size());
+            assertEquals("Второе блюдо", menuList.get(0)
+                                                 .getDishesByCategoryList()
+                                                 .get(0)
+                                                 .getCategory()
+                                                 .getValue());
+            assertEquals(3, menuList.get(0)
+                                    .getDishesByCategoryList()
+                                    .get(0)
+                                    .getDishesList()
+                                    .size());
+            assertEquals("Картофель", menuList.get(0)
+                                              .getDishesByCategoryList()
+                                              .get(0)
+                                              .getDishesList()
+                                              .get(0)
+                                              .getName());
         }
     }
 
@@ -68,6 +94,26 @@ public class MenuListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(menuImported));
             final DateRangeForMenuSet dateRangeForMenuSet = dateRangeForMenuSetInstance();
             dispatch(projection, createEvent(dateRangeForMenuSet));
+            final List<MenuItem> menuList = projection.getState()
+                                                      .getMenuList();
+            assertEquals(25, menuList.get(0)
+                                     .getMenuDaysList()
+                                     .size());
+            assertEquals(18, menuList.get(0)
+                                     .getMenuDaysList()
+                                     .get(5)
+                                     .getDate()
+                                     .getDay());
+            assertEquals(2, menuList.get(0)
+                                    .getMenuDaysList()
+                                    .get(5)
+                                    .getDate()
+                                    .getMonthValue());
+            assertEquals(2017, menuList.get(0)
+                                       .getMenuDaysList()
+                                       .get(5)
+                                       .getDate()
+                                       .getYear());
         }
     }
 
@@ -84,12 +130,18 @@ public class MenuListViewProjectionTest extends ProjectionTest {
             final PurchaseOrderCreated purchaseOrderCreated = purchaseOrderCreatedInstance2();
             dispatch(projection, createEvent(purchaseOrderCreated));
 
-            assertEquals(false, projection.getState()
-                                          .getMenuList()
-                                          .get(0)
-                                          .getMenuDaysList()
-                                          .get(18)
-                                          .getIsAvailable());
+            assertFalse(projection.getState()
+                                  .getMenuList()
+                                  .get(0)
+                                  .getMenuDaysList()
+                                  .get(18)
+                                  .getIsAvailable());
+            assertTrue(projection.getState()
+                                 .getMenuList()
+                                 .get(0)
+                                 .getMenuDaysList()
+                                 .get(17)
+                                 .getIsAvailable());
         }
     }
 }

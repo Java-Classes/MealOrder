@@ -63,7 +63,13 @@ public class TestMealOrderEventFactory {
                                                                      .setStatus(
                                                                              PurchaseOrderStatus.CREATED)
                                                                      .build();
-
+    private static final PurchaseOrder PURCHASE_ORDER2 = PurchaseOrder.newBuilder()
+                                                                      .addAllOrder(
+                                                                              TestValues.BIG_ORDER)
+                                                                      .setId(TestValues.PURCHASE_ORDER_ID2)
+                                                                      .setStatus(
+                                                                              PurchaseOrderStatus.CREATED)
+                                                                      .build();
     private TestMealOrderEventFactory() {
     }
 
@@ -93,6 +99,10 @@ public class TestMealOrderEventFactory {
                                              TestValues.EMAIL);
         }
 
+        public static PurchaseOrderSent purchaseOrderSentInstance2() {
+            return purchaseOrderSentInstance(PURCHASE_ORDER2, TestValues.USER_ID3.getEmail(),
+                                             TestValues.EMAIL);
+        }
         public static PurchaseOrderSent purchaseOrderSentInstance(PurchaseOrder po,
                                                                   EmailAddress senderEmail,
                                                                   EmailAddress vendorEmail) {
@@ -111,6 +121,10 @@ public class TestMealOrderEventFactory {
             return purchaseOrderDeliveredInstance(TestValues.PURCHASE_ORDER_ID, TestValues.USER_ID);
         }
 
+        public static PurchaseOrderDelivered purchaseOrderDeliveredInstance2() {
+            return purchaseOrderDeliveredInstance(TestValues.PURCHASE_ORDER_ID2,
+                                                  TestValues.USER_ID);
+        }
         private static PurchaseOrderDelivered purchaseOrderDeliveredInstance(
                 PurchaseOrderId purchaseOrderId,
                 UserId userId) {
