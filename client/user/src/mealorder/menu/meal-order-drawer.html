@@ -23,6 +23,7 @@
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/app-datepicker/app-datepicker.html">
 <link rel="import" href="meal-order-user-cart.html">
+
 <dom-module id="meal-order-drawer">
     <template>
         <style>
@@ -94,7 +95,7 @@
                         </div>
                     </div>
                 </app-toolbar>
-                <meal-order-user-cart data-page="menu"></meal-order-user-cart>
+                <meal-order-user-cart data-page="menu" date="[[routeData.date]]"></meal-order-user-cart>
             </div>
             <div data-page="history">
                 <app-toolbar>

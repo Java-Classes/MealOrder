@@ -127,22 +127,70 @@
                         }
                     ]
                 }],
+            orders: [{
+                date: new Date('2018-03-21'),
+                order: [{
+                    vendor: "Пюре",
+                    dishes: [
+                        {title: 'Борщ украинский', price: 35, quantity: 1},
+                        {title: 'Солянка', price: 40, quantity: 1},
+                        {title: 'Суп гороховый', price: 40, quantity: 1},
+                        {title: 'Уха', price: 35, quantity: 1},
+                        {title: 'Суп-пюре грибной', price: 40, quantity: 1},
+                        {title: 'Суп куриный', price: 40, quantity: 1},]
+                }, {
+                    vendor: 'Позитив',
+                    dishes: [{title: 'Суп куриный', price: 35, quantity: 1}, {
+                        title: 'Стейк из лосося',
+                        price: 35,
+                        quantity: 1
+                    }]
+                }]
+            }, {
+                date: new Date('2018-03-22'),
+                order: [{
+                    vendor: "Пюре",
+                    dishes: [
+                        {title: 'Щи русские', price: 48, quantity: 1},
+                        {title: 'Солянка', price: 40, quantity: 1},
+                        {title: 'Суп гороховый', price: 40, quantity: 1},
+                        {title: 'Уха', price: 35, quantity: 1},
+                        {title: 'Суп-пюре грибной', price: 40, quantity: 1},
+                        {title: 'Суп куриный', price: 40, quantity: 1},]
+                }, {
+                    vendor: 'Позитив',
+                    dishes: [{title: 'Лапша по армянски', price: 35, quantity: 1}, {
+                        title: 'Стейк из лосося',
+                        price: 35,
+                        quantity: 1
+                    }]
+                }]
+            },],
+
+            currentOrder: [],
         };
 
         MealOrderApp.reducer = (state, action) => {
-
             if (!state) {
                 return MealOrderApp.initialState;
             }
             switch (action.type) {
+
                 case MealOrderApp.UserAction.ADD_DISH_TO_ORDER: {
                     return state;
                 }
-                case MealOrderApp.UserAction.REMOVE_DISH: {
+                case MealOrderApp.UserAction.REMOVE_DISH_FROM_ORDER: {
                     return state;
                 }
                 case MealOrderApp.UserAction.REMOVE_DISHES_BY_VENDOR: {
                     return state;
+                }
+                case MealOrderApp.UserAction.GET_ORDERED_ITEMS: {
+                    const newOrder = state.orders.find(order => order.date.getTime() === action.date.getTime());
+                    return Object.assign({}, state, {
+                            currentOrder: newOrder
+                        }
+                    );
                 }
                 default : {
                     return state;
