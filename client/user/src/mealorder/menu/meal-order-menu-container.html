@@ -75,18 +75,18 @@
             }
         </style>
 
-        <paper-tabs on-iron-select='_dateChanged' id="paper-tabs" selected="[[date]]"
+        <paper-tabs id="paper-tabs" selected="[[date]]"
                     attr-for-selected='data-key'>
-            <template is="dom-repeat" items="{{currentWeekMenus}}" as="calendar">
+            <template is="dom-repeat" items="{{currentWeek}}" as="calendar">
                 <paper-tab class="paper-tab"
-                           data-key$="[[_getDate(calendar.date)]]"
+                           data-key$="[[_getDate(calendar)]]"
                            link disabled="[[!calendar.hasMenu]]">
-                    <a href="#/menu/[[_getDate(calendar.date)]]"
+                    <a href="#/menu/[[_getDate(calendar)]]"
                        class="paper-tab-container">
                         <div>
-                            <div class="day-of-the-week">[[_getDayOfTheWeek(calendar.date)]]
+                            <div class="day-of-the-week">[[_getDayOfTheWeek(calendar)]]
                             </div>
-                            <div class="day">[[_getDay(calendar.date)]]</div>
+                            <div class="day">[[_getDay(calendar)]]</div>
                         </div>
                     </a>
                 </paper-tab>
@@ -112,21 +112,6 @@
             static get properties() {
                 return {
                     /**
-                     * Array of dates with menu which may not exist.
-                     *
-                     * @typedef {Object} Date contains day, month, year
-                     * @property {Number} day
-                     * @property {Number} month
-                     * @property {Number} year
-                     *
-                     * @typedef {String} dayOfTheWeek
-                     * @typedef {Boolean} hasMenu If menu for this date exists
-                     */
-                    currentWeekMenus: {
-                        type: Array,
-                    },
-
-                    /**
                      * Menu for a current day.
                      *
                      * @typedef {Object} Menu the menu for the current date
@@ -144,8 +129,13 @@
                      * @property {String} price
                      * @property {String} quantity
                      */
+                    menus: {
+                        type: Array,
+                    },
+
                     menuForDay: {
                         type: Object,
+                        computed: '_getMenuForDay(date)'
                     },
 
                     /**
@@ -153,7 +143,26 @@
                      */
                     date: {
                         type: Object,
-                    }
+                    },
+
+                    /**
+                     * Array of dates with menu which may not exist.
+                     *
+                     * @typedef {Object} Date
+                     * @typedef {Boolean} hasMenu If menu for this date exists
+                     */
+                    currentWeek: {
+                        type: Array,
+                        computed: '_getMenuDatesForWeek(menus)'
+                    },
+
+                    /**
+                     * The current server time for the calendar.
+                     */
+                    serverTime: {
+                        type: Object,
+                    },
+
                 };
             }
 
@@ -163,7 +172,7 @@
 
             _getDate(date) {
                 const DATE_LENGTH = 10;
-                return date.toISOString().slice(0,DATE_LENGTH);
+                return date.toISOString().slice(0, DATE_LENGTH);
             }
 
             _getDayOfTheWeek(date) {
@@ -172,9 +181,39 @@
                 return dayOfTheWeek;
             }
 
-            _dateChanged(e) {
-                this.dispatchEvent(new CustomEvent('current-date-changed',
-                    {detail: {date: new Date(e.target.selected)}}));
+            _getMenuForDay(date) {
+                const routeDate = new Date(date);
+                const menus = this.menus.filter(menu => menu.date);
+                return menus.filter(menu => menu.date.getTime() === routeDate.getTime());
+            }
+
+            _getMenuDatesForWeek(menus) {
+                const weekDates = [];
+                let menuDates = [];
+
+                for (let i = 0; i < 8; i++) {
+                    let tempDate = new Date();
+                    tempDate.setDate(this.serverTime.getDate() + i);
+                    tempDate.setMonth(this.serverTime.getMonth());
+                    weekDates.push(tempDate);
+                }
+
+                const dates = this.menus.filter(menu => menu.date);
+                for (let i = 0; i < dates.length; i++) {
+                    menuDates.push(dates[i].date);
+                }
+
+                menuDates = menuDates.map(s => s.toString())
+                    .filter((s, i, a) => a.indexOf(s) === i)
+                    .map(s => new Date(s));
+
+                for (let i = 0; i < menuDates.length; i++) {
+                    const diff = weekDates[i].getTime() - menuDates[i].getTime();
+                    if (diff >= 0 && diff < 86400000) {
+                        weekDates[i].hasMenu = true;
+                    }
+                }
+                return weekDates;
             }
         }
 

@@ -146,7 +146,7 @@
                             fallback-selection="view404"
                             role="main">
                 </iron-pages>
-                <meal-order-drawer order="[[order]]"></meal-order-drawer>
+                <meal-order-drawer></meal-order-drawer>
             </app-drawer>
 
             <app-header-layout>
@@ -189,11 +189,10 @@
                             fallback-selection="view404"
                             role="main">
                     <meal-order-menu-container
-                            on-current-date-changed="_changeCurrentDate"
                             data-page="menu"
+                            server-time="[[serverTime]]"
                             date="[[routeData.date]]"
-                            current-week-menus="[[currentWeekMenus]]"
-                            menu-for-day="[[menuForDay]]"></meal-order-menu-container>
+                            menus="[[menus]]"></meal-order-menu-container>
                     <div data-page="history">
                         <!--user history component-->
                     </div>
@@ -222,6 +221,7 @@
 
             static get properties() {
                 return {
+
                     /**
                      * Menu for a current day.
                      *
@@ -240,47 +240,9 @@
                      * @property {String} price
                      * @property {String} quantity
                      */
-                    menuForDay: {
+                    menus: {
                         type: Array,
-                        statePath: 'menuForDay'
-                    },
-
-                    /**
-                     * Current user's meal order.
-                     *
-                     * @typedef {Object} Order the current order
-                     *
-                     * @typedef {Object} Date contains day, month, year
-                     * @property {Number} day
-                     * @property {Number} month
-                     * @property {Number} year
-                     *
-                     * @typedef {Array} Cart array that contains the vendor and dishes
-                     * @property {String} Vendor a vendor name
-                     * @typedef {Array} Dishes array contains the dish title, price, quantity
-                     * @property {String} title
-                     * @property {String} price
-                     * @property {String} quantity
-                     */
-                    orderForDay: {
-                        type: Object,
-                        statePath: 'orderForDay'
-                    },
-
-                    /**
-                     * Array of dates with menu which may not exist.
-                     *
-                     * @typedef {Object} Date contains day, month, year
-                     * @property {Number} day
-                     * @property {Number} month
-                     * @property {Number} year
-                     *
-                     * @typedef {String} dayOfTheWeek
-                     * @typedef {Boolean} hasMenu If menu for this date exists
-                     */
-                    currentWeekMenus: {
-                        type: Array,
-                        statePath: 'currentWeekMenus'
+                        statePath: 'menus'
                     },
 
                     /**
@@ -292,36 +254,11 @@
                         type: Object,
                     },
 
-                    /**
-                     * Current date.
-                     */
-                    currentDate: {
+                    serverTime: {
                         type: Object,
-                        statePath: 'currentDate'
+                        statePath: 'serverTime'
                     }
 
-                }
-            }
-
-            static get actions() {
-                /**
-                 * Fired when a paper tab is selected.
-                 *
-                 * @action `changeCurrentMenu`
-                 * @param {date} selected date by tab
-                 */
-
-                /**
-                 * Fired when a paper tab is selected.
-                 *
-                 * @action `changeCurrentOrder`
-                 * @param {date} selected date by tab
-                 */
-                return {
-                    setCurrentDate: date => ({
-                        type: MealOrderApp.UserAction.SET_CURRENT_DATE,
-                        date
-                    }),
                 }
             }
 
@@ -340,19 +277,15 @@
             _pageChanged() {
                 const DATE_LENGTH = 10;
                 if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
-                    this.set('route.path', '/menu/' + this.currentWeekMenus[0].date.toISOString().slice(0,DATE_LENGTH));
+                    this.set('route.path', '/menu/' + this.serverTime.toISOString().slice(0,DATE_LENGTH));
                 }
                 if (this.routeData.page.startsWith("history")) {
                     if (!this.routeData.date) {
-                        let yesterday = new Date(this.currentWeekMenus[0].date);
+                        let yesterday = new Date(this.serverTime);
                         yesterday.setDate(yesterday.getDate()-1);
                         this.set('routeData.date', yesterday.toISOString().slice(0, DATE_LENGTH));
                     }
                 }
-            }
-
-            _changeCurrentDate(e) {
-                this.dispatch('setCurrentDate', e.detail.date)
             }
         }
 
