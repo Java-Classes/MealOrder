@@ -30,6 +30,7 @@
                 align-items: center;
                 width: 100%;
                 z-index: 1;
+                color: var(--paper-grey-700);
             }
 
             .app-toolbar-header .app-toolbar-content {
@@ -37,13 +38,14 @@
             }
 
             #day {
-                font-size: 0.7em;
-                font-weight: lighter;
-                text-align: center;
+                font-size: 22px;
             }
 
             #day-of-the-week {
-                font-size: 22px;
+                font-size: 0.7em;
+                font-weight: lighter;
+                text-align: center;
+                text-transform: capitalize;
             }
 
             #date-picker {
@@ -66,7 +68,6 @@
                     display: none;
                 };
             }
-
         </style>
 
         <iron-pages
@@ -79,12 +80,11 @@
                     <div class="app-toolbar-header">
                         <div class="app-toolbar-content">Заказ</div>
                         <div>
-                            <div id="day">[[selectedDay.dayOfTheWeek]]</div>
-                            <div id="day-of-the-week">[[selectedDay.day]]</div>
+                            <div id="day-of-the-week">[[selectedDayOfTheWeek]]</div>
+                            <div id="day">[[selectedDay]]</div>
                         </div>
                     </div>
                 </app-toolbar>
-
                 <!--cart component-->
             </div>
             <div data-page="history">
@@ -93,11 +93,14 @@
                         <div class="app-toolbar-content">История заказов</div>
                     </div>
                 </app-toolbar>
-
-                <app-datepicker id="date-picker" view="vertical"
-                                input-date="[[inputDate]]" date="{{outputDate}}"
-                                auto-update-date="true"
-                                locale="ru-RU"></app-datepicker>
+                <app-datepicker
+                        id="date-picker"
+                        format="yyyy-mm-dd"
+                        view="vertical"
+                        input-date="[[routeData.date]]"
+                        date="{{outputDate}}"
+                        auto-update-date="true"
+                        locale="ru-RU"></app-datepicker>
             </div>
         </iron-pages>
     </template>
@@ -127,18 +130,18 @@
                     },
 
                     /**
-                     * Date that the user can select on the calendar.
+                     * Selected day of the week.
                      */
-                    inputDate: {
-                        type: String,
-                        computed: '_getCalendarDay(routeData.date)',
+                    selectedDayOfTheWeek: {
+                        type: Object,
+                        computed: '_getSelectedDayOfTheWeek(routeData.date)'
                     },
 
                     /**
                      * Chosen day.
                      */
                     outputDate: {
-                        type: Date,
+                        type: String,
                     },
 
                     /**
@@ -158,25 +161,18 @@
             }
 
             _getSelectedDay() {
-                const dayOfTheWeek = new Date(this.routeData.date).toLocaleDateString("ru-RU", {weekday: 'long'});
-                const selectedDay = {};
-                selectedDay.day = new Date(this.routeData.date).getDate();
-                selectedDay.dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
-                return selectedDay;
+                return new Date(this.routeData.date).getDate();
             }
 
-            _getCalendarDay() {
-                const routeDate = new Date(this.routeData.date);
-                return (routeDate.getFullYear() +
-                    "/" + (routeDate.getMonth() + 1) + "/" + routeDate.getDate());
+            _getSelectedDayOfTheWeek() {
+                return new Date(this.routeData.date).toLocaleDateString("ru-RU", {weekday: 'long'});
             }
 
             _calendarDateChanged() {
                 if (this.routeData && this.routeData.page.startsWith("history")) {
-                    const date = this.outputDate.replace(/\//g, '-');
                     const newRouteData = {};
                     newRouteData.page = 'history';
-                    newRouteData.date = date;
+                    newRouteData.date = this.outputDate;
                     this.set('routeData', newRouteData);
                 }
             }

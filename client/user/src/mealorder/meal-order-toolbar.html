@@ -63,7 +63,6 @@
             }
 
             @media only screen and (max-width: 600px) {
-
                 .app-header-iron-container {
                     width: 100px;
                 }
@@ -75,7 +74,6 @@
                 .link-icon {
                     display: block;
                 }
-
             }
         </style>
         <app-toolbar>
@@ -92,7 +90,7 @@
                             <iron-icon class="link-icon"
                                        icon="maps:icons:history"></iron-icon>
                         </a>
-                        <iron-icon on-click="_drawerToggle"
+                        <iron-icon on-click="_toggleDrawer"
                                    class="link-icon"
                                    icon="icons:shopping-cart"></iron-icon>
                     </div>
@@ -102,7 +100,7 @@
                             <iron-icon class="link-icon"
                                        icon="maps:icons:add"></iron-icon>
                         </a>
-                        <iron-icon on-click="_drawerToggle"
+                        <iron-icon on-click="_toggleDrawer"
                                    class="link-icon"
                                    icon="icons:date-range"></iron-icon>
                     </div>
@@ -136,8 +134,8 @@
                 }
             }
 
-            _drawerToggle() {
-                this.dispatchEvent(new CustomEvent('drawer-toggle',));
+            _toggleDrawer() {
+                this.dispatchEvent(new CustomEvent('toggle-drawer',));
             }
         }
 

@@ -26,6 +26,7 @@
 <link rel="import" href="../../../bower_components/paper-styles/color.html">
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../shell/actions/user-actions.html">
+
 <dom-module id="meal-order-menu-container">
     <template>
         <style>
@@ -54,7 +55,7 @@
                 @apply --layout-horizontal;
                 @apply --layout-center-center;
                 text-decoration: none;
-                color: #323232;
+                color: var(--paper-grey-900);
                 font-size: 1.5em;
             }
 
@@ -75,9 +76,9 @@
             }
         </style>
 
-        <paper-tabs id="paper-tabs" selected="[[date]]"
+        <paper-tabs id="paper-tabs" selected="[[selectedDate]]"
                     attr-for-selected='data-key'>
-            <template is="dom-repeat" items="{{currentWeek}}" as="calendar">
+            <template is="dom-repeat" items="{{displayedDays}}" as="calendar">
                 <paper-tab class="paper-tab"
                            data-key$="[[_getDate(calendar)]]"
                            link disabled="[[!calendar.hasMenu]]">
@@ -121,7 +122,7 @@
                     /**
                      * Selected day.
                      */
-                    date: {
+                    selectedDate: {
                         type: Object,
                     },
 
@@ -131,9 +132,9 @@
                      * @typedef {Object} Date
                      * @typedef {Boolean} hasMenu If menu for this date exists
                      */
-                    currentWeek: {
+                    displayedDays: {
                         type: Array,
-                        computed: '_getMenuDatesForWeek(menus)'
+                        computed: '_getDisplayedDays(menus)'
                     },
 
                     /**
@@ -170,27 +171,25 @@
             }
 
             _getDayOfTheWeek(date) {
-                let dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'short'});
-                dayOfTheWeek = dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
-                return dayOfTheWeek;
+                const dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'short'});
+                return dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
             }
 
-            _getMenuForDay(date) {
+            _getDisplayedMenu(date) {
                 const routeDate = new Date(date);
                 const menus = this.menus.filter(menu => menu.date);
                 return menus.filter(menu => menu.date.getTime() === routeDate.getTime());
             }
 
-            _getMenuDatesForWeek(menus) {
+            _getDisplayedDays(menus) {
                 const weekDates = [];
-                let menuDates = [];
+                const menuDates = [];
                 const DAYS_IN_PERIOD = 8;
 
                 for (let i = 0; i < DAYS_IN_PERIOD; i++) {
-                    let tempDate = new Date();
-                    tempDate.setDate(this.serverTime.getDate() + i);
-                    tempDate.setMonth(this.serverTime.getMonth());
-                    weekDates.push(tempDate);
+                    const newDate = new Date(this.serverTime);
+                    newDate.setDate(newDate.getDate() + i);
+                    weekDates.push(newDate);
                 }
 
                 const dates = menus.filter(menu => menu.date);
@@ -198,14 +197,12 @@
                     menuDates.push(dates[i].date);
                 }
 
-                menuDates = menuDates.map(s => s.toString())
+                const uniqueDates = menuDates.map(s => s.toString())
                     .filter((s, i, a) => a.indexOf(s) === i)
                     .map(s => new Date(s));
 
-                const HOURS_PER_DAY = 86400000;
-                for (let i = 0; i < menuDates.length; i++) {
-                    const diff = weekDates[i].getTime() - menuDates[i].getTime();
-                    if (diff >= 0 && diff < HOURS_PER_DAY) {
+                for (let i = 0; i < uniqueDates.length; i++) {
+                    if (weekDates[i].getTime() === uniqueDates[i].getTime()) {
                         weekDates[i].hasMenu = true;
                     }
                 }

@@ -56,15 +56,7 @@
 
             app-drawer-layout {
                 background-color: var(--paper-grey-100);
-                color: var(--google-grey-700);
-            }
 
-            app-drawer-layout:not([narrow]) [drawer-toggle] {
-                display: none;
-            }
-
-            app-header .app-toolbar-content {
-                font-size: 0.75em;
             }
 
             app-drawer {
@@ -76,7 +68,6 @@
             app-drawer.wide {
                 --app-drawer-width: 300px;
             }
-
         </style>
         <app-location route="{{route}}"
                       use-hash-as-path></app-location>
@@ -94,8 +85,9 @@
 
             <app-header-layout>
                 <app-header slot="header" reveals effects="waterfall">
-                    <meal-order-toolbar on-drawer-toggle="_drawerToggle"
-                                        page="[[routeData.page]]"></meal-order-toolbar>
+                    <meal-order-toolbar on-toggle-drawer="_toggleDrawer"
+                                        page="[[routeData.page]]">
+                    </meal-order-toolbar>
                 </app-header>
                 <iron-pages id="app-header-layout-iron"
                             selected="[[routeData.page]]"
@@ -105,15 +97,13 @@
                     <meal-order-menu-container
                             data-page="menu"
                             server-time="[[serverTime]]"
-                            date="[[routeData.date]]"
+                            selected-date="[[routeData.date]]"
                             menus="[[menus]]"></meal-order-menu-container>
                     <div data-page="history">
                         <!--user history component-->
                     </div>
                 </iron-pages>
-
             </app-header-layout>
-
         </app-drawer-layout>
     </template>
     <script>
@@ -190,6 +180,10 @@
                 }
             }
 
+            _toggleDrawer() {
+                this.$.drawer.toggle();
+            }
+
             _pageChanged() {
                 const DATE_LENGTH = 10;
                 if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
@@ -197,15 +191,11 @@
                 }
                 if (this.routeData.page.startsWith("history")) {
                     if (!this.routeData.date) {
-                        let yesterday = new Date(this.serverTime);
-                        yesterday.setDate(yesterday.getDate() - 1);
-                        this.set('routeData.date', yesterday.toISOString().slice(0, DATE_LENGTH));
+                        const newDate = new Date(this.serverTime);
+                        newDate.setDate(newDate.getDate() - 1);
+                        this.set('routeData.date', newDate.toISOString().slice(0, DATE_LENGTH));
                     }
                 }
-            }
-
-            _drawerToggle() {
-                this.$.drawer.toggle();
             }
         }
 
