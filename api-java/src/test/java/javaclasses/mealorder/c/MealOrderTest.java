@@ -125,6 +125,7 @@ class MealOrderTest {
     void checkFullMenu() {
         final Repository fullMenuRepository = boundedContext.findRepository(FullMenuView.class)
                                                             .get();
+
         final FullMenuViewProjection fullMenu1 = (FullMenuViewProjection) fullMenuRepository.find(
                 MENU_ID)
                                                                                             .get();

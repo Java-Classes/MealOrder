@@ -152,8 +152,8 @@ public class TestValues {
                                                         .build();
     public static final LocalDate START_DATE2 = LocalDate.newBuilder()
                                                          .setYear(2020)
-                                                         .setMonthValue(3)
-                                                         .setDay(13)
+                                                         .setMonthValue(2)
+                                                         .setDay(22)
                                                          .build();
     public static final LocalDate END_DATE = LocalDate.newBuilder()
                                                       .setYear(2019)
@@ -163,7 +163,7 @@ public class TestValues {
     public static final LocalDate END_DATE2 = LocalDate.newBuilder()
                                                        .setYear(2020)
                                                        .setMonthValue(3)
-                                                       .setDay(22)
+                                                       .setDay(18)
                                                        .build();
     public static final LocalDate START_DATE_FROM_PAST = LocalDate.newBuilder()
                                                                   .setYear(2017)
@@ -322,7 +322,7 @@ public class TestValues {
 
     public static final LocalDate DATE2 = LocalDate.newBuilder()
                                                    .setYear(
-                                                           2017)
+                                                           2020)
                                                    .setMonth(
                                                            MARCH)
                                                    .setDay(3)

@@ -60,10 +60,10 @@ public class MenuListViewProjectionTest extends ProjectionTest {
                                  .getDishesByCategoryList(), menuList.get(0)
                                                                      .getDishesByCategoryList());
             assertEquals(25, menuList.size());
-            assertEquals(18, menuList.get(5)
+            assertEquals(27, menuList.get(5)
                                      .getMenuDate()
                                      .getDay());
-            assertEquals(2017, menuList.get(5)
+            assertEquals(2020, menuList.get(5)
                                        .getMenuDate()
                                        .getYear());
             assertEquals(2, menuList.get(5)
@@ -82,7 +82,7 @@ public class MenuListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(purchaseOrderCreated));
             assertFalse(projection.getState()
                                   .getMenuList()
-                                  .get(18)
+                                  .get(10)
                                   .getIsAvilable());
             assertTrue(projection.getState()
                                  .getMenuList()
