@@ -24,8 +24,8 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
-
 <link rel="import" href="meal-order-vendor-menu.html">
+
 <dom-module id="meal-order-vendor-menus">
     <template>
         <style>
@@ -34,6 +34,7 @@
                     width: 70%;
                     margin: 2% auto 0 auto;
                     border-bottom: 1px solid var(--paper-grey-300);
+                    color: var(--paper-grey-700);
                 };
             }
 
@@ -84,17 +85,17 @@
             }
         </style>
 
-        <paper-search-bar query="{{filter}}" hide-filter-button="true"
+        <paper-search-bar id="paper-search" query="{{filter}}" hide-filter-button="true"
                           placeholder="Поиск"></paper-search-bar>
 
-        <iron-list scroll-target="document" id="list" items="[[filtered]]" as="item"
+        <iron-list scroll-target="document" id="list" items="[[filtered]]" as="menu"
                    selection-enabled
                    multi-selection>
             <template>
                 <div class="non-select">
                     <div class="item">
                         <div class="pad">
-                            <meal-order-vendor-menu menu="[[item]]"
+                            <meal-order-vendor-menu menu="[[menu]]"
                                                     on-vendor-menu-resize="_resize"></meal-order-vendor-menu>
                         </div>
                     </div>
@@ -163,6 +164,7 @@
                 const predicate = this.filter;
                 const filtered = [];
                 if (this.menuForDay) {
+                    console.log(this.menuForDay);
                     for (let i = 0; i < this.menuForDay.length; i++) {
                         const vendorCategories = this.menuForDay[i].categories;
                         let newVendorCategories = [];

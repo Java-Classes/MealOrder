@@ -20,8 +20,9 @@
 {
     window.MealOrderAppTest = window.MealOrderAppTest || {};
 
-    MealOrderAppTest.initialMenu = {
-        name: 'Пюре',
+    MealOrderAppTest.initialMenu = [{
+        vendor: 'Пюре',
+        date: new Date('2018-03-22'),
         categories: [{
             categoryName: 'Первое блюдо', dishes: [
                 {title: 'Суп гречневый', price: 35},
@@ -36,5 +37,5 @@
                     {title: 'Куриные крылышки', price: 45}]
             }
         ]
-    };
+    }];
 }

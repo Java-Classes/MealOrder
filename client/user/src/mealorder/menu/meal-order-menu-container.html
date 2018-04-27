@@ -95,7 +95,8 @@
                 </paper-tab>
             </template>
         </paper-tabs>
-            <meal-order-vendor-menus menu-for-day="[[_getMenuForDay(date)]]"></meal-order-vendor-menus>
+        <meal-order-vendor-menus
+                menu-for-day="[[_getDisplayedMenu(selectedDate)]]"></meal-order-vendor-menus>
     </template>
     <script>
         {
@@ -179,9 +180,11 @@
                 }
 
                 _getDisplayedMenu(date) {
-                    const routeDate = new Date(date);
-                    const menus = this.menus.filter(menu => menu.date);
-                    return menus.filter(menu => menu.date.getTime() === routeDate.getTime());
+                    if (this.menus) {
+                        const routeDate = new Date(date);
+                        const menus = this.menus.filter(menu => menu.date);
+                        return menus.filter(menu => menu.date.getTime() === routeDate.getTime());
+                    }
                 }
 
                 _getDisplayedDays(menus) {
