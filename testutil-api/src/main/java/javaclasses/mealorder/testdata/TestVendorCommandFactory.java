@@ -34,15 +34,20 @@ import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.ImportMenu;
 import javaclasses.mealorder.c.command.UpdateVendor;
 
-import static javaclasses.mealorder.testdata.TestValues.DISH1;
-import static javaclasses.mealorder.testdata.TestValues.DISH2;
+import java.util.List;
+
+import static javaclasses.mealorder.testdata.TestValues.BIG_MENU;
 import static javaclasses.mealorder.testdata.TestValues.EMAIL;
+import static javaclasses.mealorder.testdata.TestValues.MENU;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE2;
 import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID2;
 import static javaclasses.mealorder.testdata.TestValues.PHONE_NUMBER1;
 import static javaclasses.mealorder.testdata.TestValues.PHONE_NUMBER2;
 import static javaclasses.mealorder.testdata.TestValues.PO_DAILY_DEADLINE;
 import static javaclasses.mealorder.testdata.TestValues.USER_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID2;
 import static javaclasses.mealorder.testdata.TestValues.VENDOR_CHANGE;
 import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
 import static javaclasses.mealorder.testdata.TestValues.VENDOR_NAME;
@@ -130,10 +135,22 @@ public class TestVendorCommandFactory {
      */
     public static ImportMenu importMenuInstance() {
         final ImportMenu result = importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, MENU_DATE_RANGE,
-                                                     DISH1, DISH2);
+                                                     MENU);
         return result;
     }
 
+    public static ImportMenu importMenuInstance2() {
+        final ImportMenu result = importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, MENU_DATE_RANGE,
+                                                     BIG_MENU);
+        return result;
+    }
+
+    public static ImportMenu importMenuInstance3() {
+        final ImportMenu result = importMenuInstance(VENDOR_ID, USER_ID2, MENU_ID2,
+                                                     MENU_DATE_RANGE2,
+                                                     BIG_MENU);
+        return result;
+    }
     /**
      * Provides a pre-configured {@link ImportMenu} instance.
      *
@@ -145,14 +162,13 @@ public class TestVendorCommandFactory {
      */
     public static ImportMenu importMenuInstance(VendorId vendorId, UserId userId, MenuId menuId,
                                                 MenuDateRange menuDateRange,
-                                                Dish... dishes) {
+                                                List<Dish> dishes) {
 
         final ImportMenu result = ImportMenu.newBuilder()
                                             .setVendorId(vendorId)
                                             .setUserId(userId)
                                             .setMenuId(menuId)
-                                            .addDish(dishes[0])
-                                            .addDish(dishes[1])
+                                            .addAllDish(dishes)
                                             .setMenuDateRange(menuDateRange)
                                             .build();
         return result;

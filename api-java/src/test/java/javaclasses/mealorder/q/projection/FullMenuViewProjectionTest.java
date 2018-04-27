@@ -22,7 +22,6 @@ package javaclasses.mealorder.q.projection;
 
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.q.FullMenuViewProjection;
-import javaclasses.mealorder.testdata.TestValues;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -30,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.VendorEvents.menuImportedInstance;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FullMenuViewProjectionTest extends ProjectionTest {
@@ -37,7 +37,7 @@ public class FullMenuViewProjectionTest extends ProjectionTest {
 
     @BeforeEach
     void setUp() {
-        projection = new FullMenuViewProjection(TestValues.MENU_ID);
+        projection = new FullMenuViewProjection(MENU_ID);
     }
 
     @Nested

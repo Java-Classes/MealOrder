@@ -30,6 +30,7 @@ import javaclasses.mealorder.c.command.ImportMenu;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.rejection.CannotSetDateRange;
 import javaclasses.mealorder.c.rejection.Rejections;
+import javaclasses.mealorder.testdata.TestValues;
 import javaclasses.mealorder.testdata.TestVendorCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +42,7 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static javaclasses.mealorder.testdata.TestValues.DISH1;
 import static javaclasses.mealorder.testdata.TestValues.DISH2;
 import static javaclasses.mealorder.testdata.TestValues.INVALID_MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.MENU;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_FROM_PAST;
 import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
@@ -162,8 +164,8 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
         dispatchCommand(aggregate, envelopeOf(addVendor));
 
         final ImportMenu invalidImportMenu =
-                importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, INVALID_MENU_DATE_RANGE, DISH1,
-                                   DISH2);
+                importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, INVALID_MENU_DATE_RANGE,
+                                   TestValues.MENU);
 
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
@@ -189,8 +191,7 @@ public class ImportMenuTest extends VendorCommandTest<AddVendor> {
         final ImportMenu importMenu = importMenuInstance();
         dispatchCommand(aggregate, envelopeOf(importMenu));
         final ImportMenu importMenuFromPast =
-                importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, MENU_DATE_RANGE_FROM_PAST, DISH1,
-                                   DISH2);
+                importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, MENU_DATE_RANGE_FROM_PAST, MENU);
 
         final Throwable t =
                 assertThrows(Throwable.class, () -> dispatchCommand(aggregate,

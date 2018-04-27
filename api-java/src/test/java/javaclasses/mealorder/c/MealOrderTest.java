@@ -34,6 +34,8 @@ import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderSender;
 import javaclasses.mealorder.ServiceFactory;
 import javaclasses.mealorder.c.po.PurchaseOrderAggregate;
+import javaclasses.mealorder.q.FullMenuViewProjection;
+import javaclasses.mealorder.q.projection.FullMenuView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,10 +46,14 @@ import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOr
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsDeliveredInstance;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID2;
 import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.addVendorInstance;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.importMenuInstance;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.importMenuInstance2;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.importMenuInstance3;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -59,6 +65,7 @@ class MealOrderTest {
 
     private final BoundedContext boundedContext = BoundedContexts.create();
     private final CommandBus commandBus = boundedContext.getCommandBus();
+    final MemoizingObserver<Ack> observer = MemoizingObserver.newInstance();
 
     private Command createCommand(GeneratedMessageV3 message) {
         return getRequestFactory().command()
@@ -66,23 +73,20 @@ class MealOrderTest {
     }
 
     @BeforeEach
-    public void setUp() {
-        final PurchaseOrderSender purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
-        ServiceFactory.setPoSenderInstance(purchaseOrderSenderMock);
-    }
-
-    @Test
     @DisplayName("Add vendor -> Import menu -> Set date range for menu ->" +
             " Create order -> Add dish to order -> Create purchase order ->" +
             " Mark purchase order as delivered ")
-    void firstFlow() {
-        final MemoizingObserver<Ack> observer = MemoizingObserver.newInstance();
+    public void setUp() {
+        final PurchaseOrderSender purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
+        ServiceFactory.setPoSenderInstance(purchaseOrderSenderMock);
 
         final Command addVendor = createCommand(addVendorInstance());
         commandBus.post(addVendor, observer);
 
-        final Command importMenu = createCommand(importMenuInstance());
+        final Command importMenu = createCommand(importMenuInstance2());
         commandBus.post(importMenu, observer);
+        final Command importMenu3 = createCommand(importMenuInstance3());
+        commandBus.post(importMenu3, observer);
 
         final Command createOrderCommand = createCommand(createOrderInstance());
         commandBus.post(createOrderCommand, observer);
@@ -96,7 +100,11 @@ class MealOrderTest {
         final Command markAsDeliveredCommand = createCommand(
                 markPurchaseOrderAsDeliveredInstance());
         commandBus.post(markAsDeliveredCommand, observer);
+    }
 
+    @Test
+    @DisplayName("Should change aggregates")
+    void checkAggregate() {
         assertNull(observer.getError());
 
         final Optional<Repository> purchaseOrderRepository = boundedContext.findRepository(
@@ -112,6 +120,32 @@ class MealOrderTest {
                                              .getStatus());
     }
 
+    @Test
+    @DisplayName("Should change full menu projections")
+    void checkFullMenu() {
+        final Repository fullMenuRepository = boundedContext.findRepository(FullMenuView.class)
+                                                            .get();
+        final FullMenuViewProjection fullMenu1 = (FullMenuViewProjection) fullMenuRepository.find(
+                MENU_ID)
+                                                                                            .get();
+        final FullMenuViewProjection fullMenu2 = (FullMenuViewProjection) fullMenuRepository.find(
+                MENU_ID2)
+                                                                                            .get();
+        assertNotEquals(fullMenu1.getState()
+                                 .getMenuId(), fullMenu2.getState()
+                                                        .getMenuId());
+        assertEquals(fullMenu1.getState()
+                              .getDishesByCategoryList(), fullMenu2.getState()
+                                                                   .getDishesByCategoryList());
+    }
+
+    @Test
+    @DisplayName("Should change calendar repository")
+    void checkMenuCalendar() {
+        final Repository fullMenuRepository = boundedContext.findRepository(FullMenuView.class)
+                                                            .get();
+
+    }
     private ActorRequestFactory getRequestFactory() {
         return requestFactory;
     }
