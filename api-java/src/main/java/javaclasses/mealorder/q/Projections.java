@@ -39,7 +39,7 @@ public final class Projections {
     private Projections() {
     }
 
-    static List<java.time.LocalDate> getDatesBetween(
+    public static List<java.time.LocalDate> getDatesBetween(
             LocalDate startDate, LocalDate endDate) {
         java.time.LocalDate start = java.time.LocalDate.of(startDate.getYear(),
                                                            startDate.getMonthValue(),

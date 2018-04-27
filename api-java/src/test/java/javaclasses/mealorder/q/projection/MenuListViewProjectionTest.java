@@ -20,12 +20,10 @@
 
 package javaclasses.mealorder.q.projection;
 
-import javaclasses.mealorder.MenuListId;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.PurchaseOrderCreated;
 import javaclasses.mealorder.q.MenuItem;
 import javaclasses.mealorder.q.MenuListViewProjection;
-import javaclasses.mealorder.testdata.TestValues;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -45,9 +43,7 @@ public class MenuListViewProjectionTest extends ProjectionTest {
 
     @BeforeEach
     void setUp() {
-        projection = new MenuListViewProjection(MenuListId.newBuilder()
-                                                          .setDate(TestValues.DATE)
-                                                          .build());
+        projection = new MenuListViewProjection(MenuListViewProjection.ID);
     }
 
     @Nested

@@ -20,7 +20,7 @@
 
 package javaclasses.mealorder.q.projection;
 
-import javaclasses.mealorder.PurchaseOrderListId;
+import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
@@ -35,6 +35,8 @@ import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderDeliveredInstance;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderSentInstance;
 import static javaclasses.mealorder.testdata.TestMealOrderEventFactory.PurchaseOrderEvents.purchaseOrderValidationFailedInstance;
+import static javaclasses.mealorder.testdata.TestValues.DATE;
+import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PurchaseOrderItemViewProjectionTest extends ProjectionTest {
@@ -42,9 +44,11 @@ public class PurchaseOrderItemViewProjectionTest extends ProjectionTest {
 
     @BeforeEach
     void setUp() {
-        projection = new PurchaseOrderItemViewProjection(PurchaseOrderListId.newBuilder()
-                                                                            .setValue("dsda")
-                                                                            .build());
+        projection = new PurchaseOrderItemViewProjection(PurchaseOrderId.newBuilder()
+                                                                        .setVendorId(
+                                                                                VENDOR_ID)
+                                                                        .setPoDate(DATE)
+                                                                        .build());
     }
 
     @Nested

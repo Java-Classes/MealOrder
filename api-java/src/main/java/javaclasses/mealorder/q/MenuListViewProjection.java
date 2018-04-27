@@ -37,7 +37,19 @@ import static javaclasses.mealorder.q.Projections.getAllDishesByCategories;
 import static javaclasses.mealorder.q.Projections.getDatesBetween;
 
 public class MenuListViewProjection extends Projection<MenuListId, MenuListView, MenuListViewVBuilder> {
-
+    /**
+     * {@link MenuListViewProjection} is a singleton.
+     *
+     * <p>The {@code ID} value should be the same for all JVMs
+     * to support work with the same projection from execution to execution.
+     */
+    public static final MenuListId ID = MenuListId.newBuilder()
+                                                  .setDate(LocalDate.newBuilder()
+                                                                    .setDay(2)
+                                                                    .setMonthValue(3)
+                                                                    .setYear(2018)
+                                                                    .build())
+                                                  .build();
     /**
      * Creates a new instance.
      *

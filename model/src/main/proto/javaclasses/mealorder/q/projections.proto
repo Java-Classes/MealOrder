@@ -52,6 +52,8 @@ import "javaclasses/mealorder/values.proto";
 // this date. This time is defined in a menu vendor aggregate. See `Vendor`
 // for more details.
 //
+//Singleton, because menu list is global.
+//
 message MenuListView {
 
     // The identifier of a menu list.

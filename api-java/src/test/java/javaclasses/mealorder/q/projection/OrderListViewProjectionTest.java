@@ -47,6 +47,7 @@ public class OrderListViewProjectionTest extends ProjectionTest {
     void setUp() {
         projection = new OrderListViewProjection(OrderListId.newBuilder()
                                                             .setUserId(TestValues.USER_ID)
+                                                            .setOrderDate(TestValues.DATE)
                                                             .build());
     }
 

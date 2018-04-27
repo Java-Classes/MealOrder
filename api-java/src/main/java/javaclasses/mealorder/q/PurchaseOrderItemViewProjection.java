@@ -24,7 +24,6 @@ import io.spine.core.Subscribe;
 import io.spine.server.entity.storage.Column;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.PurchaseOrderId;
-import javaclasses.mealorder.PurchaseOrderListId;
 import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.c.event.PurchaseOrderDelivered;
 import javaclasses.mealorder.c.event.PurchaseOrderSent;
@@ -34,7 +33,7 @@ import javaclasses.mealorder.q.projection.PurchaseOrderItemViewVBuilder;
 
 import javax.annotation.Nullable;
 
-public class PurchaseOrderItemViewProjection extends Projection<PurchaseOrderListId, PurchaseOrderItemView, PurchaseOrderItemViewVBuilder> {
+public class PurchaseOrderItemViewProjection extends Projection<PurchaseOrderId, PurchaseOrderItemView, PurchaseOrderItemViewVBuilder> {
 
     /**
      * Creates a new instance.
@@ -42,7 +41,7 @@ public class PurchaseOrderItemViewProjection extends Projection<PurchaseOrderLis
      * @param id the ID for the new instance
      * @throws IllegalArgumentException if the ID is not of one of the supported types
      */
-    public PurchaseOrderItemViewProjection(PurchaseOrderListId id) {
+    public PurchaseOrderItemViewProjection(PurchaseOrderId id) {
         super(id);
     }
 

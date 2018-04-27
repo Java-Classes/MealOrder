@@ -43,14 +43,6 @@ message VendorListId {
     string value = 1 [(required) = true];
 }
 
-// The ID of the purchase order list.
-//
-message PurchaseOrderListId {
-
-    // The ID of the purchase order list.
-    string value = 1 [(required) = true];
-}
-
 // The ID of the calendar.
 //
 message MenuCalendarId {
