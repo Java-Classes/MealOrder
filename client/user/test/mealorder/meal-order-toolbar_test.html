@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <!--
   ~ Copyright 2018, TeamDev Ltd. All rights reserved.
   ~
@@ -25,43 +25,54 @@
     <meta name="viewport"
           content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>meal-order-menu-container test</title>
+    <title>meal-order-toolbar test</title>
 
     <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../bower_components/web-component-tester/browser.js"></script>
-    <script src="../../node_modules/redux/dist/redux.js"></script>
-    <link rel="import" href="../../src/mealorder/menu/meal-order-menu-container.html">
+    <link rel="import" href="../../src/mealorder/meal-order-toolbar.html">
 </head>
 <body>
 
-<test-fixture id="MealOrderMenuContainer">
+<test-fixture id="MealOrderToolBar">
     <template>
-        <meal-order-menu-container></meal-order-menu-container>
+        <meal-order-toolbar></meal-order-toolbar>
     </template>
 </test-fixture>
 
 <script>
-    suite('meal-order-menu-container', function () {
+    suite('meal-order-client-app', function () {
         let component;
 
         setup(() => {
-            component = fixture('MealOrderMenuContainer');
+            component = fixture('MealOrderToolBar');
         });
 
-        test('should instantiate the component `paper-tabs`', function (done) {
+        test('should instantiate the `app-header` with main-title', function () {
+            const elementShadowRoot = component.shadowRoot;
+            const mainTitle = elementShadowRoot.querySelector("#main-title");
+            assert.equal(mainTitle.innerHTML, 'Заказ обедов');
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `menu` with routing title', function (done) {
+            component.page = "menu";
+            const pages = component.shadowRoot.querySelector('#app-header-iron');
+            pages.forceSynchronousItemUpdate();
+            const routeLinkTitle = pages.selectedItem.getElementsByClassName("route-title").item(0).innerHTML;
             flush(function () {
-                const elementShadowRoot = component.shadowRoot;
-                const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-                assert.equal(paperTabs.id, 'paper-tabs');
+                assert.equal(routeLinkTitle, 'История заказов');
                 done();
             });
         });
 
-        test('should select the paper-tab by the selected day', function () {
-            const elementShadowRoot = component.shadowRoot;
-            const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-            component.selectedDate = new Date("2018-03-23");
-            assert.equal(component.selectedDate, paperTabs.selected);
+        test('should instantiate the `app-toolbar` with data-page `history` with routing title', function (done) {
+            component.page = "history";
+            const pages = component.shadowRoot.querySelector('#app-header-iron');
+            pages.forceSynchronousItemUpdate();
+            const routeLinkTitle = pages.selectedItem.getElementsByClassName("route-title").item(0).innerHTML;
+            flush(function () {
+                assert.equal(routeLinkTitle, 'Сделать заказ');
+                done();
+            });
         });
 
     });
