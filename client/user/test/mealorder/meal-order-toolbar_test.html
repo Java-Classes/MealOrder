@@ -25,62 +25,56 @@
     <meta name="viewport"
           content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>meal-order-client test</title>
+    <title>meal-order-toolbar test</title>
 
     <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../node_modules/redux/dist/redux.js"></script>
     <script src="test_variables.js"></script>
-    <link rel="import" href="../../src/mealorder/meal-order-client-app.html">
+    <link rel="import" href="../../src/mealorder/meal-order-toolbar.html">
 </head>
 <body>
 
-<test-fixture id="MealOrderClientApp">
+<test-fixture id="MealOrderToolBar">
     <template>
-        <meal-order-client-app></meal-order-client-app>
+        <meal-order-toolbar></meal-order-toolbar>
     </template>
 </test-fixture>
 
 <script>
-    function setLocation(url) {
-        window.history.pushState({}, '', url);
-        Polymer.Base.fire('location-changed', {}, {node: window});
-    }
-
     suite('meal-order-client-app', function () {
         let component;
 
         setup(() => {
-            component = fixture('MealOrderClientApp');
+            component = fixture('MealOrderToolBar');
         });
 
-        test('should parse `routeData.page` correctly', function () {
-            setLocation('/#/history/');
-            assert.equal('history', component.routeData.page);
-            setLocation('/#/menu/');
-            assert.equal('menu', component.routeData.page);
-        });
-
-        test('should parse `routeData.date` correctly', function () {
-            setLocation('/#/history/2018-3-21');
-            assert.equal('2018-3-21', component.routeData.date);
-            setLocation('/#/menu/2018-3-21');
-            assert.equal('2018-3-21', component.routeData.date);
-        });
-
-        test('should instantiate the `meal-order-drawer` component', function (done) {
+        test('should instantiate the `app-header` with main-title', function () {
             const elementShadowRoot = component.shadowRoot;
-            const drawer = elementShadowRoot.querySelector("meal-order-drawer");
-            assert.equal(drawer.tagName.toLocaleLowerCase(), "meal-order-drawer");
-            done();
+            const mainTitle = elementShadowRoot.querySelector("#main-title");
+            assert.equal(mainTitle.innerHTML, 'Заказ обедов');
         });
 
-        test('should instantiate the `meal-order-menu-container` component ' +
-            'with data-page `menu`', function () {
-            setLocation('/#/menu/2018-03-23');
-            const pages = component.shadowRoot.querySelector('#app-header-layout-iron');
+        test('should instantiate the `app-toolbar` with data-page `menu` with routing title', function (done) {
+            component.page = "menu";
+            const pages = component.shadowRoot.querySelector('#app-header-iron');
             pages.forceSynchronousItemUpdate();
-            assert.equal(pages.selectedItem.tagName.toLocaleLowerCase(), "meal-order-menu-container");
+            const routeLinkTitle = pages.selectedItem.getElementsByClassName("route-title").item(0).innerHTML;
+            flush(function () {
+                assert.equal(routeLinkTitle, 'История заказов');
+                done();
+            });
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `history` with routing title', function (done) {
+            component.page = "history";
+            const pages = component.shadowRoot.querySelector('#app-header-iron');
+            pages.forceSynchronousItemUpdate();
+            const routeLinkTitle = pages.selectedItem.getElementsByClassName("route-title").item(0).innerHTML;
+            flush(function () {
+                assert.equal(routeLinkTitle, 'Сделать заказ');
+                done();
+            });
         });
 
     });

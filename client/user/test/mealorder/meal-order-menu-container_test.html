@@ -42,31 +42,12 @@
 </test-fixture>
 
 <script>
-    function setLocation(url) {
-        window.history.pushState({}, '', url);
-        Polymer.Base.fire('location-changed', {}, {node: window});
-    }
-
     suite('meal-order-menu-container', function () {
         let component;
 
         setup(() => {
             component = fixture('MealOrderMenuContainer');
             component.calendar = MealOrderAppTest.initialState.calendar;
-        });
-
-        test('should parse `routeData.page` correctly', function () {
-            setLocation('/#/history/');
-            assert.equal('history', component.routeData.page);
-            setLocation('/#/menu/');
-            assert.equal('menu', component.routeData.page);
-        });
-
-        test('should parse `routeData.date` correctly', function () {
-            setLocation('/#/history/2018-3-21');
-            assert.equal('2018-3-21', component.routeData.date);
-            setLocation('/#/menu/2018-3-21');
-            assert.equal('2018-3-21', component.routeData.date);
         });
 
         test('should instantiate the component `paper-tabs`', function (done) {
@@ -78,22 +59,13 @@
             });
         });
 
-        test('should parse `routeData.date` by the default selected paper-tab', function () {
+        test('should select the paper-tab by the selected day', function () {
             const elementShadowRoot = component.shadowRoot;
             const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-            assert.equal(component.routeData.date, paperTabs.selected);
+            component.selectedDate = new Date("2018-03-23");
+            assert.equal(component.selectedDate, paperTabs.selected);
         });
 
-        test('should parse changed `routeData.date` by the selected paper-tab', function (done) {
-            const elementShadowRoot = component.shadowRoot;
-
-            flush(function () {
-                const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-                paperTabs.select('2018-03-23');
-                assert.equal(component.routeData.date, '2018-3-23');
-                done();
-            });
-        });
     });
 </script>
 </body>
