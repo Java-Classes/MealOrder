@@ -20,7 +20,7 @@
 <link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/app-datepicker/app-datepicker.html">
-
+<link rel="import" href="../shell/meal-order-app-namespace.html">
 <dom-module id="meal-order-drawer">
     <template>
         <style>
@@ -106,79 +106,82 @@
         </iron-pages>
     </template>
     <script>
-        /**
-         * meal-order-drawer is container for the user's order and
-         * the calendar of the history of the user's orders.
-         *
-         * Contains an order for the selected day and calendar.
-         *
-         * @customElement
-         * @polymer
-         */
-        class MealOrderDrawer extends Polymer.Element {
-            static get is() {
-                return 'meal-order-drawer';
-            }
+        {
+            /**
+             * meal-order-drawer is container for the user's order and
+             * the calendar of the history of the user's orders.
+             *
+             * Contains an order for the selected day and calendar.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderDrawer extends Polymer.Element {
+                static get is() {
+                    return 'meal-order-drawer';
+                }
 
-            static get properties() {
-                return {
-                    /**
-                     * Selected day.
-                     */
-                    selectedDay: {
-                        type: Object,
-                        computed: '_getSelectedDay(routeData.date)'
-                    },
+                static get properties() {
+                    return {
+                        /**
+                         * Selected day.
+                         */
+                        selectedDay: {
+                            type: Object,
+                            computed: '_getSelectedDay(routeData.date)'
+                        },
 
-                    /**
-                     * Selected day of the week.
-                     */
-                    selectedDayOfTheWeek: {
-                        type: Object,
-                        computed: '_getSelectedDayOfTheWeek(routeData.date)'
-                    },
+                        /**
+                         * Selected day of the week.
+                         */
+                        selectedDayOfTheWeek: {
+                            type: Object,
+                            computed: '_getSelectedDayOfTheWeek(routeData.date)'
+                        },
 
-                    /**
-                     * Chosen day.
-                     */
-                    outputDate: {
-                        type: String,
-                    },
+                        /**
+                         * Chosen day.
+                         */
+                        outputDate: {
+                            type: String,
+                        },
 
-                    /**
-                     * Used for routing.
-                     */
-                    routeData: {
-                        type: Object,
-                        notify: true,
-                    },
+                        /**
+                         * Used for routing.
+                         */
+                        routeData: {
+                            type: Object,
+                            notify: true,
+                        },
+                    }
+                }
+
+                static get observers() {
+                    return [
+                        ' _calendarDateChanged(outputDate)'
+                    ];
+                }
+
+                _getSelectedDay() {
+                    return new Date(this.routeData.date).getDate();
+                }
+
+                _getSelectedDayOfTheWeek() {
+                    return new Date(this.routeData.date).toLocaleDateString("ru-RU", {weekday: 'long'});
+                }
+
+                _calendarDateChanged() {
+                    if (this.routeData && this.routeData.page.startsWith("history")) {
+                        const newRouteData = {};
+                        newRouteData.page = 'history';
+                        newRouteData.date = this.outputDate;
+                        this.set('routeData', newRouteData);
+                    }
                 }
             }
 
-            static get observers() {
-                return [
-                    ' _calendarDateChanged(outputDate)'
-                ];
-            }
-
-            _getSelectedDay() {
-                return new Date(this.routeData.date).getDate();
-            }
-
-            _getSelectedDayOfTheWeek() {
-                return new Date(this.routeData.date).toLocaleDateString("ru-RU", {weekday: 'long'});
-            }
-
-            _calendarDateChanged() {
-                if (this.routeData && this.routeData.page.startsWith("history")) {
-                    const newRouteData = {};
-                    newRouteData.page = 'history';
-                    newRouteData.date = this.outputDate;
-                    this.set('routeData', newRouteData);
-                }
-            }
+            window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
+            MealOrderApp.MealOrderDrawer = MealOrderDrawer;
         }
-
-        window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
     </script>
 </dom-module>

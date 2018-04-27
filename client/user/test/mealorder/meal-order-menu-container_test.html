@@ -30,7 +30,6 @@
     <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../node_modules/redux/dist/redux.js"></script>
-    <script src="test_variables.js"></script>
     <link rel="import" href="../../src/mealorder/menu/meal-order-menu-container.html">
 </head>
 <body>
@@ -47,7 +46,6 @@
 
         setup(() => {
             component = fixture('MealOrderMenuContainer');
-            component.calendar = MealOrderAppTest.initialState.calendar;
         });
 
         test('should instantiate the component `paper-tabs`', function (done) {

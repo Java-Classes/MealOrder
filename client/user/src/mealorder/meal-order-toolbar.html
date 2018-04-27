@@ -22,6 +22,7 @@
 <link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="./shell/meal-order-app-namespace.html">
 
 <dom-module id="meal-order-toolbar">
     <template>
@@ -109,36 +110,39 @@
         </app-toolbar>
     </template>
     <script>
-        /**
-         * meal-order-toolbar is container for the `app-toolbar`
-         *
-         * Contains the main title and the link title and also icon for drawer toggle
-         * on depending on menu and history routing.
-         *
-         * @customElement
-         * @polymer
-         */
-        class MealOrderToolbar extends (Polymer.Element) {
-            static get is() {
-                return 'meal-order-toolbar';
-            }
+        {
+            /**
+             * meal-order-toolbar is container for the `app-toolbar`
+             *
+             * Contains the main title and the link title and also icon for drawer toggle
+             * on depending on menu and history routing.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderToolbar extends (Polymer.Element) {
+                static get is() {
+                    return 'meal-order-toolbar';
+                }
 
-            static get properties() {
-                return {
-                    /**
-                     * Current page.
-                     */
-                    page: {
-                        type: Object,
+                static get properties() {
+                    return {
+                        /**
+                         * Current page.
+                         */
+                        page: {
+                            type: Object,
+                        }
                     }
+                }
+
+                _toggleDrawer() {
+                    this.dispatchEvent(new CustomEvent('toggle-drawer',));
                 }
             }
 
-            _toggleDrawer() {
-                this.dispatchEvent(new CustomEvent('toggle-drawer',));
-            }
+            window.customElements.define(MealOrderToolbar.is, MealOrderToolbar);
+            MealOrderApp.MealOrderToolbar = MealOrderToolbar;
         }
-
-        window.customElements.define(MealOrderToolbar.is, MealOrderToolbar);
     </script>
 </dom-module>

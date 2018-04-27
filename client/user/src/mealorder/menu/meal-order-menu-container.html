@@ -17,13 +17,13 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../shell/meal-order-app-namespace.html">
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../shell/actions/user-actions.html">
 
@@ -96,120 +96,123 @@
         <!--meal-order-vendor-menus-->
     </template>
     <script>
-        /**
-         * menu-order is container for the vendors' menus and navigation.
-         *
-         * Contains a menu for the current date and tabs for quick date navigation.
-         *
-         * @customElement
-         * @polymer
-         * @appliesMixin MealOrderApp.ReduxMixin
-         */
-        class MealOrderMenuContainer extends (Polymer.Element) {
-            static get is() {
-                return 'meal-order-menu-container';
-            }
-
-            static get properties() {
-                return {
-                    /**
-                     * The current server time for the calendar.
-                     */
-                    serverTime: {
-                        type: Object,
-                    },
-
-                    /**
-                     * Selected day.
-                     */
-                    selectedDate: {
-                        type: Object,
-                    },
-
-                    /**
-                     * Array of dates with menu which may not exist.
-                     *
-                     * @typedef {Object} Date
-                     * @typedef {Boolean} hasMenu If menu for this date exists
-                     */
-                    displayedDays: {
-                        type: Array,
-                        computed: '_getDisplayedDays(menus)'
-                    },
-
-                    /**
-                     * Menu for a current day.
-                     *
-                     * @typedef {Object} Menu the menu for the current date
-                     *
-                     * @property {String} vendor a vendor name
-                     *
-                     * @typedef {Object} Date contains day, month, year
-                     * @property {Number} day
-                     * @property {Number} month
-                     * @property {Number} year
-                     *
-                     * @typedef {Array} Categories array contains the category name and dishes
-                     * @typedef {Array} Dishes array contains the dish title, price, quantity
-                     * @property {String} title
-                     * @property {String} price
-                     * @property {String} quantity
-                     */
-                    menus: {
-                        type: Array,
-                    },
-                };
-            }
-
-            _getDay(date) {
-                return date.getDate();
-            }
-
-            _getDate(date) {
-                const DATE_LENGTH = 10;
-                return date.toISOString().slice(0, DATE_LENGTH);
-            }
-
-            _getDayOfTheWeek(date) {
-                const dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'short'});
-                return dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
-            }
-
-            _getDisplayedMenu(date) {
-                const routeDate = new Date(date);
-                const menus = this.menus.filter(menu => menu.date);
-                return menus.filter(menu => menu.date.getTime() === routeDate.getTime());
-            }
-
-            _getDisplayedDays(menus) {
-                const weekDates = [];
-                const menuDates = [];
-                const DAYS_IN_PERIOD = 8;
-
-                for (let i = 0; i < DAYS_IN_PERIOD; i++) {
-                    const newDate = new Date(this.serverTime);
-                    newDate.setDate(newDate.getDate() + i);
-                    weekDates.push(newDate);
+        {
+            /**
+             * menu-order is container for the vendors' menus and navigation.
+             *
+             * Contains a menu for the current date and tabs for quick date navigation.
+             *
+             * @customElement
+             * @polymer
+             * @appliesMixin MealOrderApp.ReduxMixin
+             */
+            class MealOrderMenuContainer extends (Polymer.Element) {
+                static get is() {
+                    return 'meal-order-menu-container';
                 }
 
-                const dates = menus.filter(menu => menu.date);
-                for (let i = 0; i < dates.length; i++) {
-                    menuDates.push(dates[i].date);
+                static get properties() {
+                    return {
+                        /**
+                         * The current server time for the calendar.
+                         */
+                        serverTime: {
+                            type: Object,
+                        },
+
+                        /**
+                         * Selected day.
+                         */
+                        selectedDate: {
+                            type: Object,
+                        },
+
+                        /**
+                         * Array of dates with menu which may not exist.
+                         *
+                         * @typedef {Object} Date
+                         * @typedef {Boolean} hasMenu If menu for this date exists
+                         */
+                        displayedDays: {
+                            type: Array,
+                            computed: '_getDisplayedDays(menus)'
+                        },
+
+                        /**
+                         * Menu for a current day.
+                         *
+                         * @typedef {Object} Menu the menu for the current date
+                         *
+                         * @property {String} vendor a vendor name
+                         *
+                         * @typedef {Object} Date contains day, month, year
+                         * @property {Number} day
+                         * @property {Number} month
+                         * @property {Number} year
+                         *
+                         * @typedef {Array} Categories array contains the category name and dishes
+                         * @typedef {Array} Dishes array contains the dish title, price, quantity
+                         * @property {String} title
+                         * @property {String} price
+                         * @property {String} quantity
+                         */
+                        menus: {
+                            type: Array,
+                        },
+                    };
                 }
 
-                const uniqueDates = menuDates.map(s => s.toString())
-                    .filter((s, i, a) => a.indexOf(s) === i)
-                    .map(s => new Date(s));
+                _getDay(date) {
+                    return date.getDate();
+                }
 
-                for (let i = 0; i < uniqueDates.length; i++) {
-                    if (weekDates[i].getTime() === uniqueDates[i].getTime()) {
-                        weekDates[i].hasMenu = true;
+                _getDate(date) {
+                    const DATE_LENGTH = 10;
+                    return date.toISOString().slice(0, DATE_LENGTH);
+                }
+
+                _getDayOfTheWeek(date) {
+                    const dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'short'});
+                    return dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
+                }
+
+                _getDisplayedMenu(date) {
+                    const routeDate = new Date(date);
+                    const menus = this.menus.filter(menu => menu.date);
+                    return menus.filter(menu => menu.date.getTime() === routeDate.getTime());
+                }
+
+                _getDisplayedDays(menus) {
+                    const weekDates = [];
+                    const menuDates = [];
+                    const DAYS_IN_PERIOD = 8;
+
+                    for (let i = 0; i < DAYS_IN_PERIOD; i++) {
+                        const newDate = new Date(this.serverTime);
+                        newDate.setDate(newDate.getDate() + i);
+                        weekDates.push(newDate);
                     }
-                }
-                return weekDates;
-            }
-        }
 
-        window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
+                    const dates = menus.filter(menu => menu.date);
+                    for (let i = 0; i < dates.length; i++) {
+                        menuDates.push(dates[i].date);
+                    }
+
+                    const uniqueDates = menuDates.map(s => s.toString())
+                        .filter((s, i, a) => a.indexOf(s) === i)
+                        .map(s => new Date(s));
+
+                    for (let i = 0; i < uniqueDates.length; i++) {
+                        if (weekDates[i].getTime() === uniqueDates[i].getTime()) {
+                            weekDates[i].hasMenu = true;
+                        }
+                    }
+                    return weekDates;
+                }
+            }
+
+            window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
+            MealOrderApp.MealOrderMenuContainer = MealOrderMenuContainer;
+        }
     </script>
 </dom-module>
