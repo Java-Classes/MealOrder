@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <!--
   ~ Copyright 2018, TeamDev Ltd. All rights reserved.
   ~
@@ -25,46 +25,40 @@
     <meta name="viewport"
           content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>meal-order-menu-container test</title>
-
+    <title>meal-order-vendor-menu test</title>
+    <link rel="import" href="../../../src/mealorder/shell/meal-order-app-namespace.html">
     <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../../node_modules/redux/dist/redux.js"></script>
-    <link rel="import" href="../../../src/mealorder/menu/meal-order-menu-container.html">
+    <link rel="import" href="../../../src/mealorder/menu/meal-order-vendor-menus.html">
+    <script src="../test_variables.js"></script>
+
 </head>
 <body>
 
-<test-fixture id="MealOrderMenuContainer">
+<test-fixture id="VendorMenus">
     <template>
-        <meal-order-menu-container></meal-order-menu-container>
+        <meal-order-vendor-menus></meal-order-vendor-menus>
     </template>
 </test-fixture>
 
 <script>
-    suite('meal-order-menu-container', function () {
+    suite('meal-order-vendor-menu', function () {
         let component;
 
         setup(() => {
-            component = fixture('MealOrderMenuContainer');
+            component = fixture('VendorMenus');
+            component.menuForDay = MealOrderAppTest.initialMenu;
         });
 
-        test('should instantiate the component `paper-tabs`', function (done) {
-            flush(function () {
-                const elementShadowRoot = component.shadowRoot;
-                const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-                assert.equal(paperTabs.id, 'paper-tabs');
-                done();
-            });
-        });
-
-        test('should select the paper-tab by the selected day', function () {
-            const elementShadowRoot = component.shadowRoot;
-            const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-            component.selectedDate = new Date("2018-03-23");
-            assert.equal(component.selectedDate, paperTabs.selected);
+        test('should filter menu correctly', function () {
+            const paperSearch = component.shadowRoot.querySelector('#paper-search');
+            paperSearch.query = "Суп";
+            assert.equal(component.filtered[0].categories[0].dishes.length,3);
         });
 
     });
 </script>
+
 </body>
 </html>

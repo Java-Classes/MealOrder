@@ -18,7 +18,6 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -30,7 +29,6 @@
     <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../node_modules/redux/dist/redux.js"></script>
-    <script src="test_variables.js"></script>
     <link rel="import" href="../../src/mealorder/meal-order-client-app.html">
 </head>
 <body>
@@ -68,77 +66,17 @@
             assert.equal('2018-3-21', component.routeData.date);
         });
 
-
-        test('should instantiate the `app-header` with main-title', function () {
+        test('should instantiate the `meal-order-toolbar` component', function (done) {
             const elementShadowRoot = component.shadowRoot;
-            const mainTitle = elementShadowRoot.querySelector("#main-title");
-            assert.equal(mainTitle.innerHTML, 'Заказ обедов');
-        });
-
-        test('should instantiate the `app-toolbar` with data-page `menu` with routing title', function (done) {
-            setLocation('/#/menu/2018-03-23');
-            const pages = component.shadowRoot.querySelector('#app-header-iron');
-            pages.forceSynchronousItemUpdate();
-            const routeLinkTitle = pages.selectedItem.getElementsByClassName("route-title").item(0).innerHTML;
-            flush(function () {
-                assert.equal(routeLinkTitle, 'История заказов');
-                done();
-            });
-        });
-
-        test('should instantiate the `app-toolbar` with data-page `history` with routing title', function (done) {
-            setLocation('/#/history/2018-03-23');
-            const pages = component.shadowRoot.querySelector('#app-header-iron');
-            pages.forceSynchronousItemUpdate();
-            const routeLinkTitle = pages.selectedItem.getElementsByClassName("route-title").item(0).innerHTML;
-            flush(function () {
-                assert.equal(routeLinkTitle, 'Сделать заказ');
-                done();
-            });
-        });
-
-        test('should instantiate the `app-toolbar` with data-page `menu`' +
-            ' and the component `app-toolbar-content` with routing title', function (done) {
-            setLocation('/#/menu/2018-03-23');
-            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
-            pages.forceSynchronousItemUpdate();
-            const drawerTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
-            flush(function () {
-                assert.equal(drawerTitle, 'Заказ');
-                done();
-            });
-        });
-
-        test('should instantiate the `app-toolbar` with data-page `menu`' +
-            ' and day, and day of the week', function (done) {
-            setLocation('/#/menu/2018-03-23');
-            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
-            pages.forceSynchronousItemUpdate();
-            const day = pages.querySelector("#day").innerHTML;
-            const dayOfTheWeek = pages.querySelector("#day-of-the-week").innerHTML;
-            flush(function () {
-                assert.equal(day, 'Пятница');
-                assert.equal(dayOfTheWeek, '23');
-                done();
-            });
-        });
-
-        test('should instantiate the `app-toolbar` with data-page `history`' +
-            ' and the component `app-toolbar-content` with routing title', function (done) {
-            setLocation('/#/history/2018-03-23');
-            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
-            pages.forceSynchronousItemUpdate();
-            const drawerTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
-            flush(function () {
-                assert.equal(drawerTitle, 'История заказов');
-                done();
-            });
+            const drawer = elementShadowRoot.querySelector("meal-order-toolbar");
+            assert.equal(drawer.tagName.toLocaleLowerCase(), MealOrderApp.MealOrderToolbar.is);
+            done();
         });
 
         test('should instantiate the `meal-order-drawer` component', function (done) {
             const elementShadowRoot = component.shadowRoot;
             const drawer = elementShadowRoot.querySelector("meal-order-drawer");
-            assert.equal(drawer.tagName.toLocaleLowerCase(), "meal-order-drawer");
+            assert.equal(drawer.tagName.toLocaleLowerCase(), MealOrderApp.MealOrderDrawer.is);
             done();
         });
 
@@ -147,7 +85,7 @@
             setLocation('/#/menu/2018-03-23');
             const pages = component.shadowRoot.querySelector('#app-header-layout-iron');
             pages.forceSynchronousItemUpdate();
-            assert.equal(pages.selectedItem.tagName.toLocaleLowerCase(), "meal-order-menu-container");
+            assert.equal(pages.selectedItem.tagName.toLocaleLowerCase(), MealOrderApp.MealOrderMenuContainer.is);
         });
 
     });

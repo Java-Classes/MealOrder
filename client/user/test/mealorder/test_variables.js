@@ -20,85 +20,9 @@
 {
     window.MealOrderAppTest = window.MealOrderAppTest || {};
 
-    const arrayOfDates = [{
-        date: {
-            year: '2018',
-            month: '03',
-            day: '21',
-        },
-        dayOfTheWeek: 'Ср',
-        hasMenu: true
-    },
-        {
-            date: {
-                year: '2018',
-                month: '03',
-                day: '22',
-            },
-            dayOfTheWeek: 'Чт',
-            hasMenu: true
-        },
-        {
-            date: {
-                year: '2018',
-                month: '03',
-                day: '23',
-            },
-            dayOfTheWeek: 'Пт',
-            hasMenu: true
-        },
-        {
-            date: {
-                year: '2018',
-                month: '03',
-                day: '24',
-            },
-            dayOfTheWeek: 'Сб',
-            hasMenu: false
-        },
-        {
-            date: {
-                year: '2018',
-                month: '03',
-                day: '25',
-            },
-            dayOfTheWeek: 'Вс',
-            hasMenu: false
-        }
-        , {
-            date: {
-                year: '2018',
-                month: '03',
-                day: '26',
-            },
-            dayOfTheWeek: 'Пн',
-            hasMenu: true
-        }
-        , {
-            date: {
-                year: '2018',
-                month: '03',
-                day: '27',
-            },
-            dayOfTheWeek: 'Вт',
-            hasMenu: true
-        }
-        , {
-            date: {
-                year: '2018',
-                month: '03',
-                day: '28',
-            },
-            dayOfTheWeek: 'Ср',
-            hasMenu: true
-        }];
-
-    MealOrderAppTest.initialState = {
-        calendar: arrayOfDates,
-    };
-
-    MealOrderAppTest.initialMenu = {
-        name: 'Пюре',
+    MealOrderAppTest.initialMenu = [{
+        vendor: 'Пюре',
+        date: new Date('2018-03-22'),
         categories: [{
             categoryName: 'Первое блюдо', dishes: [
                 {title: 'Суп гречневый', price: 35},
@@ -113,6 +37,5 @@
                     {title: 'Куриные крылышки', price: 45}]
             }
         ]
-    };
-
+    }];
 }
