@@ -1,0 +1,76 @@
+<!doctype html>
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>meal-order-user-history test</title>
+
+    <link rel="import" href="../../../src/mealorder/shell/meal-order-app-namespace.html">
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../../node_modules/redux/dist/redux.js"></script>
+    <script src="../test_variables.js"></script>
+    <link rel="import" href="../../../src/mealorder/history/meal-order-user-history.html">
+
+</head>
+<body>
+
+<test-fixture id="UserHistory">
+    <template>
+        <meal-order-user-history></meal-order-user-history>
+    </template>
+</test-fixture>
+
+<script>
+    suite('meal-order-vendor-menu', function () {
+        let component;
+
+        setup(() => {
+            component = fixture('UserHistory');
+            component.selectedDate = new Date('2018-03-20');
+            component.currentHistory = MealOrderAppTest.ininitalHistory[0];
+        });
+
+        test('should store history correctly', function () {
+            const NUMBER_OF_DISHES = 6;
+            const PRICE = 35;
+            const QUANTITY = 1;
+            assert.equal(component.currentHistory.date.getTime(), new Date('2018-03-20').getTime());
+            assert.equal(component.currentHistory.order[0].vendor, "Пюре");
+            assert.equal(component.currentHistory.order[0].dishes.length, NUMBER_OF_DISHES);
+            assert.equal(component.currentHistory.order[0].dishes[0].title, "Борщ украинский");
+            assert.equal(component.currentHistory.order[0].dishes[0].price, PRICE);
+            assert.equal(component.currentHistory.order[0].dishes[0].quantity, QUANTITY);
+
+        });
+
+        test('should calculate the total price of the order', function () {
+            const TOTAL_PRICE = 300;
+            assert.equal(component._getTotalPrice(component.currentHistory), TOTAL_PRICE);
+        });
+    });
+</script>
+</body>
+</html>

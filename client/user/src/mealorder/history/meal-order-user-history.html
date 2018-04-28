@@ -28,8 +28,9 @@
         <style>
             #history {
                 width: 70%;
-                margin: 3% auto;
+                margin: 3% auto 0 auto;
                 color: var(--paper-grey-700);
+                padding-bottom: 3%;
             }
 
             #title-for-mobile {
@@ -112,7 +113,6 @@
         </style>
         <div id="history">
             <div id="title-for-mobile">История заказов</div>
-
             <iron-list items="[[currentHistory.order]]" as="item">
                 <template>
                     <div>
@@ -134,9 +134,9 @@
                     </div>
                 </template>
             </iron-list>
-            <dom-if if="[[totalPrice]]">
+            <dom-if if="[[currentHistory.order]]">
                 <template>
-                    <div class="total-sum">Общая сумма: [[totalPrice]] ₴</div>
+                    <div class="total-sum">Общая сумма: [[_getTotalPrice(currentHistory)]] ₴</div>
                 </template>
             </dom-if>
         </div>
@@ -166,17 +166,10 @@
                      * An array containing items to be displayed.
                      */
                     currentHistory: {
-                        type: Array,
-                        statePath: 'currentHistory'
+                        type: Object,
+                        statePath: 'currentHistory',
                     },
 
-                    /**
-                     * Total price of the order.
-                     */
-                    totalPrice: {
-                        type: Number,
-                        computed: '_getTotalPrice(currentHistory)',
-                    }
                 }
             }
 
@@ -200,18 +193,16 @@
             }
 
             _getTotalPrice(currentHistory) {
-                if (currentHistory) {
-                    let totalPrice = 0;
-                    for (let i = 0; i < currentHistory.length; i++) {
-                        const dishes = currentHistory[i].dishes;
-                        let sum = 0;
-                        for (let i = 0; i < dishes.length; i++) {
-                            sum += (dishes[i].price) * dishes[i].quantity;
-                        }
-                        totalPrice += sum;
+                let totalPrice = 0;
+                for (let i = 0; i < currentHistory.order.length; i++) {
+                    const dishes = currentHistory.order[i].dishes;
+                    let sum = 0;
+                    for (let i = 0; i < dishes.length; i++) {
+                        sum += (dishes[i].price) * dishes[i].quantity;
                     }
-                    return totalPrice;
+                    totalPrice += sum;
                 }
+                return totalPrice;
             }
         }
 

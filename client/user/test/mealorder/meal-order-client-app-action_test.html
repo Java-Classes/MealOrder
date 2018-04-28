@@ -52,14 +52,29 @@
             ORDER.dish = {vendor: "Позитив", price: 15, title: "Картофель"};
             ORDER.date = new Date("2018-03-21");
 
-            const expectedGetOrderedItemsAction = {type: MealOrderApp.UserAction.GET_ORDERED_ITEMS, date: ORDER.date};
-            const expectedAddDishToOrderAction = {type: MealOrderApp.UserAction.ADD_DISH_TO_ORDER, order: ORDER};
+            const expectedGetOrderedItemsAction = {
+                type: MealOrderApp.UserAction.GET_ORDERED_ITEMS,
+                date: ORDER.date
+            };
+            const expectedGetCurrentHistoryAction = {
+                type: MealOrderApp.UserAction.GET_CURRENT_HISTORY,
+                date: ORDER.date
+            };
+            const expectedAddDishToOrderAction = {
+                type: MealOrderApp.UserAction.ADD_DISH_TO_ORDER,
+                order: ORDER
+            };
 
             mock.expects('dispatch').withArgs(expectedGetOrderedItemsAction);
+            mock.expects('dispatch').withArgs(expectedGetCurrentHistoryAction);
             mock.expects('dispatch').withArgs(expectedAddDishToOrderAction);
+
             const component = fixture('MealOrderClientApp');
             const container = component.shadowRoot.querySelector('meal-order-menu-container');
-            container.dispatchEvent((new CustomEvent('dish-added', {composed: true, detail: DISH})));
+            container.dispatchEvent((new CustomEvent('dish-added', {
+                composed: true,
+                detail: DISH
+            })));
             mock.verify();
             mock.restore();
         });
