@@ -50,16 +50,20 @@
         });
 
         test('should store order correctly', function () {
+            const NUMBER_OF_DISHES = 6;
+            const PRICE = 35;
+            const QUANTITY = 1;
             assert.equal(component.currentOrder.date.getTime(), new Date('2018-03-21').getTime());
             assert.equal(component.currentOrder.order[0].vendor, "Пюре");
-            assert.equal(component.currentOrder.order[0].dishes.length, 6);
+            assert.equal(component.currentOrder.order[0].dishes.length, NUMBER_OF_DISHES);
             assert.equal(component.currentOrder.order[0].dishes[0].title, "Борщ украинский");
-            assert.equal(component.currentOrder.order[0].dishes[0].price, 35);
-            assert.equal(component.currentOrder.order[0].dishes[0].quantity, 1);
+            assert.equal(component.currentOrder.order[0].dishes[0].price, PRICE);
+            assert.equal(component.currentOrder.order[0].dishes[0].quantity, QUANTITY);
         });
 
         test('should calculate the total price of the order', function () {
-            assert.equal(component._getTotalAmount(component.currentOrder), 300);
+            const TOTAL_PRICE = 300;
+            assert.equal(component._getTotalAmount(component.currentOrder), TOTAL_PRICE);
         });
     });
 </script>
