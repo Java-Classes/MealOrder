@@ -52,9 +52,10 @@
         });
 
         test('should filter menu correctly', function () {
+            const NUMBER_OF_DISHES = 3;
             const paperSearch = component.shadowRoot.querySelector('#paper-search');
             paperSearch.query = "Суп";
-            assert.equal(component.filtered[0].categories[0].dishes.length,3);
+            assert.equal(component.filtered[0].categories[0].dishes.length, NUMBER_OF_DISHES);
         });
 
     });
