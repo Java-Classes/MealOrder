@@ -52,6 +52,6 @@
     "setup": false,
     "flush": false,
     "sinon": false,
-    "mock": false
+    "mock": true
   }
 }
