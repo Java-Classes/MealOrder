@@ -1,0 +1,79 @@
+<!doctype html>
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>meal-order-user-order test</title>
+    <link rel="import" href="../../../src/mealorder/shell/meal-order-app-namespace.html">
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../../node_modules/redux/dist/redux.js"></script>
+    <link rel="import" href="../../../src/mealorder/menu/meal-order-user-order.html">
+    <script src="../test_variables.js"></script>
+
+</head>
+<body>
+
+<test-fixture id="UserOrder">
+    <template>
+        <meal-order-user-order></meal-order-user-order>
+    </template>
+</test-fixture>
+
+<script>
+    suite('meal-order-user-order', function () {
+        let component;
+
+        setup(() => {
+            component = fixture('UserOrder');
+            component.currentOrder = MealOrderAppTest.ininitalOrder[0].order[0];
+        });
+
+        test('should fire `user-order-vendor-removed` event on `Remove vendor` icon click.', function (done) {
+            const REMOVE_VENDOR_BUTTON = 'paper-icon-button';
+            const removeVendorButton = component.shadowRoot.querySelector(REMOVE_VENDOR_BUTTON);
+            component.addEventListener('user-order-vendor-removed', function (e) {
+                assert.equal(e.detail, MealOrderAppTest.ininitalOrder[0].order[0].vendor);
+                done();
+            });
+            removeVendorButton.click();
+        });
+
+        test('should fire `user-order-dish-removed` event on `Remove dish` icon click.', function (done) {
+            flush(function () {
+                const REMOVE_DISH_BUTTON = '.dishes > .order-details > paper-icon-button';
+                const removeDishButton = component.shadowRoot.querySelectorAll(REMOVE_DISH_BUTTON)[0];
+                component.addEventListener('user-order-dish-removed', function (e) {
+                    assert.equal(e.detail.vendor, MealOrderAppTest.ininitalOrder[0].order[0].vendor);
+                    assert.equal(e.detail.name, MealOrderAppTest.ininitalOrder[0].order[0].dishes[0].title);
+                    done();
+                });
+                removeDishButton.click();
+            });
+        });
+    });
+</script>
+</body>
+</html>

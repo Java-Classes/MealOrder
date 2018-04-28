@@ -44,7 +44,7 @@ buildscript {
             exclude group: 'com.google.guava'
         }
         classpath appEngineGradlePlugin
-        classpath 'org.akhikhl.gretty:gretty:+'
+        classpath 'org.gretty:gretty:+'
         classpath "org.junit.platform:junit-platform-gradle-plugin:${jUnitPlatformVersion}"
         classpath "io.spine.tools:spine-model-compiler:${spineBaseVersion}"
         classpath "io.spine.tools:spine-model-verifier:${spineVersion}"
@@ -72,9 +72,8 @@ plugins {
 // To run the web farm use:
 //     gradle farmRun
 //
-// For more information see: http://akhikhl.github.io/gretty-doc/Multiple-web-apps-configureless-setup.html
-// To run only selected farms see: http://akhikhl.github.io/gretty-doc/Configuring-default-farm.html
-apply plugin: 'org.akhikhl.gretty'
+
+apply plugin: 'org.gretty'
 
 buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'

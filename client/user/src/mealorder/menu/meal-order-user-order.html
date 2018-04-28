@@ -57,10 +57,13 @@
             }
         </style>
         <div class="vendor">
-            <div>[[order.vendor]]</div>
-            <paper-icon-button icon="delete" class="icon-delete" on-click="_removeDishesByVendor"></paper-icon-button>
+            <div>[[currentOrder.vendor]]</div>
+            <paper-icon-button icon="delete" class="icon-delete"
+                               on-click="_removeDishesByVendor"></paper-icon-button>
         </div>
-        <dom-repeat items="[[order.dishes]]" as="dish">
+
+        <div class="dishes">
+        <dom-repeat items="[[currentOrder.dishes]]" as="dish">
             <template>
                 <div class="order-details">
                     <div class="order-title">[[dish.title]]</div>
@@ -70,10 +73,12 @@
                 </div>
             </template>
         </dom-repeat>
+            <
+        </div>
     </template>
     <script>
         /**
-         * user-order is user's order for current date, for current vendor.
+         * user-order component is user's order for current date, for current vendor.
          *
          * @customElement
          * @polymer
@@ -86,25 +91,44 @@
             static get properties() {
                 return {
                     /**
+                     * Fired by clicking on the `Remove dish` button.
+                     *
+                     * @event `user-order-dish-removed`
+                     * @param {dish} contains dishes
+                     */
+
+                    /**
+                     * Fired by clicking on the `Remove dishes by vendor` button.
+                     *
+                     * @event `user-order-vendor-removed`
+                     * @param {vendor} contains vendor.
+                     */
+
+                    /**
                      * Order for a current vendor.
                      */
-                    order: {
+                    currentOrder: {
                         type: Array
                     }
                 }
             }
 
             _removeDishesByVendor() {
-                this.dispatchEvent(new CustomEvent('user-order-vendor-removed', {composed: true, detail: this.order.vendor}));
+                this.dispatchEvent(new CustomEvent('user-order-vendor-removed', {
+                    detail: this.currentOrder.vendor
+                }));
             }
 
             _removeDish(e) {
                 const dish = {};
-                dish.vendor = this.order.vendor;
-                dish.name = this.order.dishes[e.model.index].title;
-                this.dispatchEvent(new CustomEvent('user-order-dish-removed', {composed: true, detail: dish}));
+                dish.vendor = this.currentOrder.vendor;
+                dish.name = this.currentOrder.dishes[e.model.index].title;
+                this.dispatchEvent(new CustomEvent('user-order-dish-removed', {
+                    detail: dish
+                }));
             }
         }
+
         window.customElements.define(MealOrderUserOrder.is, MealOrderUserOrder);
     </script>
 </dom-module>

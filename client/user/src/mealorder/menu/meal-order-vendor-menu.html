@@ -17,7 +17,6 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
 <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
@@ -29,13 +28,8 @@
 <dom-module id="meal-order-vendor-menu">
     <template>
         <style>
-            :host {
-                display: block;
-                padding: 0;
-            }
-
             paper-item {
-                font-size: 15px;
+                @apply --paper-font-body1;
                 padding: 0 2%;
                 width: 96%;
                 border-bottom: 1px solid var(--paper-grey-200);
@@ -64,6 +58,7 @@
             .header paper-item {
                 padding: 2px 1% 2px 2%;
             }
+
             .bold {
                 font-weight: bold;
             }
@@ -98,7 +93,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                font-size: 16px;
+                @apply --paper-font-subhead;
                 width: 100%;
             }
 
@@ -111,7 +106,7 @@
         <div class="header">
             <paper-item on-click="_toggle" class="menu-caption">
                 <div class="menu-caption">
-                    [[menu.name]]
+                    [[menu.vendor]]
                     <paper-icon-button id="expand" icon="expand-less"></paper-icon-button>
                 </div>
             </paper-item>
@@ -148,7 +143,7 @@
                                                 </div>
                                                 <div class="add-dish-icon">
                                                     <paper-icon-button icon="add"
-                                                                       on-click="addDish"></paper-icon-button>
+                                                                       on-click="_addDish"></paper-icon-button>
                                                 </div>
                                             </paper-item>
                                         </div>
@@ -162,7 +157,14 @@
         </div>
     </template>
     <script>
-
+        /**
+         * meal-order-vendor-menu represents a menu of a vendor for a single day.
+         *
+         * Contains a list of categories with dish titles and prices.
+         *
+         * @customElement
+         * @polymer
+         */
         class MealOrderVendorMenu extends Polymer.Element {
             static get is() {
                 return 'meal-order-vendor-menu';
@@ -171,13 +173,20 @@
             static get properties() {
                 return {
                     /**
+                     * Fired on `add-button` click.
+                     *
+                     * @action `dish-added`
+                     * @param {dish} contains vendor, category and dish title
+                     */
+
+                    /**
                      * Menu of a vendor.
                      *
                      * @property name is name of a vendor.
                      * @property {array} categories list of categories with dishes.
                      */
                     menu: {
-                        type: Array
+                        type: Object
                     }
                 }
             }
@@ -203,9 +212,9 @@
                 this.dispatchEvent(new CustomEvent('vendor-menu-resize'));
             }
 
-            addDish(e) {
+            _addDish(e) {
                 const dish = {};
-                dish.vendor = this.menu.name;
+                dish.vendor = this.menu.vendor;
                 dish.price = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].price;
                 dish.title = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].title;
                 this.dispatchEvent(new CustomEvent('dish-added', {composed: true, detail: dish}));

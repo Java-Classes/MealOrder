@@ -18,8 +18,11 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../shell/meal-order-app-namespace.html">
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="meal-order-user-order.html">
+<link rel="import" href="../shell/redux-store.html">
+<link rel="import" href="../shell/actions/user-actions.html">
 
 <dom-module id="meal-order-user-cart">
     <template>
@@ -28,7 +31,9 @@
                 overflow-x: hidden;
                 overflow-y: auto;
                 max-height: 93vh;
+                color: var(--paper-grey-700);
             }
+
             #total {
                 display: flex;
                 justify-content: space-between;
@@ -37,16 +42,19 @@
             }
         </style>
         <div id="cart">
-            <dom-repeat items="[[order]]" as="orderByVendor">
+            <dom-repeat items="[[currentOrder.order]]" as="orderByVendor">
                 <template>
-                    <meal-order-user-order order="[[orderByVendor]]"></meal-order-user-order>
+                    <meal-order-user-order
+                            on-user-order-vendor-removed="_removeDishFromOrder"
+                            on-user-order-dish-removed="_removeDishesByVendor"
+                            current-order="[[orderByVendor]]"></meal-order-user-order>
                 </template>
             </dom-repeat>
-            <dom-if if="[[order.length]]">
+            <dom-if if="[[currentOrder.order.length]]">
                 <template>
                     <div id="total">
                         <div class="amount">Общая сумма:</div>
-                        <div class="price">[[total]] ₴</div>
+                        <div class="price">[[_getTotalAmount(currentOrder)]] ₴</div>
                     </div>
                 </template>
             </dom-if>
@@ -59,7 +67,7 @@
          * @customElement
          * @polymer
          */
-        class MealOrderUserCart extends Polymer.Element {
+        class MealOrderUserCart extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-user-cart';
             }
@@ -67,45 +75,68 @@
             static get properties() {
                 return {
                     /**
-                     * Fired on dish remove button tap.
-                     *
-                     * @event `dish-removed`
-                     * @param {dish} contains vendor, title.
+                     * Selected day.
                      */
-
-                    /**
-                     * Fired when a dish add button is tapped.
-                     *
-                     * @event `order-removed`
-                     * @param {order} contains vendor.
-                     */
-
-                    /**
-                     * Array to be displayed in a user cart.
-                     */
-                    order: {
-                        type: Array,
+                    selectedDate: {
+                        type: Date,
                     },
+
                     /**
-                     * Total cost of an order for current day.
+                     * Array to be displayed in a user's order.
                      */
-                    total: {
-                        type: Number,
-                        computed: '_getTotalAmount(order)'
-                    }
+                    currentOrder: {
+                        type: Array,
+                        statePath: 'currentOrder'
+                    },
                 }
             }
 
-            _getTotalAmount() {
+            static get actions() {
+                return {
+                    getOrderedItems: date => ({
+                        type: MealOrderApp.UserAction.GET_ORDERED_ITEMS,
+                        date
+                    }),
+                    removeVendorFromOrder: vendor => ({
+                        type: MealOrderApp.UserAction.REMOVE_VENDOR_FROM_ORDER,
+                        vendor
+                    }),
+                    removeDishFromOrder: dish => ({
+                        type: MealOrderApp.UserAction.REMOVE_DISH_FROM_ORDER,
+                        dish
+                    }),
+                }
+            }
+
+            static get observers() {
+                return [
+                    '_getCurrentOrder(selectedDate)'
+                ];
+            }
+
+            _getCurrentOrder(selectedDate) {
+                this.dispatch('getOrderedItems', new Date(selectedDate));
+            }
+
+            _getTotalAmount(currentOrder) {
                 let sum = 0;
-                for (let i = 0; i < this.order.length; i++) {
-                    for (let j = 0; j < this.order[i].dishes.length; j++) {
-                        sum += this.order[i].dishes[j].price * this.order[i].dishes[j].quantity;
+                for (let i = 0; i < currentOrder.order.length; i++) {
+                    for (let j = 0; j < currentOrder.order[i].dishes.length; j++) {
+                        sum += currentOrder.order[i].dishes[j].price * currentOrder.order[i].dishes[j].quantity;
                     }
                 }
                 return sum;
             }
+
+            _removeDishFromOrder(dish) {
+                this.dispatch('removeDishFromOrder', dish);
+            }
+
+            _removeDishesByVendor(vendor) {
+                this.dispatch('removeVendorFromOrder', vendor);
+            }
         }
+
         window.customElements.define(MealOrderUserCart.is, MealOrderUserCart);
     </script>
 </dom-module>
