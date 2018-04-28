@@ -212,7 +212,7 @@
             _addDishToOrder(e) {
                 const order = {};
                 order.dish = e.detail;
-                order.date = this.routeData.date;
+                order.date = new Date(this.routeData.date);
                 this.dispatch('addDishToOrder', order);
             }
         }
