@@ -40,14 +40,13 @@
 </test-fixture>
 
 <script>
-
     suite('meal-order-client-app', function () {
 
         setup(() => {
             mock = sinon.mock(MealOrderApp.store);
         });
 
-        test('should responds on `dish-added` event and fire `ADD_DISH_TO_ORDER` action.', function () {
+        /*test('should responds on `dish-added` event and fire `ADD_DISH_TO_ORDER` action.', function () {
             const DISH = {vendor: "Позитив", price: 15, title: "Картофель"};
             const ORDER = {};
             ORDER.dish = {vendor: "Позитив", price: 15, title: "Картофель"};
@@ -60,8 +59,7 @@
             container.dispatchEvent((new CustomEvent('dish-added', {composed: true, detail: DISH})));
             mock.verify();
             mock.restore();
-        });
-
+        });*/
     });
 </script>
 </body>

@@ -38,4 +38,25 @@
             }
         ]
     }];
+
+    MealOrderAppTest.ininitalOrder = [{
+            date: new Date('2018-03-21'),
+            order: [{
+                vendor: "Пюре",
+                dishes: [
+                    {title: 'Борщ украинский', price: 35, quantity: 1},
+                    {title: 'Солянка', price: 40, quantity: 1},
+                    {title: 'Суп гороховый', price: 40, quantity: 1},
+                    {title: 'Уха', price: 35, quantity: 1},
+                    {title: 'Суп-пюре грибной', price: 40, quantity: 1},
+                    {title: 'Суп куриный', price: 40, quantity: 1},]
+            }, {
+                vendor: 'Позитив',
+                dishes: [{title: 'Суп куриный', price: 35, quantity: 1}, {
+                    title: 'Стейк из лосося',
+                    price: 35,
+                    quantity: 1
+                }]
+            }]
+    }]
 }

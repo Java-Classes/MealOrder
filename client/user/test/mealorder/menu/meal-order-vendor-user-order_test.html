@@ -25,7 +25,7 @@
     <meta name="viewport"
           content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>meal-order-vendor-menu test</title>
+    <title>meal-order-user-order test</title>
     <link rel="import" href="../../../src/mealorder/shell/meal-order-app-namespace.html">
     <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
@@ -43,10 +43,37 @@
 </test-fixture>
 
 <script>
-    suite('meal-order-vendor-menu', function () {
+    suite('meal-order-user-order', function () {
+        let component;
 
+        setup(() => {
+            component = fixture('UserOrder');
+            component.currentOrder = MealOrderAppTest.ininitalOrder[0].order[0];
+        });
+
+        test('should fire `user-order-vendor-removed` event on `Remove vendor` icon click.', function (done) {
+            const REMOVE_VENDOR_BUTTON = 'paper-icon-button';
+            const removeVendorButton = component.shadowRoot.querySelector(REMOVE_VENDOR_BUTTON);
+            component.addEventListener('user-order-vendor-removed', function (e) {
+                assert.equal(e.detail, MealOrderAppTest.ininitalOrder[0].order[0].vendor);
+                done();
+            });
+            removeVendorButton.click();
+        });
+
+        test('should fire `user-order-dish-removed` event on `Remove dish` icon click.', function (done) {
+            flush(function () {
+                const REMOVE_DISH_BUTTON = '.dishes > .order-details > paper-icon-button';
+                const removeDishButton = component.shadowRoot.querySelectorAll(REMOVE_DISH_BUTTON)[0];
+                component.addEventListener('user-order-dish-removed', function (e) {
+                    assert.equal(e.detail.vendor, MealOrderAppTest.ininitalOrder[0].order[0].vendor);
+                    assert.equal(e.detail.name, MealOrderAppTest.ininitalOrder[0].order[0].dishes[0].title);
+                    done();
+                });
+                removeDishButton.click();
+            });
+        });
     });
 </script>
-
 </body>
 </html>
