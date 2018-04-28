@@ -63,7 +63,7 @@
                         },
                         {
                             categoryName: 'Напитки', dishes: [
-                                {title: 'Лимонад', price: 40}]
+                            {title: 'Лимонад', price: 40}]
                         }
                     ]
                 },
@@ -102,7 +102,7 @@
                         },
                         {
                             categoryName: 'Напитки', dishes: [
-                                {title: 'Лимонад', price: 40}]
+                            {title: 'Лимонад', price: 40}]
                         }
                     ]
                 },
@@ -123,7 +123,7 @@
                         },
                         {
                             categoryName: 'Напитки', dishes: [
-                                {title: 'Лимонад', price: 40}]
+                            {title: 'Лимонад', price: 40}]
                         }
                     ]
                 }],
@@ -170,11 +170,8 @@
             currentOrder: [],
 
             history: [{
-                date: {
-                    year: '2018',
-                    month: '04',
-                    day: '10',
-                }, order: [{
+                date: new Date('2018-03-20'),
+                order: [{
                     vendor: "Пюре",
                     dishes: [
                         {title: 'Борщ украинский', price: 35, quantity: 1},
@@ -192,11 +189,8 @@
                     }]
                 }]
             }, {
-                date: {
-                    year: '2018',
-                    month: '04',
-                    day: '09',
-                }, order: [{
+                date: new Date('2018-03-19'),
+                order: [{
                     vendor: "Пюре",
                     dishes: [
                         {title: 'Грибное пюре', price: 45, quantity: 1},
@@ -236,6 +230,13 @@
                     const newOrder = state.orders.find(order => order.date.getTime() === action.date.getTime());
                     return Object.assign({}, state, {
                             currentOrder: newOrder
+                        }
+                    );
+                }
+                case MealOrderApp.UserAction.GET_CURRENT_HISTORY: {
+                    const newHistory = state.history.find(history => history.date.getTime() === action.date.getTime());
+                    return Object.assign({}, state, {
+                            currentHistory: newHistory
                         }
                     );
                 }
