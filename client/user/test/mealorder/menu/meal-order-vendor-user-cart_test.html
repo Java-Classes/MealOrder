@@ -18,35 +18,50 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport"
           content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>meal-order-vendor-menu test</title>
-    <link rel="import" href="../../../src/mealorder/shell/meal-order-app-namespace.html">
+    <title>meal-order-client test</title>
+
     <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../../node_modules/redux/dist/redux.js"></script>
-    <link rel="import" href="../../../src/mealorder/menu/meal-order-user-cart.html">
     <script src="../test_variables.js"></script>
-
+    <link rel="import" href="../../../src/mealorder/menu/meal-order-user-cart.html">
 </head>
 <body>
 
-<test-fixture id="UserCart">
+<test-fixture id="MealOrderUserCart">
     <template>
         <meal-order-user-cart></meal-order-user-cart>
     </template>
 </test-fixture>
 
 <script>
-    suite('meal-order-user-cart', function () {
+    suite('meal-order-client-app', function () {
+        let component;
 
+        setup(() => {
+            component = fixture('MealOrderUserCart');
+            component.currentOrder = MealOrderAppTest.ininitalOrder[0];
+        });
+
+        test('should store order correctly', function () {
+            assert.equal(component.currentOrder.date.getTime(), new Date('2018-03-21').getTime());
+            assert.equal(component.currentOrder.order[0].vendor, "Пюре");
+            assert.equal(component.currentOrder.order[0].dishes.length, 6);
+            assert.equal(component.currentOrder.order[0].dishes[0].title, "Борщ украинский");
+            assert.equal(component.currentOrder.order[0].dishes[0].price, 35);
+            assert.equal(component.currentOrder.order[0].dishes[0].quantity, 1);
+        });
+
+        test('should calculate the total price of the order', function () {
+            assert.equal(component._getTotalAmount(component.currentOrder), 300);
+        });
     });
 </script>
-
 </body>
 </html>

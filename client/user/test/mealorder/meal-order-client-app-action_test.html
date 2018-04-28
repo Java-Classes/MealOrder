@@ -46,20 +46,23 @@
             mock = sinon.mock(MealOrderApp.store);
         });
 
-        /*test('should responds on `dish-added` event and fire `ADD_DISH_TO_ORDER` action.', function () {
+        test('should responds on `dish-added` event and fire `ADD_DISH_TO_ORDER` action.', function () {
             const DISH = {vendor: "Позитив", price: 15, title: "Картофель"};
             const ORDER = {};
             ORDER.dish = {vendor: "Позитив", price: 15, title: "Картофель"};
             ORDER.date = new Date("2018-03-21");
 
-            const expectedAction = {type: MealOrderApp.UserAction.ADD_DISH_TO_ORDER, order: ORDER};
-            mock.expects('dispatch').withArgs(expectedAction);
+            const expectedGetOrderedItemsAction = {type: MealOrderApp.UserAction.GET_ORDERED_ITEMS, date: ORDER.date};
+            const expectedAddDishToOrderAction = {type: MealOrderApp.UserAction.ADD_DISH_TO_ORDER, order: ORDER};
+
+            mock.expects('dispatch').withArgs(expectedGetOrderedItemsAction);
+            mock.expects('dispatch').withArgs(expectedAddDishToOrderAction);
             const component = fixture('MealOrderClientApp');
             const container = component.shadowRoot.querySelector('meal-order-menu-container');
             container.dispatchEvent((new CustomEvent('dish-added', {composed: true, detail: DISH})));
             mock.verify();
             mock.restore();
-        });*/
+        });
     });
 </script>
 </body>

@@ -97,14 +97,14 @@
                         type: MealOrderApp.UserAction.GET_ORDERED_ITEMS,
                         date
                     }),
+                    removeVendorFromOrder: vendor => ({
+                        type: MealOrderApp.UserAction.REMOVE_VENDOR_FROM_ORDER,
+                        vendor
+                    }),
                     removeDishFromOrder: dish => ({
                         type: MealOrderApp.UserAction.REMOVE_DISH_FROM_ORDER,
                         dish
                     }),
-                    removeVendorFromOrder: vendor => ({
-                        type: MealOrderApp.UserAction.REMOVE_VENDOR_FROM_ORDER,
-                        vendor
-                    })
                 }
             }
 
