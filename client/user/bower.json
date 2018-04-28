@@ -15,7 +15,8 @@
     "iron-list": "PolymerElements/iron-list#^2.0.14",
     "paper-item": "PolymerElements/paper-item#^2.1.0",
     "paper-button": "PolymerElements/paper-button#^2.1.0",
-    "app-datepicker": "motss/app-datepicker#^2.12.0"
+    "app-datepicker": "motss/app-datepicker#^2.12.0",
+    "paper-search": "Collaborne/paper-search#^2.0.9"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
