@@ -22,8 +22,8 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-form/iron-form.html">
-<link rel="import" href="../dialog/admin-vendor-manage-dialog.html">
-<link rel="import" href="../shell/actions/admin-actions.html">
+<link rel="import" href="../shell/meal-order-admin-app-namespace.html">
+<link rel="import" href="../shell/redux-store.html">
 
 <dom-module id="meal-order-vendor-list">
     <template>
@@ -225,27 +225,31 @@
 
             static get actions() {
                 return {
-                    vendorManage: properties => ({
-                        type: ArrayAction.OPEN_VENDOR_MANAGE,
-                        properties
-                    }),
-                    removeVendor: vendor => ({
-                        type: ArrayAction.REMOVE_VENDOR,
-                        vendor
-                    }),
+                    vendorManage: function (properties) {
+                        return {
+                            type: MealOrderAdminApp.AdminActions.OPEN_VENDOR_DIALOG,
+                            properties
+                        }
+                    },
+                    removeVendor: function (title) {
+                        return {
+                            type: MealOrderAdminApp.AdminActions.REMOVE_VENDOR,
+                            title
+                        }
+                    }
                 }
             }
 
             _addVendorDialog() {
                 const properties = {};
-                properties.tagName = AdminVendorManageDialog.is;
+                properties.tagName = MealOrderAdminApp.AdminVendorManageDialog.is;
                 properties.mode = 'add';
                 this.dispatch('vendorManage', properties);
             }
 
             _editVendor(e) {
                 const properties = {};
-                properties.tagName = AdminVendorManageDialog.is;
+                properties.tagName = MealOrderAdminApp.AdminVendorManageDialog.is;
                 properties.mode = 'update';
                 const inputData = {};
                 inputData.newTitle = this.vendors[e.model.index].title;

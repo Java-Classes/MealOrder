@@ -18,10 +18,10 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../meal-order-admin-app-namespace.html">
-
+<link rel="import" href="../actions/admin-actions.html">
 <script>
     {
-        const initialState = {
+        MealOrderAdminApp.initialState = {
             vendors: [
                 {
                     title: 'Пюре',
@@ -38,25 +38,25 @@
 
         MealOrderAdminApp.reducer = (state, action) => {
             if (!state) {
-                return initialState;
+                return MealOrderAdminApp.initialState;
             }
             switch (action.type) {
-                case ArrayAction.OPEN_VENDOR_MANAGE: {
+                case MealOrderAdminApp.AdminActions.OPEN_VENDOR_DIALOG: {
                     return Object.assign({}, state, {
                             currentDialog: action.properties
                         }
                     );
                 }
-                case ArrayAction.CLOSE_VENDOR_MANAGE: {
+                case MealOrderAdminApp.AdminActions.CLOSE_VENDOR_DIALOG: {
                     return Object.assign({}, state, {
                             currentDialog: {}
                         }
                     );
                 }
-                case ArrayAction.ADD_VENDOR: {
+                case MealOrderAdminApp.AdminActions.ADD_VENDOR: {
                     return state;
                 }
-                case ArrayAction.REMOVE_VENDOR: {
+                case MealOrderAdminApp.AdminActions.REMOVE_VENDOR: {
                     return state;
                 }
                 default :
@@ -64,5 +64,4 @@
             }
         }
     }
-
 </script>
