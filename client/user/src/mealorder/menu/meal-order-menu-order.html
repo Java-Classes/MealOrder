@@ -26,7 +26,7 @@
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
 
-<link rel="import" href="meal-order-user-history.html">
+<link rel="import" href="../history/meal-order-user-history.html">
 <link rel="import" href="../menu/meal-order-vendor-menus.html">
 <dom-module id="meal-order-menu-order">
     <template>
@@ -108,7 +108,7 @@
             </template>
         </paper-tabs>
 
-        <meal-order-vendor-menus items="[[menu]]" on-dish-added="addDishToOrder"></meal-order-vendor-menus>
+        <meal-order-vendor-menus menu-for-day="[[menu]]" on-dish-added="addDishToOrder"></meal-order-vendor-menus>
 
     </template>
     <script>

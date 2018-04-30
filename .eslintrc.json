@@ -51,6 +51,7 @@
     "fixture": false,
     "setup": false,
     "flush": false,
-    "sinon": false
+    "sinon": false,
+    "mock": true
   }
 }

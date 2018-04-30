@@ -17,16 +17,20 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../shell/redux-store.html">
+<link rel="import" href="../shell/actions/user-actions.html">
+
 <dom-module id="meal-order-user-history">
     <template>
         <style>
             #history {
                 width: 70%;
-                margin: 3% auto;
+                margin: 3% auto 0 auto;
+                color: var(--paper-grey-700);
+                padding-bottom: 3%;
             }
 
             #title-for-mobile {
@@ -36,12 +40,13 @@
             .header {
                 display: flex;
                 justify-content: space-between;
-                background-color: var(--paper-grey-300);
-                height: 40px;
+                background-color: var(--paper-grey-200);
+                height: 50px;
                 align-items: center;
             }
 
             .vendor-title {
+                color: var(--paper-grey-900);
                 font-size: 22px;
                 font-weight: bolder;
                 margin-top: 2%;
@@ -69,7 +74,7 @@
                 display: flex;
                 justify-content: space-between;
                 background-color: #FFFFFF;
-                height: 40px;
+                height: 50px;
                 margin-bottom: 2px;
                 align-items: center;
             }
@@ -108,18 +113,15 @@
         </style>
         <div id="history">
             <div id="title-for-mobile">История заказов</div>
-
-            <iron-list items="[[cart]]" as="item">
+            <iron-list items="[[currentHistory.order]]" as="item">
                 <template>
                     <div>
                         <div class="vendor-title">[[item.vendor]]</div>
-
                         <div class="header">
                             <div class="history-title">Наименование</div>
-                            <div class="history-price">Цена</div>
+                            <div class="history-price">Цена, ₴</div>
                             <div class="history-quantity">Количество</div>
                         </div>
-
                         <dom-repeat items="[[item.dishes]]" as="dish">
                             <template>
                                 <div class="dishes">
@@ -132,9 +134,9 @@
                     </div>
                 </template>
             </iron-list>
-            <dom-if if="[[totalSum]]">
+            <dom-if if="[[currentHistory.order]]">
                 <template>
-                    <div class="total-sum">Общая сумма: [[totalSum]] ₴</div>
+                    <div class="total-sum">Общая сумма: [[_getTotalPrice(currentHistory)]] ₴</div>
                 </template>
             </dom-if>
         </div>
@@ -146,7 +148,7 @@
          * @customElement
          * @polymer
          */
-        class MealOrderUserHistory extends Polymer.Element {
+        class MealOrderUserHistory extends MealOrderApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'meal-order-user-history';
             }
@@ -154,34 +156,56 @@
             static get properties() {
                 return {
                     /**
+                     * Selected day.
+                     */
+                    selectedDate: {
+                        type: Object,
+                    },
+
+                    /**
                      * An array containing items to be displayed.
                      */
-                    cart: {
-                        type: Array
+                    currentHistory: {
+                        type: Object,
+                        statePath: 'currentHistory',
                     },
-                    /**
-                     * Total amount of the order.
-                     */
-                    totalSum: {
-                        type: Number,
-                        computed: '_getTotalSum(cart)',
-                    }
+
                 }
             }
 
-            _getTotalSum(cart) {
-                let totalSum = 0;
-                for (let i = 0; i < cart.length; i++) {
-                    const dishes = cart[i].dishes;
+            static get actions() {
+                return {
+                    getCurrentHistory: date => ({
+                        type: MealOrderApp.UserAction.GET_CURRENT_HISTORY,
+                        date
+                    }),
+                }
+            }
+
+            static get observers() {
+                return [
+                    '_getCurrentHistory(selectedDate)'
+                ];
+            }
+
+            _getCurrentHistory(selectedDate) {
+                this.dispatch('getCurrentHistory', new Date(selectedDate));
+            }
+
+            _getTotalPrice(currentHistory) {
+                let totalPrice = 0;
+                for (let i = 0; i < currentHistory.order.length; i++) {
+                    const dishes = currentHistory.order[i].dishes;
                     let sum = 0;
                     for (let i = 0; i < dishes.length; i++) {
                         sum += (dishes[i].price) * dishes[i].quantity;
                     }
-                    totalSum += sum;
+                    totalPrice += sum;
                 }
-                return totalSum;
+                return totalPrice;
             }
         }
+
         window.customElements.define(MealOrderUserHistory.is, MealOrderUserHistory);
     </script>
 </dom-module>

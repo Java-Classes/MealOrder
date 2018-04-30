@@ -31,7 +31,6 @@
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../../node_modules/redux/dist/redux.js"></script>
     <link rel="import" href="../../../src/mealorder/menu/meal-order-drawer.html">
-
 </head>
 <body>
 
@@ -42,11 +41,6 @@
 </test-fixture>
 
 <script>
-    function setLocation(url) {
-        window.history.pushState({}, '', url);
-        Polymer.Base.fire('location-changed', {}, {node: window});
-    }
-
     suite('meal-order-drawer', function () {
         let component;
 
@@ -54,32 +48,11 @@
             component = fixture('MealOrderDrawer');
         });
 
-        test('should parse `routeData.page` correctly', function () {
-            setLocation('/#/history/');
-            assert.equal('history', component.routeData.page);
-            setLocation('/#/menu/');
-            assert.equal('menu', component.routeData.page);
-        });
-
         test('should instantiate the `meal-order-drawer` component', function (done) {
             const elementShadowRoot = component.shadowRoot;
             const datePicker = elementShadowRoot.querySelector("app-datepicker");
             assert.equal(datePicker.tagName.toLocaleLowerCase(), "app-datepicker");
             done();
-        });
-
-        test('should fire `changed-history-date` event on the changed URL ' +
-            ' with the `history` routing and the date', function (done) {
-            component.addEventListener('changed-history-date', function (e) {
-                const date = {};
-                date.year = 2018;
-                date.month = 4;
-                date.day = 20;
-                assert.deepEqual(e.detail, date);
-                done();
-            });
-            setLocation('/#/menu/');
-            setLocation('/#/history/2018-4-20');
         });
 
         test('should change URL by selecting the date in the calendar with `history` routing', function (done) {
@@ -92,7 +65,51 @@
                 assert.equal(datePicker.inputDate , STRING_DATE);
                 done();
             });
-            setLocation('/#/history/');
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `menu`' +
+            ' and the component `app-toolbar-content` with routing title', function (done) {
+            const newRouteData = {};
+            newRouteData.page = "menu";
+            component.routeData = newRouteData;
+            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
+            pages.forceSynchronousItemUpdate();
+            const drawerTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
+            flush(function () {
+                assert.equal(drawerTitle, 'Заказ');
+                done();
+            });
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `menu`' +
+            ' and day, and day of the week', function (done) {
+            const newRouteData = {};
+            newRouteData.page = "menu";
+            newRouteData.date = "2018-04-20";
+            component.routeData = newRouteData;
+            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
+            pages.forceSynchronousItemUpdate();
+            const day = pages.querySelector("#day").innerHTML;
+            const dayOfTheWeek = pages.querySelector("#day-of-the-week").innerHTML;
+            flush(function () {
+                assert.equal(dayOfTheWeek, 'пятница');
+                assert.equal(day, '20');
+                done();
+            });
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `history`' +
+            ' and the component `app-toolbar-content` with routing title', function (done) {
+            const newRouteData = {};
+            newRouteData.page = "history";
+            component.routeData = newRouteData;
+            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
+            pages.forceSynchronousItemUpdate();
+            const drawerTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
+            flush(function () {
+                assert.equal(drawerTitle, 'История заказов');
+                done();
+            });
         });
 
     });

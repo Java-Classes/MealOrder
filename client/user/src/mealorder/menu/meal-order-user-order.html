@@ -61,6 +61,8 @@
             <paper-icon-button icon="delete" class="icon-delete"
                                on-click="_removeDishesByVendor"></paper-icon-button>
         </div>
+
+        <div class="dishes">
         <dom-repeat items="[[currentOrder.dishes]]" as="dish">
             <template>
                 <div class="order-details">
@@ -71,6 +73,8 @@
                 </div>
             </template>
         </dom-repeat>
+            <
+        </div>
     </template>
     <script>
         /**

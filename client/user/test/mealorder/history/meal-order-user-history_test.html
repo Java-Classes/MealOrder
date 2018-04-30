@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <!--
   ~ Copyright 2018, TeamDev Ltd. All rights reserved.
   ~
@@ -25,43 +25,50 @@
     <meta name="viewport"
           content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>meal-order-menu-container test</title>
+    <title>meal-order-user-history test</title>
 
+    <link rel="import" href="../../../src/mealorder/shell/meal-order-app-namespace.html">
     <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../../node_modules/redux/dist/redux.js"></script>
-    <link rel="import" href="../../../src/mealorder/menu/meal-order-menu-container.html">
+    <script src="../test_variables.js"></script>
+    <link rel="import" href="../../../src/mealorder/history/meal-order-user-history.html">
+
 </head>
 <body>
 
-<test-fixture id="MealOrderMenuContainer">
+<test-fixture id="UserHistory">
     <template>
-        <meal-order-menu-container></meal-order-menu-container>
+        <meal-order-user-history></meal-order-user-history>
     </template>
 </test-fixture>
 
 <script>
-    suite('meal-order-menu-container', function () {
+    suite('meal-order-vendor-menu', function () {
         let component;
 
         setup(() => {
-            component = fixture('MealOrderMenuContainer');
+            component = fixture('UserHistory');
+            component.selectedDate = new Date('2018-03-20');
+            component.currentHistory = MealOrderAppTest.ininitalHistory[0];
         });
 
-        test('should instantiate the component `paper-tabs`', function (done) {
-            flush(function () {
-                const elementShadowRoot = component.shadowRoot;
-                const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-                assert.equal(paperTabs.id, 'paper-tabs');
-                done();
-            });
+        test('should store history correctly', function () {
+            const NUMBER_OF_DISHES = 6;
+            const PRICE = 35;
+            const QUANTITY = 1;
+            assert.equal(component.currentHistory.date.getTime(), new Date('2018-03-20').getTime());
+            assert.equal(component.currentHistory.order[0].vendor, "Пюре");
+            assert.equal(component.currentHistory.order[0].dishes.length, NUMBER_OF_DISHES);
+            assert.equal(component.currentHistory.order[0].dishes[0].title, "Борщ украинский");
+            assert.equal(component.currentHistory.order[0].dishes[0].price, PRICE);
+            assert.equal(component.currentHistory.order[0].dishes[0].quantity, QUANTITY);
+
         });
 
-        test('should select the paper-tab by the selected day', function () {
-            const elementShadowRoot = component.shadowRoot;
-            const paperTabs = elementShadowRoot.querySelector("#paper-tabs");
-            component.selectedDate = new Date("2018-03-23");
-            assert.equal(component.selectedDate, paperTabs.selected);
+        test('should calculate the total price of the order', function () {
+            const TOTAL_PRICE = 300;
+            assert.equal(component._getTotalPrice(component.currentHistory), TOTAL_PRICE);
         });
     });
 </script>

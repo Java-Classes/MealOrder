@@ -22,6 +22,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="meal-order-user-order.html">
 <link rel="import" href="../shell/redux-store.html">
+<link rel="import" href="../shell/actions/user-actions.html">
 
 <dom-module id="meal-order-user-cart">
     <template>
@@ -30,6 +31,7 @@
                 overflow-x: hidden;
                 overflow-y: auto;
                 max-height: 93vh;
+                color: var(--paper-grey-700);
             }
 
             #total {
@@ -75,8 +77,8 @@
                     /**
                      * Selected day.
                      */
-                    date: {
-                        type: Object,
+                    selectedDate: {
+                        type: Date,
                     },
 
                     /**
@@ -95,25 +97,25 @@
                         type: MealOrderApp.UserAction.GET_ORDERED_ITEMS,
                         date
                     }),
+                    removeVendorFromOrder: vendor => ({
+                        type: MealOrderApp.UserAction.REMOVE_VENDOR_FROM_ORDER,
+                        vendor
+                    }),
                     removeDishFromOrder: dish => ({
                         type: MealOrderApp.UserAction.REMOVE_DISH_FROM_ORDER,
                         dish
                     }),
-                    removeDishesByVendor: vendor => ({
-                        type: MealOrderApp.UserAction.REMOVE_DISHES_BY_VENDOR,
-                        vendor
-                    })
                 }
             }
 
             static get observers() {
                 return [
-                    '_getCurrentOrder(date)'
+                    '_getCurrentOrder(selectedDate)'
                 ];
             }
 
-            _getCurrentOrder(date) {
-                this.dispatch('getOrderedItems', new Date(date));
+            _getCurrentOrder(selectedDate) {
+                this.dispatch('getOrderedItems', new Date(selectedDate));
             }
 
             _getTotalAmount(currentOrder) {
@@ -131,7 +133,7 @@
             }
 
             _removeDishesByVendor(vendor) {
-                this.dispatch('removeDishesByVendor', vendor);
+                this.dispatch('removeVendorFromOrder', vendor);
             }
         }
 
