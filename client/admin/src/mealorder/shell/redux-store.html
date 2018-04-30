@@ -23,13 +23,13 @@
 <script>
     {
         /* global Redux, PolymerRedux */
-        const store = Redux.createStore(MealOrderApp.reducer);
-        MealOrderApp.store = store;
+        const store = Redux.createStore(MealOrderAdminApp.reducer);
+        MealOrderAdminApp.store = store;
         /**
          * Redux mixin holds a state of the application.
          * @polymer
          * @mixinFunction
          */
-        MealOrderApp.ReduxMixin = PolymerRedux(MealOrderApp.store);
+        MealOrderAdminApp.ReduxMixin = PolymerRedux(MealOrderAdminApp.store);
     }
 </script>
