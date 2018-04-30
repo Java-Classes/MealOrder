@@ -29,6 +29,16 @@
 <dom-module id="meal-order-vendor-list">
     <template>
         <style>
+            #header {
+                @apply --layout-horizontal;
+                display: flex;
+                cursor: pointer;
+                justify-content: space-between;
+                align-items: center;
+                margin: 4% auto 0 auto;
+                width: 70%;
+            }
+
             iron-list {
                 --iron-list-items-container: {
                 };
@@ -107,16 +117,6 @@
                 width: 70%;
             }
 
-            #upper {
-                @apply --layout-horizontal;
-                display: flex;
-                cursor: pointer;
-                justify-content: space-between;
-                align-items: center;
-                margin: 4% auto 0 auto;
-                width: 70%;
-            }
-
             paper-icon-button.add-vendor {
                 --paper-icon-button: {
                     --iron-icon-fill-color: white;
@@ -145,7 +145,7 @@
             }
 
             @media only screen and (max-width: 1024px) {
-                #upper {
+                #header {
                     width: 98%;
                 }
 
@@ -163,7 +163,7 @@
                     font-size: 16px;
                 }
 
-                #upper {
+                #header {
                     width: 98%;
                 }
 
@@ -172,7 +172,7 @@
                 }
             }
         </style>
-        <div id="upper">
+        <div id="header">
             <h1>Поставщики</h1>
             <paper-icon-button icon="add" class="add-vendor" on-click="_addVendorDialog"></paper-icon-button>
         </div>
