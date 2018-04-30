@@ -170,14 +170,15 @@
             </app-header-layout>
         </app-drawer-layout>
     </template>
-
     <script>
-        class MealOrderAdminApp extends Polymer.Element {
-            static get is() {
-                return 'meal-order-admin-app';
+        {
+            class MealOrderAdminApp extends Polymer.Element {
+                static get is() {
+                    return 'meal-order-admin-app';
+                }
             }
-        }
 
-        window.customElements.define(MealOrderAdminApp.is, MealOrderAdminApp);
+            window.customElements.define(MealOrderAdminApp.is, MealOrderAdminApp);
+        }
     </script>
 </dom-module>
