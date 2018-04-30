@@ -47,7 +47,7 @@
             mock = sinon.mock(MealOrderApp.store);
         });
 
-        test('should responds on `vendor-removed` event and fire `REMOVE_VENDOR_FROM_ORDER` action.', function (done) {
+        test('should respond on `vendor-removed` event and fire `REMOVE_VENDOR_FROM_ORDER` action.', function (done) {
             const DATE = new Date("2018-03-21");
             const VENDOR = "Пюре";
 
@@ -61,17 +61,17 @@
             };
 
             mock.expects('dispatch').withArgs(expectedGetOrderedItemsAction);
+            mock.expects('dispatch').withArgs(expectedRemoveVendorFromOrderAction);
 
             const component = fixture('MealOrderUserCart');
             component.selectedDate = new Date("2018-03-21");
             component.currentOrder = MealOrderAppTest.ininitalOrder[0];
-            mock.verify();
+
             let userOrder;
             flush(function () {
-                mock.expects('dispatch').withArgs(expectedRemoveVendorFromOrderAction);
-                // mock.verify();
                 userOrder = component.shadowRoot.querySelector('meal-order-user-order');
                 userOrder.dispatchEvent((new CustomEvent('user-order-vendor-removed', {detail: VENDOR})));
+                mock.verify();
                 done();
             });
         });
@@ -79,27 +79,28 @@
         test('should responds on `dish-removed` event and fire `REMOVE_DISH_FROM_ORDER` action.', function (done) {
             const DATE = new Date("2018-03-21");
             const DISH = {vendor: "Пюре", name: "Борщ украинский"};
+
             const expectedGetOrderedItemsAction = {
                 type: MealOrderApp.UserAction.GET_ORDERED_ITEMS,
                 date: DATE
             };
             const expectedRemoveDishFromOrderAction = {
                 type: MealOrderApp.UserAction.REMOVE_DISH_FROM_ORDER,
-                vendor: DISH
+                dish: DISH
             };
 
             mock.expects('dispatch').withArgs(expectedGetOrderedItemsAction);
+            mock.expects('dispatch').withArgs(expectedRemoveDishFromOrderAction);
 
             const component = fixture('MealOrderUserCart');
             component.selectedDate = new Date("2018-03-21");
             component.currentOrder = MealOrderAppTest.ininitalOrder[0];
-            mock.verify();
+
             let userOrder;
             flush(function () {
-                mock.expects('dispatch').withArgs(expectedRemoveDishFromOrderAction);
-                // mock.verify();
                 userOrder = component.shadowRoot.querySelector('meal-order-user-order');
                 userOrder.dispatchEvent((new CustomEvent('user-order-dish-removed', {detail: DISH})));
+                mock.verify();
                 done();
             });
         });

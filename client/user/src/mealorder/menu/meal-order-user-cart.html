@@ -17,7 +17,7 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<!--<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>-->
 <link rel="import" href="../shell/meal-order-app-namespace.html">
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="./meal-order-user-order.html">
@@ -42,22 +42,18 @@
             }
         </style>
         <div id="cart">
-            <dom-repeat items="[[currentOrder.order]]" as="orderByVendor">
-                <template>
-                    <meal-order-user-order
-                            on-user-order-vendor-removed="_removeDishFromOrder"
-                            on-user-order-dish-removed="_removeDishesByVendor"
-                            current-order="[[orderByVendor]]"></meal-order-user-order>
-                </template>
-            </dom-repeat>
-            <dom-if if="[[currentOrder.order.length]]">
-                <template>
-                    <div id="total">
-                        <div class="amount">Общая сумма:</div>
-                        <div class="price">[[_getTotalAmount(currentOrder)]] ₴</div>
-                    </div>
-                </template>
-            </dom-if>
+            <template is="dom-repeat" items="[[currentOrder.order]]" as="orderByVendor">
+                <meal-order-user-order
+                        on-user-order-vendor-removed="_removeDishesByVendor"
+                        on-user-order-dish-removed="_removeDishFromOrder"
+                        current-order="[[orderByVendor]]"></meal-order-user-order>
+            </template>
+            <template is="dom-if" if="[[currentOrder.order.length]]">
+                <div id="total">
+                    <div class="amount">Общая сумма:</div>
+                    <div class="price">[[_getTotalAmount(currentOrder)]] ₴</div>
+                </div>
+            </template>
         </div>
     </template>
     <script>
@@ -97,7 +93,7 @@
                         type: MealOrderApp.UserAction.GET_ORDERED_ITEMS,
                         date
                     }),
-                    removeVendorFromOrder: vendor => ({
+                    removeDishesByVendor: vendor => ({
                         type: MealOrderApp.UserAction.REMOVE_VENDOR_FROM_ORDER,
                         vendor
                     }),
@@ -128,12 +124,13 @@
                 return sum;
             }
 
-            _removeDishFromOrder(dish) {
-                this.dispatch('removeDishFromOrder', dish);
+            _removeDishFromOrder(event) {
+
+                this.dispatch('removeDishFromOrder', event.detail);
             }
 
-            _removeDishesByVendor(vendor) {
-                this.dispatch('removeVendorFromOrder', vendor);
+            _removeDishesByVendor(event) {
+                this.dispatch('removeDishesByVendor', event.detail);
             }
         }
 

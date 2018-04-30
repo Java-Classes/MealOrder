@@ -17,7 +17,7 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<!--<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>-->
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
@@ -62,8 +62,7 @@
                                on-click="_removeDishesByVendor"></paper-icon-button>
         </div>
         <div class="dishes">
-        <dom-repeat items="[[currentOrder.dishes]]" as="dish">
-            <template>
+            <template is="dom-repeat" items="[[currentOrder.dishes]]" as="dish">
                 <div class="order-details">
                     <div class="order-title">[[dish.title]]</div>
                     <div class="order-price">[[dish.price]] ₴</div>
@@ -71,7 +70,6 @@
                     <paper-icon-button icon="remove" on-click="_removeDish"></paper-icon-button>
                 </div>
             </template>
-        </dom-repeat>
         </div>
     </template>
     <script>
