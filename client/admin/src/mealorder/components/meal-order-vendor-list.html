@@ -219,8 +219,17 @@
                 }
             };
 
+            static get actions() {
+                return {
+                    removeVendor: vendor => ({
+                        type: MealOrderAdminApp.ArrayAction.REMOVE_VENDOR,
+                        vendor
+                    }),
+                }
+            }
+
             _removeVendor(e) {
-                this.dispatchEvent(new CustomEvent('remove-vendor', {detail: e.model.index}));
+                this.dispatch("removeVendor", this.vendors[e.model.index].title);
             }
         }
 
