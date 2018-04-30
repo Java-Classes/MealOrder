@@ -17,14 +17,13 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
 <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
-<link rel="import" href="meal-order-vendor-menu.html">
+<link rel="import" href="./meal-order-vendor-menu.html">
 
 <dom-module id="meal-order-vendor-menus">
     <template>
@@ -39,8 +38,8 @@
 
             paper-search-bar {
                 margin: 0 auto;
+                height: 50px;
                 width: 70%;
-                border-radius: 5px;
                 background-color: white;
             }
 
@@ -77,6 +76,7 @@
 
                 iron-list {
                     --iron-list-items-container: {
+                        color: var(--paper-grey-700);
                         margin: 4% auto;
                         width: 100%;
                     }

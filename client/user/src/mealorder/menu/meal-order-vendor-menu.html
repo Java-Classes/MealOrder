@@ -35,15 +35,7 @@
                 border-bottom: 1px solid var(--paper-grey-200);
             }
 
-            .menu-dishes {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border-top: 1px solid var(--paper-grey-50);
-                border-bottom: 1px solid var(--paper-grey-50);
-            }
-
-            .wrapper {
+            .menu-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -59,6 +51,10 @@
                 padding: 2px 1% 2px 2%;
             }
 
+            .menu-dishes {
+                height: 50px;
+            }
+
             .bold {
                 font-weight: bold;
             }
@@ -70,7 +66,7 @@
             }
 
             .dish-price {
-                width: 50px;
+                width: 60px;
                 text-align: right;
             }
 
@@ -117,20 +113,19 @@
                     <dom-if if="[[item.dishes.length]]">
                         <template>
                             <div>
-                                <div class="wrapper">
+                                <div class="menu-header">
                                     <paper-item>
                                         <div class="dish-title bold">
                                             [[item.categoryName]]
                                         </div>
                                         <div class="dish-price bold">
-                                            Цена
+                                            Цена, ₴
                                         </div>
                                         <div class="add-dish-icon">
 
                                         </div>
                                     </paper-item>
                                 </div>
-
                                 <dom-repeat items="[[item.dishes]]" as="dish">
                                     <template>
                                         <div class="menu-dishes">
@@ -139,7 +134,7 @@
                                                     [[dish.title]]
                                                 </div>
                                                 <div class="dish-price">
-                                                    [[dish.price]]₴
+                                                    [[dish.price]]
                                                 </div>
                                                 <div class="add-dish-icon">
                                                     <paper-icon-button icon="add"
