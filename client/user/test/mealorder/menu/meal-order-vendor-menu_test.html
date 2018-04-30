@@ -18,7 +18,6 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -37,7 +36,7 @@
 </head>
 <body>
 
-<test-fixture id="SimpleMenu">
+<test-fixture id="VendorMenu">
     <template>
         <meal-order-vendor-menu></meal-order-vendor-menu>
     </template>
@@ -48,19 +47,19 @@
         let component;
 
         setup(() => {
-            component = fixture('SimpleMenu');
+            component = fixture('VendorMenu');
             component.menu = MealOrderAppTest.initialMenu[0];
         });
 
         test('should store menu correctly', function () {
             const CATEGORIES = 2;
-            const DISHES_LENGTH = 5;
+            const NUMBER_OF_DISHES = 5;
             const DISH_COST = 35;
 
             assert.equal(component.menu.vendor, 'Пюре');
             assert.equal(component.menu.categories.length, CATEGORIES);
             assert.equal(component.menu.categories[0].categoryName, 'Первое блюдо');
-            assert.equal(component.menu.categories[0].dishes.length, DISHES_LENGTH);
+            assert.equal(component.menu.categories[0].dishes.length, NUMBER_OF_DISHES);
             assert.equal(component.menu.categories[0].dishes[0].title, 'Суп гречневый');
             assert.equal(component.menu.categories[0].dishes[0].price, DISH_COST);
         });
@@ -76,7 +75,8 @@
 
         test('should send `add-dish` event', function (done) {
             flush(function () {
-                const addButton = component.shadowRoot.querySelector('#menu > div:nth-child(1) > div:nth-child(3) > paper-item > .add-dish-icon > paper-icon-button');
+                const ADD_BUTTON = "#menu > div:nth-child(1) > div:nth-child(3) > paper-item > .add-dish-icon > paper-icon-button";
+                const addButton = component.shadowRoot.querySelector(ADD_BUTTON);
                 component.addEventListener('dish-added', function () {
                     done();
                 });
