@@ -21,7 +21,21 @@
 
 <script>
     {
-        const initialState = {};
+        const initialState = {
+            vendors: [
+                {
+                    title: 'Пюре',
+                    phone: '050-12-45-876',
+                    email: 'smashpotato@gmail.com',
+                    deadline: '11:00'
+                }, {
+                    title: 'Позитив',
+                    phone: '050-14-88-322',
+                    email: 'Positiv@gmail.com',
+                    deadline: '10:00'
+                }]
+        };
+
         MealOrderAdminApp.reducer = (state, action) => {
             if (!state) {
                 return initialState;

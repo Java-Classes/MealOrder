@@ -33,6 +33,7 @@
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="./components/meal-order-vendor-list.html">
 
 <dom-module id="meal-order-admin-app">
     <template>
@@ -161,9 +162,8 @@
                         attr-for-selected="data-page"
                         fallback-selection="view404"
                         role="main">
-                    <!--
-                    <vendor-list data-page="vendor"></vendor-list>
-                    <admin-vendor-menus data-page="menu"></admin-vendor-menus>
+                    <meal-order-vendor-list data-page="vendor"></meal-order-vendor-list>
+                    <!--<admin-vendor-menus data-page="menu"></admin-vendor-menus>
                     <monthly-spending data-page="costs"></monthly-spending>
                     <vendor-orders data-page="order"></vendor-orders>-->
                 </iron-pages>
