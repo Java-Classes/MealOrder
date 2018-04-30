@@ -1,0 +1,12 @@
+{
+  "name": "MealOrder-Admin",
+  "version": "1.0.0",
+  "description": "Admin application for meal order",
+  "scripts": {
+    "test": "polymer test",
+    "postinstall": "bower install"
+  },
+  "dependencies": {
+    "redux": "^3.6.0"
+  }
+}
