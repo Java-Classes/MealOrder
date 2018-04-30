@@ -21,10 +21,9 @@
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../bower_components/gold-phone-input/gold-phone-input.html">
 <link rel="import" href="../../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../dialog/admin-vendor-manage-dialog.html">
+<link rel="import" href="../shell/actions/admin-actions.html">
 
 <dom-module id="meal-order-vendor-list">
     <template>
@@ -139,6 +138,7 @@
                     width: 15%;
                     text-align: right;
                 }
+
                 .icons {
                     width: 12%;
                 }
@@ -174,7 +174,8 @@
         </style>
         <div id="header">
             <h1>Поставщики</h1>
-            <paper-icon-button icon="add" class="add-vendor" on-click="_addVendorDialog"></paper-icon-button>
+            <paper-icon-button icon="add" class="add-vendor"
+                               on-click="_addVendorDialog"></paper-icon-button>
         </div>
         <div id="main-content">
             <div class="item non-select header">
@@ -184,7 +185,8 @@
                 <div class="deadline">Заказать до</div>
                 <div class="icons"></div>
             </div>
-            <iron-list id="list" items="[[vendors]]" as="vendor" scroll-target="document" scroll-offset="200">
+            <iron-list id="list" items="[[vendors]]" as="vendor" scroll-target="document"
+                       scroll-offset="200">
                 <template>
                     <div class="non-select">
                         <div class="item">
@@ -194,8 +196,10 @@
                             <div class="deadline">[[vendor.deadline]]</div>
                             <div class="icons">
                                 <div class="icons-container">
-                                    <paper-icon-button icon="create" on-click="_editVendor"></paper-icon-button>
-                                    <paper-icon-button icon="close" on-click="_removeVendor"></paper-icon-button>
+                                    <paper-icon-button icon="create"
+                                                       on-click="_editVendor"></paper-icon-button>
+                                    <paper-icon-button icon="close"
+                                                       on-click="_removeVendor"></paper-icon-button>
                                 </div>
                             </div>
                         </div>
@@ -221,11 +225,35 @@
 
             static get actions() {
                 return {
+                    vendorManage: properties => ({
+                        type: ArrayAction.OPEN_VENDOR_MANAGE,
+                        properties
+                    }),
                     removeVendor: vendor => ({
-                        type: MealOrderAdminApp.ArrayAction.REMOVE_VENDOR,
+                        type: ArrayAction.REMOVE_VENDOR,
                         vendor
                     }),
                 }
+            }
+
+            _addVendorDialog() {
+                const properties = {};
+                properties.tagName = AdminVendorManageDialog.is;
+                properties.mode = 'add';
+                this.dispatch('vendorManage', properties);
+            }
+
+            _editVendor(e) {
+                const properties = {};
+                properties.tagName = AdminVendorManageDialog.is;
+                properties.mode = 'update';
+                const inputData = {};
+                inputData.newTitle = this.vendors[e.model.index].title;
+                inputData.newMail = this.vendors[e.model.index].email;
+                inputData.phone = this.vendors[e.model.index].phone;
+                inputData.deadline = this.vendors[e.model.index].deadline;
+                properties.inputData = inputData;
+                this.dispatch('vendorManage', properties);
             }
 
             _removeVendor(e) {

@@ -1,0 +1,295 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/gold-phone-input/gold-phone-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="admin-vendor-manage-dialog">
+    <template>
+        <style>
+            .non-select {
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;
+                /* Non-prefixed version, currently supported by Chrome and Opera */
+            }
+
+            #dialog {
+                max-height: 500px;
+            }
+
+            #dialog-content {
+                display: flex;
+                flex-direction: column;
+                width: 50vh;
+                min-width: 400px;
+            }
+
+            paper-dialog.size-position {
+                height: 100%;
+                position: fixed;
+                top: 40%;
+                left: 50%;
+                transform: translate(-57%, -50%);
+                color: var(--google-grey-700);
+            }
+
+            paper-input {
+                margin-top: 5%;
+            }
+
+            paper-input .time {
+                margin-top: 1%;
+            }
+
+            gold-phone-input {
+                margin-top: 5%;
+                margin-bottom: 5%;
+            }
+
+            #time {
+                width: 25%;
+            }
+
+            .buttons {
+                margin-top: 5%;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .confirm {
+                background-color: #0085d3;
+                color: white;
+            }
+
+            @media only screen and (max-width: 1024px) {
+
+                #dialog-content {
+                    width: auto;
+
+                }
+
+                #dialog {
+                    max-width: 450px;
+                    width: 100vh;
+                }
+
+                .buttons {
+                    margin-top: 10%;
+                }
+            }
+
+            @media only screen and (max-width: 660px) {
+
+                #dialog-content {
+                    width: 50vh;
+                    min-width: 0;
+                }
+
+                #dialog {
+                    max-height: none;
+                    max-width: none;
+                }
+
+                .buttons {
+                    margin-top: 45%;
+                }
+
+                paper-dialog.size-position {
+                    height: 100%;
+                    top: 9%;
+                    left: 0;
+                    transform: none;
+                    margin: 0;
+                }
+
+                paper-dialog {
+                    max-height: 100%;
+                    max-width: 100%;
+                    width: 100vh;
+                }
+            }
+
+            @media only screen and (max-width: 320px) {
+                .buttons {
+                    margin-top: 25%;
+                }
+            }
+
+        </style>
+
+        <paper-dialog class="size-position" id="dialog" with-backdrop modal>
+            <div id="dialog-content">
+                <iron-form id="form">
+                    <form>
+                        <dom-if if="[[_isAdd()]]">
+                            <template>
+                                <h2>Добавить поставщика</h2>
+                            </template>
+                        </dom-if>
+                        <dom-if if="[[_isUpdate()]]">
+                            <template>
+                                <h2>Редактировать поставищика</h2>
+                            </template>
+                        </dom-if>
+                        <paper-input value="{{inputData.newTitle}}"
+                                     error-message="Обязательное поле"
+                                     label="Название" required="true"></paper-input>
+                        <paper-input value="{{inputData.newMail}}"
+                                     label="Почта" type="email" required="true"
+                                     error-message="Неверный формат почты">
+                        </paper-input>
+                        <gold-phone-input
+                                country-code="38"
+                                phone-number-pattern="xxx-xx-xx-xxx" value="{{inputData.phone}}" required="true"
+                                error-message="Неверный формат телефона">
+                        </gold-phone-input>
+                        <div id="time">
+                            <paper-input label="Заказать до" type="time" value="{{inputData.deadline}}"
+                                         required="true">
+                                <div slot="prefix"></div>
+                            </paper-input>
+                        </div>
+                    </form>
+                    <div class="buttons">
+                        <paper-button on-click="_closeDialog">Отмена</paper-button>
+                        <dom-if if="[[_isAdd()]]">
+                            <template>
+                                <paper-button class="confirm" on-click="_addVendor">Сохранить</paper-button>
+                            </template>
+                        </dom-if>
+                        <dom-if if="[[_isUpdate()]]">
+                            <template>
+                                <paper-button class="confirm" on-click="_updateVendor">Обновить</paper-button>
+                            </template>
+                        </dom-if>
+                    </div>
+                </iron-form>
+            </div>
+        </paper-dialog>
+    </template>
+    <script>
+        /**
+         * Dialog for managing vendors.
+         *
+         * Can have one of following modes:
+         * 1. `add` adds new vendor after validation
+         * 2. `update` updates existing vendor after validation
+         *
+         * @customElement
+         * @polymer
+         * @appliesMixin MealOrderApp.ReduxMixin
+         */
+        class AdminVendorManageDialog extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'admin-vendor-manage-dialog';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Dialog working mode.
+                     *
+                     * Can be `add` mode or `update`.
+                     * Depending on this it sends different events and renders different elements.
+                     */
+                    mode: {
+                        type: String
+                    },
+
+                    /**
+                     * Values from dialog inputs.
+                     *
+                     * @property {newTitle} vendor name
+                     * @property {newMail} vendor email
+                     * @property {phone} vendor name
+                     * @property {deadline} a time when a user can no more add dishes to their order
+                     */
+                    inputData: {
+                        type: Object,
+                        value: {}
+                    }
+                }
+            };
+
+            static get actions() {
+                return {
+                    closeDialog() {
+                        return {
+                            type: ArrayAction.CLOSE_VENDOR_MANAGE
+                        }
+                    },
+                    addVendor(vendor) {
+                        return {
+                            type: ArrayAction.ADD_VENDOR,
+                            vendor: vendor
+                        }
+                    }
+                }
+            }
+
+            _addVendor() {
+                if (this.$.form.validate()) {
+                    const vendor = {};
+                    vendor.title = this.inputData.newTitle;
+                    vendor.mail = this.inputData.newMail;
+                    vendor.phone = this.inputData.phone;
+                    vendor.deadline = this.inputData.deadline;
+                    this.dispatch('addVendor', vendor);
+                    this._closeDialog();
+                }
+            }
+
+            _updateVendor() {
+                if (this.$.form.validate()) {
+                    const vendor = {};
+                    vendor.title = this.inputData.newTitle;
+                    vendor.mail = this.inputData.newMail;
+                    vendor.phone = this.inputData.phone;
+                    vendor.deadline = this.inputData.deadline;
+                    this.dispatch('updateVendor', vendor);
+                    this._closeDialog();
+                }
+            }
+
+            _closeDialog() {
+                this.$.dialog.close();
+                this.parentNode.removeChild(this);
+                this.dispatch('closeDialog');
+            }
+
+            _isUpdate() {
+                return this.mode === 'update';
+            }
+
+            _isAdd() {
+                return this.mode === 'add';
+            }
+        }
+
+        MealOrderAdminApp.AdminVendorManageDialog = AdminVendorManageDialog;
+        window.customElements.define(AdminVendorManageDialog.is, AdminVendorManageDialog);
+    </script>
+</dom-module>

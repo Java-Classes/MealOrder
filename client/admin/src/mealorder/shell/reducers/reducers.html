@@ -41,6 +41,24 @@
                 return initialState;
             }
             switch (action.type) {
+                case ArrayAction.OPEN_VENDOR_MANAGE: {
+                    return Object.assign({}, state, {
+                            currentDialog: action.properties
+                        }
+                    );
+                }
+                case ArrayAction.CLOSE_VENDOR_MANAGE: {
+                    return Object.assign({}, state, {
+                            currentDialog: {}
+                        }
+                    );
+                }
+                case ArrayAction.ADD_VENDOR: {
+                    return state;
+                }
+                case ArrayAction.REMOVE_VENDOR: {
+                    return state;
+                }
                 default :
                     return state;
             }
