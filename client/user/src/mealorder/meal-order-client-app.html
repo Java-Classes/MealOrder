@@ -167,12 +167,6 @@
                     }
                 }
 
-                static get observers() {
-                    return [
-                        '_pageChanged(routeData.page)'
-                    ];
-                }
-
                 static get actions() {
                     return {
                         addDishToOrder: order => ({
@@ -197,7 +191,6 @@
                 _toggleDrawer() {
                     this.$.drawer.toggle();
                 }
-
 
                 _pageChanged() {
                     const DATE_LENGTH = 10;
