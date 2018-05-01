@@ -23,7 +23,8 @@
 <link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import"
+      href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
@@ -155,13 +156,13 @@
                             type: Object,
                         },
 
-                    /**
-                     * The current server time for the calendar.
-                     */
-                    serverTime: {
-                        type: Date,
-                        statePath: 'serverTime'
-                    }
+                        /**
+                         * The current server time for the calendar.
+                         */
+                        serverTime: {
+                            type: Date,
+                            statePath: 'serverTime'
+                        }
 
                     }
                 }
@@ -171,20 +172,21 @@
                         '_pageChanged(routeData.page)'
                     ];
                 }
-            static get actions() {
-                return {
-                    addDishToOrder: order => ({
-                        type: MealOrderApp.UserAction.ADD_DISH_TO_ORDER,
-                        order
-                    })
-                }
-            }
 
-            static get observers() {
-                return [
-                    '_pageChanged(routeData.page)'
-                ];
-            }
+                static get actions() {
+                    return {
+                        addDishToOrder: order => ({
+                            type: MealOrderApp.UserAction.ADD_DISH_TO_ORDER,
+                            order
+                        })
+                    }
+                }
+
+                static get observers() {
+                    return [
+                        '_pageChanged(routeData.page)'
+                    ];
+                }
 
                 _getDrawerClass(page) {
                     if (page === "history") {
@@ -197,27 +199,27 @@
                 }
 
 
-            _pageChanged() {
-                const DATE_LENGTH = 10;
-                if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
-                    this.set('route.path', '/menu/' + this.serverTime.toISOString().slice(0, DATE_LENGTH));
-                }
-                if (this.routeData.page.startsWith("history")) {
-                    if (!this.routeData.date) {
-                        const newDate = new Date(this.serverTime);
-                        newDate.setDate(newDate.getDate() - 1);
-                        this.set('routeData.date', newDate.toISOString().slice(0, DATE_LENGTH));
+                _pageChanged() {
+                    const DATE_LENGTH = 10;
+                    if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
+                        this.set('route.path', '/menu/' + this.serverTime.toISOString().slice(0, DATE_LENGTH));
+                    }
+                    if (this.routeData.page.startsWith("history")) {
+                        if (!this.routeData.date) {
+                            const newDate = new Date(this.serverTime);
+                            newDate.setDate(newDate.getDate() - 1);
+                            this.set('routeData.date', newDate.toISOString().slice(0, DATE_LENGTH));
+                        }
                     }
                 }
-            }
 
-            _addDishToOrder(e) {
-                const order = {};
-                order.dish = e.detail;
-                order.date = new Date(this.routeData.date);
-                this.dispatch('addDishToOrder', order);
+                _addDishToOrder(e) {
+                    const order = {};
+                    order.dish = e.detail;
+                    order.date = new Date(this.routeData.date);
+                    this.dispatch('addDishToOrder', order);
+                }
             }
-        }
 
             window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
         }
