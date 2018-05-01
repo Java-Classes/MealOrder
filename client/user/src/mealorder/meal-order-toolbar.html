@@ -21,7 +21,6 @@
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="./shell/meal-order-app-namespace.html">
 
 <dom-module id="meal-order-toolbar">
@@ -44,13 +43,13 @@
                 font-size: 1.375em;
             }
 
-            .title-link {
+            .link-title {
                 font-size: 0.8em;
                 text-decoration: none;
                 color: var(--paper-grey-50);
             }
 
-            .title-link:hover .route-title {
+            .link-title:hover .route-title {
                 color: var(--paper-light-blue-500);
             }
 
@@ -86,20 +85,20 @@
                             fallback-selection="view404"
                             role="main">
                     <div data-page="menu" class="app-header-iron-container">
-                        <a class="title-link" href="/#/history/">
+                        <a class="link-title" href="/#/history/">
                             <div class="route-title">История заказов</div>
                             <iron-icon class="link-icon"
-                                       icon="maps:icons:history"></iron-icon>
+                                       icon="icons:history"></iron-icon>
                         </a>
                         <iron-icon on-click="_toggleDrawer"
                                    class="link-icon"
                                    icon="icons:shopping-cart"></iron-icon>
                     </div>
                     <div data-page="history" class="app-header-iron-container">
-                        <a class="title-link" href="/#/menu/">
+                        <a class="link-title" href="/#/menu/">
                             <div id="menu-history" class="route-title">Сделать заказ</div>
                             <iron-icon class="link-icon"
-                                       icon="maps:icons:add"></iron-icon>
+                                       icon="icons:add"></iron-icon>
                         </a>
                         <iron-icon on-click="_toggleDrawer"
                                    class="link-icon"
