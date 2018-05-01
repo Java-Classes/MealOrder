@@ -35,6 +35,7 @@
 <link rel="import" href="./meal-order-toolbar.html">
 <link rel="import" href="./menu/meal-order-drawer.html">
 <link rel="import" href="./menu/meal-order-menu-container.html">
+<link rel="import" href="./history/meal-order-user-history.html">
 
 <dom-module id="meal-order-client-app">
     <template>
@@ -98,7 +99,7 @@
                             on-dish-added="_addDishToOrder">
                     </meal-order-menu-container>
                     <div data-page="history">
-                        <!--user history component-->
+                        <meal-order-user-history selected-date="[[routeData.date]]"></meal-order-user-history>
                     </div>
                 </iron-pages>
             </app-header-layout>

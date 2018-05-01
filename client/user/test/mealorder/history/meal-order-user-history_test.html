@@ -18,7 +18,6 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -27,13 +26,12 @@
 
     <title>meal-order-user-history test</title>
 
-    <link rel="import" href="../../../src/mealorder/shell/meal-order-app-namespace.html">
     <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../../node_modules/redux/dist/redux.js"></script>
     <script src="../test_variables.js"></script>
+    <link rel="import" href="../../../src/mealorder/shell/meal-order-app-namespace.html">
     <link rel="import" href="../../../src/mealorder/history/meal-order-user-history.html">
-
 </head>
 <body>
 
@@ -63,7 +61,6 @@
             assert.equal(component.currentHistory.order[0].dishes[0].title, "Борщ украинский");
             assert.equal(component.currentHistory.order[0].dishes[0].price, PRICE);
             assert.equal(component.currentHistory.order[0].dishes[0].quantity, QUANTITY);
-
         });
 
         test('should calculate the total price of the order', function () {

@@ -18,10 +18,11 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../shell/meal-order-app-namespace.html">
 <link rel="import" href="../shell/redux-store.html">
-<link rel="import" href="../shell/actions/user-actions.html">
 
 <dom-module id="meal-order-user-history">
     <template>
@@ -29,8 +30,9 @@
             #history {
                 width: 70%;
                 margin: 3% auto 0 auto;
-                color: var(--paper-grey-700);
                 padding-bottom: 3%;
+                color: var(--paper-grey-700);
+                font-size: 15px;
             }
 
             #title-for-mobile {
@@ -121,15 +123,13 @@
                             <div class="history-price">Цена, ₴</div>
                             <div class="history-quantity">Количество</div>
                         </div>
-                        <dom-repeat items="[[item.dishes]]" as="dish">
-                            <template>
-                                <div class="dishes">
-                                    <div class="history-title">[[dish.title]]</div>
-                                    <div class="history-price">[[dish.price]]</div>
-                                    <div class="history-quantity">[[dish.quantity]]</div>
-                                </div>
-                            </template>
-                        </dom-repeat>
+                        <template is="dom-repeat" items="[[item.dishes]]" as="dish">
+                            <div class="dishes">
+                                <div class="history-title">[[dish.title]]</div>
+                                <div class="history-price">[[dish.price]]</div>
+                                <div class="history-quantity">[[dish.quantity]]</div>
+                            </div>
+                        </template>
                     </div>
                 </template>
             </iron-list>
@@ -141,70 +141,72 @@
         </div>
     </template>
     <script>
-        /**
-         * User's history for individual day.
-         *
-         * @customElement
-         * @polymer
-         */
-        class MealOrderUserHistory extends MealOrderApp.ReduxMixin(Polymer.Element) {
-            static get is() {
-                return 'meal-order-user-history';
-            }
-
-            static get properties() {
-                return {
-                    /**
-                     * Selected day.
-                     */
-                    selectedDate: {
-                        type: Object,
-                    },
-
-                    /**
-                     * An array containing items to be displayed.
-                     */
-                    currentHistory: {
-                        type: Object,
-                        statePath: 'currentHistory',
-                    },
-
+        {
+            /**
+             * User's history for individual day.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderUserHistory extends MealOrderApp.ReduxMixin(Polymer.Element) {
+                static get is() {
+                    return 'meal-order-user-history';
                 }
-            }
 
-            static get actions() {
-                return {
-                    getCurrentHistory: date => ({
-                        type: MealOrderApp.UserAction.GET_CURRENT_HISTORY,
-                        date
-                    }),
-                }
-            }
+                static get properties() {
+                    return {
+                        /**
+                         * Selected day.
+                         */
+                        selectedDate: {
+                            type: Object,
+                        },
 
-            static get observers() {
-                return [
-                    '_getCurrentHistory(selectedDate)'
-                ];
-            }
+                        /**
+                         * An array containing items to be displayed.
+                         */
+                        currentHistory: {
+                            type: Object,
+                            statePath: 'currentHistory',
+                        },
 
-            _getCurrentHistory(selectedDate) {
-                this.dispatch('getCurrentHistory', new Date(selectedDate));
-            }
-
-            _getTotalPrice(currentHistory) {
-                let totalPrice = 0;
-                for (let i = 0; i < currentHistory.order.length; i++) {
-                    const dishes = currentHistory.order[i].dishes;
-                    let priceByVendor = 0;
-                    for (let i = 0; i < dishes.length; i++) {
-                        priceByVendor += (dishes[i].price) * dishes[i].quantity;
                     }
-                    totalPrice += priceByVendor;
                 }
-                return totalPrice;
-            }
-        }
 
-        window.customElements.define(MealOrderUserHistory.is, MealOrderUserHistory);
+                static get actions() {
+                    return {
+                        getCurrentHistory: date => ({
+                            type: MealOrderApp.UserAction.GET_CURRENT_HISTORY,
+                            date
+                        }),
+                    }
+                }
+
+                static get observers() {
+                    return [
+                        '_getCurrentHistory(selectedDate)'
+                    ];
+                }
+
+                _getCurrentHistory(selectedDate) {
+                    this.dispatch('getCurrentHistory', new Date(selectedDate));
+                }
+
+                _getTotalPrice(currentHistory) {
+                    let totalPrice = 0;
+                    for (let i = 0; i < currentHistory.order.length; i++) {
+                        const dishes = currentHistory.order[i].dishes;
+                        let priceByVendor = 0;
+                        for (let i = 0; i < dishes.length; i++) {
+                            priceByVendor += (dishes[i].price) * dishes[i].quantity;
+                        }
+                        totalPrice += priceByVendor;
+                    }
+                    return totalPrice;
+                }
+            }
+
+            window.customElements.define(MealOrderUserHistory.is, MealOrderUserHistory);
+        }
     </script>
 </dom-module>
