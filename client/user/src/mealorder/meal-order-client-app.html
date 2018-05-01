@@ -18,29 +18,22 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import"
-      href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
-<link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="./shell/meal-order-app-namespace.html">
 <link rel="import" href="./shell/redux-store.html">
 <link rel="import" href="./meal-order-toolbar.html">
 <link rel="import" href="./menu/meal-order-drawer.html">
 <link rel="import" href="./menu/meal-order-menu-container.html">
+
 <dom-module id="meal-order-client-app">
     <template>
         <style>
@@ -69,6 +62,7 @@
                 --app-drawer-width: 300px;
             }
         </style>
+
         <app-location route="{{route}}"
                       use-hash-as-path></app-location>
 
@@ -107,98 +101,100 @@
         </app-drawer-layout>
     </template>
     <script>
-        /**
-         * Main client meal order component.
-         *
-         * Consists of 2 pages:
-         * 1. A page with the vendor menus and the user's shopping cart.
-         * 2. A page with the user's history.
-         *
-         * @customElement
-         * @polymer
-         * @appliesMixin MealOrderApp.ReduxMixin
-         */
-        class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
-            static get is() {
-                return 'meal-order-client-app';
-            }
-
-            static get properties() {
-                return {
-                    /**
-                     * Menu for a current day.
-                     *
-                     * @typedef {Object} Menu the menu for the current date
-                     *
-                     * @property {String} vendor a vendor name
-                     *
-                     * @typedef {Object} Date contains day, month, year
-                     * @property {Number} day
-                     * @property {Number} month
-                     * @property {Number} year
-                     *
-                     * @typedef {Array} Categories array contains the category name and dishes
-                     * @typedef {Array} Dishes array contains the dish title, price, quantity
-                     * @property {String} title
-                     * @property {String} price
-                     * @property {String} quantity
-                     */
-                    menus: {
-                        type: Array,
-                        statePath: 'menus'
-                    },
-
-                    /**
-                     * Route data parsed using `app-route`.
-                     *
-                     * Used for routing.
-                     */
-                    routeData: {
-                        type: Object,
-                    },
-
-                    /**
-                     * The current server time for the calendar.
-                     */
-                    serverTime: {
-                        type: Object,
-                        statePath: 'serverTime'
-                    }
-
+        {
+            /**
+             * Main client meal order component.
+             *
+             * Consists of 2 pages:
+             * 1. A page with the vendor menus and the user's shopping cart.
+             * 2. A page with the user's history.
+             *
+             * @customElement
+             * @polymer
+             * @appliesMixin MealOrderApp.ReduxMixin
+             */
+            class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
+                static get is() {
+                    return 'meal-order-client-app';
                 }
-            }
 
-            static get observers() {
-                return [
-                    '_pageChanged(routeData.page)'
-                ];
-            }
+                static get properties() {
+                    return {
+                        /**
+                         * Menu for a current day.
+                         *
+                         * @typedef {Object} Menu the menu for the current date
+                         *
+                         * @property {String} vendor a vendor name
+                         *
+                         * @typedef {Object} Date contains day, month, year
+                         * @property {Number} day
+                         * @property {Number} month
+                         * @property {Number} year
+                         *
+                         * @typedef {Array} Categories array contains the category name and dishes
+                         * @typedef {Array} Dishes array contains the dish title, price, quantity
+                         * @property {String} title
+                         * @property {String} price
+                         * @property {String} quantity
+                         */
+                        menus: {
+                            type: Array,
+                            statePath: 'menus'
+                        },
 
-            _getDrawerClass(page) {
-                if (page === "history") {
-                    return "wide";
-                }
-            }
+                        /**
+                         * Route data parsed using `app-route`.
+                         *
+                         * Used for routing.
+                         */
+                        routeData: {
+                            type: Object,
+                        },
 
-            _toggleDrawer() {
-                this.$.drawer.toggle();
-            }
+                        /**
+                         * The current server time for the calendar.
+                         */
+                        serverTime: {
+                            type: Object,
+                            statePath: 'serverTime'
+                        }
 
-            _pageChanged() {
-                const DATE_LENGTH = 10;
-                if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
-                    this.set('route.path', '/menu/' + this.serverTime.toISOString().slice(0, DATE_LENGTH));
-                }
-                if (this.routeData.page.startsWith("history")) {
-                    if (!this.routeData.date) {
-                        const newDate = new Date(this.serverTime);
-                        newDate.setDate(newDate.getDate() - 1);
-                        this.set('routeData.date', newDate.toISOString().slice(0, DATE_LENGTH));
                     }
                 }
+
+                static get observers() {
+                    return [
+                        '_pageChanged(routeData.page)'
+                    ];
+                }
+
+                _getDrawerClass(page) {
+                    if (page === "history") {
+                        return "wide";
+                    }
+                }
+
+                _toggleDrawer() {
+                    this.$.drawer.toggle();
+                }
+
+                _pageChanged() {
+                    const DATE_LENGTH = 10;
+                    if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
+                        this.set('route.path', '/menu/' + this.serverTime.toISOString().slice(0, DATE_LENGTH));
+                    }
+                    if (this.routeData.page.startsWith("history")) {
+                        if (!this.routeData.date) {
+                            const newDate = new Date(this.serverTime);
+                            newDate.setDate(newDate.getDate() - 1);
+                            this.set('routeData.date', newDate.toISOString().slice(0, DATE_LENGTH));
+                        }
+                    }
+                }
             }
+
+            window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
         }
-
-        window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
     </script>
 </dom-module>
