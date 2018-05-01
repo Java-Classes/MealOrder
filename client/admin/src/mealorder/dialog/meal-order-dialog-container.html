@@ -24,38 +24,40 @@
     <template>
     </template>
     <script>
-        class MealOrderDialogContainer extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
-            static get is() {
-                return 'meal-order-dialog-container';
-            }
+        {
+            class MealOrderDialogContainer extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
+                static get is() {
+                    return 'meal-order-dialog-container';
+                }
 
-            static get properties() {
-                return {
-                    dialog: {
-                        type: Object,
-                        statePath: 'currentDialog'
+                static get properties() {
+                    return {
+                        dialog: {
+                            type: Object,
+                            statePath: 'currentDialog'
+                        }
+                    }
+                }
+
+                static get observers() {
+                    return [
+                        '_dialogChanged(dialog)'
+                    ];
+                }
+
+                _dialogChanged() {
+                    if (this.dialog && this.dialog.tagName) {
+                        const element = document.createElement(this.dialog.tagName);
+                        element.inputData = this.dialog.inputData || {};
+                        element.mode = this.dialog.mode;
+                        const manager = this.shadowRoot.appendChild(element);
+                        const dialog = manager.shadowRoot.querySelector('#dialog');
+                        dialog.open();
                     }
                 }
             }
 
-            static get observers() {
-                return [
-                    '_dialogChanged(dialog)'
-                ];
-            }
-
-            _dialogChanged() {
-                if (this.dialog && this.dialog.tagName) {
-                    const element = document.createElement(this.dialog.tagName);
-                    element.inputData = this.dialog.inputData || {};
-                    element.mode = this.dialog.mode;
-                    const manager = this.shadowRoot.appendChild(element);
-                    const dialog = manager.shadowRoot.querySelector('#dialog');
-                    dialog.open();
-                }
-            }
+            window.customElements.define(MealOrderDialogContainer.is, MealOrderDialogContainer);
         }
-
-        window.customElements.define(MealOrderDialogContainer.is, MealOrderDialogContainer);
     </script>
 </dom-module>

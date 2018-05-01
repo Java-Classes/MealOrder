@@ -176,6 +176,17 @@
                 static get is() {
                     return 'meal-order-admin-app';
                 }
+
+                static get properties() {
+                    return {
+                        /**
+                         * Route data parsed using `app-route`.
+                         *
+                         * Used for routing.
+                         */
+                        routeData: {}
+                    }
+                }
             }
 
             window.customElements.define(MealOrderAdminApp.is, MealOrderAdminApp);
