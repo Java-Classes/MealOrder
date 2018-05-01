@@ -20,6 +20,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
@@ -152,13 +153,13 @@
                             type: Object,
                         },
 
-                        /**
-                         * The current server time for the calendar.
-                         */
-                        serverTime: {
-                            type: Object,
-                            statePath: 'serverTime'
-                        }
+                    /**
+                     * The current server time for the calendar.
+                     */
+                    serverTime: {
+                        type: Date,
+                        statePath: 'serverTime'
+                    }
 
                     }
                 }
