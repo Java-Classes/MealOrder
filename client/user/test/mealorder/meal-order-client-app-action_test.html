@@ -46,7 +46,7 @@
             mock = sinon.mock(MealOrderApp.store);
         });
 
-        test('should responds on `dish-added` event and fire `ADD_DISH_TO_ORDER` action.', function () {
+        test('should respond on `dish-added` event and fire `ADD_DISH_TO_ORDER` action.', function () {
             const DISH = {vendor: "Позитив", price: 15, title: "Картофель"};
             const ORDER = {};
             ORDER.dish = {vendor: "Позитив", price: 15, title: "Картофель"};

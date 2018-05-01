@@ -17,7 +17,6 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
@@ -62,8 +61,7 @@
                                on-click="_removeDishesByVendor"></paper-icon-button>
         </div>
         <div class="dishes">
-        <dom-repeat items="[[currentOrder.dishes]]" as="dish">
-            <template>
+            <template is="dom-repeat" items="[[currentOrder.dishes]]" as="dish">
                 <div class="order-details">
                     <div class="order-title">[[dish.title]]</div>
                     <div class="order-price">[[dish.price]] ₴</div>
@@ -71,62 +69,63 @@
                     <paper-icon-button icon="remove" on-click="_removeDish"></paper-icon-button>
                 </div>
             </template>
-        </dom-repeat>
         </div>
     </template>
     <script>
-        /**
-         * user-order component is user's order for current date, for current vendor.
-         *
-         * @customElement
-         * @polymer
-         */
-        class MealOrderUserOrder extends Polymer.Element {
-            static get is() {
-                return 'meal-order-user-order';
-            }
+        {
+            /**
+             * user-order component is user's order for current date, for current vendor.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderUserOrder extends Polymer.Element {
+                static get is() {
+                    return 'meal-order-user-order';
+                }
 
-            static get properties() {
-                return {
-                    /**
-                     * Fired by clicking on the `Remove dish` button.
-                     *
-                     * @event `user-order-dish-removed`
-                     * @param {dish} contains dishes
-                     */
+                static get properties() {
+                    return {
+                        /**
+                         * Fired by clicking on the `Remove dish` button.
+                         *
+                         * @event `user-order-dish-removed`
+                         * @param {dish} contains dishes
+                         */
 
-                    /**
-                     * Fired by clicking on the `Remove dishes by vendor` button.
-                     *
-                     * @event `user-order-vendor-removed`
-                     * @param {vendor} contains vendor.
-                     */
+                        /**
+                         * Fired by clicking on the `Remove dishes by vendor` button.
+                         *
+                         * @event `user-order-vendor-removed`
+                         * @param {vendor} contains vendor.
+                         */
 
-                    /**
-                     * Order for a current vendor.
-                     */
-                    currentOrder: {
-                        type: Array
+                        /**
+                         * Order for a current vendor.
+                         */
+                        currentOrder: {
+                            type: Array
+                        }
                     }
+                }
+
+                _removeDishesByVendor() {
+                    this.dispatchEvent(new CustomEvent('user-order-vendor-removed', {
+                        detail: this.currentOrder.vendor
+                    }));
+                }
+
+                _removeDish(e) {
+                    const dish = {};
+                    dish.vendor = this.currentOrder.vendor;
+                    dish.name = this.currentOrder.dishes[e.model.index].title;
+                    this.dispatchEvent(new CustomEvent('user-order-dish-removed', {
+                        detail: dish
+                    }));
                 }
             }
 
-            _removeDishesByVendor() {
-                this.dispatchEvent(new CustomEvent('user-order-vendor-removed', {
-                    detail: this.currentOrder.vendor
-                }));
-            }
-
-            _removeDish(e) {
-                const dish = {};
-                dish.vendor = this.currentOrder.vendor;
-                dish.name = this.currentOrder.dishes[e.model.index].title;
-                this.dispatchEvent(new CustomEvent('user-order-dish-removed', {
-                    detail: dish
-                }));
-            }
+            window.customElements.define(MealOrderUserOrder.is, MealOrderUserOrder);
         }
-
-        window.customElements.define(MealOrderUserOrder.is, MealOrderUserOrder);
     </script>
 </dom-module>

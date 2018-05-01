@@ -17,13 +17,12 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 
 <dom-module id="meal-order-vendor-menu">
     <template>
@@ -108,114 +107,113 @@
             </paper-item>
         </div>
         <div id="menu" class="expanded">
-            <dom-repeat items="[[menu.categories]]" as="item">
-                <template>
-                    <dom-if if="[[item.dishes.length]]">
-                        <template>
-                            <div>
-                                <div class="menu-header">
-                                    <paper-item>
-                                        <div class="dish-title bold">
-                                            [[item.categoryName]]
-                                        </div>
-                                        <div class="dish-price bold">
-                                            Цена, ₴
-                                        </div>
-                                        <div class="add-dish-icon">
-
-                                        </div>
-                                    </paper-item>
+            <template is="dom-repeat" items="[[menu.categories]]" as="item">
+                <template is="dom-if" if="[[item.dishes.length]]">
+                    <div>
+                        <div class="menu-header">
+                            <paper-item>
+                                <div class="dish-title bold">
+                                    [[item.categoryName]]
                                 </div>
-                                <dom-repeat items="[[item.dishes]]" as="dish">
-                                    <template>
-                                        <div class="menu-dishes">
-                                            <paper-item>
-                                                <div class="dish-title">
-                                                    [[dish.title]]
-                                                </div>
-                                                <div class="dish-price">
-                                                    [[dish.price]]
-                                                </div>
-                                                <div class="add-dish-icon">
-                                                    <paper-icon-button icon="add"
-                                                                       on-click="_addDish"></paper-icon-button>
-                                                </div>
-                                            </paper-item>
-                                        </div>
-                                    </template>
-                                </dom-repeat>
+                                <div class="dish-price bold">
+                                    Цена, ₴
+                                </div>
+                                <div class="add-dish-icon">
+
+                                </div>
+                            </paper-item>
+                        </div>
+                        <template is="dom-repeat" items="[[item.dishes]]" as="dish">
+                            <div class="menu-dishes">
+                                <paper-item>
+                                    <div class="dish-title">
+                                        [[dish.title]]
+                                    </div>
+                                    <div class="dish-price">
+                                        [[dish.price]]
+                                    </div>
+                                    <div class="add-dish-icon">
+                                        <paper-icon-button icon="add"
+                                                           on-click="_addDish"></paper-icon-button>
+                                    </div>
+                                </paper-item>
                             </div>
                         </template>
-                    </dom-if>
+                    </div>
                 </template>
-            </dom-repeat>
+            </template>
         </div>
     </template>
     <script>
-        /**
-         * meal-order-vendor-menu represents a menu of a vendor for a single day.
-         *
-         * Contains a list of categories with dish titles and prices.
-         *
-         * @customElement
-         * @polymer
-         */
-        class MealOrderVendorMenu extends Polymer.Element {
-            static get is() {
-                return 'meal-order-vendor-menu';
-            }
+        {
+            /**
+             * meal-order-vendor-menu represents a menu of a vendor for a single day.
+             *
+             * Contains a list of categories with dish titles and prices.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderVendorMenu extends Polymer.Element {
+                static get is() {
+                    return 'meal-order-vendor-menu';
+                }
 
-            static get properties() {
-                return {
-                    /**
-                     * Fired on `add-button` click.
-                     *
-                     * @action `dish-added`
-                     * @param {dish} contains vendor, category and dish title
-                     */
+                static get properties() {
+                    return {
+                        /**
+                         * Fired on `add-button` click.
+                         *
+                         * @action `dish-added`
+                         * @param {dish} contains vendor, category and dish title
+                         */
 
-                    /**
-                     * Menu of a vendor.
-                     *
-                     * @property name is name of a vendor.
-                     * @property {array} categories list of categories with dishes.
-                     */
-                    menu: {
-                        type: Object
+                        /**
+                         * Menu of a vendor.
+                         *
+                         * @property name is name of a vendor.
+                         * @property {array} categories list of categories with dishes.
+                         */
+                        menu: {
+                            type: Object
+                        }
                     }
                 }
+
+                _getExpandIcon() {
+                    if (this.$.menu.className === 'expanded') {
+                        return 'expand-less';
+                    }
+                    else {
+                        return 'expand-more';
+                    }
+                }
+
+                _toggle() {
+                    if (this.$.menu.className === 'collapsed') {
+                        this.$.menu.className = 'expanded';
+                        this.$.expand.icon = 'expand-less';
+                    }
+                    else {
+                        this.$.menu.className = 'collapsed';
+                        this.$.expand.icon = 'expand-more';
+                    }
+                    this.dispatchEvent(new CustomEvent('vendor-menu-resize'));
+                }
+
+                _addDish(e) {
+                    const dish = {};
+                    dish.vendor = this.menu.vendor;
+                    dish.price = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].price;
+                    dish.title = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].title;
+                    this.dispatchEvent(new CustomEvent('dish-added', {
+                        composed: true,
+                        detail: dish
+                    }));
+                }
             }
 
-            _getExpandIcon() {
-                if (this.$.menu.className === 'expanded') {
-                    return 'expand-less';
-                }
-                else {
-                    return 'expand-more';
-                }
-            }
-
-            _toggle() {
-                if (this.$.menu.className === 'collapsed') {
-                    this.$.menu.className = 'expanded';
-                    this.$.expand.icon = 'expand-less';
-                }
-                else {
-                    this.$.menu.className = 'collapsed';
-                    this.$.expand.icon = 'expand-more';
-                }
-                this.dispatchEvent(new CustomEvent('vendor-menu-resize'));
-            }
-
-            _addDish(e) {
-                const dish = {};
-                dish.vendor = this.menu.vendor;
-                dish.price = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].price;
-                dish.title = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].title;
-                this.dispatchEvent(new CustomEvent('dish-added', {composed: true, detail: dish}));
-            }
+            window.customElements.define(MealOrderVendorMenu.is, MealOrderVendorMenu);
         }
-
-        window.customElements.define(MealOrderVendorMenu.is, MealOrderVendorMenu);
     </script>
 </dom-module>

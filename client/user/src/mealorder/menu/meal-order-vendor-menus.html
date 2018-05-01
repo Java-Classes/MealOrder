@@ -17,11 +17,8 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
 <link rel="import" href="./meal-order-vendor-menu.html">
 
@@ -103,87 +100,90 @@
         </iron-list>
     </template>
     <script>
-        /**
-         * vendor-menus represents an expanding list of menus for current date and filter.
-         *
-         * Contains search by dish keywords.
-         *
-         * @customElement
-         * @polymer
-         */
-        class MealOrderVendorMenus extends Polymer.Element {
-            static get is() {
-                return 'meal-order-vendor-menus';
-            }
-
-            static get properties() {
-                return {
-                    /**
-                     * Fired when a dish add button is tapped.
-                     *
-                     * @event `dish-added`
-                     * @param {dish} contains vendor, category, title.
-                     */
-
-                    /**
-                     * Full menu for day.
-                     *
-                     * @property {{name:String vendor name, categories:array a menu of a vendor for a day}}.
-                     */
-                    menuForDay: {
-                        type: Array,
-                    },
-
-                    /**
-                     * Menu with filter applied.
-                     */
-                    filtered: {
-                        type: Array,
-                        computed: '_filteredItems(menuForDay,filter)',
-                        reflectToAttribute: true
-                    },
-
-                    /**
-                     * Inputted key word or word part to search in menu.
-                     */
-                    filter: {
-                        type: String,
-                        value: '',
-                        notify: true
-                    }
-
+        {
+            /**
+             * vendor-menus represents an expanding list of menus for current date and filter.
+             *
+             * Contains search by dish keywords.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderVendorMenus extends Polymer.Element {
+                static get is() {
+                    return 'meal-order-vendor-menus';
                 }
-            }
 
-            _resize() {
-                this.shadowRoot.querySelector("#list").notifyResize();
-            }
+                static get properties() {
+                    return {
+                        /**
+                         * Fired when a dish add button is tapped.
+                         *
+                         * @event `dish-added`
+                         * @param {dish} contains vendor, category, title.
+                         */
 
-            _filteredItems() {
-                const predicate = this.filter;
-                const filtered = [];
-                if (this.menuForDay) {
-                    for (let i = 0; i < this.menuForDay.length; i++) {
-                        const vendorCategories = this.menuForDay[i].categories;
-                        let newVendorCategories = [];
-                        for (let j = 0; j < vendorCategories.length; j++) {
-                            let vendorDishes = vendorCategories[j].dishes;
-                            let newVendorDishes = vendorDishes.filter(dish => dish.title.toLowerCase().includes(predicate.toLowerCase()));
-                            newVendorCategories.push({
-                                categoryName: vendorCategories[j].categoryName,
-                                dishes: newVendorDishes
+                        /**
+                         * Full menu for day.
+                         *
+                         * @property {{name:String vendor name, categories:array a menu of a vendor for a day}}.
+                         */
+                        menuForDay: {
+                            type: Array,
+                        },
+
+                        /**
+                         * Menu with filter applied.
+                         */
+                        filtered: {
+                            type: Array,
+                            computed: '_filteredItems(menuForDay,filter)',
+                            reflectToAttribute: true
+                        },
+
+                        /**
+                         * Inputted key word or word part to search in menu.
+                         */
+                        filter: {
+                            type: String,
+                            value: '',
+                            notify: true
+                        }
+
+                    }
+                }
+
+                _resize() {
+                    this.shadowRoot.querySelector("#list").notifyResize();
+                }
+
+                _filteredItems() {
+                    const predicate = this.filter;
+                    const filtered = [];
+                    if (this.menuForDay) {
+                        for (let i = 0; i < this.menuForDay.length; i++) {
+                            const vendorCategories = this.menuForDay[i].categories;
+                            const newVendorCategories = [];
+                            for (let j = 0; j < vendorCategories.length; j++) {
+                                const vendorDishes = vendorCategories[j].dishes;
+                                const newVendorDishes = vendorDishes
+                                    .filter(dish => dish.title.toLowerCase().includes(predicate.toLowerCase()));
+                                newVendorCategories.push({
+                                    categoryName: vendorCategories[j].categoryName,
+                                    dishes: newVendorDishes
+                                });
+                            }
+                            filtered.push({
+                                vendor: this.menuForDay[i].vendor,
+                                categories: newVendorCategories
                             });
                         }
-                        filtered.push({
-                            vendor: this.menuForDay[i].vendor,
-                            categories: newVendorCategories
-                        });
                     }
+                    return filtered;
                 }
-                return filtered;
             }
-        }
 
-        window.customElements.define(MealOrderVendorMenus.is, MealOrderVendorMenus);
+            window.customElements.define(MealOrderVendorMenus.is, MealOrderVendorMenus);
+        }
     </script>
 </dom-module>
