@@ -80,7 +80,7 @@ public final class BoundedContexts {
      */
     public static BoundedContext create(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
-        final VendorRepository vendorRepository = VendorRepository.getRepository();
+        final VendorRepository vendorRepository = VendorRepository.createRepository();
         final OrderRepository orderRepository = new OrderRepository();
         final PurchaseOrderRepository purchaseOrderRepository = new PurchaseOrderRepository();
 

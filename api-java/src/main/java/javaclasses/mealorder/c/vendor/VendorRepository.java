@@ -40,8 +40,12 @@ public class VendorRepository extends AggregateRepository<VendorId, VendorAggreg
         return VendorRepositorySingleton.INSTANCE.value;
     }
 
+    public static VendorRepository createRepository() {
+        VendorRepositorySingleton.INSTANCE.value = new VendorRepository();
+        return VendorRepositorySingleton.INSTANCE.value;
+    }
     private enum VendorRepositorySingleton {
         INSTANCE;
-        public final VendorRepository value = new VendorRepository();
+        public VendorRepository value = new VendorRepository();
     }
 }
