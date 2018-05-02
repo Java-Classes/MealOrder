@@ -45,6 +45,7 @@
     "Polymer": false,
     "MealOrderApp": true,
     "MealOrderAdminApp": true,
+    "MealOrderAdminAppTest": true,
     "assert": false,
     "test": false,
     "suite": false,
