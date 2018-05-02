@@ -31,6 +31,7 @@
     <script src="../test_variables.js"></script>
 
     <link rel="import" href="../../../src/mealorder/components/meal-order-vendor-list.html">
+    <link rel="import" href="../../../src/mealorder/dialog/meal-order-dialog-container.html">
 </head>
 <body>
 
@@ -46,13 +47,34 @@
 
         setup(() => {
             component = fixture('MealOrderVendorList');
+            component.vendors = MealOrderAdminAppTest.vendors;
         });
 
         test('should display vendors correctly', function () {
-            component.vendors = MealOrderAdminAppTest.vendors;
             const ironList = component.shadowRoot.querySelector("iron-list");
-            console.log(ironList);
-            debugger;
+            assert.equal(2, ironList.items.length);
+            assert.equal("Пюре", ironList.items[0].title);
+        });
+
+        test('should open vendor add dialog', function (done) {
+            const mock = sinon.mock(MealOrderAdminApp.store);
+            mock.expects('dispatch');
+            flush(function () {
+                const addButton = component.shadowRoot.querySelector("#header > paper-icon-button");
+                addButton.click();
+                mock.verify();
+                done();
+            });
+        });
+        test('should open vendor edit dialog', function (done) {
+            const mock = sinon.mock(MealOrderAdminApp.store);
+            mock.expects('dispatch');
+            flush(function () {
+                const editButton = component.shadowRoot.querySelectorAll("iron-list .icons paper-icon-button")[0];
+                editButton.click();
+                mock.verify();
+                done();
+            });
         });
     });
 </script>
