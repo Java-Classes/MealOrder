@@ -38,7 +38,7 @@
 
         MealOrderAdminApp.reducer = (state, action) => {
             if (!state) {
-                return MealOrderAdminApp.initialState;
+                return initialState;
             }
             switch (action.type) {
                 case MealOrderAdminApp.AdminActions.OPEN_VENDOR_DIALOG: {
