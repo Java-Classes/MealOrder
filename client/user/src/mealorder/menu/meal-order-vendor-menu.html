@@ -98,6 +98,7 @@
                 }
             }
         </style>
+
         <div class="header">
             <paper-item on-click="_toggle" class="menu-caption">
                 <div class="menu-caption">
@@ -164,15 +165,12 @@
                         /**
                          * Fired on `add-button` click.
                          *
-                         * @action `dish-added`
+                         * @event `dish-added`
                          * @param {dish} contains vendor, category and dish title
                          */
 
                         /**
                          * Menu of a vendor.
-                         *
-                         * @property name is name of a vendor.
-                         * @property {array} categories list of categories with dishes.
                          */
                         menu: {
                             type: Object

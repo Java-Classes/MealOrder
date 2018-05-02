@@ -124,9 +124,22 @@
                          */
 
                         /**
-                         * Full menu for day.
+                         * Menu for a current day.
                          *
-                         * @property {{name:String vendor name, categories:array a menu of a vendor for a day}}.
+                         * @typedef {Object} Menu the menu for the current date
+                         *
+                         * @property {String} vendor a vendor name
+                         *
+                         * @typedef {Object} Date contains day, month, year
+                         * @property {Number} day
+                         * @property {Number} month
+                         * @property {Number} year
+                         *
+                         * @typedef {Array} Categories array contains the category name and dishes
+                         * @typedef {Array} Dishes array contains the dish title, price, quantity
+                         * @property {String} title
+                         * @property {String} price
+                         * @property {String} quantity
                          */
                         menuForDay: {
                             type: Array,
