@@ -25,6 +25,13 @@
     </template>
     <script>
         {
+            /**
+             * Dialog container.
+             *
+             * @customElement
+             * @polymer
+             * @appliesMixin MealOrderApp.ReduxMixin
+             */
             class MealOrderDialogContainer extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
                 static get is() {
                     return 'meal-order-dialog-container';
@@ -32,6 +39,9 @@
 
                 static get properties() {
                     return {
+                        /**
+                         * Current dialog.
+                         */
                         dialog: {
                             type: Object,
                             statePath: 'currentDialog'

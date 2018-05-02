@@ -172,6 +172,18 @@
     </template>
     <script>
         {
+            /**
+             * Main admin meal order component.
+             *
+             * Contains 4 pages with routing:
+             * 1. Vendor list.
+             * 2. Vendor menus.
+             * 3. Monthly spending.
+             * 4. Vendor orders.
+             *
+             * @customElement
+             * @polymer
+             */
             class MealOrderAdminApp extends Polymer.Element {
                 static get is() {
                     return 'meal-order-admin-app';
