@@ -204,7 +204,9 @@
     <script>
         {
             /**
-             * Main client meal order component.
+             * A vendor list.
+             *
+             * Contains a dialog for adding and editing a vendor.
              *
              * @customElement
              * @polymer
@@ -217,6 +219,17 @@
 
                 static get properties() {
                     return {
+                        /**
+                         * A vendor list.
+                         *
+                         * @typedef {Object} Vendor
+                         *
+                         * @property {String} title a vendor name
+                         * @property {String} phone a vendor phone
+                         * @property {String} email a vendor email
+                         * @property {String} deadline time up to which order can be made
+                         *
+                         */
                         vendors: {
                             type: Array,
                             statePath: 'vendors'
