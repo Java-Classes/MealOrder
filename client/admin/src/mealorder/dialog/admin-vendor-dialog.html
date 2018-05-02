@@ -26,7 +26,7 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../shell/meal-order-admin-app-namespace.html">
 <link rel="import" href="../shell/redux-store.html">
-
+<link rel="import" href="../../../bower_components/paper-styles/typography.html">
 <dom-module id="admin-vendor-dialog">
     <template>
         <style>
@@ -39,6 +39,13 @@
                 flex-direction: column;
                 width: 50vh;
                 min-width: 400px;
+            }
+
+            paper-button {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                font-weight: normal;
+                font-size: 14px;
+                -webkit-font-smoothing: antialiased;
             }
 
             paper-dialog.size-position {
@@ -54,10 +61,6 @@
                 margin-top: 5%;
             }
 
-            paper-input .time {
-                margin-top: 1%;
-            }
-
             gold-phone-input {
                 margin-top: 5%;
                 margin-bottom: 5%;
@@ -67,10 +70,19 @@
                 width: 25%;
             }
 
-            .buttons {
+            .dialog-buttons {
                 margin-top: 5%;
                 display: flex;
-                justify-content: flex-end;
+            }
+
+            .remove-button-wrapper {
+                width: 50%;
+                text-align: left;
+            }
+
+            .buttons-wrapper {
+                width: 50%;
+                text-align: right;
             }
 
             .confirm {
@@ -88,7 +100,7 @@
                     width: 100vh;
                 }
 
-                .buttons {
+                .dialog-buttons {
                     margin-top: 10%;
                 }
             }
@@ -103,8 +115,20 @@
                     max-width: none;
                 }
 
-                .buttons {
+                .dialog-buttons {
                     margin-top: 50%;
+                }
+
+                .remove-button-wrapper {
+                    width: 44%;
+                }
+
+                .buttons-wrapper {
+                    width: 70%;
+                }
+
+                #time {
+                    width: 30%;
                 }
 
                 paper-dialog.size-position {
@@ -123,11 +147,10 @@
             }
 
             @media only screen and (max-width: 320px) {
-                .buttons {
+                .dialog-buttons {
                     margin-top: 25%;
                 }
             }
-
         </style>
 
         <paper-dialog class="size-position" id="dialog" with-backdrop modal>
@@ -138,7 +161,7 @@
                             <h2>Добавить поставщика</h2>
                         </template>
                         <template is="dom-if" if="[[_isUpdate()]]">
-                            <h2>Редактировать поставищика</h2>
+                            <h2>Детали поставщика</h2>
                         </template>
                         <paper-input value="{{inputData.newTitle}}"
                                      error-message="Обязательное поле"
@@ -161,16 +184,24 @@
                             </paper-input>
                         </div>
                     </form>
-                    <div class="buttons">
-                        <paper-button on-click="_closeDialog">Отмена</paper-button>
-                        <template is="dom-if" if="[[_isAdd()]]">
-                            <paper-button class="confirm" on-click="_addVendor">Сохранить
-                            </paper-button>
-                        </template>
-                        <template is="dom-if" if="[[_isUpdate()]]">
-                            <paper-button class="confirm" on-click="_updateVendor">Обновить
-                            </paper-button>
-                        </template>
+                    <div class="dialog-buttons">
+                        <div class="remove-button-wrapper">
+                            <template is="dom-if" if="[[_isUpdate()]]">
+                                <paper-button on-click="_updateVendor">Удалить
+                                </paper-button>
+                            </template>
+                        </div>
+                        <div class="buttons-wrapper">
+                            <paper-button on-click="_closeDialog">Отмена</paper-button>
+                            <template is="dom-if" if="[[_isAdd()]]">
+                                <paper-button class="confirm" on-click="_addVendor">Сохранить
+                                </paper-button>
+                            </template>
+                            <template is="dom-if" if="[[_isUpdate()]]">
+                                <paper-button class="confirm" on-click="_updateVendor">Обновить
+                                </paper-button>
+                            </template>
+                        </div>
                     </div>
                 </iron-form>
             </div>
