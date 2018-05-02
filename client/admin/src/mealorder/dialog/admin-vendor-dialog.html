@@ -18,6 +18,8 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/gold-phone-input/gold-phone-input.html">
@@ -25,19 +27,9 @@
 <link rel="import" href="../shell/meal-order-admin-app-namespace.html">
 <link rel="import" href="../shell/redux-store.html">
 
-<dom-module id="admin-vendor-manage-dialog">
+<dom-module id="admin-vendor-dialog">
     <template>
         <style>
-            .non-select {
-                -webkit-touch-callout: none; /* iOS Safari */
-                -webkit-user-select: none; /* Safari */
-                -khtml-user-select: none; /* Konqueror HTML */
-                -moz-user-select: none; /* Firefox */
-                -ms-user-select: none; /* Internet Explorer/Edge */
-                user-select: none;
-                /* Non-prefixed version, currently supported by Chrome and Opera */
-            }
-
             #dialog {
                 max-height: 500px;
             }
@@ -87,10 +79,8 @@
             }
 
             @media only screen and (max-width: 1024px) {
-
                 #dialog-content {
                     width: auto;
-
                 }
 
                 #dialog {
@@ -104,9 +94,7 @@
             }
 
             @media only screen and (max-width: 660px) {
-
                 #dialog-content {
-                    width: 50vh;
                     min-width: 0;
                 }
 
@@ -116,7 +104,7 @@
                 }
 
                 .buttons {
-                    margin-top: 45%;
+                    margin-top: 50%;
                 }
 
                 paper-dialog.size-position {
@@ -146,16 +134,12 @@
             <div id="dialog-content">
                 <iron-form id="form">
                     <form>
-                        <dom-if if="[[_isAdd()]]">
-                            <template>
-                                <h2>Добавить поставщика</h2>
-                            </template>
-                        </dom-if>
-                        <dom-if if="[[_isUpdate()]]">
-                            <template>
-                                <h2>Редактировать поставищика</h2>
-                            </template>
-                        </dom-if>
+                        <template is="dom-if" if="[[_isAdd()]]">
+                            <h2>Добавить поставщика</h2>
+                        </template>
+                        <template is="dom-if" if="[[_isUpdate()]]">
+                            <h2>Редактировать поставищика</h2>
+                        </template>
                         <paper-input value="{{inputData.newTitle}}"
                                      error-message="Обязательное поле"
                                      label="Название" required="true"></paper-input>
@@ -179,18 +163,14 @@
                     </form>
                     <div class="buttons">
                         <paper-button on-click="_closeDialog">Отмена</paper-button>
-                        <dom-if if="[[_isAdd()]]">
-                            <template>
-                                <paper-button class="confirm" on-click="_addVendor">Сохранить
-                                </paper-button>
-                            </template>
-                        </dom-if>
-                        <dom-if if="[[_isUpdate()]]">
-                            <template>
-                                <paper-button class="confirm" on-click="_updateVendor">Обновить
-                                </paper-button>
-                            </template>
-                        </dom-if>
+                        <template is="dom-if" if="[[_isAdd()]]">
+                            <paper-button class="confirm" on-click="_addVendor">Сохранить
+                            </paper-button>
+                        </template>
+                        <template is="dom-if" if="[[_isUpdate()]]">
+                            <paper-button class="confirm" on-click="_updateVendor">Обновить
+                            </paper-button>
+                        </template>
                     </div>
                 </iron-form>
             </div>
@@ -209,9 +189,9 @@
              * @polymer
              * @appliesMixin MealOrderApp.ReduxMixin
              */
-            class AdminVendorManageDialog extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
+            class AdminVendorDialog extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
                 static get is() {
-                    return 'admin-vendor-manage-dialog';
+                    return 'admin-vendor-dialog';
                 }
 
                 static get properties() {
@@ -296,8 +276,8 @@
                 }
             }
 
-            MealOrderAdminApp.AdminVendorManageDialog = AdminVendorManageDialog;
-            window.customElements.define(AdminVendorManageDialog.is, AdminVendorManageDialog);
+            MealOrderAdminApp.AdminVendorDialog = AdminVendorDialog;
+            window.customElements.define(AdminVendorDialog.is, AdminVendorDialog);
         }
     </script>
 </dom-module>

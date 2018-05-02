@@ -38,11 +38,6 @@
                 width: 70%;
             }
 
-            iron-list {
-                --iron-list-items-container: {
-                };
-            }
-
             paper-item {
                 width: 100%;
             }
@@ -129,22 +124,6 @@
             }
 
             @media only screen and (max-width: 1300px) {
-                .email {
-                    text-align: left;
-                    width: 25%;
-                }
-
-                .deadline {
-                    width: 15%;
-                    text-align: right;
-                }
-
-                .icons {
-                    width: 12%;
-                }
-            }
-
-            @media only screen and (max-width: 1024px) {
                 #header {
                     width: 98%;
                 }
@@ -154,7 +133,7 @@
                 }
             }
 
-            @media only screen and (max-width: 800px) {
+            @media only screen and (max-width: 900px) {
                 paper-input {
                     margin-top: 0;
                 }
@@ -169,6 +148,20 @@
 
                 #main-content {
                     width: 1000px;
+                }
+
+                .email {
+                    text-align: left;
+                    width: 25%;
+                }
+
+                .deadline {
+                    width: 15%;
+                    text-align: right;
+                }
+
+                .icons {
+                    width: 12%;
                 }
             }
         </style>
@@ -209,62 +202,71 @@
         </div>
     </template>
     <script>
-        class MealOrderVendorList extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
-            static get is() {
-                return 'meal-order-vendor-list';
-            }
-
-            static get properties() {
-                return {
-                    vendors: {
-                        type: Array,
-                        statePath: 'vendors'
-                    }
+        {
+            /**
+             * Main client meal order component.
+             *
+             * @customElement
+             * @polymer
+             * @appliesMixin MealOrderApp.ReduxMixin
+             */
+            class MealOrderVendorList extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
+                static get is() {
+                    return 'meal-order-vendor-list';
                 }
-            };
 
-            static get actions() {
-                return {
-                    vendorManage: function (properties) {
-                        return {
-                            type: MealOrderAdminApp.AdminActions.OPEN_VENDOR_DIALOG,
-                            properties
-                        }
-                    },
-                    removeVendor: function (title) {
-                        return {
-                            type: MealOrderAdminApp.AdminActions.REMOVE_VENDOR,
-                            title
+                static get properties() {
+                    return {
+                        vendors: {
+                            type: Array,
+                            statePath: 'vendors'
                         }
                     }
+                };
+
+                static get actions() {
+                    return {
+                        vendorManage: function (properties) {
+                            return {
+                                type: MealOrderAdminApp.AdminActions.OPEN_VENDOR_DIALOG,
+                                properties
+                            }
+                        },
+                        removeVendor: function (title) {
+                            return {
+                                type: MealOrderAdminApp.AdminActions.REMOVE_VENDOR,
+                                title
+                            }
+                        }
+                    }
+                }
+
+                _addVendorDialog() {
+                    const properties = {};
+                    properties.tagName = MealOrderAdminApp.AdminVendorDialog.is;
+                    properties.mode = 'add';
+                    this.dispatch('vendorManage', properties);
+                }
+
+                _editVendor(e) {
+                    const properties = {};
+                    properties.tagName = MealOrderAdminApp.AdminVendorDialog.is;
+                    properties.mode = 'update';
+                    const inputData = {};
+                    inputData.newTitle = this.vendors[e.model.index].title;
+                    inputData.newMail = this.vendors[e.model.index].email;
+                    inputData.phone = this.vendors[e.model.index].phone;
+                    inputData.deadline = this.vendors[e.model.index].deadline;
+                    properties.inputData = inputData;
+                    this.dispatch('vendorManage', properties);
+                }
+
+                _removeVendor(e) {
+                    this.dispatch("removeVendor", this.vendors[e.model.index].title);
                 }
             }
 
-            _addVendorDialog() {
-                const properties = {};
-                properties.tagName = MealOrderAdminApp.AdminVendorManageDialog.is;
-                properties.mode = 'add';
-                this.dispatch('vendorManage', properties);
-            }
-
-            _editVendor(e) {
-                const properties = {};
-                properties.tagName = MealOrderAdminApp.AdminVendorManageDialog.is;
-                properties.mode = 'update';
-                const inputData = {};
-                inputData.newTitle = this.vendors[e.model.index].title;
-                inputData.newMail = this.vendors[e.model.index].email;
-                inputData.phone = this.vendors[e.model.index].phone;
-                inputData.deadline = this.vendors[e.model.index].deadline;
-                properties.inputData = inputData;
-                this.dispatch('vendorManage', properties);
-            }
-
-            _removeVendor(e) {
-                this.dispatch("removeVendor", this.vendors[e.model.index].title);
-            }
+            window.customElements.define(MealOrderVendorList.is, MealOrderVendorList);
         }
-
-        window.customElements.define(MealOrderVendorList.is, MealOrderVendorList);
     </script>
 </dom-module>

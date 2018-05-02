@@ -17,8 +17,6 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<link rel="import" href="../meal-order-admin-app-namespace.html">
-<link rel="import" href="../actions/admin-actions.html">
 <script>
     {
         MealOrderAdminApp.initialState = {
@@ -38,7 +36,7 @@
 
         MealOrderAdminApp.reducer = (state, action) => {
             if (!state) {
-                return initialState;
+                return MealOrderAdminApp.initialState;
             }
             switch (action.type) {
                 case MealOrderAdminApp.AdminActions.OPEN_VENDOR_DIALOG: {
