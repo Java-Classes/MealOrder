@@ -20,6 +20,7 @@
 
 package javaclasses.mealorder.q;
 
+import com.google.common.collect.Iterables;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.mealorder.DishId;
@@ -122,15 +123,8 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
     }
 
     private int getDishIndexFromOrder(DishId dishId, OrderItem order) {
-        final int[] index = {-1};
-        order.getDishList()
-             .forEach(dishItem -> {
-                 if (dishItem.getId()
-                             .equals(dishId)) {
-                     index[0] = order.getDishList()
-                                     .indexOf(dishItem);
-                 }
-             });
-        return index[0];
+        final int index = Iterables.indexOf(order.getDishList(), dish -> dish.getId()
+                                                                             .equals(dishId));
+        return index;
     }
 }
