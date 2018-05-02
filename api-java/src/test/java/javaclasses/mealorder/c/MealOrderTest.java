@@ -68,18 +68,22 @@ import java.util.List;
 
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
+import static javaclasses.mealorder.PurchaseOrderStatus.INVALID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
+import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithInvalidOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsDeliveredInstance;
 import static javaclasses.mealorder.testdata.TestValues.DATE;
 import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.MENU_ID2;
+import static javaclasses.mealorder.testdata.TestValues.NEW_VENDOR_NAME;
 import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
 import static javaclasses.mealorder.testdata.TestValues.USER_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.addVendorInstance;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.importMenuInstance2;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.importMenuInstance3;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.updateVendorInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -334,6 +338,47 @@ class MealOrderTest {
                                                 .size());
     }
 
+    @Test
+    @DisplayName("Should create invalid po")
+    void checkInvalidPo() {
+        final Command createInvalidPOCommand = createCommand(
+                createPurchaseOrderWithInvalidOrdersInstance());
+        commandBus.post(createInvalidPOCommand, observer);
+        final Repository poItemViewRepository = boundedContext.findRepository(
+                PurchaseOrderItemView.class)
+                                                              .get();
+        final PurchaseOrderItemViewProjection poItemViewProjection = (PurchaseOrderItemViewProjection) poItemViewRepository.find(
+                PURCHASE_ORDER_ID)
+                                                                                                                           .get();
+        assertEquals(INVALID, poItemViewProjection.getState()
+                                                  .getPurchaseOrderStatus());
+        final Repository poDetailsByUserViewRepository = boundedContext.findRepository(
+                PurchaseOrderDetailsByUserView.class)
+                                                                       .get();
+        final PurchaseOrderDetailsByUserViewProjection poDetailsByUserViewProjection = (PurchaseOrderDetailsByUserViewProjection) poDetailsByUserViewRepository.find(
+                PURCHASE_ORDER_ID)
+                                                                                                                                                               .get();
+        assertEquals(INVALID, poDetailsByUserViewProjection.getState()
+                                                           .getPurchaseOrderStatus());
+    }
+
+    @Test
+    @DisplayName("Should updates vendor")
+    void checkUpdateVendor() {
+        final Command updateVendor = createCommand(updateVendorInstance());
+        commandBus.post(updateVendor, observer);
+        final Repository vendorListViewRepository = boundedContext.findRepository(
+                VendorListView.class)
+                                                                  .get();
+        final VendorListId vendorListId = VendorListViewProjection.ID;
+        final VendorListViewProjection vendorListViewProjection = (VendorListViewProjection) vendorListViewRepository.find(
+                vendorListId)
+                                                                                                                     .get();
+        assertEquals(NEW_VENDOR_NAME, vendorListViewProjection.getState()
+                                                              .getVendorList()
+                                                              .get(0)
+                                                              .getVendorName());
+    }
     private ActorRequestFactory getRequestFactory() {
         return requestFactory;
     }

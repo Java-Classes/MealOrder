@@ -68,6 +68,15 @@ public class TestPurchaseOrderCommandFactory {
         return result;
     }
 
+    public static CreatePurchaseOrder createPurchaseOrderInstance(List<Order> order) {
+        final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
+                                                              .setId(PURCHASE_ORDER_ID)
+                                                              .setWhoCreates(USER_ID)
+                                                              .addAllOrder(order)
+                                                              .setVendorEmail(EMAIL)
+                                                              .build();
+        return result;
+    }
     /**
      * Provides a pre-configured {@link CreatePurchaseOrder} instance
      * with mismatch vendor identifier of purchase order and one of
