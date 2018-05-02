@@ -163,7 +163,22 @@
                         },
 
                         /**
-                         * An array containing items to be displayed.
+                         * User's history for a current day.
+                         *
+                         * @typedef {Object} Menu the menu for the current date
+                         *
+                         * @property {String} vendor a vendor name
+                         *
+                         * @typedef {Object} Date contains day, month, year
+                         * @property {Number} day
+                         * @property {Number} month
+                         * @property {Number} year
+                         *
+                         * @typedef {Array} Categories array contains the category name and dishes
+                         * @typedef {Array} Dishes array contains the dish title, price, quantity
+                         * @property {String} title
+                         * @property {String} price
+                         * @property {String} quantity
                          */
                         currentHistory: {
                             type: Object,
