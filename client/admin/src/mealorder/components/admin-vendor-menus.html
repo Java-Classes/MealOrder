@@ -221,7 +221,8 @@
         <div id="main-content">
             <div id="header-table">
                 <h1 id="title">Меню</h1>
-                <paper-checkbox class="paper-checkbox">Архивные</paper-checkbox>
+                <paper-checkbox on-change="_getAllMenu" class="paper-checkbox">Архивные
+                </paper-checkbox>
             </div>
 
             <div id="header-item">
@@ -291,7 +292,7 @@
                      */
                     menu: {
                         type: Array,
-                        statePath: "menu",
+                        statePath: "currentMenu",
                     }
                 }
             }
@@ -303,6 +304,16 @@
                             type: MealOrderAdminApp.AdminActions.OPEN_MENU,
                             properties: properties
                         }
+                    },
+                    getActiveMenu() {
+                        return {
+                            type: MealOrderAdminApp.AdminActions.GET_ACTIVE_MENU,
+                        }
+                    },
+                    getAllMenu() {
+                        return {
+                            type: MealOrderAdminApp.AdminActions.GET_ALL_MENU,
+                        }
                     }
                 }
             }
@@ -312,6 +323,16 @@
                 properties.tagName = MealOrderAdminApp.AdminMenuDialog.is;
                 this.dispatch('vendorMenu', properties);
                 this.$.fab.close();
+            }
+
+            _getAllMenu(e) {
+                if (e.target.active) {
+                    this.dispatch('getAllMenu');
+                }
+                else
+                {
+                    this.dispatch('getActiveMenu');
+                }
             }
 
             _resize() {
