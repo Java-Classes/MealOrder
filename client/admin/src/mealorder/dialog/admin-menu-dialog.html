@@ -190,6 +190,7 @@
                                     </paper-input>
                                 </div>
                             </div>
+                        </div>
                     </form>
                 </iron-form>
                 <div class="buttons">
@@ -218,15 +219,27 @@
 
                 static get properties() {
                     return {
+                        /**
+                         * Vendor of a new menu.
+                         */
                         vendor: {
                             type: String
                         },
+                        /**
+                         * Document with menu link.
+                         */
                         menuUrl: {
                             type: String
                         },
+                        /**
+                         * A date from which the menu becomes available.
+                         */
                         dateFrom: {
                             type: String
                         },
+                        /**
+                         * A date till which the menu is active.
+                         */
                         dateTill: {
                             type: String
                         },
