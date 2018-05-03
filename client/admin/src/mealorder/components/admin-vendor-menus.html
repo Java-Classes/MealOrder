@@ -28,10 +28,6 @@
 <dom-module id="admin-vendor-menus">
     <template>
         <style>
-            #title {
-                display: none;
-            }
-
             #main-content {
                 margin-left: 15%;
                 margin-right: 15%;
@@ -159,7 +155,7 @@
                 width: 25%;
             }
 
-            .item-icons {
+            .item-icon {
                 width: 40px;
                 height: 40px;
             }
@@ -176,6 +172,10 @@
             }
 
             @media only screen and (max-width: 680px) {
+                #title {
+                    display: none;
+                }
+
                 iron-list {
                     --iron-list-items-container: {
                         margin: 0 auto;
@@ -183,18 +183,34 @@
                     }
                 }
 
-                paper-dialog.size-position {
-                    height: 100%;
-                    top: 8%;
-                    left: 0;
-                    transform: none;
-                    margin: 0;
-                }
                 .item-vendor {
                     width: 30%;
                 }
+
+                .item-to {
+                    width: 27%;
+                }
+
+                .item-status {
+                    width: 10%;
+                }
+
+                .item-icon {
+                    display: none;
+                }
             }
 
+            @media only screen and (max-width: 320px) {
+                .item-vendor {
+                    width: 32%;
+                }
+                .item-to {
+                    width: 24%;
+                }
+                .item-from {
+                    width: 24%;
+                }
+            }
         </style>
 
         <div id="main-content">
@@ -220,7 +236,7 @@
                 <div class="item-status">
                     Статус
                 </div>
-                <div class="item-icons"></div>
+                <div class="item-icon"></div>
             </div>
             <iron-list scroll-target="document" id="list" items="[[menu]]" as="item"
                        selection-enabled

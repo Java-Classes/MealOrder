@@ -54,7 +54,6 @@
                 align-items: center;
             }
 
-
             .bold {
                 font-weight: bold;
             }
@@ -101,6 +100,30 @@
             @media only screen and (max-width: 680px) {
                 .item-vendor {
                     width: 30%
+                }
+
+                .item-to {
+                    width: 27%;
+                }
+
+                .item-status {
+                    width: 10%;
+                }
+
+                #expand {
+                    display: none;
+                }
+            }
+
+            @media only screen and (max-width: 320px) {
+                .item-vendor {
+                    width: 32%;
+                }
+                .item-to {
+                    width: 24%;
+                }
+                .item-from {
+                    width: 24%;
                 }
             }
         </style>
@@ -192,7 +215,7 @@
             _getDate(date) {
                 const TWO_DIGIT = 2;
                 const day = date.getDate();
-                const month = date.toLocaleString("ru-RU", { month: 'short' });
+                const month = date.toLocaleString("ru-RU", {month: 'short'});
                 const year = date.getFullYear().toString().substr(TWO_DIGIT);
                 return day + " " + month + " '" + year;
             }
