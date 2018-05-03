@@ -268,6 +268,12 @@
                                 vendor: vendor
                             }
                         },
+                        updateVendor(vendor) {
+                            return {
+                                type: MealOrderAdminApp.AdminActions.UPDATE_VENDOR,
+                                vendor: vendor
+                            }
+                        },
                         removeVendor: function (title) {
                             return {
                                 type: MealOrderAdminApp.AdminActions.REMOVE_VENDOR,
@@ -302,8 +308,8 @@
                 }
 
                 _removeVendor() {
-                    console.log(this.inputData.newTitle);
                     this.dispatch("removeVendor", this.inputData.newTitle);
+                    this._closeDialog();
                 }
 
                 _closeDialog() {
