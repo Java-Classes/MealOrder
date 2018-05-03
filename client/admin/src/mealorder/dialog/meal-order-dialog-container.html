@@ -58,6 +58,7 @@
                 }
 
                 _dialogChanged() {
+                    console.log('changing');
                     if (this.dialog && this.dialog.tagName) {
                         const element = document.createElement(this.dialog.tagName);
                         element.inputData = this.dialog.inputData || {};
