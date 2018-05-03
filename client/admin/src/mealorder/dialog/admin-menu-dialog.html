@@ -18,6 +18,7 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/neon-animation/web-animations.html">
@@ -167,8 +168,9 @@
                                                  label="Поставщик"
                                                  invalid="[[invalid.message.length]]">
                                 <paper-listbox slot="dropdown-content" selected="1">
-                                    <paper-item>Позитив</paper-item>
-                                    <paper-item>Пюре</paper-item>
+                                    <template is="dom-repeat" items="[[vendors]]" as="vendor">
+                                        <paper-item>vendor</paper-item>
+                                    </template>
                                 </paper-listbox>
                             </paper-dropdown-menu>
                             <paper-input id="link" value="{{menuUrl}}"
@@ -243,6 +245,13 @@
                         dateTill: {
                             type: String
                         },
+                        /**
+                         * Vendor list.
+                         */
+                        vendors: {
+                            type: Array,
+                            statePath: "vendors"
+                        }
                     }
                 };
 
