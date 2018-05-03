@@ -1,0 +1,230 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+
+<dom-module id="admin-vendor-menu">
+    <template>
+        <style>
+            paper-item {
+                @apply --paper-font-body1;
+                padding: 0 2%;
+                width: 96%;
+                border-bottom: 1px solid var(--paper-grey-200);
+            }
+
+            .menu-dishes {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-top: 1px solid var(--paper-grey-50);
+                border-bottom: 1px solid var(--paper-grey-50);
+            }
+
+            .wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+
+            .bold {
+                font-weight: bold;
+            }
+
+            .dish-title {
+                width: 55%;
+                padding-left: 10px;
+                text-align: left;
+            }
+
+            .dish-price {
+                width: 50px;
+                text-align: right;
+            }
+
+            .collapsed {
+                display: none;
+            }
+
+            .menu-caption {
+                display: flex;
+                align-items: center;
+                @apply --paper-font-subhead;
+                width: 100%;
+                height: 50px;
+            }
+
+            .item-vendor {
+                width: 25%;
+            }
+
+            .item-from {
+                width: 25%
+            }
+
+            .item-to {
+                width: 25%
+            }
+
+            .item-status {
+                width: 25%;
+            }
+
+            @media only screen and (max-width: 680px) {
+                .item-vendor {
+                    width: 30%
+                }
+                paper-item {
+
+                    padding: 0;
+
+                }
+            }
+        </style>
+        <div class="header">
+            <paper-item on-click="_toggle" class="menu-caption">
+                <div class="menu-caption">
+
+                    <div class="item-vendor">
+                        [[menu.name]]
+                    </div>
+                    <div class="item-from">
+                        11 янв '18
+                    </div>
+                    <div class="item-to">
+                        11 янв '18
+                    </div>
+                    <div class="item-status">
+                        Активно
+                    </div>
+
+                    <paper-icon-button id="expand" icon="expand-more"></paper-icon-button>
+
+                </div>
+            </paper-item>
+        </div>
+        <div id="menu" class="collapsed">
+            <dom-repeat items="[[menu.categories]]" as="item">
+                <template>
+                    <dom-if if="[[item.dishes.length]]">
+                        <template>
+                            <div>
+                                <div class="wrapper">
+                                    <paper-item>
+                                        <div class="dish-title bold">
+                                            [[item.categoryName]]
+                                        </div>
+                                        <div class="dish-price bold">
+                                            Цена, ₴
+                                        </div>
+                                    </paper-item>
+                                </div>
+
+                                <dom-repeat items="[[item.dishes]]" as="dish">
+                                    <template>
+                                        <div class="menu-dishes">
+                                            <paper-item>
+                                                <div class="dish-title">
+                                                    [[dish.title]]
+                                                </div>
+                                                <div class="dish-price">
+                                                    [[dish.price]]
+                                                </div>
+                                            </paper-item>
+                                        </div>
+                                    </template>
+                                </dom-repeat>
+                            </div>
+                        </template>
+                    </dom-if>
+                </template>
+            </dom-repeat>
+        </div>
+    </template>
+    <script>
+        /**
+         * meal-order-vendor-menu represents a menu of a vendor for a single day.
+         *
+         * Contains a list of categories with dish titles and prices.
+         *
+         * @customElement
+         * @polymer
+         */
+        class AdminVendorMenu extends Polymer.Element {
+            static get is() {
+                return 'admin-vendor-menu';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Menu of a vendor.
+                     *
+                     * @property name is name of a vendor.
+                     * @property {array} categories list of categories with dishes.
+                     */
+                    menu: {
+                        type: Array
+                    }
+                }
+            }
+
+            _getExpandIcon() {
+                if (this.$.menu.className === 'expanded') {
+                    return 'expand-less';
+                }
+                else {
+                    return 'expand-more';
+                }
+            }
+
+            log() {
+                console.log(this.menu);
+            }
+
+            _toggle() {
+                if (this.$.menu.className === 'collapsed') {
+                    this.$.menu.className = 'expanded';
+                    this.$.expand.icon = 'expand-less';
+                }
+                else {
+                    this.$.menu.className = 'collapsed';
+                    this.$.expand.icon = 'expand-more';
+                }
+                this.dispatchEvent(new CustomEvent('vendor-menu-resize'));
+            }
+        }
+
+        window.customElements.define(AdminVendorMenu.is, AdminVendorMenu);
+    </script>
+</dom-module>

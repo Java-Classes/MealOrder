@@ -1,0 +1,315 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+
+<link rel="import" href="admin-vendor-menu.html">
+<link rel="import" href="admin-menu-dialog.html">
+<dom-module id="admin-vendor-menus">
+    <template>
+        <style>
+            #main-content {
+                margin-left: 15%;
+                margin-right: 15%;
+                width: 70%;
+                margin-top: 4%;
+            }
+
+            iron-list {
+                --iron-list-items-container: {
+                    width: 100%;
+                    border-bottom: 1px solid #ddd;
+                };
+            }
+
+            div[role="listbox"] {
+                border: 1px solid #e5e5e5;
+            }
+
+            paper-item {
+                width: 100%;
+            }
+
+            .item {
+                @apply --layout-horizontal;
+                /*padding: 20px;*/
+                background-color: white;
+                bottom-border: 1px solid #ddd;
+                cursor: pointer;
+            }
+
+            .pad {
+                @apply --layout-flex;
+                @apply --layout-vertical;
+                font-size: 15px;
+            }
+
+            paper-item {
+                font-size: 15px;
+                padding: 0;
+            }
+
+            .non-select {
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;
+                /* Non-prefixed version, currently supported by Chrome and Opera */
+            }
+
+            paper-icon-button.add-vendor {
+                --paper-icon-button: {
+                    --iron-icon-fill-color: white;
+                    background-color: #0085d3;
+                    border-radius: 50px;
+                    padding: 12px;
+                    width: 50px;
+                    height: 50px;
+                    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.5);
+                }
+            }
+
+            paper-checkbox {
+                --paper-checkbox-unchecked-background-color: #f2f2f2;
+                --paper-checkbox-checked-color: #0085d3;
+            }
+
+            paper-dialog.size-position {
+                height: 100%;
+                position: fixed;
+                top: 40%;
+                left: 50%;
+                transform: translate(-57%, -50%);
+            }
+
+            paper-dropdown-menu {
+                width: 100%;
+            }
+
+
+            #header-item {
+                display: flex;
+                background-color: #f2f2f2;
+                font-weight: bolder;
+                border: 1px solid #ddd;
+                width: auto;
+                height: 50px;
+                align-items: center;
+                padding: 0 2%;
+            }
+
+            .item-vendor {
+                width: 25%
+            }
+
+            .item-from {
+                width: 25%
+            }
+
+            .item-to {
+                width: 25%
+            }
+
+            .item-status {
+                width: 25%;
+            }
+
+            .item-icons {
+                width: 40px;
+                height: 40px;
+            }
+
+            @media only screen and (max-width: 1024px) {
+                #header-table {
+                    margin: 0 1%;
+                }
+
+                #main-content {
+                    margin: 4% auto;
+                    width: 100%;
+                }
+            }
+
+            @media only screen and (max-width: 680px) {
+
+                #header-item {
+                    padding: 0;
+                }
+
+                iron-list {
+                    --iron-list-items-container: {
+                        margin: 0 auto;
+                        width: 100%;
+                    }
+                }
+
+                paper-dialog.size-position {
+                    height: 100%;
+                    top: 8%;
+                    left: 0;
+                    transform: none;
+                    margin: 0;
+                }
+
+                .item-vendor {
+                    width: 30%;
+                }
+
+            }
+
+        </style>
+
+
+        <div id="main-content">
+            <div id="header-table" style="display: flex; justify-content: space-between;">
+                <div><h1>Меню</h1></div>
+                <div style="display: flex; flex-direction: column;">
+                    <paper-icon-button icon="add" class="add-vendor" on-click="_openDialog"
+                                       style="margin-bottom: 10%; align-self: flex-end;"></paper-icon-button>
+                    <paper-checkbox checked style="margin-bottom: 5%;">Архивные</paper-checkbox>
+                </div>
+            </div>
+
+            <div id="header-item">
+                <div class="item-vendor">
+                    Поставщик
+                </div>
+                <div class="item-from">
+                    От
+                </div>
+                <div class="item-to">
+                    До
+                </div>
+                <div class="item-status">
+                    Статус
+                </div>
+                <div class="item-icons"></div>
+            </div>
+            <iron-list scroll-target="document" id="list" items="[[items]]" as="item"
+                       selection-enabled
+                       multi-selection>
+                <template>
+                    <div class="non-select">
+                        <div class="item">
+                            <div class="pad">
+                                <admin-vendor-menu menu="[[item]]"
+                                                   on-vendor-menu-resize="_resize"></admin-vendor-menu>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </iron-list>
+        </div>
+    </template>
+    <script>
+        /**
+         * admin-vendor-menus represents an expanding list of menus for current date for admin using.
+         *
+         * @customElement
+         * @polymer
+         */
+        class AdminVendorMenus extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'admin-vendor-menus';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Full menu for day.
+                     *
+                     * @property {array} each item is a menu of a vendor for a day.
+                     */
+                    items: {
+                        type: Array,
+                        value: [
+                            {
+                                name: 'Пюре',
+                                categories: [{
+                                    categoryName: 'Первое блюдо', dishes: [
+                                        {title: 'Суп гречневый', price: 35},
+                                        {title: 'Солянка', price: 40},
+                                        {title: 'Суп гороховый', price: 140},
+                                        {title: 'Уха', price: 35},
+                                        {title: 'Суп-пюре грибной', price: 40}]
+                                }
+                                    , {
+                                        categoryName: 'Второе блюдо', dishes: [
+                                            {title: 'Утиные крылышки', price: 40},
+                                            {title: 'Куриные крылышки', price: 45}]
+                                    }
+                                ]
+                            },
+                            {
+                                name: 'Позитив',
+                                categories: [{
+                                    categoryName: 'Первое блюдо', dishes: [
+                                        {title: 'Суп сырный', price: 35},
+                                        {title: 'Суп с лапшой', price: 40},
+                                        {title: 'Борщ красный', price: 40},
+                                        {title: 'Борщ зеленый', price: 35}]
+                                }
+                                    , {
+                                        categoryName: 'Второе блюдо', dishes: [
+                                            {title: 'Стейк из лосося', price: 40},
+                                            {title: 'Стейк из говядины', price: 45}]
+                                    },
+                                    {
+                                        categoryName: 'Напитки', dishes: [
+                                            {title: 'Лимонад', price: 40}]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+
+            static get actions() {
+                return {
+                    vendorMenu(properties) {
+                        return {
+                            type: ArrayAction.OPEN_MENU,
+                            properties: properties
+                        }
+                    }
+                }
+            }
+
+            _openDialog() {
+                const properties = {};
+                properties.tagName = AdminMenuDialog.is;
+                this.dispatch('vendorMenu', properties);
+            }
+            _resize() {
+                this.shadowRoot.querySelector("#list").notifyResize();
+            }
+        }
+
+        window.customElements.define(AdminVendorMenus.is, AdminVendorMenus);
+    </script>
+</dom-module>
