@@ -1,0 +1,237 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../shell/redux-store.html">
+
+<dom-module id="monthly-spendings">
+    <template>
+        <style>
+            paper-button {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                font-weight: normal;
+                font-size: 14px;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            .header {
+                display: flex;
+                font-weight: bold;
+                background-color: #f2f2f2;
+            }
+
+            .item {
+                @apply --layout-horizontal;
+                height: 50px;
+                display: flex;
+                background-color: white;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                align-items: center;
+            }
+
+            .upper {
+                display: flex;
+                align-items: flex-end;
+                margin-bottom: 1%;
+            }
+
+            .header {
+                @apply --layout-horizontal;
+                height: 50px;
+                display: flex;
+                background-color: #f2f2f2;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                align-items: center;
+            }
+
+            .main-content {
+                margin: 4% auto;
+                width: 70%;
+            }
+
+            .user-name {
+                padding-left: 2%;
+                width: 33.3%;
+            }
+
+            .amount {
+                width: 33.3%;
+                text-align: right;
+            }
+
+            .column {
+                width: 33.3%;
+            }
+
+            .footer {
+                font-weight: bold;
+            }
+
+            #generate {
+                background-color: #e1e1e1;
+                text-align: center;
+            }
+
+            #generate:hover {
+                background-color: #c7c7c7;
+            }
+
+            #paper-month {
+                margin-right: 2%
+            }
+
+            #paper-year {
+                margin-right: 2%;
+            }
+
+            @media only screen and (max-width: 1024px) {
+
+                .main-content {
+                    width: 100%;
+                }
+
+                .upper {
+                    width: 98%;
+                    margin: 1% auto;
+                }
+
+                .user-name {
+                    width: 50%;
+                }
+
+                .amount {
+                    width: 50%;
+                    padding-right: 2%;
+                }
+
+                .column {
+                    display: none;
+                }
+
+                .costs {
+                    margin-left: 1%;
+                }
+            }
+
+            @media only screen and (max-width: 600px) {
+                .costs {
+                    display: none;
+                }
+            }
+
+            @media only screen and (max-width: 320px) {
+                #generate {
+                    font-size: 11px;
+                }
+            }
+
+            .costs {
+                font-size: 2em;
+                font-weight: bold;
+            }
+        </style>
+
+        <div class="main-content">
+            <div class="costs">Расходы за месяц</div>
+            <div class="upper">
+                <paper-dropdown-menu label="Месяц" id="paper-month">
+                    <paper-listbox slot="dropdown-content">
+                        <paper-item>декабрь</paper-item>
+                        <paper-item>январь</paper-item>
+                        <paper-item>февраль</paper-item>
+                        <paper-item>март</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+                <paper-dropdown-menu label="год" id="paper-year">
+                    <paper-listbox slot="dropdown-content">
+                        <paper-item>2017</paper-item>
+                        <paper-item>2018</paper-item>
+                        <paper-item>2019</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+                <paper-button id="generate" style="">Сгенерировать документ</paper-button>
+            </div>
+            <div class="non-select header">
+                <div class="user-name">Пользователь</div>
+                <div class="amount">Сумма, ₴</div>
+                <div class="column"></div>
+            </div>
+            <iron-list id="list" items="[[monthlySpendings]]" as="record" scroll-target="document"
+                       scroll-offset="200">
+                <template>
+                    <div class="non-select">
+                        <div class="item">
+                            <div class="user-name">[[record.user]]</div>
+                            <div class="amount">[[record.amount]]</div>
+                            <div class="column"></div>
+                        </div>
+                    </div>
+                </template>
+            </iron-list>
+            <div class="item footer">
+                <div class="user-name">Всего:</div>
+                <div class="amount">[[_getTotal()]]</div>
+                <div class="column"></div>
+            </div>
+        </div>
+    </template>
+    <script>
+        {
+            /**
+             * Monthly spendings for each user.
+             *
+             * @customElement
+             * @polymer
+             * @appliesMixin MealOrderApp.ReduxMixin
+             */
+            class MonthlySpendings extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
+
+                static get is() {
+                    return 'monthly-spendings';
+                }
+
+
+                static get properties() {
+                    return {
+                        monthlySpendings: {
+                            type: Array,
+                            statePath: 'monthlySpendings'
+                        }
+                    };
+                }
+
+                _getTotal() {
+                    let sum = 0;
+                    for (let i = 0; i < this.monthlySpendings.length; i++) {
+                        sum += this.monthlySpendings[i].amount;
+                    }
+                    return sum;
+                }
+
+            }
+            window.customElements.define(MonthlySpendings.is, MonthlySpendings);
+        }
+    </script>
+</dom-module>
+

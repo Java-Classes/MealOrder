@@ -169,8 +169,13 @@
                 },
             ],
             currentMenu: activeMenu,
-        };
-
+            monthlySpendings: [
+                {user: 'Женя Сидоров', amount: 1000},
+                {user: 'Антон Сокол', amount: 2000},
+                {user: 'Вова Бессонов', amount: 938},
+                {user: 'Андрей Жданов', amount: 3567},
+                {user: 'Яна Смешарикова', amount: 100}]
+        }
 
         MealOrderAdminApp.reducer = (state, action) => {
             if (!state) {
