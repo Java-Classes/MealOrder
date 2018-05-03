@@ -100,6 +100,7 @@
 
             #fab {
                 --paper-fab-speed-dial-background: #0085d3;
+                --paper-fab-speed-dial-keyboard-focus-background: #0085d3;
                 --paper-fab-speed-dial-position: fixed;
             }
 
@@ -178,38 +179,37 @@
                 }
             }
         </style>
-            <div id="header">
-                <h1 class="vendor">Поставщики</h1>
+        <div id="header">
+            <h1 class="vendor">Поставщики</h1>
+        </div>
+        <div id="main-content">
+            <div class="item non-select header">
+                <div class="vendor-name">Название</div>
+                <div class="email">Почта</div>
+                <div class="phone">Телефон</div>
+                <div class="deadline">Заказать до</div>
+                <div class="icons"></div>
             </div>
-            <div id="main-content">
-                <div class="item non-select header">
-                    <div class="vendor-name">Название</div>
-                    <div class="email">Почта</div>
-                    <div class="phone">Телефон</div>
-                    <div class="deadline">Заказать до</div>
-                    <div class="icons"></div>
-                </div>
-                <iron-list selection-enabled on-selected-item-changed="_openDetailsDialog" id="list"
-                           items="[[vendors]]" as="vendor" scroll-target="document"
-                           scroll-offset="200">
-                    <template>
-                        <div class="item">
-                            <div class="vendor-name">[[vendor.title]]</div>
-                            <div class="email">[[vendor.email]]</div>
-                            <div class="phone">[[vendor.phone]]</div>
-                            <div class="deadline">[[vendor.deadline]]</div>
-                            <div class="icons">
-                                <div class="icons-container">
-                                    <paper-icon-button icon="create"
-                                                       on-click="_openDetailsDialog"></paper-icon-button>
-                                </div>
+            <iron-list selection-enabled on-selected-item-changed="_openDetailsDialog" id="list"
+                       items="[[vendors]]" as="vendor" scroll-target="document"
+                       scroll-offset="200">
+                <template>
+                    <div class="item">
+                        <div class="vendor-name">[[vendor.title]]</div>
+                        <div class="email">[[vendor.email]]</div>
+                        <div class="phone">[[vendor.phone]]</div>
+                        <div class="deadline">[[vendor.deadline]]</div>
+                        <div class="icons">
+                            <div class="icons-container">
+                                <paper-icon-button icon="create"
+                                                   on-click="_openDetailsDialog"></paper-icon-button>
                             </div>
                         </div>
-                    </template>
-                </iron-list>
-            </div>
-        <paper-fab-speed-dial on-iron-overlay-opened="_addVendorDialog" id="fab"
-                              dynamicAlign="true">
+                    </div>
+                </template>
+            </iron-list>
+        </div>
+        <paper-fab-speed-dial on-iron-overlay-opened="_addVendorDialog" id="fab">
         </paper-fab-speed-dial>
     </template>
     <script>
@@ -250,16 +250,10 @@
 
                 static get actions() {
                     return {
-                        vendorManage: function (properties) {
+                        openVendorDialog: function (properties) {
                             return {
                                 type: MealOrderAdminApp.AdminActions.OPEN_VENDOR_DIALOG,
                                 properties
-                            }
-                        },
-                        removeVendor: function (title) {
-                            return {
-                                type: MealOrderAdminApp.AdminActions.REMOVE_VENDOR,
-                                title
                             }
                         }
                     }
@@ -269,7 +263,7 @@
                     const properties = {};
                     properties.tagName = MealOrderAdminApp.AdminVendorDialog.is;
                     properties.mode = 'add';
-                    this.dispatch('vendorManage', properties);
+                    this.dispatch('openVendorDialog', properties);
                     this.$.fab.close();
                 }
 
@@ -286,7 +280,7 @@
                         inputData.phone = this.$.list.selectedItem.phone;
                         inputData.deadline = this.$.list.selectedItem.deadline;
                         properties.inputData = inputData;
-                        this.dispatch('vendorManage', properties);
+                        this.dispatch('openVendorDialog', properties);
                     }
                     if (e.model) {
                         inputData.newTitle = this.vendors[e.model.index].title;
@@ -294,13 +288,10 @@
                         inputData.phone = this.vendors[e.model.index].phone;
                         inputData.deadline = this.vendors[e.model.index].deadline;
                         properties.inputData = inputData;
-                        this.dispatch('vendorManage', properties);
+                        this.dispatch('openVendorDialog', properties);
                     }
                 }
 
-                _removeVendor(e) {
-                    this.dispatch("removeVendor", this.vendors[e.model.index].title);
-                }
             }
 
             window.customElements.define(MealOrderVendorList.is, MealOrderVendorList);

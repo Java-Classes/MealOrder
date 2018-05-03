@@ -187,7 +187,7 @@
                     <div class="dialog-buttons">
                         <div class="remove-button-wrapper">
                             <template is="dom-if" if="[[_isUpdate()]]">
-                                <paper-button on-click="_updateVendor">Удалить
+                                <paper-button on-click="_removeVendor">Удалить
                                 </paper-button>
                             </template>
                         </div>
@@ -264,6 +264,12 @@
                                 type: MealOrderAdminApp.AdminActions.ADD_VENDOR,
                                 vendor: vendor
                             }
+                        },
+                        removeVendor: function (title) {
+                            return {
+                                type: MealOrderAdminApp.AdminActions.REMOVE_VENDOR,
+                                title
+                            }
                         }
                     }
                 }
@@ -290,6 +296,11 @@
                         this.dispatch('updateVendor', vendor);
                         this._closeDialog();
                     }
+                }
+
+                _removeVendor() {
+                    console.log(this.inputData.newTitle);
+                    this.dispatch("removeVendor", this.inputData.newTitle);
                 }
 
                 _closeDialog() {
