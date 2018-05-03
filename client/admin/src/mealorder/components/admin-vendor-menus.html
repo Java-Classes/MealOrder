@@ -40,18 +40,9 @@
                 justify-content: space-between;
             }
 
-            #header-content {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .add-vendor {
-                margin-bottom: 10%;
-                align-self: flex-end;
-            }
-
             .paper-checkbox {
-                margin-bottom: 5%;
+                align-self: flex-end;
+                margin-bottom: 4px;
             }
 
             iron-list {
@@ -160,6 +151,14 @@
                 height: 40px;
             }
 
+            #fab {
+                --paper-fab-speed-dial-background: #0085d3;
+                --paper-fab-speed-dial-keyboard-focus-background: #0085d3;
+                --paper-fab-speed-dial-position: fixed;
+                --paper-fab-speed-dial-bottom: 15px;
+                --paper-fab-speed-dial-right: 23px;
+            }
+
             @media only screen and (max-width: 1024px) {
                 #header-table {
                     margin: 0 1%;
@@ -172,6 +171,10 @@
             }
 
             @media only screen and (max-width: 680px) {
+                #header-table {
+                    justify-content: flex-end;
+                }
+
                 #title {
                     display: none;
                 }
@@ -204,9 +207,11 @@
                 .item-vendor {
                     width: 32%;
                 }
+
                 .item-to {
                     width: 24%;
                 }
+
                 .item-from {
                     width: 24%;
                 }
@@ -216,11 +221,7 @@
         <div id="main-content">
             <div id="header-table">
                 <h1 id="title">Меню</h1>
-                <div id="header-content">
-                    <paper-icon-button icon="add" class="add-vendor"
-                                       on-click="_openDialog"></paper-icon-button>
-                    <paper-checkbox class="paper-checkbox">Архивные</paper-checkbox>
-                </div>
+                <paper-checkbox class="paper-checkbox">Архивные</paper-checkbox>
             </div>
 
             <div id="header-item">
@@ -253,6 +254,8 @@
                 </template>
             </iron-list>
         </div>
+        <paper-fab-speed-dial on-iron-overlay-opened="_openDialog" id="fab">
+        </paper-fab-speed-dial>
     </template>
     <script>
         /**
@@ -308,6 +311,7 @@
                 const properties = {};
                 properties.tagName = MealOrderAdminApp.AdminMenuDialog.is;
                 this.dispatch('vendorMenu', properties);
+                this.$.fab.close();
             }
 
             _resize() {

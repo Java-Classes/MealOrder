@@ -255,6 +255,12 @@
                                 type: MealOrderAdminApp.AdminActions.OPEN_VENDOR_DIALOG,
                                 properties
                             }
+                        },
+                        removeVendor: function (title) {
+                            return {
+                                type: MealOrderAdminApp.AdminActions.REMOVE_VENDOR,
+                                title
+                            }
                         }
                     }
                 }
@@ -292,6 +298,10 @@
                     }
                 }
 
+                _removeVendor(e) {
+                    console.log( inputData.newTitle);
+                    this.dispatch("removeVendor", this.vendors[e.model.index].title);
+                }
             }
 
             window.customElements.define(MealOrderVendorList.is, MealOrderVendorList);
