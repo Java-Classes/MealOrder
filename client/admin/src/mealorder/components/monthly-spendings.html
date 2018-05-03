@@ -18,6 +18,7 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
@@ -70,6 +71,10 @@
                 width: 70%;
             }
 
+            .table-container {
+                font-size: 15px;
+            }
+
             .user-name {
                 padding-left: 2%;
                 width: 33.3%;
@@ -98,7 +103,7 @@
             }
 
             #paper-month {
-                margin-right: 2%
+                margin-right: 2%;
             }
 
             #paper-year {
@@ -155,44 +160,52 @@
         <div class="main-content">
             <div class="costs">Расходы за месяц</div>
             <div class="upper">
-                <paper-dropdown-menu label="Месяц" id="paper-month">
+                <paper-dropdown-menu on-opened-changed="_getSelectedMonth"
+                                     on-selected-item-changed="_getSelectedMonth" label="Месяц"
+                                     id="paper-month" value="[[_getLocaleMonth()]]">
                     <paper-listbox slot="dropdown-content">
-                        <paper-item>декабрь</paper-item>
-                        <paper-item>январь</paper-item>
-                        <paper-item>февраль</paper-item>
-                        <paper-item>март</paper-item>
+                        <template is="dom-repeat" items="[[arrayOfMonths]]" as="month">
+                            <paper-item class="month">[[month]]</paper-item>
+                        </template>
                     </paper-listbox>
                 </paper-dropdown-menu>
-                <paper-dropdown-menu label="год" id="paper-year">
+                <paper-dropdown-menu on-opened-changed="_getSelectedYear"
+                                     on-selected-item-changed="_getSelectedYear" label="Год"
+                                     id="paper-year" value="[[_getYear()]]">
                     <paper-listbox slot="dropdown-content">
-                        <paper-item>2017</paper-item>
-                        <paper-item>2018</paper-item>
-                        <paper-item>2019</paper-item>
+                        <template is="dom-repeat" items="[[arrayOfYears]]" as="year">
+                            <paper-item>[[year]]</paper-item>
+                        </template>
                     </paper-listbox>
                 </paper-dropdown-menu>
                 <paper-button id="generate" style="">Сгенерировать документ</paper-button>
             </div>
-            <div class="non-select header">
-                <div class="user-name">Пользователь</div>
-                <div class="amount">Сумма, ₴</div>
-                <div class="column"></div>
-            </div>
-            <iron-list id="list" items="[[monthlySpendings]]" as="record" scroll-target="document"
-                       scroll-offset="200">
-                <template>
-                    <div class="non-select">
-                        <div class="item">
-                            <div class="user-name">[[record.user]]</div>
-                            <div class="amount">[[record.amount]]</div>
-                            <div class="column"></div>
+            <div class="table-container">
+                <div class="non-select header">
+                    <div class="user-name">Пользователь</div>
+                    <div class="amount">Сумма, ₴</div>
+                    <div class="column"></div>
+                </div>
+                <iron-list id="list" items="[[monthlySpendings.users]]" as="record"
+                           scroll-target="document"
+                           scroll-offset="200">
+                    <template>
+                        <div class="non-select">
+                            <div class="item">
+                                <div class="user-name">[[record.name]]</div>
+                                <div class="amount">[[record.amount]]</div>
+                                <div class="column"></div>
+                            </div>
                         </div>
+                    </template>
+                </iron-list>
+                <template is="dom-if" if="[[monthlySpendings]]">
+                    <div class="item footer">
+                        <div class="user-name">Всего:</div>
+                        <div class="amount">[[_getTotalAmount(monthlySpendings)]]</div>
+                        <div class="column"></div>
                     </div>
                 </template>
-            </iron-list>
-            <div class="item footer">
-                <div class="user-name">Всего:</div>
-                <div class="amount">[[_getTotal()]]</div>
-                <div class="column"></div>
             </div>
         </div>
     </template>
@@ -206,30 +219,97 @@
              * @appliesMixin MealOrderApp.ReduxMixin
              */
             class MonthlySpendings extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
-
                 static get is() {
                     return 'monthly-spendings';
                 }
 
-
                 static get properties() {
                     return {
+                        monthlySpendingsStartDate: {
+                            type: Date,
+                            statePath: 'monthlySpendingsStartDate'
+                        },
+                        serverTime: {
+                            type: Date,
+                            statePath: 'serverTime',
+                        },
                         monthlySpendings: {
                             type: Array,
                             statePath: 'monthlySpendings'
+                        },
+                        arrayOfMonths: {
+                            type: Array,
+                            value: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+                                "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+                        },
+                        arrayOfYears: {
+                            type: Array,
+                            computed: '_getYears(monthlySpendingsStartDate, serverTime)'
+                        },
+                        selectedMonth: {
+                            type: Object,
+                        },
+                        selectedYear: {
+                            type: Object,
                         }
                     };
                 }
 
-                _getTotal() {
+                static get actions() {
+                    return {
+                        getSelectedMonthlySpendings: date => ({
+                            type: MealOrderAdminApp.AdminActions.GET_SELECTED_MONTHLY_SPENDINGS,
+                            date
+                        }),
+                    }
+                }
+
+                _getSelectedMonth(e) {
+                    this.set('selectedMonth', this.arrayOfMonths.indexOf(e.target.value));
+                    const selectedDate = new Date();
+                    selectedDate.setMonth(this.selectedMonth);
+                    selectedDate.setFullYear(this.selectedYear);
+                    this.dispatch("getSelectedMonthlySpendings", selectedDate);
+                }
+
+                _getSelectedYear(e) {
+                    this.set('selectedYear', e.target.value);
+                    const selectedDate = new Date();
+                    selectedDate.setMonth(this.selectedMonth);
+                    selectedDate.setFullYear(this.selectedYear);
+                    this.dispatch("getSelectedMonthlySpendings", selectedDate);
+                }
+
+                _getLocaleMonth() {
+                    const currentYear = this.serverTime.toLocaleString("ru-RU", {month: 'long'});
+                    console.log(currentYear.charAt(0).toUpperCase() + currentYear.slice(1));
+                    return currentYear.charAt(0).toUpperCase() + currentYear.slice(1);
+                }
+
+                _getYear() {
+                    return this.serverTime.getFullYear();
+                }
+
+                _getYears(startDate, endDate) {
+                    const diff = endDate.getFullYear() - startDate.getFullYear();
+                    const arrayOfYears = [];
+                    arrayOfYears.push(startDate.getFullYear());
+                    for (let i = 0; i < diff; i++) {
+                        const year = new Date(startDate.setFullYear(startDate.getFullYear() + 1)).getFullYear();
+                        arrayOfYears.push(year);
+                    }
+                    return arrayOfYears.reverse();
+                }
+
+                _getTotalAmount(record) {
                     let sum = 0;
-                    for (let i = 0; i < this.monthlySpendings.length; i++) {
-                        sum += this.monthlySpendings[i].amount;
+                    for (let i = 0; i < record.users.length; i++) {
+                        sum += record.users[i].amount;
                     }
                     return sum;
                 }
-
             }
+
             window.customElements.define(MonthlySpendings.is, MonthlySpendings);
         }
     </script>

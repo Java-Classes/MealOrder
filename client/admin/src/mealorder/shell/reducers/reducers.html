@@ -19,6 +19,7 @@
   -->
 <script>
     {
+
         const activeMenu = [
             {
                 name: 'Пюре',
@@ -154,7 +155,30 @@
             }
         ];
 
+        const monthlySpendings = [{
+            date: new Date("2018-05-01"),
+            users: [
+                {name: 'Женя Сидоров', amount: 1000},
+                {name: 'Антон Сокол', amount: 2000},
+                {name: 'Вова Бессонов', amount: 938},
+                {name: 'Андрей Жданов', amount: 3567},
+                {name: 'Яна Смешарикова', amount: 100}
+            ]
+        },
+            {
+                date: new Date("2018-06-01"),
+                users: [
+                    {name: 'Стив Джобс', amount: 100},
+                    {name: 'Майкл Скофилд', amount: 200},
+                    {name: 'Вова Бессонов', amount: 938},
+                    {name: 'Андрей Жданов', amount: 3567},
+                    {name: 'Яна Смешарикова', amount: 100}]
+            }
+        ];
+
         MealOrderAdminApp.initialState = {
+            monthlySpendingsStartDate: new Date("2016-05-03"),
+            serverTime: new Date("2018-05-03"),
             vendors: [
                 {
                     title: 'Пюре',
@@ -169,64 +193,68 @@
                 },
             ],
             currentMenu: activeMenu,
-            monthlySpendings: [
-                {user: 'Женя Сидоров', amount: 1000},
-                {user: 'Антон Сокол', amount: 2000},
-                {user: 'Вова Бессонов', amount: 938},
-                {user: 'Андрей Жданов', amount: 3567},
-                {user: 'Яна Смешарикова', amount: 100}]
-        }
+            monthlySpendings: {},
+        },
 
-        MealOrderAdminApp.reducer = (state, action) => {
-            if (!state) {
-                return MealOrderAdminApp.initialState;
+            MealOrderAdminApp.reducer = (state, action) => {
+                if (!state) {
+                    return MealOrderAdminApp.initialState;
+                }
+                switch (action.type) {
+                    case MealOrderAdminApp.AdminActions.OPEN_VENDOR_DIALOG: {
+                        return Object.assign({}, state, {
+                                currentDialog: action.properties
+                            }
+                        );
+                    }
+                    case MealOrderAdminApp.AdminActions.CLOSE_VENDOR_DIALOG: {
+                        return Object.assign({}, state, {
+                                currentDialog: {}
+                            }
+                        );
+                    }
+                    case MealOrderAdminApp.AdminActions.OPEN_MENU: {
+                        return Object.assign({}, state, {
+                                currentDialog: action.properties
+                            }
+                        );
+                    }
+                    case MealOrderAdminApp.AdminActions.CLOSE_MENU: {
+                        return Object.assign({}, state, {
+                                currentDialog: {}
+                            }
+                        );
+                    }
+                    case MealOrderAdminApp.AdminActions.ADD_VENDOR: {
+                        return state;
+                    }
+                    case MealOrderAdminApp.AdminActions.REMOVE_VENDOR: {
+                        return state;
+                    }
+                    case MealOrderAdminApp.AdminActions.GET_ACTIVE_MENU: {
+                        return Object.assign({}, state, {
+                                currentMenu: activeMenu
+                            }
+                        );
+                    }
+                    case MealOrderAdminApp.AdminActions.GET_ALL_MENU: {
+                        return Object.assign({}, state, {
+                                currentMenu: allMenu
+                            }
+                        );
+                    }
+                    case MealOrderAdminApp.AdminActions.GET_SELECTED_MONTHLY_SPENDINGS: {
+                        const selectedMonthlySpendings = monthlySpendings.find(spending =>
+                            (spending.date.getMonth() === action.date.getMonth()) &&
+                            (spending.date.getFullYear() === action.date.getFullYear()));
+                        return Object.assign({}, state, {
+                            monthlySpendings: selectedMonthlySpendings
+                            }
+                        );
+                    }
+                    default :
+                        return state;
+                }
             }
-            switch (action.type) {
-                case MealOrderAdminApp.AdminActions.OPEN_VENDOR_DIALOG: {
-                    return Object.assign({}, state, {
-                            currentDialog: action.properties
-                        }
-                    );
-                }
-                case MealOrderAdminApp.AdminActions.CLOSE_VENDOR_DIALOG: {
-                    return Object.assign({}, state, {
-                            currentDialog: {}
-                        }
-                    );
-                }
-                case MealOrderAdminApp.AdminActions.OPEN_MENU: {
-                    return Object.assign({}, state, {
-                            currentDialog: action.properties
-                        }
-                    );
-                }
-                case MealOrderAdminApp.AdminActions.CLOSE_MENU: {
-                    return Object.assign({}, state, {
-                            currentDialog: {}
-                        }
-                    );
-                }
-                case MealOrderAdminApp.AdminActions.ADD_VENDOR: {
-                    return state;
-                }
-                case MealOrderAdminApp.AdminActions.REMOVE_VENDOR: {
-                    return state;
-                }
-                case MealOrderAdminApp.AdminActions.GET_ACTIVE_MENU: {
-                    return Object.assign({}, state, {
-                            currentMenu: activeMenu
-                        }
-                    );
-                }
-                case MealOrderAdminApp.AdminActions.GET_ALL_MENU: {
-                    return Object.assign({}, state, {
-                            currentMenu: allMenu
-                        }
-                    );
-                }
-                default :
-                    return state;
-            }
-        }
     }
 </script>
