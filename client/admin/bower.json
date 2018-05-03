@@ -16,6 +16,7 @@
     "paper-input": "PolymerElements/paper-input#^2.2.2",
     "gold-phone-input": "PolymerElements/gold-phone-input#^2.1.0",
     "paper-button": "PolymerElements/paper-button#^2.1.1",
+    "iron-form": "PolymerElements/iron-form#^2.3.0",
     "paper-fab-speed-dial": "Collaborne/paper-fab-speed-dial#^2.4.0"
   },
   "devDependencies": {
