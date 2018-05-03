@@ -17,24 +17,45 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
-<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="./admin-vendor-menu.html">
+<link rel="import" href="./admin-menu-dialog.html">
 
-<link rel="import" href="admin-vendor-menu.html">
-<link rel="import" href="admin-menu-dialog.html">
 <dom-module id="admin-vendor-menus">
     <template>
         <style>
+            #title {
+                display: none;
+            }
+
             #main-content {
                 margin-left: 15%;
                 margin-right: 15%;
                 width: 70%;
                 margin-top: 4%;
+            }
+
+            #header-table {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #header-content {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .add-vendor {
+                margin-bottom: 10%;
+                align-self: flex-end;
+            }
+
+            .paper-checkbox {
+                margin-bottom: 5%;
             }
 
             iron-list {
@@ -110,7 +131,6 @@
                 width: 100%;
             }
 
-
             #header-item {
                 display: flex;
                 background-color: #f2f2f2;
@@ -123,7 +143,8 @@
             }
 
             .item-vendor {
-                width: 25%
+                width: 25%;
+
             }
 
             .item-from {
@@ -155,11 +176,6 @@
             }
 
             @media only screen and (max-width: 680px) {
-
-                #header-item {
-                    padding: 0;
-                }
-
                 iron-list {
                     --iron-list-items-container: {
                         margin: 0 auto;
@@ -174,23 +190,20 @@
                     transform: none;
                     margin: 0;
                 }
-
                 .item-vendor {
                     width: 30%;
                 }
-
             }
 
         </style>
 
-
         <div id="main-content">
-            <div id="header-table" style="display: flex; justify-content: space-between;">
-                <div><h1>Меню</h1></div>
-                <div style="display: flex; flex-direction: column;">
-                    <paper-icon-button icon="add" class="add-vendor" on-click="_openDialog"
-                                       style="margin-bottom: 10%; align-self: flex-end;"></paper-icon-button>
-                    <paper-checkbox checked style="margin-bottom: 5%;">Архивные</paper-checkbox>
+            <div id="header-table">
+                <h1 id="title">Меню</h1>
+                <div id="header-content">
+                    <paper-icon-button icon="add" class="add-vendor"
+                                       on-click="_openDialog"></paper-icon-button>
+                    <paper-checkbox class="paper-checkbox">Архивные</paper-checkbox>
                 </div>
             </div>
 
@@ -209,7 +222,7 @@
                 </div>
                 <div class="item-icons"></div>
             </div>
-            <iron-list scroll-target="document" id="list" items="[[items]]" as="item"
+            <iron-list scroll-target="document" id="list" items="[[menu]]" as="item"
                        selection-enabled
                        multi-selection>
                 <template>
@@ -227,7 +240,7 @@
     </template>
     <script>
         /**
-         * admin-vendor-menus represents an expanding list of menus for current date for admin using.
+         * admin-vendor-menus represents an expanding list of menus with dates for admin using.
          *
          * @customElement
          * @polymer
@@ -240,51 +253,26 @@
             static get properties() {
                 return {
                     /**
-                     * Full menu for day.
+                     * Menu for the date range.
                      *
-                     * @property {array} each item is a menu of a vendor for a day.
+                     * @typedef {Object} Menu the menu for the date range.
+                     *
+                     * @property {String} vendor a vendor name
+                     *
+                     * @typedef {Object} Date contains day, month, year
+                     * @property {Number} day
+                     * @property {Number} month
+                     * @property {Number} year
+                     *
+                     * @typedef {Array} Categories contains the category name and dishes
+                     * @typedef {Array} Dishes contains the dish title, price, quantity
+                     * @property {String} title
+                     * @property {String} price
+                     * @property {String} quantity
                      */
-                    items: {
+                    menu: {
                         type: Array,
-                        value: [
-                            {
-                                name: 'Пюре',
-                                categories: [{
-                                    categoryName: 'Первое блюдо', dishes: [
-                                        {title: 'Суп гречневый', price: 35},
-                                        {title: 'Солянка', price: 40},
-                                        {title: 'Суп гороховый', price: 140},
-                                        {title: 'Уха', price: 35},
-                                        {title: 'Суп-пюре грибной', price: 40}]
-                                }
-                                    , {
-                                        categoryName: 'Второе блюдо', dishes: [
-                                            {title: 'Утиные крылышки', price: 40},
-                                            {title: 'Куриные крылышки', price: 45}]
-                                    }
-                                ]
-                            },
-                            {
-                                name: 'Позитив',
-                                categories: [{
-                                    categoryName: 'Первое блюдо', dishes: [
-                                        {title: 'Суп сырный', price: 35},
-                                        {title: 'Суп с лапшой', price: 40},
-                                        {title: 'Борщ красный', price: 40},
-                                        {title: 'Борщ зеленый', price: 35}]
-                                }
-                                    , {
-                                        categoryName: 'Второе блюдо', dishes: [
-                                            {title: 'Стейк из лосося', price: 40},
-                                            {title: 'Стейк из говядины', price: 45}]
-                                    },
-                                    {
-                                        categoryName: 'Напитки', dishes: [
-                                            {title: 'Лимонад', price: 40}]
-                                    }
-                                ]
-                            }
-                        ]
+                        statePath: "menu",
                     }
                 }
             }
@@ -293,7 +281,7 @@
                 return {
                     vendorMenu(properties) {
                         return {
-                            type: ArrayAction.OPEN_MENU,
+                            type: MealOrderAdminApp.AdminActions.OPEN_MENU,
                             properties: properties
                         }
                     }
@@ -302,9 +290,10 @@
 
             _openDialog() {
                 const properties = {};
-                properties.tagName = AdminMenuDialog.is;
+                properties.tagName = MealOrderAdminApp.AdminMenuDialog.is;
                 this.dispatch('vendorMenu', properties);
             }
+
             _resize() {
                 this.shadowRoot.querySelector("#list").notifyResize();
             }

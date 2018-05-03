@@ -17,8 +17,6 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
-<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
@@ -104,32 +102,25 @@
                 .item-vendor {
                     width: 30%
                 }
-                paper-item {
-
-                    padding: 0;
-
-                }
             }
         </style>
+
         <div class="header">
             <paper-item on-click="_toggle" class="menu-caption">
                 <div class="menu-caption">
-
                     <div class="item-vendor">
                         [[menu.name]]
                     </div>
                     <div class="item-from">
-                        11 янв '18
+                        [[_getDate(menu.dateStart)]]
                     </div>
                     <div class="item-to">
-                        11 янв '18
+                        [[_getDate(menu.dateEnd)]]
                     </div>
                     <div class="item-status">
-                        Активно
+                        [[menu.status]]
                     </div>
-
                     <paper-icon-button id="expand" icon="expand-more"></paper-icon-button>
-
                 </div>
             </paper-item>
         </div>
@@ -149,7 +140,6 @@
                                         </div>
                                     </paper-item>
                                 </div>
-
                                 <dom-repeat items="[[item.dishes]]" as="dish">
                                     <template>
                                         <div class="menu-dishes">
@@ -199,6 +189,14 @@
                 }
             }
 
+            _getDate(date) {
+                const TWO_DIGIT = 2;
+                const day = date.getDate();
+                const month = date.toLocaleString("ru-RU", { month: 'short' });
+                const year = date.getFullYear().toString().substr(TWO_DIGIT);
+                return day + " " + month + " '" + year;
+            }
+
             _getExpandIcon() {
                 if (this.$.menu.className === 'expanded') {
                     return 'expand-less';
@@ -206,10 +204,6 @@
                 else {
                     return 'expand-more';
                 }
-            }
-
-            log() {
-                console.log(this.menu);
             }
 
             _toggle() {

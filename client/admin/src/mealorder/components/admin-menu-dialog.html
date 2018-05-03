@@ -1,0 +1,268 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/neon-animation/web-animations.html">
+
+<dom-module id="admin-menu-dialog">
+    <template>
+        <style>
+            paper-dialog.size-position {
+                height: 100%;
+                position: fixed;
+                top: 40%;
+                left: 50%;
+                transform: translate(-57%, -50%);
+                color: var(--google-grey-700);
+            }
+
+            paper-dropdown-menu {
+                width: 100%;
+            }
+
+            paper-dialog {
+                min-width: 400px;
+            }
+
+            #dialog {
+                min-height: 500px;
+                min-width: 560px;
+                height: 100%;
+                width: 50vh;
+            }
+
+            .inner {
+                display: flex;
+                flex-direction: column;
+                height: 85%;
+            }
+
+            .add-dish-paper-dialog {
+                max-height: 450px;
+                width: 50vh;
+            }
+
+            #link {
+                margin-top: 5%;
+            }
+
+            .time-container {
+                margin-top: 17%;
+            }
+
+            .button-apply {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                font-weight: normal;
+                font-size: 14px;
+                -webkit-font-smoothing: antialiased;
+                background-color: #0085d3;
+                color: white;
+            }
+
+            .time {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .buttons {
+                align-self: flex-end;
+                margin-top: 14%
+            }
+
+            @media only screen and (max-width: 1024px) {
+                .add-dish-paper-dialog {
+                    max-width: 400px;
+                    width: 100vh;
+                }
+
+                .buttons {
+                    margin-top: 20%;
+                }
+            }
+
+            @media only screen and (max-width: 660px) {
+                #dialog {
+                    min-width: 0;
+                    width: 100vh;
+                }
+
+                paper-dialog {
+                    min-width: 0;
+                }
+
+                .time {
+                    display: block;
+                }
+
+                .buttons {
+                    margin-top: 45%;
+                }
+
+                iron-list {
+                    --iron-list-items-container: {
+                        margin: 0 auto;
+                        width: 100%;
+                    }
+                }
+
+                .add-dish-paper-dialog {
+                    max-height: 100%;
+                    max-width: 100%;
+                    width: 100vh;
+                }
+
+                .dialog {
+                    margin-top: 10%;
+                }
+
+                paper-dialog.size-position {
+                    height: 100%;
+                    top: 9%;
+                    left: 0;
+                    transform: none;
+                    margin: 0;
+                }
+            }
+
+            @media only screen and (max-width: 320px) {
+                .buttons {
+                    margin-top: 30%;
+                }
+            }
+
+        </style>
+
+        <paper-dialog id="dialog" class="add-dish-paper-dialog size-position" with-backdrop modal>
+            <div class="dialog">
+                <iron-form id="form">
+                    <form>
+                        <h2>Добавить меню</h2>
+                        <div class="inner">
+                            <paper-dropdown-menu value="{{vendor}}"
+                                                 label="Поставщик"
+                                                 invalid="[[invalid.message.length]]">
+                                <paper-listbox slot="dropdown-content" selected="1">
+                                    <paper-item>Позитив</paper-item>
+                                    <paper-item>Пюре</paper-item>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                            <paper-input id="link" value="{{menuUrl}}"
+                                         error-message="Неверный формат ссылки"
+                                         label="Ссылка на меню"
+                                         type="url" required>
+                            </paper-input>
+                            <div class="time-container">
+                                <div class="time">
+                                    <paper-input label="От" type="date" value="{{dateFrom}}"
+                                                 required
+                                                 error-message="Неверно указана дата">
+                                        <div slot="prefix"></div>
+                                    </paper-input>
+                                    <paper-input label="До" type="date" value="{{dateTill}}"
+                                                 required
+                                                 error-message="Неверно указана дата">
+                                        <div slot="prefix"></div>
+                                    </paper-input>
+                                </div>
+                            </div>
+                    </form>
+                </iron-form>
+                <div class="buttons">
+                    <paper-button on-click="_closeDialog">Отмена</paper-button>
+                    <paper-button class="button-apply" class="save" on-click="_addMenu">
+                        Применить
+                    </paper-button>
+                </div>
+            </div>
+            </div>
+        </paper-dialog>
+    </template>
+    <script>
+        {
+            /**
+             * Dialog for adding menus.
+             *
+             * @customElement
+             * @polymer
+             * @appliesMixin MealOrderApp.ReduxMixin
+             */
+            class AdminMenuDialog extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
+                static get is() {
+                    return 'admin-menu-dialog';
+                }
+
+                static get properties() {
+                    return {
+                        vendor: {
+                            type: String
+                        },
+                        menuUrl: {
+                            type: String
+                        },
+                        dateFrom: {
+                            type: String
+                        },
+                        dateTill: {
+                            type: String
+                        },
+                    }
+                };
+
+                static get actions() {
+                    return {
+                        closeDialog() {
+                            return {
+                                type: MealOrderAdminApp.AdminActions.CLOSE_MENU,
+                            }
+                        },
+                        addMenu(menu) {
+                            return {
+                                type: MealOrderAdminApp.AdminActions.ADD_MENU,
+                                menu: menu
+                            }
+                        }
+                    }
+                }
+
+                _addMenu() {
+                    if (this.$.form.validate()) {
+                        const menu = {};
+                        menu.vendor = this.vendor;
+                        menu.menuUrl = this.menuUrl;
+                        menu.dateFrom = this.dateFrom;
+                        menu.dateTill = this.dateTill;
+                        this.dispatch('addMenu', menu);
+                        this._closeDialog();
+                    }
+                }
+
+                _closeDialog() {
+                    this.$.dialog.close();
+                    this.parentNode.removeChild(this);
+                    this.dispatch('closeDialog');
+                }
+            }
+
+            MealOrderAdminApp.AdminMenuDialog = AdminMenuDialog;
+            window.customElements.define(AdminMenuDialog.is, AdminMenuDialog);
+        }
+    </script>
+</dom-module>
