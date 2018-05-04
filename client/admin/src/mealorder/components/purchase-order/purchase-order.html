@@ -169,7 +169,7 @@
                         <div class="status">Статус</div>
                         <div class="details"></div>
                     </div>
-                    <iron-list id="list" items="[[purchaseOrders]]" as="PO" scroll-target="document" scroll-offset="200">
+                    <iron-list id="list" items="[[orders]]" as="PO" scroll-target="document" scroll-offset="200">
                         <template>
                             <div class="non-select">
                                 <div class="item">
@@ -201,20 +201,8 @@
 
             static get properties() {
                 return {
-                    purchaseOrders: {
+                    orders: {
                         type: Array,
-                        value: [
-                            {
-                                id: 'Pure',
-                                title: 'Пюре',
-                                date: "05 янв '18",
-                                status: 'correct'
-                            }, {
-                                id: 'Pozitiv',
-                                title: 'Позитив',
-                                date: "05 янв '18",
-                                status: 'incorrect'
-                            }]
                     }
                 }
             };
@@ -222,7 +210,6 @@
             _getClassForStatus(po) {
                 return po.status;
             }
-
         }
 
         window.customElements.define(PurchaseOrder.is, PurchaseOrder);

@@ -190,7 +190,7 @@
             <div name="">
                 <h1 class="header-title">Заказ поставщику</h1>
                 <div class="header">
-                    <paper-tabs id="ptab" class="tabs" selected="[[selectedIndex]]">
+                    <paper-tabs on-iron-select="_getOrders" id="ptab" class="tabs" selected="[[selectedIndex]]">
                         <dom-repeat items="[[selectedPurchaseOrderDates]]" as="calendar">
                             <template>
                                 <dom-if if="[[calendar.hasOrder]]">
@@ -219,7 +219,7 @@
                                     auto-update-date="true"
                                     locale="ru-RU"></app-datepicker>
                 </div>
-                <purchase-order></purchase-order>
+                <purchase-order orders="[[purchaseOrders]]"> </purchase-order>
             </div>
 
             <purchase-order-details-container name="Pure"></purchase-order-details-container>
@@ -253,8 +253,23 @@
                     selectedIndex: {
                         type: Number,
                         computed: '_getLastIndex(selectedPurchaseOrderDates)',
+                    },
+                    purchaseOrders: {
+                        type: Array,
+                        statePath: 'purchaseOrders'
                     }
                 };
+            }
+
+            static get actions() {
+                return {
+                    getSelectedOrders: function (date) {
+                        return {
+                            type: MealOrderAdminApp.AdminActions.GET_SELECTED_ORDERS,
+                            date
+                        }
+                    }
+                }
             }
 
             static get observers() {
@@ -262,6 +277,10 @@
                     '_pageChanged(routeData)',
                     '_calendarDateChanged(currentDate)'
                 ];
+            }
+
+            _getOrders(e) {
+                this.dispatch('getSelectedOrders', this.selectedPurchaseOrderDates[e.target.selected]);
             }
 
             _getLastIndex() {
