@@ -37,6 +37,7 @@
 <link rel="import" href="./components/meal-order-vendor-list.html">
 <link rel="import" href="./components/admin-vendor-menus.html">
 <link rel="import" href="./components/monthly-spendings.html">
+<link rel="import" href="./components/vendor-orders.html">
 
 <dom-module id="meal-order-admin-app">
     <template>
@@ -179,7 +180,7 @@
                     <meal-order-vendor-list data-page="vendor"></meal-order-vendor-list>
                     <admin-vendor-menus data-page="menu"></admin-vendor-menus>
                     <monthly-spendings data-page="costs"></monthly-spendings>
-                    <!--<vendor-orders data-page="order"></vendor-orders>-->
+                    <vendor-orders data-page="order"></vendor-orders>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
@@ -214,6 +215,12 @@
                     }
                 }
 
+                static get observers() {
+                    return [
+                        '_pageChanged(routeData.page)'
+                    ];
+                }
+
                 _getRoutingTitle(routeDate) {
                     switch (routeDate) {
                         case "vendor": {
@@ -228,6 +235,12 @@
                         default: {
                             return "";
                         }
+                    }
+                }
+
+                _pageChanged() {
+                    if (!this.route.path) {
+                        this.set('route.path', '/order');
                     }
                 }
             }
