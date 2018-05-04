@@ -1,0 +1,101 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>meal-order-admin test</title>
+
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../../node_modules/redux/dist/redux.js"></script>
+    <script src="../test_variables.js"></script>
+    <link rel="import" href="../../../src/mealorder/components/admin-vendor-menus.html">
+    <link rel="import" href="../../../src/mealorder/shell/meal-order-admin-app-namespace.html">
+    <link rel="import" href="../../../src/mealorder/shell/redux-store.html">
+</head>
+<body>
+
+<test-fixture id="Menus">
+    <template>
+        <admin-vendor-menus></admin-vendor-menus>
+    </template>
+</test-fixture>
+
+<script>
+    suite('meal-order-admin-app', function () {
+        const ACTION_ALL_MENU = {type: "GET_ALL_MENU"};
+        const ACTION_ACTIVE_MENU = {type: "GET_ACTIVE_MENU"};
+        const CHECKBOX = "paper-checkbox";
+        let component;
+
+        setup(() => {
+            component = fixture('Menus');
+        });
+
+        test('should store menus correctly', function () {
+            const MENUS = 2;
+            const CATEGORIES = 2;
+            component.menu = MealOrderAdminAppTest.menu;
+            const ironList = component.shadowRoot.querySelector('iron-list');
+            const items = ironList.items;
+            assert.equal(MENUS, items.length);
+            assert.equal(CATEGORIES, items[0].categories.length);
+        });
+        test('should send vendor menu open dialog', function (done) {
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch');
+            flush(function () {
+                const addMenuButton = component.shadowRoot.querySelector("#fab");
+                addMenuButton.click();
+                store.verify();
+                done();
+            });
+        });
+        test('should get active menu if checkbox is not chosen', function (done) {
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch').withArgs(ACTION_ALL_MENU);
+            flush(function () {
+                const checkBox = component.shadowRoot.querySelector(CHECKBOX);
+                checkBox.click();
+                assert.isTrue(checkBox.checked);
+                store.verify();
+                done();
+            });
+        });
+        test('should select all menus if select archived', function (done) {
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch').withArgs(ACTION_ALL_MENU);
+            store.expects('dispatch').withArgs(ACTION_ACTIVE_MENU);
+            flush(function () {
+                const checkBox = component.shadowRoot.querySelector(CHECKBOX);
+                checkBox.click();
+                checkBox.click();
+                assert.isFalse(checkBox.checked);
+                store.verify();
+                done();
+            });
+        });
+    });
+</script>
+</body>
+</html>

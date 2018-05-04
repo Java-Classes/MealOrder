@@ -24,6 +24,7 @@
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="./admin-vendor-menu.html">
 <link rel="import" href="../dialog/admin-menu-dialog.html">
+<link rel="import" href="../shell/redux-store.html">
 
 <dom-module id="admin-vendor-menus">
     <template>
@@ -255,7 +256,7 @@
                 </template>
             </iron-list>
         </div>
-        <paper-fab-speed-dial on-iron-overlay-opened="_openDialog" id="fab">
+        <paper-fab-speed-dial on-click="_openDialog" id="fab">
         </paper-fab-speed-dial>
     </template>
     <script>
@@ -322,7 +323,6 @@
                 const properties = {};
                 properties.tagName = MealOrderAdminApp.AdminMenuDialog.is;
                 this.dispatch('vendorMenu', properties);
-                this.$.fab.close();
             }
 
             _getAllMenu(e) {

@@ -32,4 +32,49 @@
             email: 'Positiv@gmail.com',
             deadline: '10:00'
         }];
+    MealOrderAdminAppTest.menu = [
+        {
+            name: 'Пюре',
+            dateStart: new Date("2018-03-05"),
+            dateEnd: new Date("2018-03-25"),
+            status: "Активно",
+            categories: [{
+                categoryName: 'Первое блюдо', dishes: [
+                    {title: 'Суп гречневый', price: 35},
+                    {title: 'Солянка', price: 40},
+                    {title: 'Суп гороховый', price: 140},
+                    {title: 'Уха', price: 35},
+                    {title: 'Суп-пюре грибной', price: 40}]
+            }
+                , {
+                    categoryName: 'Второе блюдо', dishes: [
+                        {title: 'Утиные крылышки', price: 40},
+                        {title: 'Куриные крылышки', price: 45}]
+                }
+            ]
+        },
+        {
+            name: 'Позитив',
+            dateStart: new Date("2018-03-05"),
+            dateEnd: new Date("2018-03-25"),
+            status: "Активно",
+            categories: [{
+                categoryName: 'Первое блюдо', dishes: [
+                    {title: 'Суп сырный', price: 35},
+                    {title: 'Суп с лапшой', price: 40},
+                    {title: 'Борщ красный', price: 40},
+                    {title: 'Борщ зеленый', price: 35}]
+            }
+                , {
+                    categoryName: 'Второе блюдо', dishes: [
+                        {title: 'Стейк из лосося', price: 40},
+                        {title: 'Стейк из говядины', price: 45}]
+                },
+                {
+                    categoryName: 'Напитки', dishes: [
+                        {title: 'Лимонад', price: 40}]
+                }
+            ]
+        },
+    ];
 }
