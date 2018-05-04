@@ -1,0 +1,325 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../shell/redux-store.html">
+<link rel="import" href="./purchase-order/purchase-order.html">
+<link rel="import" href="./purchase-order/purchase-order-details-container.html">
+
+<dom-module id="vendor-orders">
+    <template>
+        <style>
+            body {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                margin: 0;
+                display: flex;
+                align-items: flex-end;
+                height: 80px;
+                background: #009688;
+                color: white;
+            }
+
+            paper-tabs {
+                -webkit-font-smoothing: antialiased;
+                width: 100%;
+                margin-bottom: 1px;
+                --paper-tabs-selection-bar-color: var(--paper-light-blue-500);
+                --paper-tab-ink: var(--paper-light-blue-500);
+            }
+
+            paper-tabs {
+                margin: 0 auto 1% auto;
+
+            }
+
+            paper-tab.iron-selected .day-of-the-week {
+                color: var(--paper-light-blue-500);
+            }
+
+            paper-tab.iron-selected .day {
+                color: var(--paper-light-blue-500);
+            }
+
+            paper-tab .paper-tab-container {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                text-decoration: none;
+                color: #323232;
+                font-size: 1.5em;
+            }
+
+            .disabled .day {
+                color: var(--paper-grey-500);
+            }
+
+            .disabled .day-of-the-week {
+                color: var(--paper-grey-500);
+            }
+
+            .day-of-the-week {
+                font-size: 0.7em;
+                font-weight: lighter;
+            }
+
+            .link {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                text-decoration: none;
+                color: #4f4f4f;
+                font-size: 1.5em;
+            }
+
+            paper-icon-button#calendar {
+                --paper-icon-button: {
+                    background-color: white;
+                    border-radius: 50px;
+                    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.5);
+                }
+            }
+
+            app-datepicker {
+                display: none;
+                position: absolute;
+                z-index: 9999;
+                right: 15%;
+                top: 63%;
+            }
+
+            #picker {
+                --app-datepicker-selection-bg: var(--paper-light-blue-700);
+                --app-datepicker-selection-color: var(--google-grey-100);
+                --app-datepicker-iron-selected: var(--google-grey-100);
+                --app-datepicker-selected-day-bg: var(--paper-light-blue-700);
+                --app-datepicker-today-color: var(--paper-light-blue-500);
+                --app-datepicker-date-hover-background-color: var(--paper-light-blue-700);
+
+                --app-datepicker-selected-date: {
+                    font-weight: normal;
+                    font-size: 22px;
+                };
+
+                --app-datepicker-selected-year: {
+                    font-weight: normal;
+                }
+            }
+
+            .header {
+                margin: 0 auto;
+                display: flex;
+                width: 70%;
+                justify-content: space-between;
+            }
+
+            .header-title {
+                margin-left: 15%;
+                margin-top: 5%
+            }
+
+            @media only screen and (max-width: 1370px) {
+                app-datepicker {
+
+                    top: 60%;
+                }
+            }
+
+            @media only screen and (max-width: 1024px) {
+                .header-title {
+                    margin-left: 1%;
+                    margin-bottom: 0;
+                }
+
+                paper-tabs {
+                    margin-top: 3%;
+
+                }
+
+                .header {
+                    width: 100%;
+                    align-items: center;
+                }
+
+                app-datepicker {
+                    right: 0;
+                    top: 58%;
+                }
+            }
+
+            @media only screen and (max-width: 812px) {
+                app-datepicker {
+                    top: 54.5%;
+                }
+            }
+
+        </style>
+
+        <app-location route="{{route}}"
+                      use-hash-as-path></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:page/:date/:vendor"
+                data="{{routeData}}"
+                tail="{{subroute}}">
+        </app-route>
+
+        <iron-pages
+                selected="[[routeData.vendor]]"
+                attr-for-selected="name"
+                fallback-selection="view404"
+                role="main">
+            <div name="">
+                <h1 class="header-title">Заказ поставщику</h1>
+                <div class="header">
+                    <paper-tabs id="ptab" class="tabs" selected="[[selectedIndex]]">
+                        <dom-repeat items="[[selectedPurchaseOrderDates]]" as="calendar">
+                            <template>
+                                <dom-if if="[[calendar.hasOrder]]">
+                                    <template>
+                                        <paper-tab class="paper-tab" link
+                                                   disabled="[[!calendar.hasOrder]]">
+                                            <a href="#/order/[[_getDate(calendar)]]"
+                                               class="paper-tab-container">
+                                                <div>
+                                                    <div class="day-of-the-week">
+                                                        [[_getDayOfTheWeek(calendar)]]
+                                                    </div>
+                                                    <div class="day">[[_getDay(calendar)]]</div>
+                                                </div>
+                                            </a>
+                                        </paper-tab>
+                                    </template>
+                                </dom-if>
+                            </template>
+                        </dom-repeat>
+                    </paper-tabs>
+                    <paper-icon-button id="calendar" icon="today"
+                                       on-click="openDatePicker"></paper-icon-button>
+                    <app-datepicker id="picker" format="yyyy-mm-dd" view="vertical"
+                                    input-date="[[routeData.date]]" date="{{currentDate}}"
+                                    auto-update-date="true"
+                                    locale="ru-RU"></app-datepicker>
+                </div>
+                <purchase-order></purchase-order>
+            </div>
+
+            <purchase-order-details-container name="Pure"></purchase-order-details-container>
+
+        </iron-pages>
+
+    </template>
+    <script>
+        class VendorOrders extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'vendor-orders';
+            }
+
+            static get properties() {
+                return {
+                    serverTime: {
+                        statePath: 'serverTime'
+                    },
+                    selectedPurchaseOrderDates: {
+                        type: Array,
+                        computed: '_getSelectedPurchaseOrderDates(currentDate)',
+                        notify: true,
+                        reflectToAttribute: true,
+                    },
+                    routeDate: {
+                        type: Object,
+                    },
+                    currentDate: {
+                        type: String
+                    },
+                    selectedIndex: {
+                        type: Number,
+                        computed: '_getLastIndex(selectedPurchaseOrderDates)',
+                    }
+                };
+            }
+
+            static get observers() {
+                return [
+                    '_pageChanged(routeData)',
+                    '_calendarDateChanged(currentDate)'
+                ];
+            }
+
+            _getLastIndex() {
+                return this.$.ptab.selectIndex(7);
+            }
+
+            _getDay(date) {
+                return date.getDate();
+            }
+
+            _getDate(date) {
+                const DATE_LENGTH = 10;
+                return date.toISOString().slice(0, DATE_LENGTH);
+            }
+
+            _getDayOfTheWeek(date) {
+                const dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'short'});
+                return dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
+            }
+
+            _calendarDateChanged(currentDate) {
+                this.set('route.path', '/order/' + currentDate + '/');
+                this.$.picker.style = 'display:none;';
+                this.$.calendar.style.backgroundColor = 'white';
+            }
+
+            _getSelectedPurchaseOrderDates(date) {
+                const selectedDates = [];
+                const DAYS_IN_PERIOD = 8;
+                for (let i = 0; i < DAYS_IN_PERIOD; i++) {
+                    const newDate = new Date(date);
+                    newDate.setDate(newDate.getDate() - i);
+                    selectedDates.push(newDate);
+                    selectedDates[i].hasOrder = true;
+                }
+                return selectedDates.reverse();
+            }
+
+            _pageChanged() {
+                if (!this.routeData.date) {
+                    const DATE_LENGTH = 10;
+                    const date = this.serverTime.toISOString().slice(0, DATE_LENGTH);
+                    this.set('route.path', '/order/' + date + '/');
+                }
+            }
+
+            openDatePicker() {
+                if (this.$.picker.style.display !== 'inline') {
+                    this.$.calendar.style.backgroundColor = '#0085d3';
+                    this.$.picker.style = 'display:inline;';
+                }
+                else {
+                    this.$.picker.style = 'display:none;';
+                    this.$.calendar.style.backgroundColor = 'white';
+                }
+            }
+        }
+
+        window.customElements.define(VendorOrders.is, VendorOrders);
+    </script>
+</dom-module>
