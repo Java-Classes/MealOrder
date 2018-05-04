@@ -55,8 +55,10 @@
         test('should fire events', function (done) {
             component.mode = 'update';
             flush(function () {
-                const button = component.shadowRoot.querySelectorAll('#form > div > div.buttons-wrapper > paper-button');
+
+                const button = component.shadowRoot.querySelectorAll('#asd');
                 assert.equal(true, component._isUpdate());
+                debugger;
                 done();
             });
         });

@@ -47,7 +47,6 @@
         });
 
         test('should react on dialog change in state', function (done) {
-            const mock = sinon.mock(MealOrderAdminApp.store);
             const spy = sinon.spy(component, '_dialogChanged');
             flush(function () {
                 component.dialog = 'openVendorDialog';
