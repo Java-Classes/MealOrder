@@ -28,13 +28,14 @@
     <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../../node_modules/redux/dist/redux.js"></script>
+    <script src="../test_variables.js"></script>
     <link rel="import" href="../../../src/mealorder/dialog/admin-menu-dialog.html">
 </head>
 <body>
 
 <test-fixture id="Dialog">
     <template>
-        <meal-order-admin-app></meal-order-admin-app>
+        <admin-menu-dialog></admin-menu-dialog>
     </template>
 </test-fixture>
 
@@ -44,11 +45,48 @@
 
         setup(() => {
             component = fixture('Dialog');
+            component.vendors = MealOrderAdminAppTest.vendors;
         });
 
-        test('should ...', function () {
-
+        test('should display correct vendors to choose', function () {
+            const listbox = component.shadowRoot.querySelector('paper-listbox');
+            listbox.select(1);
+            assert.equal(listbox.selectedItem, component.vendor);
         });
+
+        test('should add new menu', function (done) {
+            const LINK = 'https://www.webcomponents.org/element/PolymerElements/paper-input/elements/paper-input';
+            const DATE_FROM = "2017-02-22";
+            const ARGUMENT = {
+                menu: {
+                    dateFrom: "2017-02-22",
+                    dateTill: "2017-02-24",
+                    menuUrl: "https://www.webcomponents.org/element/PolymerElements/paper-input/elements/paper-input",
+                    vendor: "vendor.title"
+                },
+                type: "ADD_MENU"
+            };
+            const CLOSE_MENU = {type: "CLOSE_MENU"};
+            const DATE_TILL = "2017-02-24";
+            const listbox = component.shadowRoot.querySelector('paper-listbox');
+            const linkInput = component.shadowRoot.querySelector("#link");
+            const timeFrom = component.shadowRoot.querySelector(".time > paper-input:nth-child(1)");
+            const timeTill = component.shadowRoot.querySelector(".time > paper-input:nth-child(2)");
+            const addButton = component.shadowRoot.querySelector(".button-apply");
+
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch').withArgs(ARGUMENT);
+            store.expects('dispatch').withArgs(CLOSE_MENU);
+            flush(function () {
+                listbox.select(1);
+                linkInput.value = LINK;
+                timeFrom.value = DATE_FROM;
+                timeTill.value = DATE_TILL;
+                addButton.click();
+                store.verify();
+                done();
+            });
+        })
     });
 </script>
 </body>

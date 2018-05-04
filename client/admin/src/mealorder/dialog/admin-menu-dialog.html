@@ -170,7 +170,7 @@
                                                  invalid="[[invalid.message.length]]">
                                 <paper-listbox slot="dropdown-content" selected="1">
                                     <template is="dom-repeat" items="[[vendors]]" as="vendor">
-                                        <paper-item>vendor</paper-item>
+                                        <paper-item>vendor.title</paper-item>
                                     </template>
                                 </paper-listbox>
                             </paper-dropdown-menu>
@@ -248,6 +248,8 @@
                         },
                         /**
                          * Vendor list.
+                         *
+                         * @property name String.
                          */
                         vendors: {
                             type: Array,
@@ -285,7 +287,6 @@
                 }
 
                 _closeDialog() {
-                    this.$.dialog.close();
                     this.parentNode.removeChild(this);
                     this.dispatch('closeDialog');
                 }
