@@ -29,7 +29,7 @@
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../../node_modules/redux/dist/redux.js"></script>
     <link rel="import" href="../../../src/mealorder/components/monthly-spendings.html">
-
+    <script src="../test_variables.js"></script>
 </head>
 <body>
 
@@ -41,19 +41,54 @@
 
 <script>
     suite('meal-order-admin-app', function () {
+        const USER = 'Стив Джобс';
+        const SERVER_TIME = new Date("2018-05-03");
+        const START_DATE = new Date("2016-05-03");
+        const YEAR = 2017;
+        const SPENDINGS = 100;
         let component;
 
         setup(() => {
             component = fixture('Spendings');
         });
 
-        test('should store monthly spendings correctly', function () {
-            component.monthlySpendings = [
-                {name: 'Стив Джобс', amount: 100},
-                {name: 'Майкл Скофилд', amount: 200},
-                {name: 'Вова Бессонов', amount: 938},
-                {name: 'Андрей Жданов', amount: 3567},
-                {name: 'Яна Смешарикова', amount: 100}];
+        test('should store monthly spendings correctly', function (done) {
+            component.monthlySpendings = MealOrderAdminAppTest.monthlySpendings;
+            flush(function () {
+                const list = component.shadowRoot.querySelector('iron-list');
+                const items = list.items;
+                assert.equal(USER, items[0].name);
+                assert.equal(SPENDINGS, items[0].amount);
+                done();
+            });
+        });
+
+        test('should choose correct month', function (done) {
+            component.monthlySpendings = MealOrderAdminAppTest.monthlySpendings;
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch');
+            flush(function () {
+                const monthListBox = component.shadowRoot.querySelector('#paper-month > paper-listbox');
+                monthListBox.select(1);
+                store.verify();
+                assert.equal(1, component.selectedMonth);
+                done();
+            });
+        });
+
+        test('should choose correct year', function (done) {
+            component.monthlySpendings = MealOrderAdminAppTest.monthlySpendings;
+            component.serverTime = SERVER_TIME;
+            component.monthlySpendingsStartDate = START_DATE;
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch');
+            flush(function () {
+                const yearListBox = component.shadowRoot.querySelector('#paper-year > paper-listbox');
+                yearListBox.select(1);
+                store.verify();
+                assert.equal(YEAR, component.selectedYear);
+                done();
+            });
         });
     });
 </script>
