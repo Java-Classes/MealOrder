@@ -1,0 +1,96 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>monthly-spendings test</title>
+
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../../node_modules/redux/dist/redux.js"></script>
+    <link rel="import" href="../../../src/mealorder/components/monthly-spendings.html">
+    <script src="../test_variables.js"></script>
+</head>
+<body>
+
+<test-fixture id="Spendings">
+    <template>
+        <monthly-spendings></monthly-spendings>
+    </template>
+</test-fixture>
+
+<script>
+    suite('meal-order-admin-app', function () {
+        const USER = 'Стив Джобс';
+        const SERVER_TIME = new Date("2018-05-03");
+        const START_DATE = new Date("2016-05-03");
+        const YEAR = 2017;
+        const SPENDINGS = 100;
+        let component;
+
+        setup(() => {
+            component = fixture('Spendings');
+        });
+
+        test('should store monthly spendings correctly', function (done) {
+            component.monthlySpendings = MealOrderAdminAppTest.monthlySpendings;
+            flush(function () {
+                const list = component.shadowRoot.querySelector('iron-list');
+                const items = list.items;
+                assert.equal(USER, items[0].name);
+                assert.equal(SPENDINGS, items[0].amount);
+                done();
+            });
+        });
+
+        test('should choose correct month', function (done) {
+            component.monthlySpendings = MealOrderAdminAppTest.monthlySpendings;
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch');
+            flush(function () {
+                const monthListBox = component.shadowRoot.querySelector('#paper-month > paper-listbox');
+                monthListBox.select(1);
+                store.verify();
+                assert.equal(1, component.selectedMonth);
+                done();
+            });
+        });
+
+        test('should choose correct year', function (done) {
+            component.monthlySpendings = MealOrderAdminAppTest.monthlySpendings;
+            component.serverTime = SERVER_TIME;
+            component.monthlySpendingsStartDate = START_DATE;
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch');
+            flush(function () {
+                const yearListBox = component.shadowRoot.querySelector('#paper-year > paper-listbox');
+                yearListBox.select(1);
+                store.verify();
+                assert.equal(YEAR, component.selectedYear);
+                done();
+            });
+        });
+    });
+</script>
+</body>
+</html>

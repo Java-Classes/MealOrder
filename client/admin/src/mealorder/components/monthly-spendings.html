@@ -233,8 +233,14 @@
                             type: Date,
                             statePath: 'serverTime',
                         },
+                        /**
+                         * Spendings for the current month.
+                         *
+                         * @property date monthly spendings date.
+                         * @property users list {name:String spendings:money}
+                         */
                         monthlySpendings: {
-                            type: Array,
+                            type: Object,
                             statePath: 'monthlySpendings'
                         },
                         arrayOfMonths: {
@@ -247,7 +253,7 @@
                             computed: '_getYears(monthlySpendingsStartDate, serverTime)'
                         },
                         selectedMonth: {
-                            type: Object,
+                            type: Number,
                         },
                         selectedYear: {
                             type: Object,
@@ -302,6 +308,8 @@
                 }
 
                 _getTotalAmount(record) {
+                    console.log(this.monthlySpendings);
+                    console.log(record);
                     let sum = 0;
                     for (let i = 0; i < record.users.length; i++) {
                         sum += record.users[i].amount;

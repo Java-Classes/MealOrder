@@ -32,4 +32,12 @@
             email: 'Positiv@gmail.com',
             deadline: '10:00'
         }];
+    MealOrderAdminAppTest.monthlySpendings = {
+        date: new Date("2018-05-01"), users: [
+            {name: 'Стив Джобс', amount: 100},
+            {name: 'Майкл Скофилд', amount: 200},
+            {name: 'Вова Бессонов', amount: 938},
+            {name: 'Андрей Жданов', amount: 3567},
+            {name: 'Яна Смешарикова', amount: 100}]
+    };
 }
