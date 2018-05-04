@@ -61,6 +61,7 @@
             assert.equal(MENUS, items.length);
             assert.equal(CATEGORIES, items[0].categories.length);
         });
+
         test('should send vendor menu open dialog', function (done) {
             const store = sinon.mock(MealOrderAdminApp.store);
             store.expects('dispatch');
@@ -71,6 +72,7 @@
                 done();
             });
         });
+
         test('should get active menu if checkbox is not chosen', function (done) {
             const store = sinon.mock(MealOrderAdminApp.store);
             store.expects('dispatch').withArgs(ACTION_ALL_MENU);
@@ -82,6 +84,7 @@
                 done();
             });
         });
+
         test('should select all menus if select archived', function (done) {
             const store = sinon.mock(MealOrderAdminApp.store);
             store.expects('dispatch').withArgs(ACTION_ALL_MENU);
