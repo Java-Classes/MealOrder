@@ -48,8 +48,10 @@
 
         test('should react on dialog change in state', function (done) {
             const mock = sinon.mock(MealOrderAdminApp.store);
+            const spy = sinon.spy(component, '_dialogChanged');
             flush(function () {
-                mock.currentDialog = MealOrderApp.AdminVendorDialog.is;
+                component.dialog = 'openVendorDialog';
+                assert.isTrue(spy.calledOnce);
                 done();
             });
         });
