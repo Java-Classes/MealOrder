@@ -1,0 +1,230 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../../../bower_components/app-datepicker/app-datepicker.html">
+
+<dom-module id="purchase-order">
+    <template>
+        <style>
+            :host {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                display: block;
+                padding: 0;
+            }
+
+
+            paper-item {
+                width: 100%;
+            }
+
+            .header {
+                display: flex;
+                font-weight: bold;
+            }
+
+            .item {
+                @apply --layout-horizontal;
+                display: flex;
+                background-color: white;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                justify-content: space-between;
+                align-items: center;
+                height: 50px;
+                padding-left: 2%;
+            }
+
+            .item:hover .text {
+                display: block;
+                text-decoration: none;
+                color: var(--google-grey-700);
+            }
+
+            .non-select {
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;
+
+                /* Non-prefixed version, currently supported by Chrome and Opera */
+            }
+
+            .main-content {
+                margin: 0 auto;
+                width: 70%;
+            }
+
+            paper-input {
+                margin-top: 5%;
+            }
+
+            .vendor-name {
+                width: 25%;
+            }
+
+            .date {
+                width: 30%;
+                text-align: left;
+            }
+
+            .status {
+                width: 30%;
+                text-align: left;
+            }
+
+            .correct::after {
+                color: #0085d3;
+                content: 'Отправленный';
+            }
+
+            .incorrect::after {
+                color: #af0000;
+                content: 'Некорректный';
+            }
+
+            .details {
+                width: 15%;
+                font-size: 14px;
+            }
+
+            .details .text {
+                display: none;
+            }
+
+
+            @media only screen and (max-width: 1024px) {
+                .main-content {
+                    width: 100%;
+                }
+            }
+
+            @media only screen and (max-width: 600px) {
+
+                .main-content {
+
+                }
+
+                .vendor-name {
+                    width: 35%;
+                }
+
+                .date {
+                    width: 20%;
+                    text-align: left;
+                }
+
+                .status {
+                    width: 30%;
+                    text-align: left;
+                }
+
+                .details {
+                    text-align: right;
+                }
+            }
+
+
+        </style>
+
+        <app-location route="{{route}}"
+                      use-hash-as-path></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:page/:date/:vendor"
+                data="{{routeData}}"
+                tail="{{subroute}}">
+        </app-route>
+
+            <iron-pages
+                    selected="[[routeData.vendor]]"
+                    attr-for-selected="name"
+                    fallback-selection="view404"
+                    role="main">
+
+                <div class="main-content" name="">
+                    <div class="item non-select header">
+                        <div class="vendor-name">Поставщик</div>
+                        <div class="date">Дата</div>
+                        <div class="status">Статус</div>
+                        <div class="details"></div>
+                    </div>
+                    <iron-list id="list" items="[[purchaseOrders]]" as="PO" scroll-target="document" scroll-offset="200">
+                        <template>
+                            <div class="non-select">
+                                <div class="item">
+                                    <div class="vendor-name">[[PO.title]]</div>
+                                    <div class="date">[[PO.date]]</div>
+                                    <div class="status">
+                                        <div class$="[[_getClassForStatus(PO)]]"></div>
+                                    </div>
+                                    <div class="details">
+                                        <a href="#/order/[[routeData.date]]/[[PO.id]]/byDishes" class="text">
+                                            Детали
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </template>
+                    </iron-list>
+                </div>
+            </iron-pages>
+
+    </template>
+    <script>
+
+        class PurchaseOrder extends Polymer.Element {
+            static get is() {
+                return 'purchase-order';
+            }
+
+            static get properties() {
+                return {
+                    purchaseOrders: {
+                        type: Array,
+                        value: [
+                            {
+                                id: 'Pure',
+                                title: 'Пюре',
+                                date: "05 янв '18",
+                                status: 'correct'
+                            }, {
+                                id: 'Pozitiv',
+                                title: 'Позитив',
+                                date: "05 янв '18",
+                                status: 'incorrect'
+                            }]
+                    }
+                }
+            };
+
+            _getClassForStatus(po) {
+                return po.status;
+            }
+
+        }
+
+        window.customElements.define(PurchaseOrder.is, PurchaseOrder);
+    </script>
+</dom-module>

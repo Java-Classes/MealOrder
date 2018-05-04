@@ -1,0 +1,211 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="purchase-order-details-by-user">
+    <template>
+        <style>
+            .item {
+                @apply --layout-horizontal;
+                height: auto;
+                display: flex;
+                background-color: white;
+                border-bottom: 1px solid #ddd;
+                justify-content: space-between;
+                align-items: center;
+                min-height: 50px;
+            }
+
+            .non-select {
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;
+                /* Non-prefixed version, currently supported by Chrome and Opera */
+            }
+
+            .header {
+                display: flex;
+                font-weight: bold;
+                background-color: #f2f2f2;
+                border: 1px solid #ddd;
+                height: 50px;
+            }
+
+            #main-content {
+                margin: 0 auto;
+                width: 70%;
+            }
+
+            #upper {
+                @apply --layout-horizontal;
+                display: flex;
+                cursor: pointer;
+                justify-content: space-between;
+                align-items: center;
+                margin: 4% auto 0 auto;
+                width: 70%;
+            }
+
+            .upper-container {
+                display: flex;
+                flex-direction: column;
+                height: 150px;
+                justify-content: space-around;
+            }
+
+            .status {
+                text-transform: uppercase;
+                color: #0085d3;
+                font-size: 22px;
+                align-self: flex-end;
+            }
+
+            .user {
+                padding-left: 2%;
+                width: 40%
+            }
+
+            .order {
+                width: 60%;
+                text-align: left;
+                padding-right: 2%;
+            }
+
+            paper-button {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                font-weight: normal;
+                font-size: 14px;
+                -webkit-font-smoothing: antialiased;
+                background-color: #e1e1e1;
+                text-align: center;
+            }
+
+            .upper-header {
+                align-self: flex-start;
+            }
+
+            @media only screen and (max-width: 1024px) {
+                #upper {
+                    width: 98%;
+                }
+
+                #main-content {
+                    width: 100%;
+                }
+
+                .user {
+                    width: 50%
+                }
+
+                .order {
+                    width: 50%;
+                }
+            }
+
+            @media only screen and (max-width: 640px) {
+
+                .upper-header {
+                    font-size: 24px;
+                }
+
+                .upper-container {
+                    width: 200px;
+                }
+
+                .button {
+                    font-size: 12px;
+                }
+            }
+
+        </style>
+
+        <div id="main-content">
+            <div class="item non-select header">
+                <div class="user">Пользователь</div>
+                <div class="order">Заказ</div>
+
+            </div>
+            <iron-list id="list" items="[[purchaseOrder.order]]" as="order" scroll-target="document"
+                       scroll-offset="200">
+                <template>
+                    <div class="non-select">
+                        <div class="item">
+                            <div class="user">[[order.user]]</div>
+                            <div class="order">
+                                <dom-repeat items="[[order.dishes]]" as="dish">
+                                    <template>
+                                        <div style="margin-top: 2%; margin-bottom: 2%;">
+                                            [[dish.title]]([[dish.quantity]])
+                                        </div>
+                                    </template>
+                                </dom-repeat>
+                            </div>
+
+                        </div>
+                    </div>
+                </template>
+            </iron-list>
+        </div>
+
+    </template>
+    <script>
+
+        class PurchaseOrderDetailsByUser extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'purchase-order-details-by-user';
+            }
+
+            static get properties() {
+                return {
+                    purchaseOrder: {
+                        type: Object,
+                        value: {
+                            vendor: 'Пюре', order: [{
+                                user: 'Таня Ижевская',
+                                dishes: [{title: 'Картофель', quantity: 1}, {
+                                    title: 'Жареная сельдь',
+                                    quantity: 1
+                                }, {title: 'Суп гороховый', quantity: 2}]
+                            }, {
+                                user: 'Жора Васильев',
+                                dishes: [{title: 'Борщ украинский', quantity: 1}, {title: 'Цезарь', quantity: 2}]
+                            }, {
+                                user: 'Петя Иванов',
+                                dishes: [{title: 'Картофель', quantity: 1}, {
+                                    title: 'Жареная сельдь',
+                                    quantity: 1
+                                }, {title: 'Суп гороховый', quantity: 2}]
+                            }, {
+                                user: 'Алина Рогачева',
+                                dishes: [{title: 'Картофель', quantity: 1}]
+                            }]
+                        }
+                    }
+                }
+            };
+
+        }
+
+        window.customElements.define(PurchaseOrderDetailsByUser.is, PurchaseOrderDetailsByUser);
+    </script>
+</dom-module>

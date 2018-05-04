@@ -1,0 +1,218 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="purchase-order-details-by-dish.html">
+<link rel="import" href="purchase-order-details-by-user.html">
+
+<dom-module id="purchase-order-details-container">
+    <template>
+        <style>
+            .item {
+                @apply --layout-horizontal;
+                height: 50px;
+                display: flex;
+                background-color: white;
+                border-bottom: 1px solid #ddd;
+                align-items: center;
+            }
+
+            .non-select {
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;
+                /* Non-prefixed version, currently supported by Chrome and Opera */
+            }
+
+            .header {
+                display: flex;
+                font-weight: bold;
+                background-color: #f2f2f2;
+                border: 1px solid #ddd;
+                height: 50px;
+            }
+
+            .main-content {
+                margin: 0 auto;
+                width: 70%;
+            }
+
+            .title {
+                padding-left: 2%;
+                width: 10%;
+            }
+
+            .price {
+                width: 25%;
+                text-align: right;
+            }
+
+            .quantity {
+                width: 25%;
+                text-align: right;
+            }
+
+            .cost {
+                width: 25%;
+                text-align: right;
+            }
+
+            #upper {
+                @apply --layout-horizontal;
+                display: flex;
+                cursor: pointer;
+                justify-content: space-between;
+                align-items: center;
+                margin: 1% auto 0 auto;
+                width: 70%;
+            }
+
+            .status {
+                text-transform: uppercase;
+                color: #0085d3;
+                font-size: 22px;
+                align-self: flex-end;
+            }
+
+            paper-button {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                font-weight: normal;
+                font-size: 14px;
+                -webkit-font-smoothing: antialiased;
+                background-color: #e1e1e1;
+                text-align: center;
+            }
+
+            .footer {
+                font-weight: bold;
+            }
+
+            .upper-header {
+                align-self: flex-start;
+            }
+
+            .button-back {
+                margin-top: 4%;
+                margin-left: 15%
+            }
+
+            @media only screen and (max-width: 1024px) {
+                #upper {
+                    width: 98%;
+                }
+
+                .button-back {
+                    margin-left: 1%
+                }
+
+                .main-content {
+                    width: 100%;
+                }
+            }
+
+            @media only screen and (max-width: 800px) {
+                paper-input {
+                    margin-top: 0;
+                }
+
+                #upper {
+                    width: 98%;
+                }
+
+                .upper-header {
+                    font-size: 24px;
+                }
+
+                .main-content {
+                    width: 1000px;
+                }
+
+                .button-back {
+
+                    margin-left: 1%
+                }
+            }
+
+            @media only screen and (max-width: 320px) {
+                #upper {
+                    display: flex;
+                    flex-wrap: wrap;
+                }
+            }
+        </style>
+
+        <app-location route="{{route}}"
+                      use-hash-as-path></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:page/:date/:vendor/:type"
+                data="{{routeData}}"
+                tail="{{subroute}}">
+        </app-route>
+
+        <div class="button-back">
+            <a style="  color: var(--google-grey-500); text-decoration: none; font-weight: bold; font-size: 20px;"
+               href="#/order/[[routeData.date]]/">
+                <iron-icon icon="icons:arrow-back"></iron-icon>
+                Назад</a>
+        </div>
+        <div id="upper">
+            <h1 class="upper-header">Детали заказа [[purchaseOrder.vendor]] за 05.01.2018</h1>
+            <div style="display: flex;flex-direction: column;height: 150px; justify-content: space-around;">
+                <div class="status">Отправленный</div>
+                <div style="display: flex;">
+                    <paper-button class="button" style="">Печать</paper-button>
+                    <paper-button class="button" style="">Отметить как доставленным</paper-button>
+                </div>
+                <div style="display: flex; align-self: flex-end;">
+                    <a href="#/order/[[routeData.date]]/[[routeData.vendor]]/byDishes"
+                       style="color: var(--google-grey-700);">По блюдам</a>
+                    <div style="white-space: pre; font-weight: bold;"> | </div>
+                    <a href="#/order/[[routeData.date]]/[[routeData.vendor]]/byOrders"
+                       style="color: var(--google-grey-700);">По заказам</a>
+                </div>
+            </div>
+        </div>
+
+        <iron-pages
+                selected="[[routeData.type]]"
+                attr-for-selected="name"
+                fallback-selection="view404"
+                role="main">
+            <purchase-order-details-by-dish name="byDishes"></purchase-order-details-by-dish>
+            <purchase-order-details-by-user name="byOrders"></purchase-order-details-by-user>
+        </iron-pages>
+
+    </template>
+    <script>
+        class PurchaseOrderContainer extends Polymer.Element {
+            static get is() {
+                return 'purchase-order-details-container';
+            }
+
+            static get properties() {
+            };
+        }
+
+        window.customElements.define(PurchaseOrderContainer.is, PurchaseOrderContainer);
+    </script>
+</dom-module>
