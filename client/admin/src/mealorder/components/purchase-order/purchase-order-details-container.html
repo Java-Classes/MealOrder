@@ -204,15 +204,18 @@
 
     </template>
     <script>
-        class PurchaseOrderContainer extends Polymer.Element {
-            static get is() {
-                return 'purchase-order-details-container';
+        {
+            class PurchaseOrderContainer extends Polymer.Element {
+                static get is() {
+                    return 'purchase-order-details-container';
+                }
+
+                static get properties() {
+                }
+
             }
 
-            static get properties() {
-            };
+            window.customElements.define(PurchaseOrderContainer.is, PurchaseOrderContainer);
         }
-
-        window.customElements.define(PurchaseOrderContainer.is, PurchaseOrderContainer);
     </script>
 </dom-module>

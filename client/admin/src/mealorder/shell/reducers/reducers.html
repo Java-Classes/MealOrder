@@ -280,7 +280,6 @@
                 }
                 case MealOrderAdminApp.AdminActions.GET_SELECTED_ORDERS: {
                     const currentOrders = allPurchaseOrders.filter(order => order.date.getTime()  === action.date.getTime());
-                    console.log(currentOrders);
                     return Object.assign({}, state, {
                             purchaseOrders: currentOrders
                         }

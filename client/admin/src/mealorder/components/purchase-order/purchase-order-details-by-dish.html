@@ -130,7 +130,6 @@
 
         </style>
 
-
         <div class="main-content">
             <div class="item non-select header">
                 <div class="title">Наименование</div>
@@ -161,47 +160,54 @@
 
     </template>
     <script>
+        {
+            class PurchaseOrderByDish extends Polymer.Element {
+                static get is() {
+                    return 'purchase-order-details-by-dish';
+                }
 
-        class PurchaseOrderByDish extends Polymer.Element {
-            static get is() {
-                return 'purchase-order-details-by-dish';
-            }
-
-            static get properties() {
-                return {
-                    purchaseOrder: {
-                        type: Object,
-                        value: {
-                            vendor: 'Пюре',
-                            dishes: [{title: 'Картофель', price: 10, quantity: 1}, {
-                                title: 'Стейк куриный',
-                                price: 39,
-                                quantity: 2
-                            }, {title: 'Гречневая каша', price: 15, quantity: 4}, {
-                                title: 'Борщ украинский',
-                                price: 20,
-                                quantity: 3
-                            }]
+                static get properties() {
+                    return {
+                        purchaseOrder: {
+                            type: Object,
+                            value: {
+                                vendor: 'Пюре',
+                                dishes: [{title: 'Картофель', price: 10, quantity: 1}, {
+                                    title: 'Стейк куриный',
+                                    price: 39,
+                                    quantity: 2
+                                }, {title: 'Гречневая каша', price: 15, quantity: 4}, {
+                                    title: 'Борщ украинский',
+                                    price: 20,
+                                    quantity: 3
+                                }]
+                            }
                         }
                     }
-                }
-            };
+                };
 
-            _getCost(index) {
-                return this.purchaseOrder.dishes[index].price
-                    * this.purchaseOrder.dishes[index].quantity;
+                static get observers() {
+                    return [
+                        '_pageChanged(routeData)',
+                    ];
+                }
+
+                _getCost(index) {
+                    return this.purchaseOrder.dishes[index].price
+                        * this.purchaseOrder.dishes[index].quantity;
+                }
+
+                _getTotal() {
+                    let sum = 0;
+                    const dishes = this.purchaseOrder.dishes;
+                    for (let i = 0; i < dishes.length; i++) {
+                        sum += this._getCost(i);
+                    }
+                    return sum;
+                }
             }
 
-            _getTotal() {
-                let sum = 0;
-                const dishes = this.purchaseOrder.dishes;
-                for (let i = 0; i < dishes.length; i++) {
-                    sum += this._getCost(i);
-                }
-                return sum;
-            }
+            window.customElements.define(PurchaseOrderByDish.is, PurchaseOrderByDish);
         }
-
-        window.customElements.define(PurchaseOrderByDish.is, PurchaseOrderByDish);
     </script>
 </dom-module>

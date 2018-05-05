@@ -138,7 +138,6 @@
             }
 
         </style>
-
         <div id="main-content">
             <div class="item non-select header">
                 <div class="user">Пользователь</div>
@@ -169,43 +168,47 @@
 
     </template>
     <script>
+        {
+            class PurchaseOrderDetailsByUser extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
+                static get is() {
+                    return 'purchase-order-details-by-user';
+                }
 
-        class PurchaseOrderDetailsByUser extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
-            static get is() {
-                return 'purchase-order-details-by-user';
-            }
-
-            static get properties() {
-                return {
-                    purchaseOrder: {
-                        type: Object,
-                        value: {
-                            vendor: 'Пюре', order: [{
-                                user: 'Таня Ижевская',
-                                dishes: [{title: 'Картофель', quantity: 1}, {
-                                    title: 'Жареная сельдь',
-                                    quantity: 1
-                                }, {title: 'Суп гороховый', quantity: 2}]
-                            }, {
-                                user: 'Жора Васильев',
-                                dishes: [{title: 'Борщ украинский', quantity: 1}, {title: 'Цезарь', quantity: 2}]
-                            }, {
-                                user: 'Петя Иванов',
-                                dishes: [{title: 'Картофель', quantity: 1}, {
-                                    title: 'Жареная сельдь',
-                                    quantity: 1
-                                }, {title: 'Суп гороховый', quantity: 2}]
-                            }, {
-                                user: 'Алина Рогачева',
-                                dishes: [{title: 'Картофель', quantity: 1}]
-                            }]
+                static get properties() {
+                    return {
+                        purchaseOrder: {
+                            type: Object,
+                            value: {
+                                vendor: 'Пюре', order: [{
+                                    user: 'Таня Ижевская',
+                                    dishes: [{title: 'Картофель', quantity: 1}, {
+                                        title: 'Жареная сельдь',
+                                        quantity: 1
+                                    }, {title: 'Суп гороховый', quantity: 2}]
+                                }, {
+                                    user: 'Жора Васильев',
+                                    dishes: [{
+                                        title: 'Борщ украинский',
+                                        quantity: 1
+                                    }, {title: 'Цезарь', quantity: 2}]
+                                }, {
+                                    user: 'Петя Иванов',
+                                    dishes: [{title: 'Картофель', quantity: 1}, {
+                                        title: 'Жареная сельдь',
+                                        quantity: 1
+                                    }, {title: 'Суп гороховый', quantity: 2}]
+                                }, {
+                                    user: 'Алина Рогачева',
+                                    dishes: [{title: 'Картофель', quantity: 1}]
+                                }]
+                            }
                         }
                     }
-                }
-            };
+                };
 
+            }
+
+            window.customElements.define(PurchaseOrderDetailsByUser.is, PurchaseOrderDetailsByUser);
         }
-
-        window.customElements.define(PurchaseOrderDetailsByUser.is, PurchaseOrderDetailsByUser);
     </script>
 </dom-module>

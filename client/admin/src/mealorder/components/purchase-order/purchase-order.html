@@ -38,6 +38,13 @@
             .header {
                 display: flex;
                 font-weight: bold;
+                height: 50px;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                justify-content: space-between;
+                align-items: center;
+                padding-left: 2%;
+                background-color: #f2f2f2;
             }
 
             .item {
@@ -163,7 +170,7 @@
                     role="main">
 
                 <div class="main-content" name="">
-                    <div class="item non-select header">
+                    <div class="non-select header">
                         <div class="vendor-name">Поставщик</div>
                         <div class="date">Дата</div>
                         <div class="status">Статус</div>
@@ -174,7 +181,7 @@
                             <div class="non-select">
                                 <div class="item">
                                     <div class="vendor-name">[[PO.title]]</div>
-                                    <div class="date">[[PO.date]]</div>
+                                    <div class="date">[[_getDate(PO.date)]]</div>
                                     <div class="status">
                                         <div class$="[[_getClassForStatus(PO)]]"></div>
                                     </div>
@@ -183,35 +190,42 @@
                                             Детали
                                         </a>
                                     </div>
-
                                 </div>
                             </div>
                         </template>
                     </iron-list>
                 </div>
             </iron-pages>
-
     </template>
     <script>
-
-        class PurchaseOrder extends Polymer.Element {
-            static get is() {
-                return 'purchase-order';
-            }
-
-            static get properties() {
-                return {
-                    orders: {
-                        type: Array,
-                    }
+        {
+            class PurchaseOrder extends Polymer.Element {
+                static get is() {
+                    return 'purchase-order';
                 }
-            };
 
-            _getClassForStatus(po) {
-                return po.status;
+                static get properties() {
+                    return {
+                        orders: {
+                            type: Array,
+                        }
+                    }
+                };
+
+                _getClassForStatus(po) {
+                    return po.status;
+                }
+
+                _getDate(date) {
+                    const TWO_DIGIT = 2;
+                    const day = date.getDate();
+                    const month = date.toLocaleString("ru-RU", {month: 'short'});
+                    const year = date.getFullYear().toString().substr(TWO_DIGIT);
+                    return day + " " + month + " '" + year;
+                }
             }
-        }
 
-        window.customElements.define(PurchaseOrder.is, PurchaseOrder);
+            window.customElements.define(PurchaseOrder.is, PurchaseOrder);
+        }
     </script>
 </dom-module>
