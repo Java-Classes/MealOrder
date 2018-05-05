@@ -81,7 +81,7 @@
                 cursor: pointer;
                 justify-content: space-between;
                 align-items: center;
-                margin: 1% auto 0 auto;
+                margin: 0 auto;
                 width: 70%;
             }
 
@@ -107,10 +107,11 @@
 
             .upper-header {
                 align-self: flex-start;
+                font-weight: normal;
             }
 
             .button-back {
-                margin-top: 4%;
+                margin-top: 2%;
                 margin-left: 15%
             }
 
@@ -170,9 +171,9 @@
         </app-route>
 
         <div class="button-back">
-            <a style="  color: var(--google-grey-500); text-decoration: none; font-weight: bold; font-size: 20px;"
+            <a style="  color: var(--google-grey-500); text-decoration: none; font-weight: lighter; font-size: 20px;"
                href="#/order/[[routeData.date]]/">
-                <iron-icon icon="icons:arrow-back"></iron-icon>
+                <iron-icon icon="icons:arrow-back" style="font-weight: lighter;"></iron-icon>
                 Назад</a>
         </div>
         <div id="upper">
