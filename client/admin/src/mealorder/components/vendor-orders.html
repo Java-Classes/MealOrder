@@ -93,10 +93,10 @@
                 position: absolute;
                 z-index: 9999;
                 right: 15%;
-                top: 63%;
             }
 
             #picker {
+                --app-datepicker-calendar-bg: white;
                 --app-datepicker-selection-bg: var(--paper-light-blue-700);
                 --app-datepicker-selection-color: var(--google-grey-100);
                 --app-datepicker-iron-selected: var(--google-grey-100);
@@ -115,9 +115,9 @@
             }
 
             .header {
+                width: 70%;
                 margin: 0 auto;
                 display: flex;
-                width: 70%;
                 justify-content: space-between;
             }
 
@@ -127,9 +127,7 @@
             }
 
             @media only screen and (max-width: 1370px) {
-                app-datepicker {
-                    top: 60%;
-                }
+
             }
 
             @media only screen and (max-width: 1024px) {
@@ -149,14 +147,8 @@
 
                 app-datepicker {
                     right: 0;
-                    top: 58%;
                 }
-            }
 
-            @media only screen and (max-width: 812px) {
-                app-datepicker {
-                    top: 54.5%;
-                }
             }
 
         </style>
@@ -204,17 +196,17 @@
                     </paper-tabs>
                     <paper-icon-button id="calendar" icon="today"
                                        on-click="openDatePicker"></paper-icon-button>
-                    <app-datepicker id="picker" format="yyyy-mm-dd" view="vertical"
-                                    input-date="[[routeData.date]]" date="{{currentDate}}"
-                                    auto-update-date="true"
-                                    locale="ru-RU"></app-datepicker>
                 </div>
+                <app-datepicker id="picker" format="yyyy-mm-dd" view="vertical"
+                                input-date="[[routeData.date]]" date="{{currentDate}}"
+                                auto-update-date="true"
+                                locale="ru-RU"></app-datepicker>
                 <purchase-order orders="[[purchaseOrders]]"></purchase-order>
             </div>
+
             <purchase-order-details-container
                     name="[[routeData.vendor]]"></purchase-order-details-container>
         </iron-pages>
-
     </template>
     <script>
         {
