@@ -112,9 +112,14 @@
                 .main-content {
                     width: 100%;
                 }
+
+                .title {
+                    width: 20%;
+                }
+
             }
 
-            @media only screen and (max-width: 800px) {
+            @media only screen and (max-width: 414px) {
                 paper-input {
                     margin-top: 0;
                 }
@@ -123,8 +128,34 @@
                     width: 98%;
                 }
 
-                .main-content {
-                    width: 1000px;
+                .title {
+                    width: 30%;
+                }
+
+                .quantity {
+                    width: 11%;
+                }
+
+                .cost {
+                    width: 30%;
+                }
+            }
+
+            @media only screen and (max-width: 320px) {
+                .title {
+                    width: 20%;
+                }
+
+                .price {
+                    width: 35%;
+                }
+
+                .quantity {
+                    width: 10%;
+                }
+
+                .cost {
+                    width: 32%;
                 }
             }
 
@@ -137,7 +168,8 @@
                 <div class="quantity"></div>
                 <div class="cost">Стоимость, ₴</div>
             </div>
-            <iron-list class="list" items="[[purchaseOrder.dishes]]" as="dish" scroll-target="document"
+            <iron-list class="list" items="[[purchaseOrder.dishes]]" as="dish"
+                       scroll-target="document"
                        scroll-offset="200">
                 <template>
                     <div class="non-select">
