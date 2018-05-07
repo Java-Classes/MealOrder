@@ -50,7 +50,7 @@ public class MonthlySpendingsReportViewProjection extends Projection<MonthlySpen
     }
 
     @Subscribe
-    void on(PurchaseOrderSent event) {
+    public void on(PurchaseOrderSent event) {
         final List<UserOrderDetails> userOrderDetailsList = new ArrayList<>();
 
         final PurchaseOrder purchaseOrder = event.getPurchaseOrder();
@@ -81,7 +81,7 @@ public class MonthlySpendingsReportViewProjection extends Projection<MonthlySpen
     }
 
     @Subscribe
-    void on(PurchaseOrderDelivered event) {
+    public void on(PurchaseOrderDelivered event) {
         final List<UserOrderDetails> orderDetailsList = getBuilder().getOrder();
         orderDetailsList.forEach(userOrderDetails -> {
             if (userOrderDetails.getPurchaseOrderId()

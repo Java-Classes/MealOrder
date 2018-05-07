@@ -45,7 +45,7 @@ public class FullMenuViewProjection extends Projection<MenuId, FullMenuView, Ful
     }
 
     @Subscribe
-    void on(MenuImported event) {
+    public void on(MenuImported event) {
         final VendorName vendorName = VendorName.newBuilder()
                                                 .setValue(event.getVendorId()
                                                                .getValue())

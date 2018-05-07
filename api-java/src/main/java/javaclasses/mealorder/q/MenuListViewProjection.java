@@ -61,7 +61,7 @@ public class MenuListViewProjection extends Projection<MenuListId, MenuListView,
     }
 
     @Subscribe
-    void on(MenuImported event) {
+    public void on(MenuImported event) {
         final VendorName vendorName = VendorName.newBuilder()
                                                 .setValue(event.getVendorId()
                                                                .getValue())
@@ -89,7 +89,7 @@ public class MenuListViewProjection extends Projection<MenuListId, MenuListView,
     }
 
     @Subscribe
-    void on(PurchaseOrderCreated event) {
+    public void on(PurchaseOrderCreated event) {
         final LocalDate poDate = event.getId()
                                       .getPoDate();
         getBuilder().getMenu()

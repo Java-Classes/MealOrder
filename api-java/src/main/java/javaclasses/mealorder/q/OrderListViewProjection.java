@@ -52,7 +52,7 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
     }
 
     @Subscribe
-    void on(DishAddedToOrder event) {
+    public void on(DishAddedToOrder event) {
         final OrderId orderId = event.getOrderId();
         final DishItem dish = DishItem.newBuilder()
                                       .setName(event.getDish()
@@ -84,7 +84,7 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
     }
 
     @Subscribe
-    void on(DishRemovedFromOrder event) {
+    public void on(DishRemovedFromOrder event) {
         final List<OrderItem> orderItems = getBuilder().getOrder();
         final int removeIndex = getDishIndexFromOrder(event.getDish()
                                                            .getId(),
@@ -96,14 +96,14 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
     }
 
     @Subscribe
-    void on(OrderCanceled event) {
+    public void on(OrderCanceled event) {
         final OrderItem order = getOrderById(event.getOrderId()).get();
         getBuilder().removeOrder(getBuilder().getOrder()
                                              .indexOf(order));
     }
 
     @Subscribe
-    void on(OrderProcessed event) {
+    public void on(OrderProcessed event) {
         final OrderItem order = getOrderById(event.getOrder()
                                                   .getId()).get();
         getBuilder().setOrder(getBuilder().getOrder()

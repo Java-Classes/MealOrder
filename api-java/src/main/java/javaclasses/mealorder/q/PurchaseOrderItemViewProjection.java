@@ -58,20 +58,20 @@ public class PurchaseOrderItemViewProjection extends Projection<PurchaseOrderId,
     }
 
     @Subscribe
-    void on(PurchaseOrderSent event) {
+    public void on(PurchaseOrderSent event) {
         getBuilder().setId(event.getPurchaseOrder()
                                 .getId());
         getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.SENT);
     }
 
     @Subscribe
-    void on(PurchaseOrderDelivered event) {
+    public void on(PurchaseOrderDelivered event) {
         getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.DELIVERED);
 
     }
 
     @Subscribe
-    void on(PurchaseOrderValidationFailed event) {
+    public void on(PurchaseOrderValidationFailed event) {
         getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.INVALID);
     }
 }

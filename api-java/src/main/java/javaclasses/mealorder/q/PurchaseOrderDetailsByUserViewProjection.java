@@ -50,24 +50,24 @@ public class PurchaseOrderDetailsByUserViewProjection extends Projection<Purchas
     }
 
     @Subscribe
-    void on(PurchaseOrderCreated event) {
+    public void on(PurchaseOrderCreated event) {
         final List<UserOrderDetails> usersOrders = getUserOrders(event);
         getBuilder().addAllOrder(usersOrders);
         getBuilder().setId(event.getId());
     }
 
     @Subscribe
-    void on(PurchaseOrderDelivered event) {
+    public void on(PurchaseOrderDelivered event) {
         getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.DELIVERED);
     }
 
     @Subscribe
-    void on(PurchaseOrderSent event) {
+    public void on(PurchaseOrderSent event) {
         getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.SENT);
     }
 
     @Subscribe
-    void on(PurchaseOrderValidationFailed event) {
+    public void on(PurchaseOrderValidationFailed event) {
         getBuilder().setPurchaseOrderStatus(PurchaseOrderStatus.INVALID);
         event.getFailureOrderList()
              .forEach(order -> {

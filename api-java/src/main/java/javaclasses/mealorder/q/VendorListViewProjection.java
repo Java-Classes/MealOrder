@@ -58,7 +58,7 @@ public class VendorListViewProjection extends Projection<VendorListId, VendorLis
     }
 
     @Subscribe
-    void on(VendorAdded event) {
+    public void on(VendorAdded event) {
         final VendorItem vendorItem = VendorItem.newBuilder()
                                                 .setId(event.getVendorId())
                                                 .setEmail(event.getEmail())
@@ -70,7 +70,7 @@ public class VendorListViewProjection extends Projection<VendorListId, VendorLis
     }
 
     @Subscribe
-    void on(VendorUpdated event) {
+    public void on(VendorUpdated event) {
         final VendorItem vendorItem = VendorItem.newBuilder()
                                                 .setId(event.getVendorId())
                                                 .setEmail(event.getVendorChange()
