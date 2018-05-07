@@ -54,7 +54,7 @@ public final class Projections {
         return collect;
     }
 
-    static LocalDate toLocalDate(java.time.LocalDate date) {
+    public static LocalDate toLocalDate(java.time.LocalDate date) {
         return LocalDate.newBuilder()
                         .setDay(date.getDayOfMonth())
                         .setMonthValue(date.getMonthValue())
@@ -62,7 +62,7 @@ public final class Projections {
                         .build();
     }
 
-    static List<DishesByCategory> getAllDishesByCategories(
+    public static List<DishesByCategory> getAllDishesByCategories(
             List<Dish> dishList) {
         final List<DishesByCategory> dishesByCategoryList = new ArrayList<>();
         dishList.forEach(dish -> {
@@ -93,7 +93,7 @@ public final class Projections {
         return dishesByCategoryList;
     }
 
-    static int categoryIndex(List<DishesByCategory> dishByCategory, String category) {
+    public static int categoryIndex(List<DishesByCategory> dishByCategory, String category) {
         final OptionalInt optionalInt = IntStream.range(0, dishByCategory.size())
                                                  .filter(i -> dishByCategory.get(i)
                                                                             .getCategory()
