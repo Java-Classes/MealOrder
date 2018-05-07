@@ -162,10 +162,10 @@
                     <form>
                         <h2 hidden="[[_isUpdate()]]">Добавить поставщика</h2>
                         <h2 hidden="[[!_isUpdate()]]">Детали поставщика</h2>
-                        <paper-input value="{{inputData.newTitle}}"
+                        <paper-input value="{{inputData.title}}"
                                      error-message="Обязательное поле"
                                      label="Название" required="true"></paper-input>
-                        <paper-input value="{{inputData.newMail}}"
+                        <paper-input value="{{inputData.mail}}"
                                      label="Почта" type="email" required="true"
                                      error-message="Неверный формат почты">
                         </paper-input>
@@ -235,8 +235,8 @@
                         /**
                          * Values from dialog inputs.
                          *
-                         * @property {newTitle} vendor name
-                         * @property {newMail} vendor email
+                         * @property {title} vendor name
+                         * @property {mail} vendor email
                          * @property {phone} vendor name
                          * @property {deadline} a time when a user can no more add dishes to their order
                          */
@@ -276,13 +276,15 @@
                 }
 
                 _confirm() {
+                    console.log('confirmin');
                     if (this.$.form.validate()) {
                         const vendor = {};
-                        vendor.title = this.inputData.newTitle;
-                        vendor.mail = this.inputData.newMail;
+                        vendor.title = this.inputData.title;
+                        vendor.mail = this.inputData.mail;
                         vendor.phone = this.inputData.phone;
                         vendor.deadline = this.inputData.deadline;
                         let actionName;
+                        console.log(vendor);
                         this.update ? actionName = 'updateVendor' : actionName = 'addVendor';
                         this.dispatch(actionName, vendor);
                         this._closeDialog();
@@ -290,7 +292,7 @@
                 }
 
                 _removeVendor() {
-                    this.dispatch("removeVendor", this.inputData.newTitle);
+                    this.dispatch("removeVendor", this.inputData.title);
                     this._closeDialog();
                 }
 

@@ -32,4 +32,10 @@
             email: 'Positiv@gmail.com',
             deadline: '10:00'
         }];
+    MealOrderAdminAppTest.vendorInfo = {
+        title: 'newTitle',
+        mail: "newMail@mail.com",
+        phone: '050-12-45-876',
+        deadline: '11:00'
+    };
 }

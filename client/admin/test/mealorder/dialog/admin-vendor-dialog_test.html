@@ -28,6 +28,8 @@
     <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../../node_modules/redux/dist/redux.js"></script>
+
+    <script src="../test_variables.js"></script>
     <link rel="import" href="../../../src/mealorder/dialog/admin-vendor-dialog.html">
 </head>
 <body>
@@ -45,7 +47,7 @@
 </test-fixture>
 
 <script>
-    suite('meal-order-vendor-dialog', function () {
+    suite('meal-order-vendor-update-dialog', function () {
         let component;
 
         setup(() => {
@@ -54,9 +56,46 @@
         });
 
         test('should fire events', function (done) {
-            const button = component.shadowRoot.querySelector('.confirm');
-            debugger;
-            done();
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch').withArgs({
+                type: "UPDATE_VENDOR",
+                vendor: MealOrderAdminAppTest.vendorInfo
+            });
+            store.expects('dispatch').withArgs({type: "CLOSE_VENDOR_DIALOG"});
+            flush(function () {
+                component.inputData = MealOrderAdminAppTest.vendorInfo;
+                const button = component.shadowRoot.querySelector('.confirm');
+                button.click();
+                store.verify();
+                done();
+            });
+        });
+        test('should render correct components', function (done) {
+            component.shadowRoot.querySelectorAll();
+        });
+    });
+    suite('meal-order-vendor-add-dialog', function () {
+        let component;
+
+        setup(() => {
+            component = fixture('AddDialog');
+            component.$.dialog.open();
+        });
+
+        test('should fire events', function (done) {
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch').withArgs({
+                type: "ADD_VENDOR",
+                vendor: MealOrderAdminAppTest.vendorInfo
+            });
+            store.expects('dispatch').withArgs({type: "CLOSE_VENDOR_DIALOG"});
+            flush(function () {
+                component.inputData = MealOrderAdminAppTest.vendorInfo;
+                const button = component.shadowRoot.querySelector('.confirm');
+                button.click();
+                store.verify();
+                done();
+            });
         });
     });
 </script>
