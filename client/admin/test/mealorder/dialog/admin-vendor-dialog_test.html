@@ -70,10 +70,34 @@
                 done();
             });
         });
+        test('should fire events', function (done) {
+            const store = sinon.mock(MealOrderAdminApp.store);
+            store.expects('dispatch').withArgs({
+                type: "UPDATE_VENDOR",
+                vendor: MealOrderAdminAppTest.vendorInfo
+            });
+            store.expects('dispatch').withArgs({type: "CLOSE_VENDOR_DIALOG"});
+            flush(function () {
+                component.inputData = MealOrderAdminAppTest.vendorInfo;
+                const removeButton = component.shadowRoot.querySelector('.confirm');
+                button.click();
+                store.verify();
+                done();
+            });
+        });
+
         test('should render correct components', function (done) {
-            component.shadowRoot.querySelectorAll();
+            const headers = component.shadowRoot.querySelectorAll("form > h2");
+            const addHeader = headers[0];
+            const updateHeader = headers[1];
+            assert.equal("Добавить поставщика", addHeader.innerHTML);
+            assert.equal("Детали поставщика", updateHeader.innerHTML);
+            assert.isTrue(addHeader.hidden);
+            assert.isFalse(updateHeader.hidden);
+            debugger;
         });
     });
+
     suite('meal-order-vendor-add-dialog', function () {
         let component;
 

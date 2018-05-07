@@ -185,17 +185,17 @@
                     </form>
                     <div class="dialog-buttons">
                         <div class="remove-button-wrapper">
-                            <template is="dom-if" if="[[_isUpdate()]]">
+                            <div hidden="[[!_isUpdate()]]">
                                 <paper-button on-click="_removeVendor">Удалить
                                 </paper-button>
-                            </template>
+                            </div>
                         </div>
                         <div class="buttons-wrapper">
                             <paper-button on-click="_closeDialog">Отмена</paper-button>
                             <paper-button class="confirm" on-click="_confirm">
                                 <div hidden="[[_isUpdate()]]">Сохранить</div>
                                 <div hidden="[[!_isUpdate()]]">Обновить</div>
-                                </paper-button>
+                            </paper-button>
                         </div>
                     </div>
                 </iron-form>
