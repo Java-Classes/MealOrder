@@ -221,7 +221,7 @@ public class PurchaseOrderAggregate extends Aggregate<PurchaseOrderId,
     }
 
     @Apply
-    void purchaseOrderCanceled(PurchaseOrderDelivered event) {
+    void purchaseOrderDelivered(PurchaseOrderDelivered event) {
         getBuilder().setStatus(DELIVERED);
     }
 

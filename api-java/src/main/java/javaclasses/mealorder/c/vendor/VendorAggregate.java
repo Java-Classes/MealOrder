@@ -25,7 +25,6 @@ import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import javaclasses.mealorder.Menu;
 import javaclasses.mealorder.MenuDateRange;
-import javaclasses.mealorder.MenuId;
 import javaclasses.mealorder.Vendor;
 import javaclasses.mealorder.VendorChange;
 import javaclasses.mealorder.VendorId;
@@ -33,17 +32,12 @@ import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.VendorVBuilder;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.ImportMenu;
-import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.command.UpdateVendor;
-import javaclasses.mealorder.c.event.DateRangeForMenuSet;
 import javaclasses.mealorder.c.event.MenuImported;
 import javaclasses.mealorder.c.event.VendorAdded;
 import javaclasses.mealorder.c.event.VendorUpdated;
 import javaclasses.mealorder.c.rejection.CannotSetDateRange;
 import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
-
-import java.util.List;
-import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.c.vendor.VendorAggregateRejections.cannotSetDateRange;
@@ -79,6 +73,7 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
                                                    .setEmail(cmd.getEmail())
                                                    .addAllPhoneNumber(cmd.getPhoneNumberList())
                                                    .setPoDailyDeadline(cmd.getPoDailyDeadline())
+                                                   .setWhenAdded(getCurrentTime())
                                                    .build();
         return vendorAdded;
     }
@@ -95,34 +90,21 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
     }
 
     @Assign
-    MenuImported handle(ImportMenu cmd) {
+    MenuImported handle(ImportMenu cmd) throws CannotSetDateRange {
+        final MenuDateRange range = cmd.getMenuDateRange();
+        final Vendor vendor = getState();
+        if (!isValidDateRange(range) || isThereMenuForThisDateRange(vendor, range)) {
+            throw cannotSetDateRange(cmd);
+        }
         final MenuImported menuImported = MenuImported.newBuilder()
                                                       .setVendorId(cmd.getVendorId())
                                                       .setMenuId(cmd.getMenuId())
                                                       .setWhoImported(cmd.getUserId())
                                                       .setWhenImported(getCurrentTime())
                                                       .addAllDish(cmd.getDishList())
+                                                      .setMenuDateRange(cmd.getMenuDateRange())
                                                       .build();
         return menuImported;
-    }
-
-    @Assign
-    DateRangeForMenuSet handle(SetDateRangeForMenu cmd) throws CannotSetDateRange {
-        final MenuDateRange range = cmd.getMenuDateRange();
-        final Vendor vendor = getState();
-
-        if (!isValidDateRange(range) || isThereMenuForThisDateRange(vendor, range)) {
-            throw cannotSetDateRange(cmd);
-        }
-        final DateRangeForMenuSet dateRangeForMenuSet =
-                DateRangeForMenuSet.newBuilder()
-                                   .setVendorId(cmd.getVendorId())
-                                   .setMenuId(cmd.getMenuId())
-                                   .setWhoSet(cmd.getUserId())
-                                   .setWhenSet(getCurrentTime())
-                                   .setMenuDateRange(cmd.getMenuDateRange())
-                                   .build();
-        return dateRangeForMenuSet;
     }
 
     @Apply
@@ -149,24 +131,7 @@ public class VendorAggregate extends Aggregate<VendorId, Vendor, VendorVBuilder>
         getBuilder().addMenu(Menu.newBuilder()
                                  .setId(event.getMenuId())
                                  .addAllDish(event.getDishList())
+                                 .setMenuDateRange(event.getMenuDateRange())
                                  .build());
-    }
-
-    @Apply
-    void dateRangeForMenuSet(DateRangeForMenuSet event) {
-        final List<Menu> menus = getBuilder().getMenu();
-        final MenuId menuId = event.getMenuId();
-
-        final int index = IntStream.range(0, menus.size())
-                                   .filter(i -> menus.get(i)
-                                                     .getId()
-                                                     .equals(menuId))
-                                   .findFirst()
-                                   .getAsInt();
-
-        final Menu menu = menus.get(index);
-        getBuilder().setMenu(index, Menu.newBuilder(menu)
-                                        .setMenuDateRange(event.getMenuDateRange())
-                                        .build());
     }
 }

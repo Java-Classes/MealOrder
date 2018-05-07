@@ -38,7 +38,11 @@ import javaclasses.mealorder.VendorChange;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static io.spine.time.MonthOfYear.FEBRUARY;
+import static io.spine.time.MonthOfYear.MARCH;
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
@@ -55,9 +59,17 @@ public class TestValues {
                                                            .setValue("VendorName1")
                                                            .build();
 
+    public static final VendorName VENDOR_NAME2 = VendorName.newBuilder()
+                                                            .setValue("Позитив")
+                                                            .build();
+
     public static final VendorId VENDOR_ID = VendorId.newBuilder()
                                                      .setValue("vendor:" + VENDOR_NAME)
                                                      .build();
+
+    public static final VendorId VENDOR_ID2 = VendorId.newBuilder()
+                                                      .setValue("vendor:" + VENDOR_NAME2)
+                                                      .build();
 
     public static final VendorName NEW_VENDOR_NAME = VendorName.newBuilder()
                                                                .setValue("VendorName2")
@@ -74,6 +86,18 @@ public class TestValues {
                                                                      .build())
                                                .build();
 
+    public static final UserId USER_ID2 = UserId.newBuilder()
+                                                .setEmail(EmailAddress.newBuilder()
+                                                                      .setValue(
+                                                                              "petr@example.com")
+                                                                      .build())
+                                                .build();
+    public static final UserId USER_ID3 = UserId.newBuilder()
+                                                .setEmail(EmailAddress.newBuilder()
+                                                                      .setValue(
+                                                                              "sasha@mail.com")
+                                                                      .build())
+                                                .build();
     public static final LocalTime PO_DAILY_DEADLINE = LocalTime.newBuilder()
                                                                .setHours(10)
                                                                .setMinutes(0)
@@ -86,6 +110,7 @@ public class TestValues {
     public static final PhoneNumber PHONE_NUMBER2 = PhoneNumber.newBuilder()
                                                                .setValue("0987654321")
                                                                .build();
+    public static final List<PhoneNumber> PHONE_NUMBERS = getPhoneNumbers();
 
     public static final VendorChange VENDOR_CHANGE = VendorChange.newBuilder()
                                                                  .setPreviousVendorName(VENDOR_NAME)
@@ -100,7 +125,7 @@ public class TestValues {
                                                                  .setNewEmail(EMAIL)
                                                                  .addNewPhoneNumber(PHONE_NUMBER1)
                                                                  .addNewPhoneNumber(PHONE_NUMBER2)
-                                                                 .setPreviousPoDailyDeadline(
+                                                                 .setNewPoDailyDeadline(
                                                                          PO_DAILY_DEADLINE)
                                                                  .build();
 
@@ -108,6 +133,11 @@ public class TestValues {
                                                .setVendorId(VENDOR_ID)
                                                .setWhenImported(getCurrentTime())
                                                .build();
+
+    public static final MenuId MENU_ID2 = MenuId.newBuilder()
+                                                .setVendorId(VENDOR_ID2)
+                                                .setWhenImported(getCurrentTime())
+                                                .build();
 
     public static final MenuId NONEXISTENT_MENU_ID = MenuId.newBuilder()
                                                            .setVendorId(VENDOR_ID)
@@ -120,18 +150,21 @@ public class TestValues {
                                                         .setMonthValue(2)
                                                         .setDay(13)
                                                         .build();
-
+    public static final LocalDate START_DATE2 = LocalDate.newBuilder()
+                                                         .setYear(2020)
+                                                         .setMonthValue(2)
+                                                         .setDay(22)
+                                                         .build();
     public static final LocalDate END_DATE = LocalDate.newBuilder()
                                                       .setYear(2019)
                                                       .setMonthValue(2)
                                                       .setDay(21)
                                                       .build();
-
-    public static final MenuDateRange MENU_DATE_RANGE = MenuDateRange.newBuilder()
-                                                                     .setRangeStart(START_DATE)
-                                                                     .setRangeEnd(END_DATE)
-                                                                     .build();
-
+    public static final LocalDate END_DATE2 = LocalDate.newBuilder()
+                                                       .setYear(2020)
+                                                       .setMonthValue(3)
+                                                       .setDay(18)
+                                                       .build();
     public static final LocalDate START_DATE_FROM_PAST = LocalDate.newBuilder()
                                                                   .setYear(2017)
                                                                   .setMonthValue(2)
@@ -143,6 +176,23 @@ public class TestValues {
                                                                 .setMonthValue(2)
                                                                 .setDay(19)
                                                                 .build();
+
+    public static final LocalDate END_DATE_FROM_PAST2 = LocalDate.newBuilder()
+                                                                 .setYear(2017)
+                                                                 .setMonthValue(3)
+                                                                 .setDay(10)
+                                                                 .build();
+    public static final MenuDateRange MENU_DATE_RANGE = MenuDateRange.newBuilder()
+                                                                     .setRangeStart(START_DATE)
+                                                                     .setRangeEnd(END_DATE)
+                                                                     .build();
+    public static final MenuDateRange MENU_DATE_RANGE2 = MenuDateRange.newBuilder()
+                                                                      .setRangeStart(
+                                                                              START_DATE2)
+                                                                      .setRangeEnd(
+                                                                              END_DATE2)
+                                                                      .build();
+
 
     public static final LocalDate INVALID_START_DATE = LocalDate.newBuilder()
                                                                 .setYear(2020)
@@ -163,11 +213,12 @@ public class TestValues {
                                                                                      INVALID_END_DATE)
                                                                              .build();
 
+
     public static final MenuDateRange MENU_DATE_RANGE_FROM_PAST = MenuDateRange.newBuilder()
                                                                                .setRangeStart(
-                                                                                             START_DATE_FROM_PAST)
+                                                                                       START_DATE_FROM_PAST)
                                                                                .setRangeEnd(
-                                                                                             END_DATE_FROM_PAST)
+                                                                                       END_DATE_FROM_PAST)
                                                                                .build();
 
     public static final Dish DISH1 = Dish.newBuilder()
@@ -177,7 +228,9 @@ public class TestValues {
                                                       .build())
                                          .setName("dishName1")
                                          .setCategory("category")
-                                         .setPrice(Money.getDefaultInstance())
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(56)
+                                                        .build())
                                          .build();
 
     public static final Dish DISH2 = Dish.newBuilder()
@@ -187,7 +240,76 @@ public class TestValues {
                                                       .build())
                                          .setName("dishName2")
                                          .setCategory("category")
-                                         .setPrice(Money.getDefaultInstance())
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(56)
+                                                        .build())
+                                         .build();
+
+    public static final Dish DISH3 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Картофель")
+                                         .setCategory("Второе блюдо")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(56)
+                                                        .build())
+                                         .build();
+    public static final Dish DISH4 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Борщ украинский")
+                                         .setCategory("Первое блюдо")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(33)
+                                                        .build())
+                                         .build();
+    public static final Dish DISH5 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Стейк из лосося")
+                                         .setCategory("Второе блюдо")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(80)
+                                                        .build())
+                                         .build();
+    public static final Dish DISH6 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Компот из сухофруктов")
+                                         .setCategory("Напитки")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(10)
+                                                        .build())
+                                         .build();
+    public static final Dish DISH7 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Скумбрия на гриле")
+                                         .setCategory("Второе блюдо")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(10)
+                                                        .build())
+                                         .build();
+    public static final Dish DISH8 = Dish.newBuilder()
+                                         .setId(DishId.newBuilder()
+                                                      .setMenuId(MENU_ID2)
+                                                      .setSequentialNumber(1)
+                                                      .build())
+                                         .setName("Суп гороховый")
+                                         .setCategory("Первое блюдо")
+                                         .setPrice(Money.newBuilder()
+                                                        .setAmount(10)
+                                                        .build())
                                          .build();
 
     public static final LocalDate DATE = LocalDate.newBuilder()
@@ -198,11 +320,24 @@ public class TestValues {
                                                   .setDay(15)
                                                   .build();
 
+    public static final LocalDate DATE2 = LocalDate.newBuilder()
+                                                   .setYear(
+                                                           2020)
+                                                   .setMonth(
+                                                           MARCH)
+                                                   .setDay(3)
+                                                   .build();
+
     public static final OrderId ORDER_ID = OrderId.newBuilder()
                                                   .setUserId(USER_ID)
                                                   .setVendorId(VENDOR_ID)
                                                   .setOrderDate(DATE)
                                                   .build();
+    public static final OrderId ORDER_ID2 = OrderId.newBuilder()
+                                                   .setUserId(USER_ID2)
+                                                   .setVendorId(VENDOR_ID2)
+                                                   .setOrderDate(DATE)
+                                                   .build();
 
     public static final VendorId INVALID_VENDOR_ID = VendorId.newBuilder()
                                                              .setValue("vendor:INVALID")
@@ -239,10 +374,98 @@ public class TestValues {
             .setVendorId(VENDOR_ID)
             .setPoDate(DATE)
             .build();
-
+    public static final PurchaseOrderId PURCHASE_ORDER_ID2 = PurchaseOrderId
+            .newBuilder()
+            .setVendorId(VENDOR_ID2)
+            .setPoDate(DATE2)
+            .build();
     public static final Order ORDER = Order.newBuilder()
                                            .setId(ORDER_ID)
                                            .addDish(DISH1)
                                            .setStatus(ORDER_ACTIVE)
                                            .build();
+    public static final List<Order> BIG_ORDER = createOrder();
+    public static final List<Dish> MENU = createSmallMenu();
+
+    public static final List<Dish> BIG_MENU = createMenu();
+
+    private static List<Dish> createMenu() {
+        final List<Dish> menu = new ArrayList<>();
+        menu.add(DISH3);
+        menu.add(DISH4);
+        menu.add(DISH5);
+        menu.add(DISH6);
+        menu.add(DISH7);
+        menu.add(DISH8);
+
+        return menu;
+    }
+
+    private static List<Dish> createSmallMenu() {
+        final List<Dish> menu = new ArrayList<>();
+        menu.add(DISH1);
+        menu.add(DISH2);
+        return menu;
+    }
+
+    private static List<PhoneNumber> getPhoneNumbers() {
+        final List<PhoneNumber> numbers = new ArrayList<>();
+        numbers.add(PHONE_NUMBER1);
+        numbers.add(PHONE_NUMBER2);
+        return numbers;
+    }
+
+    private static List<Order> createOrder() {
+        List<Order> orders = new ArrayList<>();
+        final Order order1 = Order.newBuilder()
+                                  .addDish(DISH1)
+                                  .addDish(DISH1)
+                                  .addDish(DISH1)
+                                  .setId(
+                                          OrderId.newBuilder()
+                                                 .setUserId(USER_ID)
+                                                 .setVendorId(VENDOR_ID)
+                                                 .setOrderDate(END_DATE)
+                                                 .build())
+                                  .build();
+        final Order order2 = Order.newBuilder()
+                                  .addDish(DISH1)
+                                  .addDish(DISH1)
+                                  .addDish(DISH2)
+                                  .addDish(DISH2)
+                                  .addDish(DISH2)
+                                  .setId(
+                                          OrderId.newBuilder()
+                                                 .setUserId(USER_ID2)
+                                                 .setVendorId(VENDOR_ID)
+                                                 .setOrderDate(END_DATE)
+                                                 .build())
+                                  .build();
+        final Order order3 = Order.newBuilder()
+                                  .addDish(DISH2)
+                                  .addDish(DISH2)
+                                  .setId(
+                                          OrderId.newBuilder()
+                                                 .setUserId(USER_ID)
+                                                 .setVendorId(VENDOR_ID2)
+                                                 .setOrderDate(END_DATE)
+                                                 .build())
+                                  .build();
+        final Order order4 = Order.newBuilder()
+                                  .addDish(DISH1)
+                                  .addDish(DISH1)
+                                  .addDish(DISH2)
+                                  .setId(
+                                          OrderId.newBuilder()
+                                                 .setUserId(USER_ID2)
+                                                 .setVendorId(VENDOR_ID2)
+                                                 .setOrderDate(END_DATE)
+                                                 .build())
+                                  .build();
+        orders.add(order1);
+        orders.add(order2);
+        orders.add(order3);
+        orders.add(order4);
+        return orders;
+    }
 }

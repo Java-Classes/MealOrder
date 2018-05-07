@@ -221,7 +221,7 @@ class PurchaseOrders {
                 .newBuilder()
                 .setId(id)
                 .setWhoMarkedAsDelivered(whoMarksAsDelivered)
-                .setWhenDelievered(getCurrentTime())
+                .setWhenDelivered(getCurrentTime())
                 .build();
 
         return result;
@@ -277,6 +277,7 @@ class PurchaseOrders {
                                                           .setPurchaseOrder(purchaseOrder)
                                                           .setSenderEmail(senderEmail)
                                                           .setVendorEmail(vendorEmail)
+                                                          .setWhenSent(getCurrentTime())
                                                           .build();
         return result;
     }

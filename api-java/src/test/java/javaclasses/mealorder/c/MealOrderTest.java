@@ -30,63 +30,99 @@ import io.spine.grpc.MemoizingObserver;
 import io.spine.server.BoundedContext;
 import io.spine.server.commandbus.CommandBus;
 import io.spine.server.entity.Repository;
+import io.spine.time.MonthOfYear;
+import javaclasses.mealorder.LocalMonth;
+import javaclasses.mealorder.MonthlySpendingsReportId;
+import javaclasses.mealorder.OrderListId;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.PurchaseOrderSender;
+import javaclasses.mealorder.PurchaseOrderStatus;
 import javaclasses.mealorder.ServiceFactory;
+import javaclasses.mealorder.VendorListId;
 import javaclasses.mealorder.c.po.PurchaseOrderAggregate;
+import javaclasses.mealorder.q.FullMenuViewProjection;
+import javaclasses.mealorder.q.MenuCalendarItem;
+import javaclasses.mealorder.q.MenuCalendarViewProjection;
+import javaclasses.mealorder.q.MenuListViewProjection;
+import javaclasses.mealorder.q.MonthlySpendingsReportViewProjection;
+import javaclasses.mealorder.q.OrderListViewProjection;
+import javaclasses.mealorder.q.PurchaseOrderDetailsByDishViewProjection;
+import javaclasses.mealorder.q.PurchaseOrderDetailsByUserViewProjection;
+import javaclasses.mealorder.q.PurchaseOrderItemViewProjection;
+import javaclasses.mealorder.q.VendorListViewProjection;
+import javaclasses.mealorder.q.projection.FullMenuView;
+import javaclasses.mealorder.q.projection.MenuCalendarView;
+import javaclasses.mealorder.q.projection.MenuListView;
+import javaclasses.mealorder.q.projection.MonthlySpendingsReportView;
+import javaclasses.mealorder.q.projection.OrderListView;
+import javaclasses.mealorder.q.projection.PurchaseOrderDetailsByDishView;
+import javaclasses.mealorder.q.projection.PurchaseOrderDetailsByUserView;
+import javaclasses.mealorder.q.projection.PurchaseOrderItemView;
+import javaclasses.mealorder.q.projection.VendorListView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+import java.util.List;
+
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.mealorder.PurchaseOrderStatus.DELIVERED;
+import static javaclasses.mealorder.PurchaseOrderStatus.INVALID;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.addDishToOrderInstance;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderInstance;
+import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.createPurchaseOrderWithInvalidOrdersInstance;
 import static javaclasses.mealorder.testdata.TestPurchaseOrderCommandFactory.markPurchaseOrderAsDeliveredInstance;
+import static javaclasses.mealorder.testdata.TestValues.DATE;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID2;
+import static javaclasses.mealorder.testdata.TestValues.NEW_VENDOR_NAME;
 import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID;
 import static javaclasses.mealorder.testdata.TestVendorCommandFactory.addVendorInstance;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.importMenuInstance;
-import static javaclasses.mealorder.testdata.TestVendorCommandFactory.setDateRangeForMenuInstance;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.importMenuInstance2;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.importMenuInstance3;
+import static javaclasses.mealorder.testdata.TestVendorCommandFactory.updateVendorInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("MealOrder Integration Test")
 class MealOrderTest {
-    private final ActorRequestFactory requestFactory =
-            TestActorRequestFactory.newInstance(getClass());
-
-    private final BoundedContext boundedContext = BoundedContexts.create();
-    private final CommandBus commandBus = boundedContext.getCommandBus();
+    private ActorRequestFactory requestFactory;
+    private CommandBus commandBus;
+    private BoundedContext boundedContext;
+    private MemoizingObserver<Ack> observer;
 
     private Command createCommand(GeneratedMessageV3 message) {
         return getRequestFactory().command()
                                   .create(toMessage(message));
     }
 
-    @BeforeEach
-    public void setUp() {
-        final PurchaseOrderSender purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
-        ServiceFactory.setPoSenderInstance(purchaseOrderSenderMock);
-    }
-
-    @Test
     @DisplayName("Add vendor -> Import menu -> Set date range for menu ->" +
             " Create order -> Add dish to order -> Create purchase order ->" +
             " Mark purchase order as delivered ")
-    void firstFlow() {
-        final MemoizingObserver<Ack> observer = MemoizingObserver.newInstance();
+    @BeforeEach
+    public void setUp() {
+        requestFactory =
+                TestActorRequestFactory.newInstance(getClass());
+        observer = MemoizingObserver.newInstance();
+        boundedContext = BoundedContexts.create();
+        commandBus = boundedContext.getCommandBus();
+
+        final PurchaseOrderSender purchaseOrderSenderMock = mock(PurchaseOrderSender.class);
+        ServiceFactory.setPoSenderInstance(purchaseOrderSenderMock);
 
         final Command addVendor = createCommand(addVendorInstance());
         commandBus.post(addVendor, observer);
 
-        final Command importMenu = createCommand(importMenuInstance());
+        final Command importMenu = createCommand(importMenuInstance2());
         commandBus.post(importMenu, observer);
-
-        final Command setDateRangeForMenu = createCommand(setDateRangeForMenuInstance());
-        commandBus.post(setDateRangeForMenu, observer);
+        final Command importMenu3 = createCommand(importMenuInstance3());
+        commandBus.post(importMenu3, observer);
 
         final Command createOrderCommand = createCommand(createOrderInstance());
         commandBus.post(createOrderCommand, observer);
@@ -100,7 +136,11 @@ class MealOrderTest {
         final Command markAsDeliveredCommand = createCommand(
                 markPurchaseOrderAsDeliveredInstance());
         commandBus.post(markAsDeliveredCommand, observer);
+    }
 
+    @Test
+    @DisplayName("Should change aggregates")
+    void checkAggregate() {
         assertNull(observer.getError());
 
         final Optional<Repository> purchaseOrderRepository = boundedContext.findRepository(
@@ -116,6 +156,229 @@ class MealOrderTest {
                                              .getStatus());
     }
 
+    @Test
+    @DisplayName("Should change full menu projections")
+    void checkFullMenu() {
+        final Repository fullMenuRepository = boundedContext.findRepository(FullMenuView.class)
+                                                            .get();
+
+        final FullMenuViewProjection fullMenu1 = (FullMenuViewProjection) fullMenuRepository.find(
+                MENU_ID)
+                                                                                            .get();
+        final FullMenuViewProjection fullMenu2 = (FullMenuViewProjection) fullMenuRepository.find(
+                MENU_ID2)
+                                                                                            .get();
+        assertNotEquals(fullMenu1.getState()
+                                 .getMenuId(), fullMenu2.getState()
+                                                        .getMenuId());
+        assertEquals(fullMenu1.getState()
+                              .getDishesByCategoryList(), fullMenu2.getState()
+                                                                   .getDishesByCategoryList());
+    }
+
+    @Test
+    @DisplayName("Should change calendar repository")
+    void checkMenuCalendar() {
+        final Repository menuCalendarViewRepository = boundedContext.findRepository(
+                MenuCalendarView.class)
+                                                                    .get();
+        final MenuCalendarViewProjection menuCalendarViewProjection = (MenuCalendarViewProjection) menuCalendarViewRepository.find(
+                MenuCalendarViewProjection.ID)
+                                                                                                                             .get();
+        final List<MenuCalendarItem> calendarItemList = menuCalendarViewProjection.getState()
+                                                                                  .getCalendarItemList();
+        assertEquals(33, calendarItemList.size());
+        assertEquals(13, calendarItemList.get(0)
+                                         .getDate()
+                                         .getDay());
+    }
+
+    @Test
+    @DisplayName("Should change menu list")
+    void checkMenuList() {
+        final Repository menuListViewRepository = boundedContext.findRepository(
+                MenuListView.class)
+                                                                .get();
+
+        final MenuListViewProjection menuListViewProjection = (MenuListViewProjection) menuListViewRepository.find(
+                MenuListViewProjection.ID)
+                                                                                                             .get();
+        assertEquals(33, menuListViewProjection.getState()
+                                               .getMenuList()
+                                               .size());
+    }
+
+    @Test
+    @DisplayName("Should change monthly spendings")
+    void checkMonthlySpendings() {
+        final Repository monthlySpendingsRepository = boundedContext.findRepository(
+                MonthlySpendingsReportView.class)
+                                                                    .get();
+
+        final LocalMonth localMonth = LocalMonth.newBuilder()
+                                                .setYear(2019)
+                                                .setMonth(MonthOfYear.FEBRUARY)
+                                                .build();
+        final MonthlySpendingsReportViewProjection spendingsProjection = (MonthlySpendingsReportViewProjection) monthlySpendingsRepository.find(
+                MonthlySpendingsReportId.newBuilder()
+                                        .setMonth(localMonth)
+                                        .build())
+                                                                                                                                          .get();
+        spendingsProjection.getId();
+        assertEquals("user@example.com", spendingsProjection.getState()
+                                                            .getUserSpending(0)
+                                                            .getId()
+                                                            .getEmail()
+                                                            .getValue());
+        assertEquals(56, spendingsProjection.getState()
+                                            .getUserSpending(0)
+                                            .getAmount()
+                                            .getAmount());
+    }
+
+    @Test
+    @DisplayName("Should change order view")
+    void checkOrderView() {
+        final Repository orderListViewRepository = boundedContext.findRepository(
+                OrderListView.class)
+                                                                 .get();
+
+        final OrderListViewProjection orderListViewProjection = (OrderListViewProjection) orderListViewRepository.find(
+                OrderListId.newBuilder()
+                           .setUserId(USER_ID)
+                           .setOrderDate(DATE)
+                           .build())
+                                                                                                                 .get();
+        assertEquals("dishName1", orderListViewProjection.getState()
+                                                         .getOrder(0)
+                                                         .getDish(0)
+                                                         .getName());
+    }
+
+    @Test
+    @DisplayName("Should change po by dish view")
+    void checkPoByDish() {
+        final Repository poDetailsByDishViewRepository = boundedContext.findRepository(
+                PurchaseOrderDetailsByDishView.class)
+                                                                       .get();
+        final Iterator iterator = poDetailsByDishViewRepository.iterator(input -> true);
+        for (Iterator it = iterator; it.hasNext(); ) {
+            final Object o = it.next();
+        }
+        final PurchaseOrderDetailsByDishViewProjection poDetailsByDishViewProjection = (PurchaseOrderDetailsByDishViewProjection) poDetailsByDishViewRepository.find(
+                PURCHASE_ORDER_ID)
+                                                                                                                                                               .get();
+        assertEquals(PurchaseOrderStatus.DELIVERED, poDetailsByDishViewProjection.getState()
+                                                                                 .getPurchaseOrderStatus());
+        assertEquals("dishName1", poDetailsByDishViewProjection.getState()
+                                                               .getDishList()
+                                                               .get(0)
+                                                               .getName());
+    }
+
+    @Test
+    @DisplayName("Should change po by user view")
+    void checkPoByUser() {
+        final Repository poDetailsByUserViewRepository = boundedContext.findRepository(
+                PurchaseOrderDetailsByUserView.class)
+                                                                       .get();
+        final PurchaseOrderDetailsByUserViewProjection poDetailsByUserViewProjection = (PurchaseOrderDetailsByUserViewProjection) poDetailsByUserViewRepository.find(
+                PURCHASE_ORDER_ID)
+                                                                                                                                                               .get();
+        assertEquals(1, poDetailsByUserViewProjection.getState()
+                                                     .getOrderList()
+                                                     .size());
+        assertEquals("user@example.com", poDetailsByUserViewProjection.getState()
+                                                                      .getOrderList()
+                                                                      .get(0)
+                                                                      .getId()
+                                                                      .getEmail()
+                                                                      .getValue());
+        assertEquals(1, poDetailsByUserViewProjection.getState()
+                                                     .getOrderList()
+                                                     .get(0)
+                                                     .getDishList()
+                                                     .size());
+    }
+
+    @Test
+    @DisplayName("Should change po item view")
+    void checkPoItemView() {
+        final Repository poItemViewRepository = boundedContext.findRepository(
+                PurchaseOrderItemView.class)
+                                                              .get();
+        final PurchaseOrderItemViewProjection poItemViewProjection = (PurchaseOrderItemViewProjection) poItemViewRepository.find(
+                PURCHASE_ORDER_ID)
+                                                                                                                           .get();
+        assertEquals(DELIVERED, poItemViewProjection.getState()
+                                                    .getPurchaseOrderStatus());
+        assertEquals("vendor:value: \"VendorName1\"", poItemViewProjection.getState()
+                                                                          .getId()
+                                                                          .getVendorId()
+                                                                          .getValue()
+                                                                          .trim());
+    }
+
+    @Test
+    @DisplayName("Should change vendor list view")
+    void checkVendorList() {
+        final Repository vendorListViewRepository = boundedContext.findRepository(
+                VendorListView.class)
+                                                                  .get();
+        final VendorListId vendorListId = VendorListViewProjection.ID;
+        final VendorListViewProjection vendorListViewProjection = (VendorListViewProjection) vendorListViewRepository.find(
+                vendorListId)
+                                                                                                                     .get();
+        assertEquals("VendorListViewProjectionSingleton", vendorListViewProjection.getId()
+                                                                                  .getValue());
+        assertEquals(2, vendorListViewProjection.getState()
+                                                .getVendorList()
+                                                .get(0)
+                                                .getPhoneNumberList()
+                                                .size());
+    }
+
+    @Test
+    @DisplayName("Should create invalid po")
+    void checkInvalidPo() {
+        final Command createInvalidPOCommand = createCommand(
+                createPurchaseOrderWithInvalidOrdersInstance());
+        commandBus.post(createInvalidPOCommand, observer);
+        final Repository poItemViewRepository = boundedContext.findRepository(
+                PurchaseOrderItemView.class)
+                                                              .get();
+        final PurchaseOrderItemViewProjection poItemViewProjection = (PurchaseOrderItemViewProjection) poItemViewRepository.find(
+                PURCHASE_ORDER_ID)
+                                                                                                                           .get();
+        assertEquals(INVALID, poItemViewProjection.getState()
+                                                  .getPurchaseOrderStatus());
+        final Repository poDetailsByUserViewRepository = boundedContext.findRepository(
+                PurchaseOrderDetailsByUserView.class)
+                                                                       .get();
+        final PurchaseOrderDetailsByUserViewProjection poDetailsByUserViewProjection = (PurchaseOrderDetailsByUserViewProjection) poDetailsByUserViewRepository.find(
+                PURCHASE_ORDER_ID)
+                                                                                                                                                               .get();
+        assertEquals(INVALID, poDetailsByUserViewProjection.getState()
+                                                           .getPurchaseOrderStatus());
+    }
+
+    @Test
+    @DisplayName("Should updates vendor")
+    void checkUpdateVendor() {
+        final Command updateVendor = createCommand(updateVendorInstance());
+        commandBus.post(updateVendor, observer);
+        final Repository vendorListViewRepository = boundedContext.findRepository(
+                VendorListView.class)
+                                                                  .get();
+        final VendorListId vendorListId = VendorListViewProjection.ID;
+        final VendorListViewProjection vendorListViewProjection = (VendorListViewProjection) vendorListViewRepository.find(
+                vendorListId)
+                                                                                                                     .get();
+        assertEquals(NEW_VENDOR_NAME, vendorListViewProjection.getState()
+                                                              .getVendorList()
+                                                              .get(0)
+                                                              .getVendorName());
+    }
     private ActorRequestFactory getRequestFactory() {
         return requestFactory;
     }

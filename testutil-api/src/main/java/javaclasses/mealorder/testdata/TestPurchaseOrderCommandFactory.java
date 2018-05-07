@@ -37,9 +37,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javaclasses.mealorder.OrderStatus.ORDER_CANCELED;
+import static javaclasses.mealorder.testdata.TestValues.EMAIL;
 import static javaclasses.mealorder.testdata.TestValues.ORDER;
 import static javaclasses.mealorder.testdata.TestValues.PURCHASE_ORDER_ID;
 import static javaclasses.mealorder.testdata.TestValues.USER_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID2;
 
 /**
  * A factory of the purchase order commands for the test needs.
@@ -61,10 +63,20 @@ public class TestPurchaseOrderCommandFactory {
                                                               .setId(PURCHASE_ORDER_ID)
                                                               .setWhoCreates(USER_ID)
                                                               .addOrder(ORDER)
+                                                              .setVendorEmail(EMAIL)
                                                               .build();
         return result;
     }
 
+    public static CreatePurchaseOrder createPurchaseOrderInstance(List<Order> order) {
+        final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
+                                                              .setId(PURCHASE_ORDER_ID)
+                                                              .setWhoCreates(USER_ID)
+                                                              .addAllOrder(order)
+                                                              .setVendorEmail(EMAIL)
+                                                              .build();
+        return result;
+    }
     /**
      * Provides a pre-configured {@link CreatePurchaseOrder} instance
      * with mismatch vendor identifier of purchase order and one of
@@ -158,6 +170,8 @@ public class TestPurchaseOrderCommandFactory {
         final PurchaseOrderId id = validCmd.getId();
         final CreatePurchaseOrder result = CreatePurchaseOrder.newBuilder()
                                                               .setId(id)
+                                                              .setVendorEmail(EMAIL)
+                                                              .setWhoCreates(USER_ID2)
                                                               .build();
         return result;
     }
@@ -197,6 +211,7 @@ public class TestPurchaseOrderCommandFactory {
                                                                         .setId(PURCHASE_ORDER_ID)
                                                                         .setReason("Because I can.")
                                                                         .setUserId(USER_ID)
+                                                                        .setVendorEmail(EMAIL)
                                                                         .build();
         return result;
     }

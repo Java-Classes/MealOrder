@@ -44,23 +44,23 @@ import "javaclasses/mealorder/model.proto";
 message AddVendor {
 
     // The identifier of a vendor which should be added.
-    VendorId vendor_id = 1;
+    VendorId vendor_id = 1 [(required) = true];
 
     // The identifier of the user who adds a vendor.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // The name of a vendor.
-    VendorName vendor_name = 3;
+    VendorName vendor_name = 3 [(required) = true];
 
     // The email adress of a vendor to send a purchase order.
-    spine.net.EmailAddress email = 4;
+    spine.net.EmailAddress email = 4 [(required) = true];
 
     // Phone numbers of a vendor.
-    repeated PhoneNumber phone_number = 5;
+    repeated PhoneNumber phone_number = 5 [(required) = true];
 
     // Time when orders for this vendor are closed for editing.
     // Purchase orders for a vendor will be created exactly at this time.
-    spine.time.LocalTime po_daily_deadline = 6;
+    spine.time.LocalTime po_daily_deadline = 6 [(required) = true];
 }
 
 // Updates a vendor profile.
@@ -68,13 +68,13 @@ message AddVendor {
 message UpdateVendor {
 
     // The identifier of a vendor.
-    VendorId vendor_id = 1;
+    VendorId vendor_id = 1 [(required) = true];
 
     // The identifier of the user who updates vendor profile.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // Changes in a vendor profile.
-    VendorChange vendor_change = 3;
+    VendorChange vendor_change = 3 [(required) = true];
 }
 
 // Imports a menu.
@@ -82,33 +82,19 @@ message UpdateVendor {
 message ImportMenu {
 
     // The identifier of a vendor.
-    VendorId vendor_id = 1;
+    VendorId vendor_id = 1 [(required) = true];
 
     // The identifier of a imported menu
-    MenuId menuId = 2;
+    MenuId menuId = 2 [(required) = true];
 
     // The identifier of the user who imports a menu.
-    UserId user_id = 3;
+    UserId user_id = 3 [(required) = true];
 
     // The collection of dishes.
-    repeated Dish dish = 4;
-}
-
-// Sets a menu date range.
-//
-message SetDateRangeForMenu {
-
-    // The identifier of a vendor.
-    VendorId vendor_id = 1;
-
-    // The identifier of a menu.
-    MenuId menu_id = 2;
-
-    // The identifier of the user who sets a menu date range.
-    UserId user_id = 3;
+    repeated Dish dish = 4 [(required) = true];
 
     // A menu date range that should be set.
-    MenuDateRange menu_date_range = 4;
+    MenuDateRange menu_date_range = 5 [(required) = true];
 }
 
 // Creates a new order.
@@ -118,10 +104,10 @@ message SetDateRangeForMenu {
 message CreateOrder {
 
     // The identifier of an order.
-    OrderId order_id = 1;
+    OrderId order_id = 1 [(required) = true];
 
     // The identifier of the menu. Dishes from only this menu can be added to an order.
-    MenuId menu_id = 2;
+    MenuId menu_id = 2 [(required) = true];
 }
 
 // Adds a dish to an order.
@@ -132,10 +118,10 @@ message CreateOrder {
 message AddDishToOrder {
 
     // The identifier of an order.
-    OrderId order_id = 1;
+    OrderId order_id = 1 [(required) = true];
 
     // A dish that should be added to an order.
-    Dish dish = 2;
+    Dish dish = 2 [(required) = true];
 }
 
 // Removes a dish from an order.
@@ -146,10 +132,10 @@ message AddDishToOrder {
 message RemoveDishFromOrder {
 
     // The identifier of an order.
-    OrderId order_id = 1;
+    OrderId order_id = 1 [(required) = true];
 
     // The identifier of a dish that should be removed from an order.
-    DishId dish_id = 2;
+    DishId dish_id = 2 [(required) = true];
 }
 
 // Cancels an order.
@@ -162,10 +148,10 @@ message RemoveDishFromOrder {
 message CancelOrder {
 
     // The identifier of an order.
-    OrderId order_id = 1;
+    OrderId order_id = 1 [(required) = true];
 
     // The identifier of the user who cancels an order.
-    UserId who_cancels = 2;
+    UserId who_cancels = 2 [(required) = true];
 }
 
 // Creates a purchase order.
@@ -173,16 +159,16 @@ message CancelOrder {
 message CreatePurchaseOrder {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The collection of all orders for this day for the specified vendor.
     repeated Order order = 2;
 
     // The identifier of the user who creates a purchase order.
-    UserId who_creates = 3;
+    UserId who_creates = 3 [(required) = true];
 
     // The email adress of a vendor to send a purchase order.
-    spine.net.EmailAddress vendor_email = 4;
+    spine.net.EmailAddress vendor_email = 4 [(required) = true];
 }
 
 // Marks a purchase order as delivered.
@@ -192,10 +178,10 @@ message CreatePurchaseOrder {
 message MarkPurchaseOrderAsDelivered {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The identifier of the user who marks a purchase order as delivered.
-    UserId who_marks_as_delivered = 2;
+    UserId who_marks_as_delivered = 2 [(required) = true];
 }
 
 // Overrules a purchase order validation.
@@ -205,13 +191,13 @@ message MarkPurchaseOrderAsDelivered {
 message MarkPurchaseOrderAsValid {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The identifier of the user who marks a purchase order as valid.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // The reason why a purchase order should be marked as valid.
-    string reason = 3;
+    string reason = 3 [(required) = true];
 
     // The email adress of a vendor to send a purchase order.
     spine.net.EmailAddress vendor_email = 4;
@@ -224,7 +210,7 @@ message MarkPurchaseOrderAsValid {
 message CancelPurchaseOrder {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The reason of cancelation.
     oneof reason {
@@ -237,5 +223,5 @@ message CancelPurchaseOrder {
     }
 
     // The identifier of the user who cancels a purchase order.
-    UserId user_id = 4;
+    UserId user_id = 4 [(required) = true];
 }

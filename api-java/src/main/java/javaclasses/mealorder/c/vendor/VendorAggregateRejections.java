@@ -21,7 +21,7 @@
 package javaclasses.mealorder.c.vendor;
 
 import javaclasses.mealorder.c.command.AddVendor;
-import javaclasses.mealorder.c.command.SetDateRangeForMenu;
+import javaclasses.mealorder.c.command.ImportMenu;
 import javaclasses.mealorder.c.rejection.CannotSetDateRange;
 import javaclasses.mealorder.c.rejection.VendorAlreadyExists;
 
@@ -62,7 +62,7 @@ class VendorAggregateRejections {
      * @param cmd the {@code SetDateRangeForMenu} command which thrown the rejection
      * @throws CannotSetDateRange the rejection to throw
      */
-    static CannotSetDateRange cannotSetDateRange(SetDateRangeForMenu cmd) throws
+    static CannotSetDateRange cannotSetDateRange(ImportMenu cmd) throws
                                                                           CannotSetDateRange {
         checkNotNull(cmd);
         final CannotSetDateRange cannotSetDateRange = new CannotSetDateRange(cmd.getVendorId(),

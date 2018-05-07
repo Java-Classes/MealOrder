@@ -32,10 +32,25 @@ import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorName;
 import javaclasses.mealorder.c.command.AddVendor;
 import javaclasses.mealorder.c.command.ImportMenu;
-import javaclasses.mealorder.c.command.SetDateRangeForMenu;
 import javaclasses.mealorder.c.command.UpdateVendor;
 
-import static javaclasses.mealorder.testdata.TestValues.*;
+import java.util.List;
+
+import static javaclasses.mealorder.testdata.TestValues.BIG_MENU;
+import static javaclasses.mealorder.testdata.TestValues.EMAIL;
+import static javaclasses.mealorder.testdata.TestValues.MENU;
+import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE2;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
+import static javaclasses.mealorder.testdata.TestValues.MENU_ID2;
+import static javaclasses.mealorder.testdata.TestValues.PHONE_NUMBER1;
+import static javaclasses.mealorder.testdata.TestValues.PHONE_NUMBER2;
+import static javaclasses.mealorder.testdata.TestValues.PO_DAILY_DEADLINE;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID;
+import static javaclasses.mealorder.testdata.TestValues.USER_ID2;
+import static javaclasses.mealorder.testdata.TestValues.VENDOR_CHANGE;
+import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
+import static javaclasses.mealorder.testdata.TestValues.VENDOR_NAME;
 
 /**
  * A factory of the vendor commands for the test needs.
@@ -119,10 +134,23 @@ public class TestVendorCommandFactory {
      * @return the {@code ImportMenu} instance
      */
     public static ImportMenu importMenuInstance() {
-        final ImportMenu result = importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, DISH1, DISH2);
+        final ImportMenu result = importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, MENU_DATE_RANGE,
+                                                     MENU);
         return result;
     }
 
+    public static ImportMenu importMenuInstance2() {
+        final ImportMenu result = importMenuInstance(VENDOR_ID, USER_ID, MENU_ID, MENU_DATE_RANGE,
+                                                     BIG_MENU);
+        return result;
+    }
+
+    public static ImportMenu importMenuInstance3() {
+        final ImportMenu result = importMenuInstance(VENDOR_ID, USER_ID2, MENU_ID2,
+                                                     MENU_DATE_RANGE2,
+                                                     BIG_MENU);
+        return result;
+    }
     /**
      * Provides a pre-configured {@link ImportMenu} instance.
      *
@@ -133,48 +161,16 @@ public class TestVendorCommandFactory {
      * @return the {@code CreateBasicTask} instance
      */
     public static ImportMenu importMenuInstance(VendorId vendorId, UserId userId, MenuId menuId,
-                                                Dish... dishes) {
+                                                MenuDateRange menuDateRange,
+                                                List<Dish> dishes) {
 
         final ImportMenu result = ImportMenu.newBuilder()
                                             .setVendorId(vendorId)
                                             .setUserId(userId)
                                             .setMenuId(menuId)
-                                            .addDish(dishes[0])
-                                            .addDish(dishes[1])
+                                            .addAllDish(dishes)
+                                            .setMenuDateRange(menuDateRange)
                                             .build();
-        return result;
-    }
-
-    /**
-     * Provides a pre-configured {@link SetDateRangeForMenu} instance.
-     *
-     * @return the {@code ImportMenu} instance
-     */
-    public static SetDateRangeForMenu setDateRangeForMenuInstance() {
-        final SetDateRangeForMenu result = setDateRangeForMenuInstance(VENDOR_ID, MENU_ID, USER_ID,
-                                                                       MENU_DATE_RANGE);
-        return result;
-    }
-
-    /**
-     * Provides a pre-configured {@link SetDateRangeForMenu} instance.
-     *
-     * @param vendorId      the identifier of a created vendor
-     * @param userId        the identifier of the user who updates vendor profile
-     * @param menuId        the identifier of the imported menu
-     * @param menuDateRange a menu date range that should be set.
-     * @return the {@code CreateBasicTask} instance
-     */
-    public static SetDateRangeForMenu setDateRangeForMenuInstance(VendorId vendorId, MenuId menuId,
-                                                                  UserId userId,
-                                                                  MenuDateRange menuDateRange) {
-
-        final SetDateRangeForMenu result = SetDateRangeForMenu.newBuilder()
-                                                              .setVendorId(vendorId)
-                                                              .setUserId(userId)
-                                                              .setMenuId(menuId)
-                                                              .setMenuDateRange(menuDateRange)
-                                                              .build();
         return result;
     }
 }

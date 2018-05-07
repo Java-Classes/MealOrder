@@ -43,16 +43,16 @@ import "spine/net/email_address.proto";
 message Dish {
 
     // The identifier of a dish.
-    DishId id = 1;
+    DishId id = 1 [(required) = true];
 
     // The name of a dish.
-    string name = 2;
+    string name = 2 [(required) = true];
 
     // A dish category.
-    string category = 3;
+    string category = 3 [(required) = true];
 
     // A dish price.
-    spine.money.Money price = 4;
+    spine.money.Money price = 4 [(required) = true];
 }
 
 // The model of a menu.
@@ -62,13 +62,13 @@ message Dish {
 message Menu {
 
     // The identifier of a menu.
-    MenuId id = 1;
+    MenuId id = 1 [(required) = true];
 
     // The date range when available.
-    MenuDateRange menu_date_range = 2;
+    MenuDateRange menu_date_range = 2 [(required) = true];
 
     // The collection of dishes.
-    repeated Dish dish = 3;
+    repeated Dish dish = 3 [(required) = true];
 }
 
 // The model representing the `Order` aggregate.
@@ -87,13 +87,13 @@ message Menu {
 message Order {
 
     // The identifier of an order.
-    OrderId id = 1;
+    OrderId id = 1 [(required) = true];
 
     // The collection of dishes.
     repeated Dish dish = 2;
 
     // The status of an order.
-    OrderStatus status = 3;
+    OrderStatus status = 3 [(required) = true];
 }
 
 // The model representing the `PurchaseOrder` aggregate.
@@ -127,13 +127,13 @@ message Order {
 message PurchaseOrder {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The collection of orders.
-    repeated Order order = 2;
+    repeated Order order = 2 [(required) = true];
 
     // The status of a purchase order.
-    PurchaseOrderStatus status = 3;
+    PurchaseOrderStatus status = 3 [(required) = true];
 }
 
 // The model representing the `Vendor` aggregate.
@@ -141,22 +141,22 @@ message PurchaseOrder {
 message Vendor {
 
     // The identifier of a vendor.
-    VendorId id = 1;
+    VendorId id = 1 [(required) = true];
 
     // The name of a vendor
-    VendorName vendor_name = 2;
+    VendorName vendor_name = 2 [(required) = true];
 
     // The email address to send a purchase order.
-    spine.net.EmailAddress email = 3;
+    spine.net.EmailAddress email = 3 [(required) = true];
 
     // The phone numbers of a vendor.
-    repeated PhoneNumber phone_number = 4;
+    repeated PhoneNumber phone_number = 4 [(required) = true];
 
     // Daily deadline time.
     //
     // Time when orders for this vendor are closed for editing.
     // The purchase order for the specified vendor will be created exactly at this time.
-    spine.time.LocalTime po_daily_deadline = 5;
+    spine.time.LocalTime po_daily_deadline = 5 [(required) = true];
 
     // The collection of menus.
     repeated Menu menu = 6;

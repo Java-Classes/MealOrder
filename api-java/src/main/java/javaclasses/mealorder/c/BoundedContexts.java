@@ -26,6 +26,15 @@ import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.mealorder.c.order.OrderRepository;
 import javaclasses.mealorder.c.po.PurchaseOrderRepository;
 import javaclasses.mealorder.c.vendor.VendorRepository;
+import javaclasses.mealorder.q.repository.FullMenuViewRepository;
+import javaclasses.mealorder.q.repository.MenuCalendarViewRepository;
+import javaclasses.mealorder.q.repository.MenuListViewRepository;
+import javaclasses.mealorder.q.repository.MonthlySpendingsReportViewRepository;
+import javaclasses.mealorder.q.repository.OrderListViewRepository;
+import javaclasses.mealorder.q.repository.PurchaseOrderDetailsByDishViewRepository;
+import javaclasses.mealorder.q.repository.PurchaseOrderDetailsByUserViewRepository;
+import javaclasses.mealorder.q.repository.PurchaseOrderItemViewRepository;
+import javaclasses.mealorder.q.repository.VendorListViewRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -71,16 +80,36 @@ public final class BoundedContexts {
      */
     public static BoundedContext create(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
-        final VendorRepository vendorRepository = VendorRepository.getRepository();
-
+        final VendorRepository vendorRepository = VendorRepository.createRepository();
         final OrderRepository orderRepository = new OrderRepository();
         final PurchaseOrderRepository purchaseOrderRepository = new PurchaseOrderRepository();
+
+        final FullMenuViewRepository fullMenuViewRepository = new FullMenuViewRepository();
+        final MenuCalendarViewRepository menuCalendarViewRepository = new MenuCalendarViewRepository();
+        final MenuListViewRepository menuListViewRepository = new MenuListViewRepository();
+        final MonthlySpendingsReportViewRepository monthlySpendingsReportViewRepository = new MonthlySpendingsReportViewRepository();
+        final OrderListViewRepository orderListViewRepository = new OrderListViewRepository();
+        final PurchaseOrderDetailsByDishViewRepository poDetailsByDishViewRepository = new PurchaseOrderDetailsByDishViewRepository();
+        final PurchaseOrderDetailsByUserViewRepository poDetailsByUserViewRepository = new PurchaseOrderDetailsByUserViewRepository();
+        final PurchaseOrderItemViewRepository poItemViewRepository = new PurchaseOrderItemViewRepository();
+        final VendorListViewRepository vendorListViewRepository = new VendorListViewRepository();
 
         final BoundedContext boundedContext = createBoundedContext(storageFactory);
 
         boundedContext.register(vendorRepository);
         boundedContext.register(orderRepository);
         boundedContext.register(purchaseOrderRepository);
+
+        boundedContext.register(fullMenuViewRepository);
+        boundedContext.register(menuCalendarViewRepository);
+        boundedContext.register(menuListViewRepository);
+        boundedContext.register(monthlySpendingsReportViewRepository);
+        boundedContext.register(orderListViewRepository);
+        boundedContext.register(poDetailsByDishViewRepository);
+        boundedContext.register(poDetailsByUserViewRepository);
+        boundedContext.register(poItemViewRepository);
+        boundedContext.register(vendorListViewRepository);
+
         return boundedContext;
     }
 

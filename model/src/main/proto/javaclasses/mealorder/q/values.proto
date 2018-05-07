@@ -45,29 +45,40 @@ import "javaclasses/mealorder/values.proto";
 message MenuItem {
 
     // The vendor name.
-    VendorName vendor_name = 1;
+    VendorName vendor_name = 1 [(required) = true];
 
-    // The collection of dishes.
-    repeated DishItem dish = 2;
+    // The collection of categories.
+    repeated DishesByCategory dishesByCategory = 2 [(required) = true];
+
+    // A date on which a menu is intended.
+    spine.time.LocalDate menu_date = 3 [(required) = true];
+
+    // Indicates if a menu is available for user.
+    bool is_avilable = 4 [(required) = true];
 }
 
-// The single dish item of a menu.
+// Dishes grouped by category.
 //
-// The dish category is used in UI to group dishes.
+message DishesByCategory {
+
+    // Category of dishes.
+    CategoryName category = 1 [(required) = true];
+
+    // The collection of dishes.
+    repeated DishItem dishes = 2;
+}
+// The single dish item of a menu.
 //
 message DishItem {
 
     // The identifier of a dish.
-    DishId id = 1;
+    DishId id = 1 [(required) = true];
 
     // The name of a dish.
-    string name = 2;
-
-    // The dish category.
-    string category = 3;
+    string name = 2 [(required) = true];
 
     // The dish price.
-    spine.money.Money price = 4;
+    spine.money.Money price = 3 [(required) = true];
 }
 
 // The item of the menu calendar.
@@ -78,10 +89,10 @@ message DishItem {
 message MenuCalendarItem {
 
     // A date in the menu calendar.
-    spine.time.LocalDate date = 1;
+    spine.time.LocalDate date = 1 [(required) = true];
 
     // Indicates presence of attached menus on a specified date.
-    bool has_menu = 2;
+    bool has_menu = 2 [(required) = true];
 }
 
 // The item of an order list.
@@ -99,7 +110,7 @@ message MenuCalendarItem {
 message OrderItem {
 
     // The identifier of an order.
-    OrderId id = 1;
+    OrderId id = 1 [(required) = true];
 
     // The collection of ordered dishes.
     repeated DishItem dish = 2;
@@ -113,44 +124,19 @@ message OrderItem {
 message VendorItem {
 
     // The identifier of a vendor.
-    VendorId id = 1;
+    VendorId id = 1 [(required) = true];
 
     // The vendor name.
-    VendorName vendor_name = 2;
+    VendorName vendor_name = 2 [(required) = true];
 
     // The vendor email address.
-    spine.net.EmailAddress email = 3;
+    spine.net.EmailAddress email = 3 [(required) = true];
 
-    // Phone numbers of the vendor.
+    // Phone numbers of a vendor.
     repeated PhoneNumber phone_number = 4;
 
     // Daily purchase order creation deadline time.
-    spine.time.LocalTime po_daily_deadline = 5;
-}
-
-// The item of the full menu list.
-//
-message FullMenuItem {
-
-    // The identifier of a menu.
-    MenuId menu_id = 1;
-
-    // Date range when a menu is available.
-    MenuDateRange menu_date_range = 2;
-
-    // The collection of dishes.
-    repeated DishItem dish = 3;
-}
-
-// The item of the purchase order list.
-//
-message PurchaseOrderItem {
-
-    // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
-
-    // The purchase order status.
-    PurchaseOrderStatus purchase_order_status = 2;
+    spine.time.LocalTime po_daily_deadline = 5 [(required) = true];
 }
 
 // The item of an order list.
@@ -163,13 +149,16 @@ message PurchaseOrderItem {
 message UserOrderDetails {
 
     // The identifier of the user.
-    UserId id = 1;
+    UserId id = 1 [(required) = true];
 
     // The collection of dishes.
     repeated DishItem dish = 2;
 
     // An order validation status.
     bool is_valid = 3;
+
+    // The identifier of a purchase order.
+    PurchaseOrderId purchase_order_id = 4;
 }
 
 // The item of a monthly spendings report view.
@@ -179,8 +168,8 @@ message UserOrderDetails {
 message UserSpendings {
 
     // The identifier of a user.
-    UserId id = 1;
+    UserId id = 1 [(required) = true];
 
     // Amount of spendings.
-    spine.money.Money amount = 2;
+    spine.money.Money amount = 2 [(required) = true];
 }
