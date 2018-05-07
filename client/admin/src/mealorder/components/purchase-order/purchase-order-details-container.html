@@ -81,7 +81,7 @@
                 cursor: pointer;
                 justify-content: space-between;
                 align-items: center;
-                margin: 0 auto;
+                margin: 1% auto 0 auto;
                 width: 70%;
             }
 
@@ -112,6 +112,7 @@
 
             .button-back {
                 margin-top: 2%;
+                margin-bottom: ;
                 margin-left: 15%
             }
 
@@ -160,19 +161,22 @@
             }
         </style>
 
-        <app-location route="{{route}}"
-                      use-hash-as-path></app-location>
+        <app-route
+                route="{{vendorData}}"
+                pattern="/:page/:date/:vendor"
+                data="{{vendorData}}">
+        </app-route>
 
         <app-route
                 route="{{route}}"
-                pattern="/:page/:date/:vendor/:type"
+                pattern="/:type"
                 data="{{routeData}}"
                 tail="{{subroute}}">
         </app-route>
 
         <div class="button-back">
             <a style="  color: var(--google-grey-500); text-decoration: none; font-weight: lighter; font-size: 20px;"
-               href="#/order/[[routeData.date]]/">
+               href="#/order/[[vendorData.date]]/">
                 <iron-icon icon="icons:arrow-back" style="font-weight: lighter;"></iron-icon>
                 Назад</a>
         </div>
@@ -185,10 +189,10 @@
                     <paper-button class="button" style="">Отметить как доставленным</paper-button>
                 </div>
                 <div style="display: flex; align-self: flex-end;">
-                    <a href="#/order/[[routeData.date]]/[[routeData.vendor]]/byDishes"
+                    <a href="#/order/[[vendorData.date]]/[[vendorData.vendor]]/byDishes"
                        style="color: var(--google-grey-700);">По блюдам</a>
-                    <div style="white-space: pre; font-weight: bold;"> | </div>
-                    <a href="#/order/[[routeData.date]]/[[routeData.vendor]]/byOrders"
+                    <div style="white-space: pre; font-weight: bold;"> |</div>
+                    <a href="#/order/[[vendorData.date]]/[[vendorData.vendor]]/byOrders"
                        style="color: var(--google-grey-700);">По заказам</a>
                 </div>
             </div>
@@ -212,8 +216,19 @@
                 }
 
                 static get properties() {
-                }
+                    return {
+                        routeData: {
+                            type: Object,
+                        },
+                        route: {
+                            type: Object,
+                        },
+                        vendorData: {
+                            type: Object,
+                        },
 
+                    }
+                }
             }
 
             window.customElements.define(PurchaseOrderContainer.is, PurchaseOrderContainer);

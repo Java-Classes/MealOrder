@@ -212,7 +212,7 @@
                                 current-orders="[[displayedOrders]]"></purchase-order>
             </div>
 
-            <purchase-order-details-container
+            <purchase-order-details-container route="{{subroute}}" vendor-data="[[route]]"
                     name="[[routeData.vendor]]"></purchase-order-details-container>
         </iron-pages>
     </template>
@@ -330,6 +330,7 @@
                 }
 
                 _pageChanged() {
+                    console.log(this.routeData);
                     if (!this.routeData.date) {
                         const DATE_LENGTH = 10;
                         const date = this.serverTime.toISOString().slice(0, DATE_LENGTH);
