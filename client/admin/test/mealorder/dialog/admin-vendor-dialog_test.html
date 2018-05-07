@@ -53,15 +53,19 @@
             });
         });
         test('should fire events', function (done) {
-            component.mode = 'add';
+            debugger;
+            component.mode = 'update';
+            component.$.dialog.open();
             flush(function () {
 
                 const button1 = component.shadowRoot.querySelector('#add');
                 const button2 = component.$.add;
                 const button3 = component.shadowRoot.querySelector('buttons-wrapper .confirm');
 
-                debugger;
-                done();
+                flush(function () {
+                    debugger;
+                    done();
+                });
             });
         });
     });

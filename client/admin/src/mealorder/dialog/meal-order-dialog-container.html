@@ -62,7 +62,7 @@
                     if (this.dialog && this.dialog.tagName) {
                         const element = document.createElement(this.dialog.tagName);
                         element.inputData = this.dialog.inputData || {};
-                        element.mode = this.dialog.mode;
+                        element.update = this.dialog.update;
                         const manager = this.shadowRoot.appendChild(element);
                         const dialog = manager.shadowRoot.querySelector('#dialog');
                         dialog.open();

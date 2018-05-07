@@ -264,7 +264,6 @@
                 _addVendorDialog() {
                     const properties = {};
                     properties.tagName = MealOrderAdminApp.AdminVendorDialog.is;
-                    properties.mode = 'add';
                     this.dispatch('openVendorDialog', properties);
                     this.$.fab.close();
                 }
@@ -273,7 +272,7 @@
                 _openDetailsDialog(e) {
                     const properties = {};
                     properties.tagName = MealOrderAdminApp.AdminVendorDialog.is;
-                    properties.mode = 'update';
+                    properties.update = true;
                     const inputData = {};
 
                     if (this.$.list.selectedItem) {

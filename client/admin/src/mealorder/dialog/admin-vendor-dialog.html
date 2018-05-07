@@ -160,12 +160,8 @@
             <div id="dialog-content">
                 <iron-form id="form">
                     <form>
-                        <template is="dom-if" if="[[_isAdd()]]">
-                            <h2>Добавить поставщика</h2>
-                        </template>
-                        <template is="dom-if" if="[[_isUpdate()]]">
-                            <h2>Детали поставщика</h2>
-                        </template>
+                        <h2 hidden="[[_isUpdate()]]">Добавить поставщика</h2>
+                        <h2 hidden="[[!_isUpdate()]]">Детали поставщика</h2>
                         <paper-input value="{{inputData.newTitle}}"
                                      error-message="Обязательное поле"
                                      label="Название" required="true"></paper-input>
@@ -196,16 +192,10 @@
                         </div>
                         <div class="buttons-wrapper">
                             <paper-button on-click="_closeDialog">Отмена</paper-button>
-                            <template is="dom-if" if="[[_isAdd()]]">
-                                <paper-button id="add" class="confirm" on-click="_addVendor">
-                                    Сохранить
+                            <paper-button id="add" class="confirm" on-click="_confirm">
+                                <div hidden="[[_isUpdate()]]">Сохранить</div>
+                                <div hidden="[[!_isUpdate()]]">Обновить</div>
                                 </paper-button>
-                            </template>
-                            <template is="dom-if" if="[[_isUpdate()]]">
-                                <paper-button class="confirm" on-click="_updateVendor">
-                                    Обновить
-                                </paper-button>
-                            </template>
                         </div>
                     </div>
                 </iron-form>
@@ -238,8 +228,8 @@
                          * Can be `add` mode or `update`.
                          * Depending on this it sends different events and renders different elements.
                          */
-                        mode: {
-                            type: String
+                        update: {
+                            type: Boolean
                         },
 
                         /**
@@ -292,19 +282,9 @@
                         vendor.mail = this.inputData.newMail;
                         vendor.phone = this.inputData.phone;
                         vendor.deadline = this.inputData.deadline;
-                        this.dispatch('addVendor', vendor);
-                        this._closeDialog();
-                    }
-                }
-
-                _updateVendor() {
-                    if (this.$.form.validate()) {
-                        const vendor = {};
-                        vendor.title = this.inputData.newTitle;
-                        vendor.mail = this.inputData.newMail;
-                        vendor.phone = this.inputData.phone;
-                        vendor.deadline = this.inputData.deadline;
-                        this.dispatch('updateVendor', vendor);
+                        let actionName;
+                        this.update ? actionName = 'updateVendor' : 'addVendor';
+                        this.dispatch(actionName, vendor);
                         this._closeDialog();
                     }
                 }
@@ -321,12 +301,7 @@
                 }
 
                 _isUpdate() {
-                    return this.mode === 'update';
-                }
-
-                _isAdd() {
-                    debugger;
-                    return this.mode === 'add';
+                    return this.update;
                 }
             }
 
