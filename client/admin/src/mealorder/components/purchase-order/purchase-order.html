@@ -18,6 +18,7 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../../../bower_components/app-datepicker/app-datepicker.html">
 
@@ -141,44 +142,31 @@
                     width: 33.3%;
                 }
             }
+
             @media only screen and (max-width: 414px) {
                 .vendor-name {
                     width: 40%;
                 }
+
                 .date {
                     width: 30%;
                 }
+
                 .status {
                     width: 40%;
                 }
             }
 
         </style>
-
-        <app-location route="{{route}}"
-                      use-hash-as-path></app-location>
-
-        <app-route
-                route="{{route}}"
-                pattern="/:page/:date/:vendor"
-                data="{{routeData}}"
-                tail="{{subroute}}">
-        </app-route>
-
-        <iron-pages
-                selected="[[routeData.vendor]]"
-                attr-for-selected="name"
-                fallback-selection="view404"
-                role="main">
-
-            <div class="main-content" name="">
-                <div class="non-select header">
-                    <div class="vendor-name">Поставщик</div>
-                    <div class="date">Дата</div>
-                    <div class="status">Статус</div>
-                    <div class="details"></div>
-                </div>
-                <iron-list id="list" items="[[orders]]" as="PO" scroll-target="document"
+        <div class="main-content">
+            <div class="non-select header">
+                <div class="vendor-name">Поставщик</div>
+                <div class="date">Дата</div>
+                <div class="status">Статус</div>
+                <div class="details"></div>
+            </div>
+            <template is="dom-if" if="[[_getOrderSize(currentOrders)]]">
+                <iron-list id="list" items="[[currentOrders]]" as="PO" scroll-target="document"
                            scroll-offset="200" selection-enabled>
                     <template>
                         <a href="#/order/[[routeData.date]]/[[PO.id]]/byDishes" class="items">
@@ -195,8 +183,8 @@
                         </a>
                     </template>
                 </iron-list>
-            </div>
-        </iron-pages>
+            </template>
+        </div>
     </template>
     <script>
         {
@@ -207,11 +195,24 @@
 
                 static get properties() {
                     return {
-                        orders: {
+                        currentOrders: {
                             type: Array,
+                        },
+                        routeData: {
+                            type: Object,
                         }
                     }
                 };
+
+                static get observers() {
+                    return [
+                        '_orderChanged(currentOrders)',
+                    ];
+                }
+
+                _getOrderSize(currentOrders) {
+                    return currentOrders.length > 0;
+                }
 
                 _getClassForStatus(po) {
                     return po.status;

@@ -288,7 +288,6 @@
 
                 _getLocaleMonth() {
                     const currentYear = this.serverTime.toLocaleString("ru-RU", {month: 'long'});
-                    console.log(currentYear.charAt(0).toUpperCase() + currentYear.slice(1));
                     return currentYear.charAt(0).toUpperCase() + currentYear.slice(1);
                 }
 
@@ -308,8 +307,6 @@
                 }
 
                 _getTotalAmount(record) {
-                    console.log(this.monthlySpendings);
-                    console.log(record);
                     let sum = 0;
                     for (let i = 0; i < record.users.length; i++) {
                         sum += record.users[i].amount;
