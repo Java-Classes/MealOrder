@@ -53,11 +53,13 @@
             });
         });
         test('should fire events', function (done) {
-            component.mode = 'update';
+            component.mode = 'add';
             flush(function () {
 
-                const button = component.shadowRoot.querySelectorAll('#asd');
-                assert.equal(true, component._isUpdate());
+                const button1 = component.shadowRoot.querySelector('#add');
+                const button2 = component.$.add;
+                const button3 = component.shadowRoot.querySelector('buttons-wrapper .confirm');
+
                 debugger;
                 done();
             });

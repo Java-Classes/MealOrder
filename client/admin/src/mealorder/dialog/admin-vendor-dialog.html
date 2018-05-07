@@ -23,10 +23,11 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/gold-phone-input/gold-phone-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../shell/meal-order-admin-app-namespace.html">
-<link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../../bower_components/iron-form/iron-form.html">
+
+<link rel="import" href="../shell/meal-order-admin-app-namespace.html">
+<link rel="import" href="../shell/redux-store.html">
 
 <dom-module id="admin-vendor-dialog">
     <template>
@@ -196,7 +197,8 @@
                         <div class="buttons-wrapper">
                             <paper-button on-click="_closeDialog">Отмена</paper-button>
                             <template is="dom-if" if="[[_isAdd()]]">
-                                <paper-button class="confirm" on-click="_addVendor">Сохранить
+                                <paper-button id="add" class="confirm" on-click="_addVendor">
+                                    Сохранить
                                 </paper-button>
                             </template>
                             <template is="dom-if" if="[[_isUpdate()]]">
@@ -323,6 +325,7 @@
                 }
 
                 _isAdd() {
+                    debugger;
                     return this.mode === 'add';
                 }
             }
