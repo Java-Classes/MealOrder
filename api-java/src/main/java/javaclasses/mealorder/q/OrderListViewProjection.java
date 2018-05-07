@@ -63,23 +63,23 @@ public class OrderListViewProjection extends Projection<OrderListId, OrderListVi
                                                   .getId())
                                       .build();
         if (getOrderById(orderId).isPresent()) {
+            getBuilder().setOrder(getBuilder().getOrder()
+                                              .indexOf(getOrderById(orderId).get()),
+                                  OrderItem.newBuilder(getOrderById(orderId).get())
+                                           .addDish(dish)
+                                           .build());
+        } else {
             final OrderListId listId = OrderListId.newBuilder()
                                                   .setUserId(event.getOrderId()
                                                                   .getUserId())
                                                   .setOrderDate(event.getOrderId()
                                                                      .getOrderDate())
                                                   .build();
-            getBuilder().setOrder(getBuilder().getOrder()
-                                              .indexOf(getOrderById(orderId).get()),
-                                  OrderItem.newBuilder(getOrderById(orderId).get())
-                                           .addDish(dish)
-                                           .build())
-                        .setListId(listId);
-        } else {
             getBuilder().addOrder(OrderItem.newBuilder()
                                            .addDish(dish)
                                            .setId(event.getOrderId())
                                            .build());
+            getBuilder().setListId(listId);
         }
     }
 

@@ -23,7 +23,9 @@ package javaclasses.mealorder.q;
 import io.spine.core.Subscribe;
 import io.spine.money.Money;
 import io.spine.server.projection.Projection;
+import io.spine.time.MonthOfYear;
 import javaclasses.mealorder.Dish;
+import javaclasses.mealorder.LocalMonth;
 import javaclasses.mealorder.MonthlySpendingsReportId;
 import javaclasses.mealorder.PurchaseOrder;
 import javaclasses.mealorder.UserId;
@@ -78,6 +80,23 @@ public class MonthlySpendingsReportViewProjection extends Projection<MonthlySpen
             userOrderDetailsList.add(userOrderDetails);
                      });
         getBuilder().addAllOrder(userOrderDetailsList);
+        final int year = event.getPurchaseOrder()
+                              .getId()
+                              .getPoDate()
+                              .getYear();
+        final MonthOfYear month = event.getPurchaseOrder()
+                                       .getId()
+                                       .getPoDate()
+                                       .getMonth();
+        final LocalMonth localMonth = LocalMonth.newBuilder()
+                                                .setYear(year)
+                                                .setMonth(month)
+                                                .build();
+        final MonthlySpendingsReportId monthlySpendingsReportId = MonthlySpendingsReportId.newBuilder()
+                                                                                          .setMonth(
+                                                                                                  localMonth)
+                                                                                          .build();
+        getBuilder().setReportId(monthlySpendingsReportId);
     }
 
     @Subscribe

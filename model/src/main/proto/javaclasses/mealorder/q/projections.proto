@@ -91,7 +91,7 @@ message MenuCalendarView {
 message OrderListView {
 
     // The identifier of an order list.
-    OrderListId list_id = 1;
+    OrderListId list_id = 1 [(required) = true];
 
     // The collection of user's orders.
     repeated OrderItem order = 2;
@@ -106,7 +106,7 @@ message OrderListView {
 message FullMenuView {
 
     // // The identifier of a full menu.
-    MenuId menu_id = 1;
+    MenuId menu_id = 1 [(required) = true];
 
     // The vendor name.
     VendorName vendor_name = 2 [(required) = true];
@@ -151,7 +151,7 @@ message PurchaseOrderItemView {
 message PurchaseOrderDetailsByDishView {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
@@ -169,7 +169,7 @@ message PurchaseOrderDetailsByDishView {
 message PurchaseOrderDetailsByUserView {
 
     // The identifier of a purchase order.
-    PurchaseOrderId id = 1;
+    PurchaseOrderId id = 1 [(required) = true];
 
     // The purchase order status.
     PurchaseOrderStatus purchase_order_status = 2;
@@ -190,7 +190,7 @@ message PurchaseOrderDetailsByUserView {
 message MonthlySpendingsReportView {
 
     // The identifier of a monthly spendings report.
-    MonthlySpendingsReportId report_id = 1;
+    MonthlySpendingsReportId report_id = 1 [(required) = true];
 
     // The collection of users spendings for the specified month.
     repeated UserSpendings user_spending = 2;
