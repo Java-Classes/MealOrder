@@ -32,7 +32,13 @@
 </head>
 <body>
 
-<test-fixture id="Dialog">
+<test-fixture id="UpdateDialog">
+    <template>
+        <admin-vendor-dialog update></admin-vendor-dialog>
+    </template>
+</test-fixture>
+
+<test-fixture id="AddDialog">
     <template>
         <admin-vendor-dialog></admin-vendor-dialog>
     </template>
@@ -43,30 +49,14 @@
         let component;
 
         setup(() => {
-            component = fixture('Dialog');
-        });
-        test('should choose correct components depending on mode', function (done) {
-            component.mode = 'update';
-            flush(function () {
-                assert.equal(true, component._isUpdate());
-                done();
-            });
-        });
-        test('should fire events', function (done) {
-            debugger;
-            component.mode = 'update';
+            component = fixture('UpdateDialog');
             component.$.dialog.open();
-            flush(function () {
+        });
 
-                const button1 = component.shadowRoot.querySelector('#add');
-                const button2 = component.$.add;
-                const button3 = component.shadowRoot.querySelector('buttons-wrapper .confirm');
-
-                flush(function () {
-                    debugger;
-                    done();
-                });
-            });
+        test('should fire events', function (done) {
+            const button = component.shadowRoot.querySelector('.confirm');
+            debugger;
+            done();
         });
     });
 </script>

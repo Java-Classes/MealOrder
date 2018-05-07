@@ -192,7 +192,7 @@
                         </div>
                         <div class="buttons-wrapper">
                             <paper-button on-click="_closeDialog">Отмена</paper-button>
-                            <paper-button id="add" class="confirm" on-click="_confirm">
+                            <paper-button class="confirm" on-click="_confirm">
                                 <div hidden="[[_isUpdate()]]">Сохранить</div>
                                 <div hidden="[[!_isUpdate()]]">Обновить</div>
                                 </paper-button>
@@ -275,7 +275,7 @@
                     }
                 }
 
-                _addVendor() {
+                _confirm() {
                     if (this.$.form.validate()) {
                         const vendor = {};
                         vendor.title = this.inputData.newTitle;
@@ -283,7 +283,7 @@
                         vendor.phone = this.inputData.phone;
                         vendor.deadline = this.inputData.deadline;
                         let actionName;
-                        this.update ? actionName = 'updateVendor' : 'addVendor';
+                        this.update ? actionName = 'updateVendor' : actionName = 'addVendor';
                         this.dispatch(actionName, vendor);
                         this._closeDialog();
                     }
