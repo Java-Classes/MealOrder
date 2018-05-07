@@ -91,6 +91,11 @@
                 padding-right: 2%;
             }
 
+            .record {
+                margin-top: 2%;
+                margin-bottom: 2%;
+            }
+
             paper-button {
                 font-family: 'Roboto', 'Noto', sans-serif;
                 font-weight: normal;
@@ -153,7 +158,7 @@
                             <div class="order">
                                 <dom-repeat items="[[order.dishes]]" as="dish">
                                     <template>
-                                        <div style="margin-top: 2%; margin-bottom: 2%;">
+                                        <div class="record">
                                             [[dish.title]]([[dish.quantity]])
                                         </div>
                                     </template>
