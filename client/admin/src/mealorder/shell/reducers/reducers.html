@@ -322,11 +322,7 @@
                     );
                 }
                 case MealOrderAdminApp.AdminActions.GET_SELECTED_ORDERS: {
-                    const currentOrders = allPurchaseOrders.filter(order => (order.date.getTime() >= action.startDate.getTime() && order.date.getTime() <= action.endDate.getTime()));
-                    return Object.assign({}, state, {
-                            purchaseOrders: currentOrders
-                        }
-                    );
+                    return state;
                 }
                 case MealOrderAdminApp.AdminActions.GET_SELECTED_PURCHASE_ORDERS_BY_DISH: {
                     if (action.date) {

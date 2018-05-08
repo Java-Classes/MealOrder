@@ -182,23 +182,26 @@
                 <h1 class="header-title">Заказ поставщику</h1>
                 <div class="header">
                     <paper-tabs id="ptab" class="tabs"
-                                selected="7">
-                        <dom-repeat items="[[selectedPurchaseOrderDates]]" as="calendar">
-                            <template>
-                                <paper-tab class="paper-tab" link
-                                           disabled="[[!calendar.hasOrder]]">
-                                    <a href="#/order/[[_getDate(calendar.date)]]/"
-                                       class="paper-tab-container">
-                                        <div>
-                                            <div class="day-of-the-week">
-                                                [[_getDayOfTheWeek(calendar.date)]]
-                                            </div>
-                                            <div class="day">[[_getDay(calendar.date)]]</div>
-                                        </div>
-                                    </a>
-                                </paper-tab>
-                            </template>
-                        </dom-repeat>
+                                selected="1">
+                        <paper-tab class="paper-tab" link on-click="_selectPreviousDay">
+                            <!--<a href="#/order/[[_previousDay]]/"-->
+                            <!--class="paper-tab-container">-->
+                            <div>
+                                <div class="day">Предыдущий день</div>
+                            </div>
+                            <!--</a>-->
+                        </paper-tab>
+                        <paper-tab class="paper-tab" link>
+                            <a href="#/order/[[currentDate]]/"
+                               class="paper-tab-container">
+                                <div>
+                                    <!--<div class="day-of-the-week">-->
+                                    <!--[[_getDate()]]-->
+                                    <!--</div>-->
+                                    <!--<div class="day">[[_getDayOfTheWeek()]]</div>-->
+                                    [[currentDate]]
+                                </div>
+                            </a></paper-tab>
                     </paper-tabs>
                     <paper-icon-button id="calendar" icon="today"
                                        on-click="openDatePicker"></paper-icon-button>
@@ -213,7 +216,7 @@
             </div>
 
             <purchase-order-details-container route="{{subroute}}" vendor-data="[[route]]"
-                    name="[[routeData.vendor]]"></purchase-order-details-container>
+                                              name="[[routeData.vendor]]"></purchase-order-details-container>
         </iron-pages>
     </template>
     <script>
@@ -238,17 +241,13 @@
                             type: String,
                         },
 
+                        // _previousDay: {
+                        //     type: Object,
+                        //     computed: '_getPreviousDay(currentDate)'
+                        // },
                         purchaseOrders: {
                             type: Array,
                             statePath: 'purchaseOrders',
-                        },
-                        displayedOrders: {
-                            type: Array,
-                            computed: '_getDisplayedOrder(currentDate, routeData.date)',
-                        },
-                        selectedPurchaseOrderDates: {
-                            type: Array,
-                            computed: '_getSelectedPurchaseOrderDates(purchaseOrders , currentDate)',
                         },
                         selectedDay: {
                             type: String,
@@ -273,17 +272,36 @@
                     ];
                 }
 
+                _selectPreviousDay() {
+                    const newRouteData = this.routeData;
+                    const date = new Date(newRouteData.date);
+                    date.setDate(date.getDate() - 1);
+                    const DATE_LENGTH = 10;
+                    const newDate = date.toISOString().slice(0, DATE_LENGTH);
+                    newRouteData.date = newDate;
+                    this.set('routeData', newRouteData);
+                    this._pageChanged();
+                }
+
+                _getPreviousDay() {
+                    const newDate = new Date(this.currentDate);
+                    newDate.setDate(newDate.getDate() - 1);
+                    const DATE_LENGTH = 10;
+                    console.log("@!@!@");
+                    return newDate.toISOString().slice(0, DATE_LENGTH);
+                }
+
                 _getDay(date) {
                     return date.getDate();
                 }
 
-                _getDate(date) {
+                _getDate() {
                     const DATE_LENGTH = 10;
-                    return date.toISOString().slice(0, DATE_LENGTH);
+                    return this.serverTime.toISOString().slice(0, DATE_LENGTH);
                 }
 
-                _getDayOfTheWeek(date) {
-                    const dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'short'});
+                _getDayOfTheWeek() {
+                    const dayOfTheWeek = this.serverTime.toLocaleDateString("ru-RU", {weekday: 'short'});
                     return dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
                 }
 
@@ -297,47 +315,31 @@
                 _calendarDateChanged(e) {
                     const currentDate = e.target.date;
                     if (this.routeData.date && !this.routeData.vendor) {
-                        const DAYS_IN_PERIOD = 8;
-                        const startDate = new Date(currentDate);
-                        startDate.setDate(startDate.getDate() - (DAYS_IN_PERIOD - 1));
-                        this.dispatch('getSelectedOrders', startDate, new Date(currentDate));
+                        this.dispatch('getSelectedOrders',);
                         this.set('route.path', '/order/' + currentDate + "/");
-                        this.$.ptab.selectIndex(7);
                         this.$.picker.style = 'display:none;';
                         this.$.calendar.style.backgroundColor = 'white';
                     }
                 }
 
-                _getSelectedPurchaseOrderDates() {
-                    const purchaseOrders = this.purchaseOrders;
-                    if (purchaseOrders) {
-                        const selectedDates = [];
-                        const DAYS_IN_PERIOD = 8;
-                        for (let i = 0; i < DAYS_IN_PERIOD; i++) {
-                            const newDate = new Date(this.currentDate);
-                            newDate.setDate(newDate.getDate() - i);
-                            selectedDates.push({date: newDate, hasOrder: false});
-                        }
-                        for (let i = 0; i < selectedDates.length; i++) {
-                            for (let j = 0; j < purchaseOrders.length; j++) {
-                                if (selectedDates[i].date.getTime() === purchaseOrders[j].date.getTime()) {
-                                    selectedDates[i].hasOrder = true;
-                                }
-                            }
-                        }
-                        return selectedDates.reverse();
-                    }
-                }
-
                 _pageChanged() {
+                    console.log('1');
+
                     if (!this.routeData.date) {
+                        console.log("!!!");
                         const DATE_LENGTH = 10;
                         const date = this.serverTime.toISOString().slice(0, DATE_LENGTH);
                         this.set('inputDate', date);
-                        const DAYS_IN_PERIOD = 8;
-                        const startDate = new Date(this.serverTime);
-                        startDate.setDate(startDate.getDate() - (DAYS_IN_PERIOD - 1));
-                        this.dispatch('getSelectedOrders', startDate, new Date(this.serverTime));
+                        // const DAYS_IN_PERIOD = 8;
+                        // const startDate = new Date(this.serverTime);
+                        // startDate.setDate(startDate.getDate() - (DAYS_IN_PERIOD - 1));
+                        // this.dispatch('getSelectedOrders', startDate, new Date(this.serverTime));
+                        this.set('route.path', '/order/' + date + "/");
+                    }
+                    else {
+                        const date = this.routeData.date;
+                        this.set('inputDate', date);
+                        this.$.ptab.select(1);
                         this.set('route.path', '/order/' + date + "/");
                     }
                 }
