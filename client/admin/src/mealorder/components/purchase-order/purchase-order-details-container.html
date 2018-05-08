@@ -118,6 +118,37 @@
                 margin-left: 15%
             }
 
+            .button-back a {
+                color: var(--google-grey-500);
+                text-decoration: none;
+                font-weight: lighter;
+                font-size: 20px;
+            }
+
+            .button-back a iron-icon {
+                font-weight: lighter;
+            }
+
+            #detail-action {
+                display: flex;
+                flex-direction: column;
+                height: 150px;
+                justify-content: space-around;
+            }
+
+            #order-filters {
+                display: flex;
+                align-self: flex-end;
+            }
+
+            .whitespace {
+                white-space: pre;
+                font-weight: bold;
+            }
+
+            #order-filters a {
+                color: var(--google-grey-700);
+            }
             @media only screen and (max-width: 1024px) {
                 #upper {
                     width: 98%;
@@ -177,25 +208,23 @@
         </app-route>
 
         <div class="button-back">
-            <a style="  color: var(--google-grey-500); text-decoration: none; font-weight: lighter; font-size: 20px;"
-               href="#/order/[[vendorData.date]]/">
-                <iron-icon icon="icons:arrow-back" style="font-weight: lighter;"></iron-icon>
+            <a href="#/order/[[routeData.date]]/">
+                <iron-icon icon="icons:arrow-back"></iron-icon>
                 Назад</a>
         </div>
         <div id="upper">
             <h1 class="upper-header">Детали заказа [[purchaseOrder.vendor]] за 05.01.2018</h1>
-            <div style="display: flex;flex-direction: column;height: 150px; justify-content: space-around;">
+            <div id="detail-action">
                 <div class="status">Отправленный</div>
-                <div style="display: flex;">
-                    <paper-button class="button" style="">Печать</paper-button>
-                    <paper-button class="button" style="">Отметить как доставленным</paper-button>
+                <div>
+                    <paper-button class="button">Печать</paper-button>
+                    <paper-button class="button">Отметить как доставленным</paper-button>
                 </div>
-                <div style="display: flex; align-self: flex-end;">
-                    <a href="#/order/[[vendorData.date]]/[[vendorData.vendor]]/byDishes"
-                       style="color: var(--google-grey-700);">По блюдам</a>
-                    <div style="white-space: pre; font-weight: bold;"> |</div>
-                    <a href="#/order/[[vendorData.date]]/[[vendorData.vendor]]/byOrders"
-                       style="color: var(--google-grey-700);">По заказам</a>
+                <div id="order-filters">
+                    <a href="#/order/[[vendorData.date]]/[[vendorData.vendor]]/byDishes">По блюдам</a>
+                    <div class="whitespace"> |</div>
+                    <a href="#/order/[[vendorData.date]]/[[vendorData.vendor]]/byOrders">По
+                        заказам</a>
                 </div>
             </div>
         </div>
