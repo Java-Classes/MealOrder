@@ -18,6 +18,7 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/polymer/lib/elements/dom-if.html">
 
 <dom-module id="purchase-order-details-by-dish">
     <template>
@@ -168,7 +169,8 @@
                 <div class="quantity"></div>
                 <div class="cost">Стоимость, ₴</div>
             </div>
-            <iron-list class="list" items="[[purchaseOrder.dishes]]" as="dish"
+
+            <iron-list id="lk" class="list" items="[[purchaseOrder.dishes]]" as="dish"
                        scroll-target="document"
                        scroll-offset="200">
                 <template>
@@ -182,12 +184,14 @@
                     </div>
                 </template>
             </iron-list>
-            <div class="item footer">
-                <div class="title">Всего:</div>
-                <div class="price"></div>
-                <div class="quantity"></div>
-                <div class="cost">[[_getTotal()]]</div>
-            </div>
+            <template is="dom-if" if="[[purchaseOrder]]">
+                <div class="item footer">
+                    <div class="title">Всего:</div>
+                    <div class="price"></div>
+                    <div class="quantity"></div>
+                    <div class="cost">[[_getTotal(purchaseOrder)]]</div>
+                </div>
+            </template>
         </div>
 
     </template>
@@ -202,26 +206,8 @@
                     return {
                         purchaseOrder: {
                             type: Object,
-                            value: {
-                                vendor: 'Пюре',
-                                dishes: [{title: 'Картофель', price: 10, quantity: 1}, {
-                                    title: 'Стейк куриный',
-                                    price: 39,
-                                    quantity: 2
-                                }, {title: 'Гречневая каша', price: 15, quantity: 4}, {
-                                    title: 'Борщ украинский',
-                                    price: 20,
-                                    quantity: 3
-                                }]
-                            }
                         }
                     }
-                };
-
-                static get observers() {
-                    return [
-                        '_pageChanged(routeData)',
-                    ];
                 }
 
                 _getCost(index) {
@@ -229,9 +215,9 @@
                         * this.purchaseOrder.dishes[index].quantity;
                 }
 
-                _getTotal() {
+                _getTotal(purchaseOrder) {
                     let sum = 0;
-                    const dishes = this.purchaseOrder.dishes;
+                    const dishes = purchaseOrder.dishes;
                     for (let i = 0; i < dishes.length; i++) {
                         sum += this._getCost(i);
                     }

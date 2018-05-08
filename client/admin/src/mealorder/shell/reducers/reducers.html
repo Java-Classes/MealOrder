@@ -201,6 +201,47 @@
             }
         ];
 
+        const allPurchaseOrdersByDish = [{
+            vendor: 'Пюре',
+            date: new Date("2018-05-03"),
+            dishes: [{title: 'Картофель', price: 10, quantity: 1}, {
+                title: 'Стейк куриный',
+                price: 39,
+                quantity: 2
+            }, {title: 'Гречневая каша', price: 15, quantity: 4}, {
+                title: 'Борщ украинский',
+                price: 20,
+                quantity: 3
+            }]
+        }];
+
+        const allPurchaseOrdersByUser = [{
+            vendor: 'Пюре',
+            date: new Date("2018-05-03"),
+            order: [{
+                user: 'Таня Ижевская',
+                dishes: [{title: 'Картофель', quantity: 1}, {
+                    title: 'Жареная сельдь',
+                    quantity: 1
+                }, {title: 'Суп гороховый', quantity: 2}]
+            }, {
+                user: 'Жора Васильев',
+                dishes: [{
+                    title: 'Борщ украинский',
+                    quantity: 1
+                }, {title: 'Цезарь', quantity: 2}]
+            }, {
+                user: 'Петя Иванов',
+                dishes: [{title: 'Картофель', quantity: 1}, {
+                    title: 'Жареная сельдь',
+                    quantity: 1
+                }, {title: 'Суп гороховый', quantity: 2}]
+            }, {
+                user: 'Алина Рогачева',
+                dishes: [{title: 'Картофель', quantity: 1}]
+            }]
+        }];
+
         MealOrderAdminApp.initialState = {
             monthlySpendingsStartDate: new Date("2016-05-03"),
             serverTime: new Date("2018-05-03"),
@@ -220,6 +261,8 @@
             currentMenu: activeMenu,
             monthlySpendings: {},
             purchaseOrders: [],
+            purchaseOrdersbyDish: {},
+            purchaseOrdersbyUser: {},
         };
 
         MealOrderAdminApp.reducer = (state, action) => {
@@ -279,14 +322,29 @@
                     );
                 }
                 case MealOrderAdminApp.AdminActions.GET_SELECTED_ORDERS: {
-                    console.log(action.startDate);
-                    console.log(action.endDate);
                     const currentOrders = allPurchaseOrders.filter(order => (order.date.getTime() >= action.startDate.getTime() && order.date.getTime() <= action.endDate.getTime()));
-                    console.log(currentOrders);
                     return Object.assign({}, state, {
                             purchaseOrders: currentOrders
                         }
                     );
+                }
+                case MealOrderAdminApp.AdminActions.GET_SELECTED_PURCHASE_ORDERS_BY_DISH: {
+                    if (action.date) {
+                        const purchaseOrdersbyDish = allPurchaseOrdersByDish.find(order => order.date.getTime() === action.date.getTime());
+                        return Object.assign({}, state, {
+                                purchaseOrdersbyDish: purchaseOrdersbyDish
+                            }
+                        );
+                    }
+                }
+                case MealOrderAdminApp.AdminActions.GET_SELECTED_PURCHASE_ORDERS_BY_USER: {
+                    if (action.date) {
+                        const purchaseOrdersbyUser = allPurchaseOrdersByUser.find(order => order.date.getTime() === action.date.getTime());
+                        return Object.assign({}, state, {
+                                purchaseOrdersbyUser: purchaseOrdersbyUser
+                            }
+                        );
+                    }
                 }
                 default :
                     return state;

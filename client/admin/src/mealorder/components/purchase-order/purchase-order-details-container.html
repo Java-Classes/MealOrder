@@ -17,8 +17,10 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<link rel="import" href="purchase-order-details-by-dish.html">
-<link rel="import" href="purchase-order-details-by-user.html">
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="./purchase-order-details-by-dish.html">
+<link rel="import" href="./purchase-order-details-by-user.html">
+<link rel="import" href="../../shell/redux-store.html">
 
 <dom-module id="purchase-order-details-container">
     <template>
@@ -203,14 +205,15 @@
                 attr-for-selected="name"
                 fallback-selection="view404"
                 role="main">
-            <purchase-order-details-by-dish name="byDishes"></purchase-order-details-by-dish>
-            <purchase-order-details-by-user name="byOrders"></purchase-order-details-by-user>
+            <purchase-order-details-by-dish name="byDishes"
+                                            purchase-order="[[purchaseOrdersbyDish]]"></purchase-order-details-by-dish>
+            <purchase-order-details-by-user name="byOrders"  purchase-order="[[purchaseOrdersbyUser]]"></purchase-order-details-by-user>
         </iron-pages>
 
     </template>
     <script>
         {
-            class PurchaseOrderContainer extends Polymer.Element {
+            class PurchaseOrderContainer extends MealOrderAdminApp.ReduxMixin(Polymer.Element) {
                 static get is() {
                     return 'purchase-order-details-container';
                 }
@@ -226,12 +229,49 @@
                         vendorData: {
                             type: Object,
                         },
-
+                        purchaseOrdersbyDish: {
+                            type: Object,
+                            statePath: "purchaseOrdersbyDish"
+                        },
+                        purchaseOrdersbyUser: {
+                            type: Object,
+                            statePath: "purchaseOrdersbyUser"
+                        }
                     }
                 }
+
+                static get actions() {
+                    return {
+                        getPurchaseOrdersbyDish: function (date) {
+                            return {
+                                type: MealOrderAdminApp.AdminActions.GET_SELECTED_PURCHASE_ORDERS_BY_DISH,
+                                date
+                            }
+                        },
+                        getPurchaseOrdersbyUser: function (date) {
+                            return {
+                                type: MealOrderAdminApp.AdminActions.GET_SELECTED_PURCHASE_ORDERS_BY_USER,
+                                date
+                            }
+                        }
+                    }
+                }
+
+                static get observers() {
+                    return [
+                        '_orderChanged(vendorData.date)',
+                    ];
+                }
+
+                _orderChanged(date) {
+                    this.dispatch('getPurchaseOrdersbyDish', new Date(date));
+                    this.dispatch('getPurchaseOrdersbyUser', new Date(date));
+                }
+
             }
 
             window.customElements.define(PurchaseOrderContainer.is, PurchaseOrderContainer);
+
         }
     </script>
 </dom-module>

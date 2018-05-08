@@ -330,7 +330,6 @@
                 }
 
                 _pageChanged() {
-                    console.log(this.routeData);
                     if (!this.routeData.date) {
                         const DATE_LENGTH = 10;
                         const date = this.serverTime.toISOString().slice(0, DATE_LENGTH);
