@@ -260,7 +260,7 @@
             ],
             currentMenu: activeMenu,
             monthlySpendings: {},
-            purchaseOrders: [],
+            currentPurchaseOrders: [],
             purchaseOrdersbyDish: {},
             purchaseOrdersbyUser: {},
         };
@@ -322,7 +322,15 @@
                     );
                 }
                 case MealOrderAdminApp.AdminActions.GET_SELECTED_ORDERS: {
-                    return state;
+                    const date = new Date(action.date);
+                    console.log(allPurchaseOrders);
+                    console.log(date);
+                    const newPurchaseOrders = allPurchaseOrders.filter(po => po.date.getTime() === date.getTime());
+                    console.log(newPurchaseOrders);
+                    return Object.assign({}, state, {
+                            currentPurchaseOrders: newPurchaseOrders
+                        }
+                    );
                 }
                 case MealOrderAdminApp.AdminActions.GET_SELECTED_PURCHASE_ORDERS_BY_DISH: {
                     if (action.date) {
