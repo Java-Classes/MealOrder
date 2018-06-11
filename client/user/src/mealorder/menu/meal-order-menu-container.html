@@ -82,7 +82,6 @@
                        class="paper-tab-container">
                         <div>
                             <div class="day-of-the-week">[[_getWeekDayName(day)]]
-                                [[!_isMenuExists(day)]]
                             </div>
                             <div class="day">[[_getDay(day)]]</div>
                         </div>
@@ -161,7 +160,11 @@
                         menus: {
                             type: Array,
                         },
-                        existingMenu: {
+
+                        /**
+                         * Existing dates for the menu for the displayed days.
+                         */
+                        existingDatesForMenu: {
                             type: Map,
                             computed: '_getExistingDatesForMenu(menus, displayedDays)'
                         }
@@ -219,7 +222,7 @@
                 }
 
                 _isMenuExists(date) {
-                    return this.existingMenu.has(date);
+                    return this.existingDatesForMenu.has(date);
                 }
 
             }
