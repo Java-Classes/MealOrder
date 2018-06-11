@@ -162,11 +162,11 @@
                         },
 
                         /**
-                         * Existing dates for the menu for the displayed days.
+                         * Existing dates for the order for the displayed days.
                          */
-                        existingDatesForMenu: {
+                        existingDatesForOrder: {
                             type: Map,
-                            computed: '_getExistingDatesForMenu(menus, displayedDays)'
+                            computed: '_getExistingDatesForOrder(menus, displayedDays)'
                         }
 
                     };
@@ -204,7 +204,7 @@
                     return weekDates;
                 }
 
-                _getExistingDatesForMenu(menus, dates) {
+                _getExistingDatesForOrder(menus, dates) {
                     const existingDates = new Map();
                     Array.prototype.indexOfDate = function (date) {
                         for (let i = 0; i < this.length; i++) {
@@ -222,7 +222,7 @@
                 }
 
                 _isMenuExists(date) {
-                    return this.existingDatesForMenu.has(date);
+                    return this.existingDatesForOrder.has(date);
                 }
 
             }
