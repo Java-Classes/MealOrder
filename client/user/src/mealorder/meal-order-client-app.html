@@ -126,15 +126,18 @@
                          * Menu for a current day.
                          *
                          * @typedef {Object} Menu the menu for the current date
-                         *
                          * @property {String} vendor a vendor name
-                         *
-                         * @typedef {Object} Date contains day, month, year
-                         * @property {Number} day
-                         * @property {Number} month
-                         * @property {Number} year
-                         *
+                         */
+
+                        /**
+                         * @typedef {Date} contains day, month, year and etc.
+                         */
+
+                        /**
                          * @typedef {Array} Categories contains the category name and dishes
+                         */
+
+                        /**
                          * @typedef {Array} Dishes array contains the dish title, price, quantity
                          * @property {String} title
                          * @property {String} price
@@ -183,14 +186,15 @@
 
                 _pageChanged() {
                     const DATE_LENGTH = 10;
+                    const serverTime = this.serverTime.toISOString().slice(0, DATE_LENGTH);
                     if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
-                        this.set('route.path', '/menu/' + this.serverTime.toISOString().slice(0, DATE_LENGTH));
+                        this.set('route.path', '/menu/' + serverTime);
                     }
                     if (this.routeData.page.startsWith("history")) {
                         if (!this.routeData.date) {
                             const newDate = new Date(this.serverTime);
                             newDate.setDate(newDate.getDate() - 1);
-                            this.set('routeData.date', newDate.toISOString().slice(0, DATE_LENGTH));
+                            this.set('routeData.date', serverTime);
                         }
                     }
                 }

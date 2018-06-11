@@ -82,7 +82,7 @@
                     <div class="app-toolbar-header">
                         <div class="app-toolbar-content">Заказ</div>
                         <div>
-                            <div id="day-of-the-week">[[selectedDayOfTheWeek]]</div>
+                            <div id="day-of-the-week">[[selectedDayName]]</div>
                             <div id="day">[[selectedDay]]</div>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
     <script>
         {
             /**
-             * meal-order-drawer is container for the user's order and
+             * `meal-order-drawer` is container for the user's order and
              * the calendar of the history of the user's orders.
              *
              * Contains an order for the selected day and calendar.
@@ -128,16 +128,16 @@
                          * Selected day.
                          */
                         selectedDay: {
-                            type: Object,
+                            type: String,
                             computed: '_getSelectedDay(routeData.date)'
                         },
 
                         /**
                          * Selected day of the week.
                          */
-                        selectedDayOfTheWeek: {
-                            type: Object,
-                            computed: '_getSelectedDayOfTheWeek(routeData.date)'
+                        selectedDayName: {
+                            type: String,
+                            computed: '_getSelectedDayName(routeData.date)'
                         },
 
                         /**
@@ -167,7 +167,7 @@
                     return new Date(this.routeData.date).getDate();
                 }
 
-                _getSelectedDayOfTheWeek() {
+                _getSelectedDayName() {
                     return new Date(this.routeData.date).toLocaleDateString("ru-RU", {weekday: 'long'});
                 }
 
