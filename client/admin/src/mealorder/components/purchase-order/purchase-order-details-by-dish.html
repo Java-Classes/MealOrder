@@ -23,25 +23,6 @@
 <dom-module id="purchase-order-details-by-dish">
     <template>
         <style>
-            .item {
-                @apply --layout-horizontal;
-                height: 50px;
-                display: flex;
-                background-color: white;
-                border-bottom: 1px solid #ddd;
-                align-items: center;
-            }
-
-            .non-select {
-                -webkit-touch-callout: none; /* iOS Safari */
-                -webkit-user-select: none; /* Safari */
-                -khtml-user-select: none; /* Konqueror HTML */
-                -moz-user-select: none; /* Firefox */
-                -ms-user-select: none; /* Internet Explorer/Edge */
-                user-select: none;
-                /* Non-prefixed version, currently supported by Chrome and Opera */
-            }
-
             .header {
                 display: flex;
                 font-weight: bold;
@@ -63,6 +44,25 @@
             .price {
                 width: 25%;
                 text-align: right;
+            }
+
+            .item {
+                @apply --layout-horizontal;
+                height: 50px;
+                display: flex;
+                background-color: white;
+                border-bottom: 1px solid #ddd;
+                align-items: center;
+            }
+
+            .non-select {
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;
+                /* Non-prefixed version, currently supported by Chrome and Opera */
             }
 
             .quantity {
@@ -117,7 +117,6 @@
                 .title {
                     width: 20%;
                 }
-
             }
 
             @media only screen and (max-width: 414px) {
