@@ -208,8 +208,9 @@
                     const existingDates = new Map();
                     Array.prototype.indexOfDate = function (date) {
                         for (let i = 0; i < this.length; i++) {
-                            if (this[i].getTime() === date.getTime())
+                            if (this[i].getTime() === date.getTime()) {
                                 return i;
+                            }
                         }
                     };
 
