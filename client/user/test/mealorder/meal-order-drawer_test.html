@@ -1,0 +1,121 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>meal-order-client test</title>
+
+    <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../node_modules/redux/dist/redux.js"></script>
+    <link rel="import" href="../../src/mealorder/menu/meal-order-drawer.html">
+</head>
+<body>
+
+<test-fixture id="MealOrderDrawer">
+    <template>
+        <meal-order-drawer></meal-order-drawer>
+    </template>
+</test-fixture>
+
+<script>
+    function setLocation(url) {
+        window.history.pushState({}, '', url);
+        Polymer.Base.fire('location-changed', {}, {node: window});
+    }
+
+    suite('meal-order-drawer', function () {
+        let component;
+
+        setup(() => {
+            component = fixture('MealOrderDrawer');
+        });
+
+        test('should instantiate the `meal-order-drawer` component', function (done) {
+            const elementShadowRoot = component.shadowRoot;
+            const datePicker = elementShadowRoot.querySelector("app-datepicker");
+            assert.equal(datePicker.tagName.toLocaleLowerCase(), "app-datepicker");
+            done();
+        });
+
+        test('should change URL by selecting the date in the calendar with `history` routing', function (done) {
+            const STRING_DATE = "2018/04/20";
+
+            flush(function () {
+                const elementShadowRoot = component.shadowRoot;
+                const datePicker = elementShadowRoot.querySelector("app-datepicker");
+                datePicker.inputDate = STRING_DATE;
+                assert.equal(datePicker.inputDate , STRING_DATE);
+                done();
+            });
+            setLocation('/#/history/');
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `menu`' +
+            ' and the component `app-toolbar-content` with routing title', function (done) {
+            const newRouteData = {};
+            newRouteData.page = "menu";
+            component.routeData = newRouteData;
+            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
+            pages.forceSynchronousItemUpdate();
+            const drawerTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
+            flush(function () {
+                assert.equal(drawerTitle, 'Заказ');
+                done();
+            });
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `menu`' +
+            ' and day, and day of the week', function (done) {
+            const newRouteData = {};
+            newRouteData.page = "menu";
+            newRouteData.date = "2018-04-20";
+            component.routeData = newRouteData;
+            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
+            pages.forceSynchronousItemUpdate();
+            const day = pages.querySelector("#day").innerHTML;
+            const dayOfTheWeek = pages.querySelector("#day-of-the-week").innerHTML;
+            flush(function () {
+                assert.equal(dayOfTheWeek, 'пятница');
+                assert.equal(day, '20');
+                done();
+            });
+        });
+
+        test('should instantiate the `app-toolbar` with data-page `history`' +
+            ' and the component `app-toolbar-content` with routing title', function (done) {
+            const newRouteData = {};
+            newRouteData.page = "history";
+            component.routeData = newRouteData;
+            const pages = component.shadowRoot.querySelector('#app-drawer-iron');
+            pages.forceSynchronousItemUpdate();
+            const drawerTitle = pages.selectedItem.getElementsByClassName("app-toolbar-content").item(0).innerHTML;
+            flush(function () {
+                assert.equal(drawerTitle, 'История заказов');
+                done();
+            });
+        });
+    });
+</script>
+</body>
+</html>

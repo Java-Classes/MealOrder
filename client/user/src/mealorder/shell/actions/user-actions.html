@@ -17,18 +17,6 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
-<link rel="import" href="./reducers/reducers.html">
 <script>
-    {
-        /* global Redux, PolymerRedux */
-        const store = Redux.createStore(MealOrderApp.reducer);
-        MealOrderApp.store = store;
-        /**
-         * Redux mixin holds a state of the application.
-         * @polymer
-         * @mixinFunction
-         */
-        MealOrderApp.ReduxMixin = PolymerRedux(MealOrderApp.store);
-    }
+    MealOrderApp.UserAction = {}
 </script>

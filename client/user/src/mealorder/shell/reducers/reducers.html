@@ -18,19 +18,124 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../meal-order-app-namespace.html">
-
 <script>
     {
-        const initialState = {};
+        MealOrderApp.initialState = {
+
+            serverTime: new Date('2018-03-21'),
+            menus: [
+                {
+                    vendor: 'Пюре',
+                    date: new Date('2018-03-21'),
+                    categories: [{
+                        categoryName: 'Первое блюдо',
+                        dishes: [
+                            {title: 'Борщ украинский', price: 35},
+                            {title: 'Солянка', price: 40},
+                            {title: 'Суп гороховый', price: 140},
+                            {title: 'Уха', price: 35},
+                            {title: 'Суп-пюре грибной', price: 40}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо',
+                            dishes: [
+                                {title: 'Утиные крылышки', price: 40},
+                                {title: 'Куриные крылышки', price: 45}]
+                        }
+                    ]
+                },
+                {
+                    vendor: 'Позитив',
+                    date: new Date('2018-03-21'),
+                    categories: [{
+                        categoryName: 'Первое блюдо', dishes: [
+                            {title: 'Борщ украинский', price: 35},
+                            {title: 'Суп с лапшой', price: 40},
+                            {title: 'Борщ красный', price: 40},
+                            {title: 'Борщ зеленый', price: 35}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо', dishes: [
+                                {title: 'Стейк из лосося', price: 40},
+                                {title: 'Стейк из говядины', price: 45}]
+                        },
+                        {
+                            categoryName: 'Напитки', dishes: [
+                                {title: 'Лимонад', price: 40}]
+                        }
+                    ]
+                },
+                {
+                    vendor: 'Пюре',
+                    date: new Date('2018-03-22'),
+                    categories: [{
+                        categoryName: 'Первое блюдо', dishes: [
+                            {title: 'Суп гречневый', price: 35},
+                            {title: 'Солянка', price: 40},
+                            {title: 'Суп гороховый', price: 140},
+                            {title: 'Уха', price: 35},
+                            {title: 'Суп-пюре грибной', price: 40}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо', dishes: [
+                                {title: 'Утиные крылышки', price: 40},
+                                {title: 'Куриные крылышки', price: 45}]
+                        }
+                    ]
+                },
+                {
+                    vendor: 'Позитив',
+                    date: new Date('2018-03-22'),
+                    categories: [{
+                        categoryName: 'Первое блюдо', dishes: [
+                            {title: 'Суп сырный', price: 35},
+                            {title: 'Суп с лапшой', price: 40},
+                            {title: 'Борщ красный', price: 40},
+                            {title: 'Борщ зеленый', price: 35}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо', dishes: [
+                                {title: 'Стейк из лосося', price: 40},
+                                {title: 'Стейк из говядины', price: 45}]
+                        },
+                        {
+                            categoryName: 'Напитки', dishes: [
+                                {title: 'Лимонад', price: 40}]
+                        }
+                    ]
+                },
+                {
+                    vendor: 'Позитив',
+
+                    categories: [{
+                        categoryName: 'Первое блюдо', dishes: [
+                            {title: 'Суп сырный', price: 35},
+                            {title: 'Суп с лапшой', price: 40},
+                            {title: 'Борщ красный', price: 40},
+                            {title: 'Борщ зеленый', price: 35}]
+                    }
+                        , {
+                            categoryName: 'Второе блюдо', dishes: [
+                                {title: 'Стейк из лосося', price: 40},
+                                {title: 'Стейк из говядины', price: 45}]
+                        },
+                        {
+                            categoryName: 'Напитки', dishes: [
+                                {title: 'Лимонад', price: 40}]
+                        }
+                    ]
+                }],
+        };
+
         MealOrderApp.reducer = (state, action) => {
             if (!state) {
-                return initialState;
+                return MealOrderApp.initialState;
             }
             switch (action.type) {
-                default :
+                default : {
                     return state;
+                }
             }
         }
     }
-
 </script>
