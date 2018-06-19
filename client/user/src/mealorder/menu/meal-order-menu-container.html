@@ -166,7 +166,7 @@
                          */
                         existingDatesForOrder: {
                             type: Map,
-                            computed: '_getExistingDatesForOrder(menus, displayedDays)'
+                            computed: '_getExistingDatesForOrder(menus)'
                         }
 
                     };
@@ -204,26 +204,25 @@
                     return weekDates;
                 }
 
-                _getExistingDatesForOrder(menus, dates) {
+                _getExistingDatesForOrder(menus) {
                     const existingDates = new Map();
-                    Array.prototype.indexOfDate = function (date) {
-                        for (let i = 0; i < this.length; i++) {
-                            if (this[i].getTime() === date.getTime()) {
-                                return i;
-                            }
-                        }
-                    };
-
                     menus.reduce((arr, el) => {
                         if (el.date) {
-                            existingDates.set(dates[dates.indexOfDate(el.date)], el);
+                            if (!existingDates.get(el.date.getTime())) {
+                                existingDates.set(el.date.getTime(), [el]);
+                            }
+                            else {
+                                const arr = existingDates.get(el.date.getTime());
+                                arr.push(el);
+                                existingDates.set(el.date.getTime(), arr);
+                            }
                         }
                     });
                     return existingDates;
                 }
 
                 _isMenuExists(date) {
-                    return this.existingDatesForOrder.has(date);
+                    return this.existingDatesForOrder.has(date.getTime());
                 }
 
             }
