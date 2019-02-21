@@ -31,9 +31,9 @@ import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static javaclasses.mealorder.c.order.Orders.checkMenuAvailability;
 import static javaclasses.mealorder.c.order.Orders.checkRangeIncludesDate;
 import static javaclasses.mealorder.c.order.Orders.getVendorAggregateForOrder;
-import static javaclasses.mealorder.testdata.TestValues.INVALID_END_DATE;
-import static javaclasses.mealorder.testdata.TestValues.INVALID_START_DATE;
-import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.FAR_PAST;
+import static javaclasses.mealorder.testdata.TestValues.FAR_FUTURE;
+import static javaclasses.mealorder.testdata.TestValues.WEEK_FROM_TOMORROW;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -54,26 +54,26 @@ class OrdersTest {
     @Test
     @DisplayName("return `true` if the menu is available on the ordering date")
     void returnTrueForExistingMenu() {
-        assertTrue(checkRangeIncludesDate(MENU_DATE_RANGE, ORDER_ID.getOrderDate()));
+        assertTrue(checkRangeIncludesDate(WEEK_FROM_TOMORROW, ORDER_ID.getOrderDate()));
     }
 
     @Test
     @DisplayName("return `false` order has no date")
     void returnFalseForOrderWithoutDate() {
-        assertFalse(checkRangeIncludesDate(MENU_DATE_RANGE, OrderId.getDefaultInstance()
-                                                                   .getOrderDate()));
+        assertFalse(checkRangeIncludesDate(WEEK_FROM_TOMORROW, OrderId.getDefaultInstance()
+                                                                      .getOrderDate()));
     }
 
     @Test
     @DisplayName("return `false` if order date is after menu end date")
     void returnFalseForOrderDateAfterMenu() {
-        assertFalse(checkRangeIncludesDate(MENU_DATE_RANGE, INVALID_START_DATE));
+        assertFalse(checkRangeIncludesDate(WEEK_FROM_TOMORROW, FAR_FUTURE));
     }
 
     @Test
     @DisplayName("return `false` if order date is before menu end date")
     void returnFalseForOrderDateBeforeMenu() {
-        assertFalse(checkRangeIncludesDate(MENU_DATE_RANGE, INVALID_END_DATE));
+        assertFalse(checkRangeIncludesDate(WEEK_FROM_TOMORROW, FAR_PAST));
     }
 
     @Test

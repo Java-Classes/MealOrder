@@ -39,7 +39,7 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.mealorder.testdata.TestValues.INVALID_MENU_DATE_RANGE;
-import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.WEEK_FROM_TOMORROW;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_FROM_PAST;
 import static javaclasses.mealorder.testdata.TestValues.MENU_ID;
 import static javaclasses.mealorder.testdata.TestValues.USER_ID;
@@ -85,7 +85,7 @@ public class SetDateRangeForMenuTest extends VendorCommandTest<AddVendor> {
         assertEquals(VENDOR_ID, dateRangeForMenuSet.getVendorId());
         assertEquals(MENU_ID, dateRangeForMenuSet.getMenuId());
         assertEquals(USER_ID, dateRangeForMenuSet.getWhoSet());
-        assertEquals(MENU_DATE_RANGE, dateRangeForMenuSet.getMenuDateRange());
+        assertEquals(WEEK_FROM_TOMORROW, dateRangeForMenuSet.getMenuDateRange());
     }
 
     @Test

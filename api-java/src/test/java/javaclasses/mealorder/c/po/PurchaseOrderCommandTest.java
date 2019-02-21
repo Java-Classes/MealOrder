@@ -28,7 +28,7 @@ import javaclasses.mealorder.PurchaseOrderId;
 import javaclasses.mealorder.PurchaseOrderSender;
 import javaclasses.mealorder.ServiceFactory;
 
-import static javaclasses.mealorder.testdata.TestValues.DATE;
+import static javaclasses.mealorder.testdata.TestValues.TOMORROW;
 import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
 import static org.mockito.Mockito.mock;
 
@@ -69,7 +69,7 @@ abstract class PurchaseOrderCommandTest<C extends Message>
     private static PurchaseOrderId createPurchaseOrderId() {
         return PurchaseOrderId.newBuilder()
                               .setVendorId(VENDOR_ID)
-                              .setPoDate(DATE)
+                              .setPoDate(TOMORROW)
                               .build();
     }
 

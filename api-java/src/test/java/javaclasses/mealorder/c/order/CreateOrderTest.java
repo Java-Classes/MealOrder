@@ -46,10 +46,10 @@ import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrder
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentMenu;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceForNonExistentVendor;
 import static javaclasses.mealorder.testdata.TestOrderCommandFactory.createOrderInstanceWithInvalidDate;
-import static javaclasses.mealorder.testdata.TestValues.DATE;
-import static javaclasses.mealorder.testdata.TestValues.INVALID_START_DATE;
+import static javaclasses.mealorder.testdata.TestValues.FAR_FUTURE;
 import static javaclasses.mealorder.testdata.TestValues.INVALID_VENDOR_ID;
 import static javaclasses.mealorder.testdata.TestValues.ORDER_ID;
+import static javaclasses.mealorder.testdata.TestValues.TOMORROW;
 import static javaclasses.mealorder.testdata.TestValues.USER_ID;
 import static javaclasses.mealorder.testdata.TestValues.VENDOR_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -193,7 +193,7 @@ public class CreateOrderTest extends OrderCommandTest {
 
         final Rejections.MenuNotAvailable menuNotAvailable = MenuNotAvailableSubscriber.getRejection();
         assertEquals(USER_ID, menuNotAvailable.getUserId());
-        assertEquals(DATE, menuNotAvailable.getOrderDate());
+        assertEquals(TOMORROW, menuNotAvailable.getOrderDate());
         assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
     }
 
@@ -216,7 +216,7 @@ public class CreateOrderTest extends OrderCommandTest {
         final Rejections.MenuNotAvailable menuNotAvailable =
                 MenuNotAvailableSubscriber.getRejection();
         assertEquals(USER_ID, menuNotAvailable.getUserId());
-        assertEquals(INVALID_START_DATE, menuNotAvailable.getOrderDate());
+        assertEquals(FAR_FUTURE, menuNotAvailable.getOrderDate());
         assertEquals(VENDOR_ID, menuNotAvailable.getVendorId());
     }
 
@@ -239,7 +239,7 @@ public class CreateOrderTest extends OrderCommandTest {
         final Rejections.MenuNotAvailable menuNotAvailable
                 = MenuNotAvailableSubscriber.getRejection();
         assertEquals(USER_ID, menuNotAvailable.getUserId());
-        assertEquals(DATE, menuNotAvailable.getOrderDate());
+        assertEquals(TOMORROW, menuNotAvailable.getOrderDate());
         assertEquals(INVALID_VENDOR_ID, menuNotAvailable.getVendorId());
     }
 }
