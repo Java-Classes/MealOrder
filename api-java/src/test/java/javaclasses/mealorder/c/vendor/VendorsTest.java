@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static javaclasses.mealorder.c.vendor.Vendors.isThereMenuForThisDateRange;
 import static javaclasses.mealorder.c.vendor.Vendors.isValidDateRange;
-import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE;
+import static javaclasses.mealorder.testdata.TestValues.WEEK_FROM_TOMORROW;
 import static javaclasses.mealorder.testdata.TestValues.MENU_DATE_RANGE_FROM_PAST;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,7 +51,7 @@ class VendorsTest {
     @DisplayName("return false if menu date ranges are not overlapping")
     void returnFalseIfDateRangesAreNotOverlapping() {
         final Menu menu = Menu.newBuilder()
-                              .setMenuDateRange(MENU_DATE_RANGE)
+                              .setMenuDateRange(WEEK_FROM_TOMORROW)
                               .build();
         final Vendor vendor = Vendor.newBuilder()
                                     .addMenu(menu)

@@ -38,7 +38,10 @@ import javaclasses.mealorder.VendorChange;
 import javaclasses.mealorder.VendorId;
 import javaclasses.mealorder.VendorName;
 
-import static io.spine.time.MonthOfYear.FEBRUARY;
+import static io.spine.time.LocalDates.addDays;
+import static io.spine.time.LocalDates.addYears;
+import static io.spine.time.LocalDates.now;
+import static io.spine.time.LocalDates.subtractYears;
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.mealorder.OrderStatus.ORDER_ACTIVE;
 
@@ -115,60 +118,31 @@ public class TestValues {
                                                                    Timestamp.getDefaultInstance())
                                                            .build();
 
-    public static final LocalDate START_DATE = LocalDate.newBuilder()
-                                                        .setYear(2019)
-                                                        .setMonthValue(2)
-                                                        .setDay(13)
-                                                        .build();
+    private static final LocalDate TODAY = now();
 
-    public static final LocalDate END_DATE = LocalDate.newBuilder()
-                                                      .setYear(2019)
-                                                      .setMonthValue(2)
-                                                      .setDay(21)
-                                                      .build();
+    public static final LocalDate TOMORROW = addDays(TODAY, 1);
 
-    public static final MenuDateRange MENU_DATE_RANGE = MenuDateRange.newBuilder()
-                                                                     .setRangeStart(START_DATE)
-                                                                     .setRangeEnd(END_DATE)
-                                                                     .build();
+    public static final MenuDateRange WEEK_FROM_TOMORROW =
+            MenuDateRange.newBuilder()
+                         .setRangeStart(TOMORROW)
+                         .setRangeEnd(addDays(TOMORROW, 7))
+                         .build();
 
-    public static final LocalDate START_DATE_FROM_PAST = LocalDate.newBuilder()
-                                                                  .setYear(2017)
-                                                                  .setMonthValue(2)
-                                                                  .setDay(13)
-                                                                  .build();
+    public static final LocalDate FAR_FUTURE = addYears(TODAY, 1);
 
-    public static final LocalDate END_DATE_FROM_PAST = LocalDate.newBuilder()
-                                                                .setYear(2017)
-                                                                .setMonthValue(2)
-                                                                .setDay(19)
-                                                                .build();
+    public static final LocalDate FAR_PAST = subtractYears(TODAY, 1);
 
-    public static final LocalDate INVALID_START_DATE = LocalDate.newBuilder()
-                                                                .setYear(2020)
-                                                                .setMonthValue(2)
-                                                                .setDay(13)
-                                                                .build();
+    public static final MenuDateRange INVALID_MENU_DATE_RANGE =
+            MenuDateRange.newBuilder()
+                         .setRangeStart(FAR_FUTURE)
+                         .setRangeEnd(FAR_PAST)
+                         .build();
 
-    public static final LocalDate INVALID_END_DATE = LocalDate.newBuilder()
-                                                              .setYear(2018)
-                                                              .setMonthValue(2)
-                                                              .setDay(19)
-                                                              .build();
-
-    public static final MenuDateRange INVALID_MENU_DATE_RANGE = MenuDateRange.newBuilder()
-                                                                             .setRangeStart(
-                                                                                     INVALID_START_DATE)
-                                                                             .setRangeEnd(
-                                                                                     INVALID_END_DATE)
-                                                                             .build();
-
-    public static final MenuDateRange MENU_DATE_RANGE_FROM_PAST = MenuDateRange.newBuilder()
-                                                                               .setRangeStart(
-                                                                                             START_DATE_FROM_PAST)
-                                                                               .setRangeEnd(
-                                                                                             END_DATE_FROM_PAST)
-                                                                               .build();
+    public static final MenuDateRange MENU_DATE_RANGE_FROM_PAST =
+            MenuDateRange.newBuilder()
+                         .setRangeStart(FAR_PAST)
+                         .setRangeEnd(addDays(FAR_PAST, 7))
+                         .build();
 
     public static final Dish DISH1 = Dish.newBuilder()
                                          .setId(DishId.newBuilder()
@@ -190,18 +164,10 @@ public class TestValues {
                                          .setPrice(Money.getDefaultInstance())
                                          .build();
 
-    public static final LocalDate DATE = LocalDate.newBuilder()
-                                                  .setYear(
-                                                          2019)
-                                                  .setMonth(
-                                                          FEBRUARY)
-                                                  .setDay(15)
-                                                  .build();
-
     public static final OrderId ORDER_ID = OrderId.newBuilder()
                                                   .setUserId(USER_ID)
                                                   .setVendorId(VENDOR_ID)
-                                                  .setOrderDate(DATE)
+                                                  .setOrderDate(TOMORROW)
                                                   .build();
 
     public static final VendorId INVALID_VENDOR_ID = VendorId.newBuilder()
@@ -212,14 +178,13 @@ public class TestValues {
                                                                       .setUserId(USER_ID)
                                                                       .setVendorId(
                                                                               INVALID_VENDOR_ID)
-                                                                      .setOrderDate(DATE)
+                                                                      .setOrderDate(TOMORROW)
                                                                       .build();
 
     public static final OrderId ORDER_ID_WITH_INVALID_DATE = OrderId.newBuilder()
                                                                     .setUserId(USER_ID)
                                                                     .setVendorId(VENDOR_ID)
-                                                                    .setOrderDate(
-                                                                            INVALID_START_DATE)
+                                                                    .setOrderDate(FAR_FUTURE)
                                                                     .build();
 
     public static final DishId INVALID_DISH_ID = DishId.newBuilder()
@@ -234,11 +199,11 @@ public class TestValues {
                                                 .setId(INVALID_DISH_ID)
                                                 .build();
 
-    public static final PurchaseOrderId PURCHASE_ORDER_ID = PurchaseOrderId
-            .newBuilder()
-            .setVendorId(VENDOR_ID)
-            .setPoDate(DATE)
-            .build();
+    public static final PurchaseOrderId PURCHASE_ORDER_ID =
+            PurchaseOrderId.newBuilder()
+                           .setVendorId(VENDOR_ID)
+                           .setPoDate(TOMORROW)
+                           .build();
 
     public static final Order ORDER = Order.newBuilder()
                                            .setId(ORDER_ID)

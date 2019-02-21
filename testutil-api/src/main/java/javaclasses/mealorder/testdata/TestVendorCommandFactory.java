@@ -152,7 +152,7 @@ public class TestVendorCommandFactory {
      */
     public static SetDateRangeForMenu setDateRangeForMenuInstance() {
         final SetDateRangeForMenu result = setDateRangeForMenuInstance(VENDOR_ID, MENU_ID, USER_ID,
-                                                                       MENU_DATE_RANGE);
+                                                                       WEEK_FROM_TOMORROW);
         return result;
     }
 
