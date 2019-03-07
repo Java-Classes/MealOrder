@@ -1,0 +1,154 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../shell/meal-order-app-namespace.html">
+<link rel="import" href="../shell/redux-store.html">
+<link rel="import" href="./meal-order-user-order.html">
+
+<dom-module id="meal-order-user-cart">
+    <template>
+        <style>
+            #cart {
+                overflow-x: hidden;
+                overflow-y: auto;
+                max-height: 93vh;
+                color: var(--paper-grey-700);
+            }
+
+            #total {
+                display: flex;
+                justify-content: space-between;
+                margin: 6% 4% 10% 4%;
+                font-weight: bolder;
+            }
+        </style>
+        <div id="cart">
+            <template is="dom-repeat" items="[[currentOrder.order]]" as="orderByVendor">
+                <meal-order-user-order
+                        on-user-order-vendor-removed="_removeDishesByVendor"
+                        on-user-order-dish-removed="_removeDishFromOrder"
+                        current-order="[[orderByVendor]]"></meal-order-user-order>
+            </template>
+            <template is="dom-if" if="[[currentOrder.order.length]]">
+                <div id="total">
+                    <div class="amount">Общая сумма:</div>
+                    <div class="price">[[_getTotalAmount(currentOrder)]] ₴</div>
+                </div>
+            </template>
+        </div>
+    </template>
+    <script>
+        {
+            /**
+             * user-cart is user's order for current date.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderUserCart extends MealOrderApp.ReduxMixin(Polymer.Element) {
+                static get is() {
+                    return 'meal-order-user-cart';
+                }
+
+                static get properties() {
+                    return {
+                        /**
+                         * Selected day.
+                         */
+                        selectedDate: {
+                            type: Date,
+                        },
+
+                        /**
+                         * Current user's meal order.
+                         *
+                         * @typedef {Object} Order the current order
+                         *
+                         * @typedef {Object} Date contains day, month, year
+                         * @property {Number} day
+                         * @property {Number} month
+                         * @property {Number} year
+                         *
+                         * @typedef {Array} Cart array that contains the vendor and dishes
+                         * @property {String} vendor a vendor name
+                         * @typedef {Array} Dishes array contains the dish title, price, quantity
+                         * @property {String} title
+                         * @property {String} price
+                         * @property {String} quantity
+                         */
+                        currentOrder: {
+                            type: Array,
+                            statePath: 'currentOrder'
+                        },
+                    }
+                }
+
+                static get actions() {
+                    return {
+                        getOrderedItems: date => ({
+                            type: MealOrderApp.UserAction.GET_ORDERED_ITEMS,
+                            date
+                        }),
+                        removeDishesByVendor: vendor => ({
+                            type: MealOrderApp.UserAction.REMOVE_DISHES_BY_VENDOR,
+                            vendor
+                        }),
+                        removeDishFromOrder: dish => ({
+                            type: MealOrderApp.UserAction.REMOVE_DISH_FROM_ORDER,
+                            dish
+                        }),
+                    }
+                }
+
+                static get observers() {
+                    return [
+                        '_getCurrentOrder(selectedDate)'
+                    ];
+                }
+
+                _getCurrentOrder(selectedDate) {
+                    this.dispatch('getOrderedItems', new Date(selectedDate));
+                }
+
+                _getTotalAmount(currentOrder) {
+                    let sum = 0;
+                    for (let i = 0; i < currentOrder.order.length; i++) {
+                        for (let j = 0; j < currentOrder.order[i].dishes.length; j++) {
+                            sum += currentOrder.order[i].dishes[j].price * currentOrder.order[i].dishes[j].quantity;
+                        }
+                    }
+                    return sum;
+                }
+
+                _removeDishFromOrder(event) {
+                    this.dispatch('removeDishFromOrder', event.detail);
+                }
+
+                _removeDishesByVendor(event) {
+                    this.dispatch('removeDishesByVendor', event.detail);
+                }
+            }
+
+            window.customElements.define(MealOrderUserCart.is, MealOrderUserCart);
+        }
+    </script>
+</dom-module>

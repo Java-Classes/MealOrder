@@ -1,0 +1,202 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../../bower_components/paper-search/paper-search-bar.html">
+<link rel="import" href="./meal-order-vendor-menu.html">
+
+<dom-module id="meal-order-vendor-menus">
+    <template>
+        <style>
+            iron-list {
+                --iron-list-items-container: {
+                    width: 70%;
+                    margin: 2% auto 0 auto;
+                    color: var(--paper-grey-700);
+                };
+            }
+
+            paper-search-bar {
+                margin: 0 auto;
+                height: 50px;
+                width: 70%;
+                background-color: white;
+            }
+
+            .item {
+                @apply --layout-horizontal;
+                background-color: white;
+                border: 1px solid var(--paper-grey-100);
+                cursor: pointer;
+                margin-bottom: 5px;
+            }
+
+            .pad {
+                @apply --layout-flex;
+                @apply --layout-vertical;
+                font-size: 15px;
+                border-radius: 15px;
+            }
+
+            .non-select {
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;
+                /* Non-prefixed version, currently supported by Chrome and Opera */
+            }
+
+            @media only screen and (max-width: 600px) {
+                paper-search-bar {
+                    margin: 0 auto;
+                    width: 100%;
+                }
+
+                iron-list {
+                    --iron-list-items-container: {
+                        color: var(--paper-grey-700);
+                        margin: 4% auto;
+                        width: 100%;
+                    }
+                }
+            }
+        </style>
+
+        <paper-search-bar id="paper-search" query="{{filter}}" hide-filter-button="true"
+                          placeholder="Поиск"></paper-search-bar>
+
+        <iron-list scroll-target="document" id="list" items="[[filtered]]" as="menu"
+                   selection-enabled
+                   multi-selection>
+            <template>
+                <div class="non-select">
+                    <div class="item">
+                        <div class="pad">
+                            <meal-order-vendor-menu menu="[[menu]]"
+                                                    on-vendor-menu-resize="_resize"></meal-order-vendor-menu>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </iron-list>
+    </template>
+    <script>
+        {
+            /**
+             * vendor-menus represents an expanding list of menus for current date and filter.
+             *
+             * Contains search by dish keywords.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderVendorMenus extends Polymer.Element {
+                static get is() {
+                    return 'meal-order-vendor-menus';
+                }
+
+                static get properties() {
+                    return {
+                        /**
+                         * Fired when a dish add button is tapped.
+                         *
+                         * @event `dish-added`
+                         * @param {dish} contains vendor, category, title.
+                         */
+
+                        /**
+                         * Menu for a current day.
+                         *
+                         * @typedef {Object} Menu the menu for the current date
+                         *
+                         * @property {String} vendor a vendor name
+                         *
+                         * @typedef {Object} Date contains day, month, year
+                         * @property {Number} day
+                         * @property {Number} month
+                         * @property {Number} year
+                         *
+                         * @typedef {Array} Categories array contains the category name and dishes
+                         * @typedef {Array} Dishes array contains the dish title, price, quantity
+                         * @property {String} title
+                         * @property {String} price
+                         * @property {String} quantity
+                         */
+                        menuForDay: {
+                            type: Array,
+                        },
+
+                        /**
+                         * Menu with filter applied.
+                         */
+                        filtered: {
+                            type: Array,
+                            computed: '_filteredItems(menuForDay,filter)',
+                            reflectToAttribute: true
+                        },
+
+                        /**
+                         * Inputted key word or word part to search in menu.
+                         */
+                        filter: {
+                            type: String,
+                            value: '',
+                            notify: true
+                        }
+
+                    }
+                }
+
+                _resize() {
+                    this.shadowRoot.querySelector("#list").notifyResize();
+                }
+
+                _filteredItems() {
+                    const predicate = this.filter;
+                    const filtered = [];
+                    if (this.menuForDay) {
+                        for (let i = 0; i < this.menuForDay.length; i++) {
+                            const vendorCategories = this.menuForDay[i].categories;
+                            const newVendorCategories = [];
+                            for (let j = 0; j < vendorCategories.length; j++) {
+                                const vendorDishes = vendorCategories[j].dishes;
+                                const newVendorDishes = vendorDishes
+                                    .filter(dish => dish.title.toLowerCase().includes(predicate.toLowerCase()));
+                                newVendorCategories.push({
+                                    categoryName: vendorCategories[j].categoryName,
+                                    dishes: newVendorDishes
+                                });
+                            }
+                            filtered.push({
+                                vendor: this.menuForDay[i].vendor,
+                                categories: newVendorCategories
+                            });
+                        }
+                    }
+                    return filtered;
+                }
+            }
+
+            window.customElements.define(MealOrderVendorMenus.is, MealOrderVendorMenus);
+        }
+    </script>
+</dom-module>
