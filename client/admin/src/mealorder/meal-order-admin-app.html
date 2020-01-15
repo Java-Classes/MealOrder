@@ -1,0 +1,207 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import"
+      href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import"
+      href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import"
+      href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="meal-order-admin-app">
+    <template>
+        <style>
+            app-drawer-layout {
+                color: var(--google-grey-700);
+                background-color: var(--paper-grey-50);
+            }
+
+            app-drawer-layout:not([narrow]) [drawer-toggle] {
+                display: none;
+            }
+
+            app-drawer {
+                --app-drawer-content-container: {
+                    background-color: var(--paper-grey-100);
+                }
+            }
+
+            app-header {
+                background-color: var(--paper-grey-700);
+            }
+
+            .main-title {
+                font-size: 1.375em;
+                color: var(--paper-grey-50);
+            }
+
+            app-header app-toolbar .container {
+                display: flex;
+                width: 100%;
+                align-items: center;
+            }
+
+            .app-toolbar-content {
+                color: var(--paper-grey-50);
+            }
+
+            #app-toolbar {
+                background-color: var(--paper-grey-700);
+            }
+
+            .iron-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                height: 200px;
+                margin-top: 10%;
+            }
+
+            .tab {
+                height: 50px;
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                color: var(--paper-grey-800);
+            }
+
+            .tab:hover {
+                background-color: var(--paper-grey-200);
+            }
+
+            .tab-icon {
+                width: 30%;
+            }
+
+            .tab-name {
+                width: 60%;
+            }
+
+            #tab-selector .iron-selected {
+                background-color: var(--paper-grey-300);
+                font-weight: bold;
+            }
+        </style>
+
+        <app-location route="{{route}}"
+                      use-hash-as-path></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:page"
+                data="{{routeData}}"></app-route>
+
+        <app-drawer-layout fullbleed>
+            <app-drawer slot="drawer" align="left">
+                <app-toolbar id="app-toolbar">
+                    <div class="app-toolbar-header">
+                        <div class="main-title">Заказ обедов</div>
+                    </div>
+                </app-toolbar>
+                <iron-selector id="tab-selector" class="iron-container"
+                               selected="[[routeData.page]]" attr-for-selected="data-page">
+                    <a href="/#/vendor/" data-page="vendor" class="tab">
+                        <iron-icon class="tab-icon" icon="icons:assignment-ind"></iron-icon>
+                        <div class="tab-name">Поставщик</div>
+                    </a>
+                    <a href="/#/menu/" data-page="menu" class="tab">
+                        <iron-icon class="tab-icon" icon="icons:content-paste"></iron-icon>
+                        <div class="tab-name">Меню</div>
+                    </a>
+                    <a href="/#/order/" data-page="order" class="tab">
+                        <iron-icon class="tab-icon" icon="icons:assignment"></iron-icon>
+                        <div class="tab-name">Заказ поставщику</div>
+                    </a>
+                    <a href="/#/costs/" data-page="costs" class="tab">
+                        <iron-icon class="tab-icon" icon="icons:credit-card"></iron-icon>
+                        <div class="tab-name">Расходы пользователей</div>
+                    </a>
+                </iron-selector>
+                </div>
+            </app-drawer>
+            <app-header-layout>
+                <app-header slot="header" reveals effects="waterfall">
+                    <app-toolbar>
+                        <div class="container">
+                            <iron-icon class="app-toolbar-content"
+                                       icon="icons:menu"
+                                       drawer-toggle></iron-icon>
+                            <div class="routing-title"></div>
+                        </div>
+                    </app-toolbar>
+                </app-header>
+                <iron-pages
+                        selected="[[routeData.page]]"
+                        attr-for-selected="data-page"
+                        fallback-selection="view404"
+                        role="main">
+                    <!--
+                    <vendor-list data-page="vendor"></vendor-list>
+                    <admin-vendor-menus data-page="menu"></admin-vendor-menus>
+                    <monthly-spending data-page="costs"></monthly-spending>
+                    <vendor-orders data-page="order"></vendor-orders>-->
+                </iron-pages>
+            </app-header-layout>
+        </app-drawer-layout>
+    </template>
+    <script>
+        {
+            /**
+             * Main admin meal order component.
+             *
+             * Contains 4 pages with routing:
+             * 1. Vendor list.
+             * 2. Vendor menus.
+             * 3. Monthly spending.
+             * 4. Vendor orders.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderAdminApp extends Polymer.Element {
+                static get is() {
+                    return 'meal-order-admin-app';
+                }
+
+                static get properties() {
+                    return {
+                        /**
+                         * Route data parsed using `app-route`.
+                         *
+                         * Used for routing.
+                         */
+                        routeData: {}
+                    }
+                }
+            }
+
+            window.customElements.define(MealOrderAdminApp.is, MealOrderAdminApp);
+        }
+    </script>
+</dom-module>

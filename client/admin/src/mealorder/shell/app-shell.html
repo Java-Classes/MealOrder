@@ -1,0 +1,50 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../dialog/meal-order-dialog-container.html">
+<link rel="import" href="../meal-order-admin-app.html">
+
+<dom-module id="app-shell">
+    <template>
+        <meal-order-dialog-container></meal-order-dialog-container>
+        <meal-order-admin-app></meal-order-admin-app>
+    </template>
+    <script>
+        {
+            /**
+             * `<app-shell>` component inject
+             * `<meal-order-admin-app>` and `<meal-order-dialog-container>` components.
+             *
+             * @customElement
+             * @polymer
+             */
+            class AppShell extends Polymer.Element {
+                static get is() {
+                    return 'app-shell';
+                }
+
+                static get properties() {
+                    return {}
+                }
+            }
+
+            window.customElements.define(AppShell.is, AppShell);
+        }
+    </script>
+</dom-module>
