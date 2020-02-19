@@ -1,0 +1,188 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../shell/meal-order-app-namespace.html">
+<link rel="import" href="../../../bower_components/app-datepicker/app-datepicker.html">
+
+<dom-module id="meal-order-drawer">
+    <template>
+        <style>
+            .app-toolbar-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                z-index: 1;
+                color: var(--paper-grey-700);
+            }
+
+            .app-toolbar-header .app-toolbar-content {
+                font-size: 24px;
+            }
+
+            #day {
+                font-size: 22px;
+            }
+
+            #day-of-the-week {
+                font-size: 0.7em;
+                font-weight: lighter;
+                text-align: center;
+                text-transform: capitalize;
+            }
+
+            #date-picker {
+                z-index: 0;
+                position: absolute;
+                top: 84px;
+
+                --app-datepicker-selection-bg: var(--paper-grey-50);
+                --app-datepicker-selection-color: var(--google-grey-700);
+                --app-datepicker-iron-selected: var(--google-grey-700);
+                --app-datepicker-selected-day-bg: var(--paper-light-blue-500);
+                --app-datepicker-today-color: var(--paper-light-blue-500);
+                --app-datepicker-date-hover-background-color: var(--paper-light-blue-500);
+
+                --app-datepicker-selected-date: {
+                    display: none;
+                };
+
+                --app-datepicker-selected-year: {
+                    display: none;
+                };
+            }
+        </style>
+
+        <iron-pages
+                id="app-drawer-iron"
+                selected="[[routeData.page]]"
+                attr-for-selected="data-page"
+                fallback-selection="view404"
+                role="main">
+            <div data-page="menu">
+                <app-toolbar>
+                    <div class="app-toolbar-header">
+                        <div class="app-toolbar-content">Заказ</div>
+                        <div>
+                            <div id="day-of-the-week">[[selectedDayOfTheWeek]]</div>
+                            <div id="day">[[selectedDay]]</div>
+                        </div>
+                    </div>
+                </app-toolbar>
+                <!--cart component-->
+            </div>
+            <div data-page="history">
+                <app-toolbar>
+                    <div class="app-toolbar-header">
+                        <div class="app-toolbar-content">История заказов</div>
+                    </div>
+                </app-toolbar>
+                <app-datepicker
+                        id="date-picker"
+                        format="yyyy-mm-dd"
+                        view="vertical"
+                        input-date="[[routeData.date]]"
+                        date="{{outputDate}}"
+                        auto-update-date="true"
+                        locale="ru-RU"></app-datepicker>
+            </div>
+        </iron-pages>
+    </template>
+    <script>
+        {
+            /**
+             * meal-order-drawer is container for the user's order and
+             * the calendar of the history of the user's orders.
+             *
+             * Contains an order for the selected day and calendar.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderDrawer extends Polymer.Element {
+                static get is() {
+                    return 'meal-order-drawer';
+                }
+
+                static get properties() {
+                    return {
+                        /**
+                         * Selected day.
+                         */
+                        selectedDay: {
+                            type: Object,
+                            computed: '_getSelectedDay(routeData.date)'
+                        },
+
+                        /**
+                         * Selected day of the week.
+                         */
+                        selectedDayOfTheWeek: {
+                            type: Object,
+                            computed: '_getSelectedDayOfTheWeek(routeData.date)'
+                        },
+
+                        /**
+                         * Chosen day.
+                         */
+                        outputDate: {
+                            type: String,
+                        },
+
+                        /**
+                         * Used for routing.
+                         */
+                        routeData: {
+                            type: Object,
+                            notify: true,
+                        },
+                    }
+                }
+
+                static get observers() {
+                    return [
+                        ' _calendarDateChanged(outputDate)'
+                    ];
+                }
+
+                _getSelectedDay() {
+                    return new Date(this.routeData.date).getDate();
+                }
+
+                _getSelectedDayOfTheWeek() {
+                    return new Date(this.routeData.date).toLocaleDateString("ru-RU", {weekday: 'long'});
+                }
+
+                _calendarDateChanged() {
+                    if (this.routeData && this.routeData.page.startsWith("history")) {
+                        const newRouteData = {};
+                        newRouteData.page = 'history';
+                        newRouteData.date = this.outputDate;
+                        this.set('routeData', newRouteData);
+                    }
+                }
+            }
+
+            window.customElements.define(MealOrderDrawer.is, MealOrderDrawer);
+            MealOrderApp.MealOrderDrawer = MealOrderDrawer;
+        }
+    </script>
+</dom-module>

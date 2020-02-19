@@ -44,10 +44,14 @@
   "globals": {
     "Polymer": false,
     "MealOrderApp": true,
+    "MealOrderAppTest": true,
     "assert": false,
     "test": false,
     "suite": false,
     "fixture": false,
-    "setup": false
+    "setup": false,
+    "flush": false,
+    "sinon": false,
+    "mock": true
   }
 }

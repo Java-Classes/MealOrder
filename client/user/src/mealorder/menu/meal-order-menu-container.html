@@ -1,0 +1,219 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../shell/meal-order-app-namespace.html">
+<link rel="import" href="../shell/redux-store.html">
+
+<link rel="import" href="meal-order-vendor-menus.html">
+
+<dom-module id="meal-order-menu-container">
+    <template>
+        <style>
+            paper-tabs {
+                -webkit-font-smoothing: antialiased;
+                width: 100%;
+                margin-bottom: 1px;
+                --paper-tabs-selection-bar-color: var(--paper-light-blue-500);
+                --paper-tab-ink: var(--paper-light-blue-500);
+            }
+
+            paper-tabs {
+                margin: 3% auto;
+                width: 70%;
+            }
+
+            paper-tab.iron-selected .day-of-the-week {
+                color: var(--paper-light-blue-500);
+            }
+
+            paper-tab.iron-selected .day {
+                color: var(--paper-light-blue-500);
+            }
+
+            paper-tab .paper-tab-container {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                text-decoration: none;
+                color: var(--paper-grey-900);
+                font-size: 1.5em;
+            }
+
+            paper-tab[disabled] .paper-tab-container {
+                color: var(--paper-grey-500);
+            }
+
+            .day-of-the-week {
+                font-size: 0.7em;
+                font-weight: lighter;
+            }
+
+            @media only screen and (max-width: 600px) {
+                paper-tabs {
+                    margin-top: 3%;
+                    width: 100%;
+                }
+            }
+        </style>
+
+        <paper-tabs id="paper-tabs" selected="[[selectedDate]]"
+                    attr-for-selected='data-key'>
+            <template is="dom-repeat" items="{{displayedDays}}" as="calendar">
+                <paper-tab class="paper-tab"
+                           data-key$="[[_getDate(calendar)]]"
+                           link disabled="[[!calendar.hasMenu]]">
+                    <a href="#/menu/[[_getDate(calendar)]]"
+                       class="paper-tab-container">
+                        <div>
+                            <div class="day-of-the-week">[[_getDayOfTheWeek(calendar)]]
+                            </div>
+                            <div class="day">[[_getDay(calendar)]]</div>
+                        </div>
+                    </a>
+                </paper-tab>
+            </template>
+        </paper-tabs>
+        <meal-order-vendor-menus
+                menu-for-day="[[_getDisplayedMenu(selectedDate)]]"></meal-order-vendor-menus>
+    </template>
+    <script>
+        {
+            /**
+             * menu-order is container for the vendors' menus and navigation.
+             *
+             * Contains a menu for the current date and tabs for quick date navigation.
+             *
+             * @customElement
+             * @polymer
+             * @appliesMixin MealOrderApp.ReduxMixin
+             */
+            class MealOrderMenuContainer extends (Polymer.Element) {
+                static get is() {
+                    return 'meal-order-menu-container';
+                }
+
+                static get properties() {
+                    return {
+                        /**
+                         * The current server time for the calendar.
+                         */
+                        serverTime: {
+                            type: Date,
+                        },
+
+                        /**
+                         * Selected day.
+                         */
+                        selectedDate: {
+                            type: Object,
+                        },
+
+                        /**
+                         * Array of dates with menu which may not exist.
+                         *
+                         * @typedef {Object} Date
+                         * @typedef {Boolean} hasMenu If menu for this date exists
+                         */
+                        displayedDays: {
+                            type: Array,
+                            computed: '_getDisplayedDays(menus)'
+                        },
+
+                        /**
+                         * Menu for a current day.
+                         *
+                         * @typedef {Object} Menu the menu for the current date
+                         *
+                         * @property {String} vendor a vendor name
+                         *
+                         * @typedef {Object} Date contains day, month, year
+                         * @property {Number} day
+                         * @property {Number} month
+                         * @property {Number} year
+                         *
+                         * @typedef {Array} Categories array contains the category name and dishes
+                         * @typedef {Array} Dishes array contains the dish title, price, quantity
+                         * @property {String} title
+                         * @property {String} price
+                         * @property {String} quantity
+                         */
+                        menus: {
+                            type: Array,
+                        },
+                    };
+                }
+
+                _getDay(date) {
+                    return date.getDate();
+                }
+
+                _getDate(date) {
+                    const DATE_LENGTH = 10;
+                    return date.toISOString().slice(0, DATE_LENGTH);
+                }
+
+                _getDayOfTheWeek(date) {
+                    const dayOfTheWeek = date.toLocaleDateString("ru-RU", {weekday: 'short'});
+                    return dayOfTheWeek.charAt(0).toUpperCase() + dayOfTheWeek.slice(1);
+                }
+
+                _getDisplayedMenu(date) {
+                    if (this.menus) {
+                        const routeDate = new Date(date);
+                        const menus = this.menus.filter(menu => menu.date);
+                        return menus.filter(menu => menu.date.getTime() === routeDate.getTime());
+                    }
+                }
+
+                _getDisplayedDays(menus) {
+                    const weekDates = [];
+                    const menuDates = [];
+                    const DAYS_IN_PERIOD = 8;
+
+                    for (let i = 0; i < DAYS_IN_PERIOD; i++) {
+                        const newDate = new Date(this.serverTime);
+                        newDate.setDate(newDate.getDate() + i);
+                        weekDates.push(newDate);
+                    }
+
+                    const dates = menus.filter(menu => menu.date);
+                    for (let i = 0; i < dates.length; i++) {
+                        menuDates.push(dates[i].date);
+                    }
+
+                    const uniqueDates = menuDates.map(s => s.toString())
+                        .filter((s, i, a) => a.indexOf(s) === i)
+                        .map(s => new Date(s));
+
+                    for (let i = 0; i < uniqueDates.length; i++) {
+                        if (weekDates[i].getTime() === uniqueDates[i].getTime()) {
+                            weekDates[i].hasMenu = true;
+                        }
+                    }
+                    return weekDates;
+                }
+            }
+
+            window.customElements.define(MealOrderMenuContainer.is, MealOrderMenuContainer);
+            MealOrderApp.MealOrderMenuContainer = MealOrderMenuContainer;
+        }
+    </script>
+</dom-module>

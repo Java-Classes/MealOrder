@@ -1,0 +1,147 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="./shell/meal-order-app-namespace.html">
+
+<dom-module id="meal-order-toolbar">
+    <template>
+        <style>
+            .app-toolbar-container {
+                display: flex;
+                width: 100%;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .app-header-iron-container {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+
+            #main-title {
+                font-size: 1.375em;
+            }
+
+            .link-title {
+                font-size: 0.8em;
+                text-decoration: none;
+                color: var(--paper-grey-50);
+            }
+
+            .link-title:hover .route-title {
+                color: var(--paper-light-blue-500);
+            }
+
+            #menu-history {
+                margin-right: 44px;
+            }
+
+            .link-icon {
+                display: none;
+                color: var(--paper-grey-50);
+            }
+
+            @media only screen and (max-width: 600px) {
+                .app-header-iron-container {
+                    width: 100px;
+                }
+
+                .route-title {
+                    display: none;
+                }
+
+                .link-icon {
+                    display: block;
+                }
+            }
+        </style>
+        <app-toolbar>
+            <div class="app-toolbar-container">
+                <div id="main-title">Заказ обедов</div>
+                <iron-pages id="app-header-iron"
+                            selected="[[page]]"
+                            attr-for-selected="data-page"
+                            fallback-selection="view404"
+                            role="main">
+                    <div data-page="menu" class="app-header-iron-container">
+                        <a class="link-title" href="/#/history/">
+                            <div class="route-title">История заказов</div>
+                            <iron-icon class="link-icon"
+                                       icon="icons:history"></iron-icon>
+                        </a>
+                        <iron-icon on-click="_toggleDrawer"
+                                   class="link-icon"
+                                   icon="icons:shopping-cart"></iron-icon>
+                    </div>
+                    <div data-page="history" class="app-header-iron-container">
+                        <a class="link-title" href="/#/menu/">
+                            <div id="menu-history" class="route-title">Сделать заказ</div>
+                            <iron-icon class="link-icon"
+                                       icon="icons:add"></iron-icon>
+                        </a>
+                        <iron-icon on-click="_toggleDrawer"
+                                   class="link-icon"
+                                   icon="icons:date-range"></iron-icon>
+                    </div>
+                </iron-pages>
+            </div>
+        </app-toolbar>
+    </template>
+    <script>
+        {
+            /**
+             * meal-order-toolbar is container for the `app-toolbar`
+             *
+             * Contains the main title and the link title and also icon for drawer toggle
+             * on depending on menu and history routing.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderToolbar extends (Polymer.Element) {
+                static get is() {
+                    return 'meal-order-toolbar';
+                }
+
+                static get properties() {
+                    return {
+                        /**
+                         * Current page.
+                         */
+                        page: {
+                            type: Object,
+                        }
+                    }
+                }
+
+                _toggleDrawer() {
+                    this.dispatchEvent(new CustomEvent('toggle-drawer',));
+                }
+            }
+
+            window.customElements.define(MealOrderToolbar.is, MealOrderToolbar);
+            MealOrderApp.MealOrderToolbar = MealOrderToolbar;
+        }
+    </script>
+</dom-module>
