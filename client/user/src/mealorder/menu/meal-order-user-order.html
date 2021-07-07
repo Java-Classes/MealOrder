@@ -1,0 +1,131 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+
+<dom-module id="meal-order-user-order">
+    <template>
+        <style>
+            .order-details {
+                display: flex;
+                font-size: 15px;
+                align-items: center;
+                border-bottom: 2px solid var(--google-grey-100);
+            }
+
+            .vendor {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-left: 4%;
+                background-color: var(--google-grey-100);
+            }
+
+            .order-title {
+                width: 50%;
+                text-align: left;
+                padding-left: 4%;
+            }
+
+            .order-price {
+                width: 20%;
+                text-align: right;
+            }
+
+            .order-quantity {
+                width: 15%;
+            }
+        </style>
+        <div class="vendor">
+            <div>[[currentOrder.vendor]]</div>
+            <paper-icon-button icon="delete" class="icon-delete"
+                               on-click="_removeDishesByVendor"></paper-icon-button>
+        </div>
+        <div class="dishes">
+            <template is="dom-repeat" items="[[currentOrder.dishes]]" as="dish">
+                <div class="order-details">
+                    <div class="order-title">[[dish.title]]</div>
+                    <div class="order-price">[[dish.price]] ₴</div>
+                    <div class="order-quantity">[[dish.quantity]]</div>
+                    <paper-icon-button icon="remove" on-click="_removeDish"></paper-icon-button>
+                </div>
+            </template>
+        </div>
+    </template>
+    <script>
+        {
+            /**
+             * user-order component is user's order for current date, for current vendor.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderUserOrder extends Polymer.Element {
+                static get is() {
+                    return 'meal-order-user-order';
+                }
+
+                static get properties() {
+                    return {
+                        /**
+                         * Fired by clicking on the `Remove dish` button.
+                         *
+                         * @event `user-order-dish-removed`
+                         * @param {dish} contains dishes
+                         */
+
+                        /**
+                         * Fired by clicking on the `Remove dishes by vendor` button.
+                         *
+                         * @event `user-order-vendor-removed`
+                         * @param {vendor} contains vendor.
+                         */
+
+                        /**
+                         * Order for a current vendor.
+                         */
+                        currentOrder: {
+                            type: Array
+                        }
+                    }
+                }
+
+                _removeDishesByVendor() {
+                    this.dispatchEvent(new CustomEvent('user-order-vendor-removed', {
+                        detail: this.currentOrder.vendor
+                    }));
+                }
+
+                _removeDish(e) {
+                    const dish = {};
+                    dish.vendor = this.currentOrder.vendor;
+                    dish.name = this.currentOrder.dishes[e.model.index].title;
+                    this.dispatchEvent(new CustomEvent('user-order-dish-removed', {
+                        detail: dish
+                    }));
+                }
+            }
+
+            window.customElements.define(MealOrderUserOrder.is, MealOrderUserOrder);
+        }
+    </script>
+</dom-module>

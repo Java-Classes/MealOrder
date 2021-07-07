@@ -17,25 +17,52 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<link rel="import" href="shell/meal-order-app-namespace.html">
-<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/app-route/app-location.html">
-<link rel="import" href="../../bower_components/app-route/app-route.html">
-<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import"
-      href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="shell/redux-store.html">
+      href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="./shell/meal-order-app-namespace.html">
+<link rel="import" href="./shell/redux-store.html">
+<link rel="import" href="./meal-order-toolbar.html">
+<link rel="import" href="./menu/meal-order-drawer.html">
+<link rel="import" href="./menu/meal-order-menu-container.html">
 
 <dom-module id="meal-order-client-app">
     <template>
         <style>
+            app-header {
+                background-color: var(--google-grey-700);
+                color: var(--paper-grey-50);
+                right: 300px;
+            }
+
+            app-header-layout {
+                background-color: var(--paper-grey-100);
+            }
+
+            app-drawer-layout {
+                background-color: var(--paper-grey-100);
+
+            }
+
+            app-drawer {
+                --app-drawer-content-container: {
+                    background-color: var(--paper-grey-50);
+                }
+            }
+
+            app-drawer.wide {
+                --app-drawer-width: 300px;
+            }
         </style>
 
         <app-location route="{{route}}"
@@ -43,53 +70,153 @@
 
         <app-route
                 route="{{route}}"
-                pattern="/:page"
+                pattern="/:page/:date"
                 data="{{routeData}}"></app-route>
 
         <app-drawer-layout fullbleed>
-
-            <app-drawer slot="drawer" align="right">
-                <app-toolbar>
-                </app-toolbar>
+            <app-drawer id="drawer" slot="drawer" align="right"
+                        class$="[[_getDrawerClass(routeData.page)]]">
+                <meal-order-drawer route-data="{{routeData}}"></meal-order-drawer>
             </app-drawer>
 
             <app-header-layout>
                 <app-header slot="header" reveals effects="waterfall">
-                    <app-toolbar>
-                    </app-toolbar>
+                    <meal-order-toolbar on-toggle-drawer="_toggleDrawer"
+                                        page="[[routeData.page]]">
+                    </meal-order-toolbar>
                 </app-header>
+                <iron-pages id="app-header-layout-iron"
+                            selected="[[routeData.page]]"
+                            attr-for-selected="data-page"
+                            fallback-selection="view404"
+                            role="main">
+                    <meal-order-menu-container
+                            data-page="menu"
+                            server-time="[[serverTime]]"
+                            selected-date="[[routeData.date]]"
+                            menus="[[menus]]"
+                            on-dish-added="_addDishToOrder">
+                    </meal-order-menu-container>
+                    <div data-page="history">
+                        <!--user history component-->
+                    </div>
+                </iron-pages>
             </app-header-layout>
-
         </app-drawer-layout>
 
         <h1>MealOrder application</h1>
     </template>
-
     <script>
-        /**
-         * Main client meal order component.
-         *
-         * @customElement
-         * @polymer
-         * @appliesMixin MealOrderApp.ReduxMixin
-         */
-        class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
-            static get is() {
-                return 'meal-order-client-app';
-            }
+        {
+            /**
+             * Main client meal order component.
+             *
+             * Consists of 2 pages:
+             * 1. A page with the vendor menus and the user's shopping cart.
+             * 2. A page with the user's history.
+             *
+             * @customElement
+             * @polymer
+             * @appliesMixin MealOrderApp.ReduxMixin
+             */
+            class MealOrderClientApp extends MealOrderApp.ReduxMixin(Polymer.Element) {
+                static get is() {
+                    return 'meal-order-client-app';
+                }
 
-            static get properties() {
-                return {
-                    /**
-                     * Route data parsed using `app-route`.
-                     *
-                     * Used for routing.
-                     */
-                    routeData: {}
+                static get properties() {
+                    return {
+                        /**
+                         * Menu for a current day.
+                         *
+                         * @typedef {Object} Menu the menu for the current date
+                         *
+                         * @property {String} vendor a vendor name
+                         *
+                         * @typedef {Object} Date contains day, month, year
+                         * @property {Number} day
+                         * @property {Number} month
+                         * @property {Number} year
+                         *
+                         * @typedef {Array} Categories array contains the category name and dishes
+                         * @typedef {Array} Dishes array contains the dish title, price, quantity
+                         * @property {String} title
+                         * @property {String} price
+                         * @property {String} quantity
+                         */
+                        menus: {
+                            type: Array,
+                            statePath: 'menus'
+                        },
+
+                        /**
+                         * Route data parsed using `app-route`.
+                         *
+                         * Used for routing.
+                         */
+                        routeData: {
+                            type: Object,
+                        },
+
+                        /**
+                         * The current server time for the calendar.
+                         */
+                        serverTime: {
+                            type: Date,
+                            statePath: 'serverTime'
+                        }
+
+                    }
+                }
+
+                static get actions() {
+                    return {
+                        addDishToOrder: order => ({
+                            type: MealOrderApp.UserAction.ADD_DISH_TO_ORDER,
+                            order
+                        })
+                    }
+                }
+
+                static get observers() {
+                    return [
+                        '_pageChanged(routeData.page)'
+                    ];
+                }
+
+                _getDrawerClass(page) {
+                    if (page === "history") {
+                        return "wide";
+                    }
+                }
+
+                _toggleDrawer() {
+                    this.$.drawer.toggle();
+                }
+
+                _pageChanged() {
+                    const DATE_LENGTH = 10;
+                    if (!this.routeData.page || (this.routeData.page.startsWith("menu") && !this.routeData.date)) {
+                        this.set('route.path', '/menu/' + this.serverTime.toISOString().slice(0, DATE_LENGTH));
+                    }
+                    if (this.routeData.page.startsWith("history")) {
+                        if (!this.routeData.date) {
+                            const newDate = new Date(this.serverTime);
+                            newDate.setDate(newDate.getDate() - 1);
+                            this.set('routeData.date', newDate.toISOString().slice(0, DATE_LENGTH));
+                        }
+                    }
+                }
+
+                _addDishToOrder(e) {
+                    const order = {};
+                    order.dish = e.detail;
+                    order.date = new Date(this.routeData.date);
+                    this.dispatch('addDishToOrder', order);
                 }
             }
-        }
 
-        window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
+            window.customElements.define(MealOrderClientApp.is, MealOrderClientApp);
+        }
     </script>
 </dom-module>

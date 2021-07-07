@@ -1,0 +1,217 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="meal-order-vendor-menu">
+    <template>
+        <style>
+            paper-item {
+                @apply --paper-font-body1;
+                padding: 0 2%;
+                width: 96%;
+                border-bottom: 1px solid var(--paper-grey-200);
+            }
+
+            .menu-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .header paper-item {
+                padding: 2px 1% 2px 2%;
+            }
+
+            .menu-dishes {
+                height: 50px;
+            }
+
+            .bold {
+                font-weight: bold;
+            }
+
+            .dish-title {
+                width: 55%;
+                padding-left: 10px;
+                text-align: left;
+            }
+
+            .dish-price {
+                width: 60px;
+                text-align: right;
+            }
+
+            .add-dish-icon {
+                margin-bottom: 2px;
+                width: 45%;
+                text-align: right;
+            }
+
+            .collapsed {
+                display: none;
+            }
+
+            .expanded {
+                display: block;
+                transition: background-color 1s linear;
+            }
+
+            .menu-caption {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                @apply --paper-font-subhead;
+                width: 100%;
+            }
+
+            @media only screen and (max-width: 600px) {
+                paper-item {
+                    padding: 0 2%;
+                }
+            }
+        </style>
+
+        <div class="header">
+            <paper-item on-click="_toggle" class="menu-caption">
+                <div class="menu-caption">
+                    [[menu.vendor]]
+                    <paper-icon-button id="expand" icon="expand-less"></paper-icon-button>
+                </div>
+            </paper-item>
+        </div>
+        <div id="menu" class="expanded">
+            <template is="dom-repeat" items="[[menu.categories]]" as="item">
+                <template is="dom-if" if="[[item.dishes.length]]">
+                    <div>
+                        <div class="menu-header">
+                            <paper-item>
+                                <div class="dish-title bold">
+                                    [[item.categoryName]]
+                                </div>
+                                <div class="dish-price bold">
+                                    Цена, ₴
+                                </div>
+                                <div class="add-dish-icon">
+
+                                </div>
+                            </paper-item>
+                        </div>
+                        <template is="dom-repeat" items="[[item.dishes]]" as="dish">
+                            <div class="menu-dishes">
+                                <paper-item>
+                                    <div class="dish-title">
+                                        [[dish.title]]
+                                    </div>
+                                    <div class="dish-price">
+                                        [[dish.price]]
+                                    </div>
+                                    <div class="add-dish-icon">
+                                        <paper-icon-button icon="add"
+                                                           on-click="_addDish"></paper-icon-button>
+                                    </div>
+                                </paper-item>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </template>
+    <script>
+        {
+            /**
+             * meal-order-vendor-menu represents a menu of a vendor for a single day.
+             *
+             * Contains a list of categories with dish titles and prices.
+             *
+             * @customElement
+             * @polymer
+             */
+            class MealOrderVendorMenu extends Polymer.Element {
+                static get is() {
+                    return 'meal-order-vendor-menu';
+                }
+
+                static get properties() {
+                    return {
+                        /**
+                         * Fired on `add-button` click.
+                         *
+                         * @event `dish-added`
+                         * @param {dish} contains vendor, category and dish title
+                         */
+
+                        /**
+                         * Menu of a vendor.
+                         */
+                        menu: {
+                            type: Object
+                        }
+                    }
+                }
+
+                _getExpandIcon() {
+                    if (this.$.menu.className === 'expanded') {
+                        return 'expand-less';
+                    }
+                    else {
+                        return 'expand-more';
+                    }
+                }
+
+                _toggle() {
+                    if (this.$.menu.className === 'collapsed') {
+                        this.$.menu.className = 'expanded';
+                        this.$.expand.icon = 'expand-less';
+                    }
+                    else {
+                        this.$.menu.className = 'collapsed';
+                        this.$.expand.icon = 'expand-more';
+                    }
+                    this.dispatchEvent(new CustomEvent('vendor-menu-resize'));
+                }
+
+                _addDish(e) {
+                    const dish = {};
+                    dish.vendor = this.menu.vendor;
+                    dish.price = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].price;
+                    dish.title = this.menu.categories[e.model.parentModel.index].dishes[e.model.index].title;
+                    this.dispatchEvent(new CustomEvent('dish-added', {
+                        composed: true,
+                        detail: dish
+                    }));
+                }
+            }
+
+            window.customElements.define(MealOrderVendorMenu.is, MealOrderVendorMenu);
+        }
+    </script>
+</dom-module>
